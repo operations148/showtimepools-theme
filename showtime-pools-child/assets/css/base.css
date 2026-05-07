@@ -1,0 +1,316 @@
+/*
+ * Base styles — modern reset + element defaults + fluid type.
+ * Loads after tokens.css, before utilities/components/blocks.
+ */
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+* {
+	margin: 0;
+}
+
+html {
+	-webkit-text-size-adjust: 100%;
+	-moz-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+	scroll-behavior: smooth;
+	scroll-padding-top: calc(var(--header-h) + var(--sp-4));
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+}
+
+body {
+	min-height: 100vh;
+	min-height: 100dvh;
+	font-family: var(--ff-body);
+	font-size: var(--fs-base);
+	font-weight: var(--fw-regular);
+	line-height: var(--lh-base);
+	color: var(--c-text);
+	background: var(--c-bg);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
+	overflow-x: clip;
+	margin: 0;
+}
+
+/* Reset Astra parent's #primary spacing AND width defaults. Astra ships
+   SIX cascading #primary { margin } rules inline that load AFTER our
+   external CSS, plus a max-width on certain layout class combos. We use
+   higher specificity + !important to make sure <main> always fills the
+   viewport width — vertical rhythm + canvas-width are controlled at the
+   section / .container level, NOT at <main>. */
+body main#primary,
+body main.site-main,
+body main#primary.site-main {
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 0 !important;
+	max-width: 100% !important;
+	width: 100% !important;
+	float: none !important;
+}
+/* Same defensive width reset on Astra's potential #content / #page wrappers
+   in case parent ever wraps our main inside one of them. */
+body #content,
+body #page,
+body .site,
+body .site-content {
+	max-width: 100% !important;
+	width: 100% !important;
+}
+/* Also kill any default block-margin on the FIRST section inside main —
+   margin-collapse can leak through and create a phantom gap. */
+body main#primary > :first-child,
+body main.site-main > :first-child {
+	margin-top: 0 !important;
+}
+body main#primary > :last-child,
+body main.site-main > :last-child {
+	margin-bottom: 0 !important;
+}
+
+/* Site-wide film-grain overlay — gives the editorial / craft feel */
+body::after {
+	content: '';
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: 9998;
+	opacity: 0.06;
+	mix-blend-mode: overlay;
+	background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1.2 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+@media (prefers-reduced-motion: reduce) {
+	body::after { display: none; }
+}
+
+/* Kill the grain overlay while the mobile drawer is open. The grain sits
+   at z-index: 9998 and was rendering ON TOP of the drawer panel, making
+   menu text look noisy/blurry. Hiding it during the drawer state keeps
+   the panel crisp; it returns when the drawer closes. */
+body.is-drawer-open::after { display: none; }
+
+/* Scroll progress line — thin aqua bar at the very top of the viewport */
+.scroll-progress {
+	position: fixed;
+	top: 0; left: 0;
+	height: 2px;
+	width: var(--scroll-progress, 0%);
+	background: linear-gradient(90deg, var(--c-aqua-700), var(--c-aqua-300));
+	z-index: 9999;
+	pointer-events: none;
+	transition: width 80ms linear;
+}
+
+img,
+picture,
+svg,
+video,
+canvas {
+	display: block;
+	max-width: 100%;
+	height: auto;
+}
+
+img {
+	font-style: italic; /* visual hint when alt fails to render */
+	background-repeat: no-repeat;
+	background-size: cover;
+	shape-margin: 0.75rem;
+}
+
+input,
+button,
+textarea,
+select {
+	font: inherit;
+	color: inherit;
+}
+
+button {
+	cursor: pointer;
+	background: none;
+	border: 0;
+	padding: 0;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	overflow-wrap: break-word;
+}
+
+#root,
+#__next,
+.wp-site-blocks {
+	isolation: isolate;
+}
+
+a {
+	color: var(--c-link);
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.18em;
+	transition: color var(--dur-fast) var(--ease-out);
+}
+
+a:hover {
+	color: var(--c-link-hover);
+}
+
+:focus-visible {
+	outline: 2px solid var(--c-accent-500);
+	outline-offset: 2px;
+	border-radius: var(--r-xs);
+}
+
+::selection {
+	background: var(--c-accent-200);
+	color: var(--c-brand-900);
+}
+
+/* Headings — DM Sans, weight contrast (Brikly reference). DM Sans needs
+   600-700 at display sizes to feel substantial; 400-500 reads thin. */
+h1, h2, h3, h4, h5, h6 {
+	font-family: var(--ff-display);
+	font-weight: var(--fw-bold);
+	line-height: var(--lh-tight);
+	letter-spacing: var(--ls-tight);
+	color: var(--c-ink);
+	text-wrap: balance;
+}
+
+h1 { font-size: var(--fs-6xl); font-weight: var(--fw-bold);     letter-spacing: -0.028em; }
+h2 { font-size: var(--fs-4xl); font-weight: var(--fw-bold);     letter-spacing: -0.022em; }
+h3 { font-size: var(--fs-2xl); font-weight: var(--fw-semibold); letter-spacing: -0.015em; }
+h4 { font-size: var(--fs-xl);  font-weight: var(--fw-semibold); }
+h5 { font-size: var(--fs-lg);  font-weight: var(--fw-semibold); }
+h6 {
+	font-family: var(--ff-body);
+	font-size: var(--fs-xs);
+	font-weight: var(--fw-semibold);
+	letter-spacing: var(--ls-wide);
+	text-transform: uppercase;
+	color: var(--c-text-muted);
+}
+
+/* Eyebrow micro-label — small caps, used above section H2s sitewide.
+ * <em> inside renders as italic Playfair numeral for the editorial section
+ * marker pattern: "<em>01</em> — Services". */
+.eyebrow {
+	display: inline-flex;
+	align-items: baseline;
+	gap: var(--sp-2);
+	font-family: var(--ff-body);
+	font-size: var(--fs-xs);
+	font-weight: var(--fw-semibold);
+	letter-spacing: var(--ls-wide);
+	text-transform: uppercase;
+	color: var(--c-aqua-700);
+}
+.eyebrow em {
+	font-family: var(--ff-display);
+	font-style: italic;
+	font-weight: var(--fw-regular);
+	font-size: 1.4em;
+	letter-spacing: 0;
+	text-transform: none;
+	line-height: 1;
+}
+.eyebrow--invert { color: var(--c-aqua-300); }
+
+p {
+	max-width: 70ch;
+	text-wrap: pretty;
+}
+
+p + p {
+	margin-top: var(--sp-4);
+}
+
+small {
+	font-size: var(--fs-sm);
+	color: var(--c-text-muted);
+}
+
+strong {
+	font-weight: var(--fw-semibold);
+	color: var(--c-ink-900);
+}
+
+code,
+kbd,
+samp,
+pre {
+	font-family: var(--ff-mono);
+	font-size: 0.92em;
+}
+
+code {
+	background: var(--c-ink-100);
+	padding: 0.12em 0.4em;
+	border-radius: var(--r-xs);
+}
+
+pre {
+	background: var(--c-ink-900);
+	color: var(--c-ink-100);
+	padding: var(--sp-4);
+	border-radius: var(--r-md);
+	overflow-x: auto;
+	line-height: var(--lh-snug);
+}
+
+hr {
+	border: 0;
+	border-top: 1px solid var(--c-border);
+	margin: var(--sp-12) 0;
+}
+
+ul, ol {
+	padding-left: var(--sp-6);
+}
+
+li + li {
+	margin-top: var(--sp-2);
+}
+
+blockquote {
+	border-left: 3px solid var(--c-accent-500);
+	padding: var(--sp-2) var(--sp-5);
+	font-size: var(--fs-lg);
+	color: var(--c-text);
+	font-style: italic;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: var(--fs-sm);
+}
+
+th, td {
+	padding: var(--sp-3) var(--sp-4);
+	text-align: left;
+	border-bottom: 1px solid var(--c-border);
+}
+
+th {
+	font-weight: var(--fw-semibold);
+	color: var(--c-ink-900);
+	background: var(--c-surface);
+}

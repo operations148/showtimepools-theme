@@ -1,0 +1,181 @@
+<?php
+/**
+ * Template Name: About
+ *
+ * /about/ — Showtime Pools company story, real team, credentials.
+ *
+ * @package ShowtimePools
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+get_header();
+
+$about_hero  = function_exists( 'showtime_image' ) ? showtime_image( 'about_hero', 1600 ) : '';
+$about_split = function_exists( 'showtime_image' ) ? showtime_image( 'lifestyle_main', 1200 ) : '';
+
+$person_schema = array(
+	'@context'    => 'https://schema.org',
+	'@type'       => 'Organization',
+	'@id'         => home_url( '/about/#org' ),
+	'name'        => 'Showtime Pools',
+	'url'         => home_url( '/' ),
+	'foundingDate'=> '2003',
+	'foundingLocation' => array(
+		'@type' => 'Place',
+		'name'  => 'Sherman Oaks, Los Angeles, California',
+	),
+	'founder'     => array(
+		'@type'    => 'Person',
+		'@id'      => home_url( '/the-founder/#person' ),
+		'name'     => 'Steve Adams',
+		'jobTitle' => 'Founder & CEO',
+	),
+	'employee'    => array(
+		array( '@type' => 'Person', 'name' => 'Steve Adams',  'jobTitle' => 'Founder & CEO' ),
+		array( '@type' => 'Person', 'name' => 'Viktor O',     'jobTitle' => 'Repair Manager' ),
+		array( '@type' => 'Person', 'name' => 'Felipe A',     'jobTitle' => 'Pool Service Technician' ),
+		array( '@type' => 'Person', 'name' => 'George C',     'jobTitle' => 'Senior Cleaner' ),
+	),
+	'parentOrganization' => array( '@id' => home_url( '/#localbusiness' ) ),
+);
+?>
+<main id="primary" class="site-main interior-page">
+
+	<section class="int-hero int-hero--brand int-hero--photo" data-reveal>
+		<?php if ( $about_hero ) : ?>
+			<img class="int-hero__photo" src="<?php echo esc_url( $about_hero ); ?>" alt="" loading="eager" fetchpriority="high" decoding="async">
+		<?php endif; ?>
+		<div class="int-hero__pattern" aria-hidden="true"></div>
+		<div class="container">
+			<nav class="breadcrumbs int-hero__crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'showtime-pools' ); ?>">
+				<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'showtime-pools' ); ?></a>
+				<span class="breadcrumbs__sep">/</span>
+				<span aria-current="page"><?php esc_html_e( 'About', 'showtime-pools' ); ?></span>
+			</nav>
+			<div class="int-hero__inner">
+				<span class="eyebrow eyebrow--invert"><?php esc_html_e( 'About Showtime Pools', 'showtime-pools' ); ?></span>
+				<h1 class="int-hero__title balance"><?php esc_html_e( 'Complete pool care, start to finish.', 'showtime-pools' ); ?></h1>
+				<p class="int-hero__lead">
+					<?php esc_html_e( 'Showtime Pools designs, builds, and transforms pools and outdoor spaces that elevate the way you live. Based in Los Angeles, we are the trusted name for homeowners, property managers, and businesses across Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills.', 'showtime-pools' ); ?>
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<section class="int-section" data-reveal>
+		<div class="container">
+			<div class="about-story">
+				<aside class="about-story__photo">
+					<div class="about-story__photo-frame">
+						<?php if ( $about_split ) : ?>
+							<img src="<?php echo esc_url( $about_split ); ?>" alt="" loading="lazy" decoding="async">
+						<?php endif; ?>
+					</div>
+					<figcaption><?php esc_html_e( 'Sherman Oaks shop · Ventura Boulevard', 'showtime-pools' ); ?></figcaption>
+				</aside>
+
+				<div class="about-story__copy">
+					<span class="eyebrow"><?php esc_html_e( 'Who we are', 'showtime-pools' ); ?></span>
+					<h2><?php esc_html_e( 'Years of hands-on experience. Built on quality, transparency, and reliability.', 'showtime-pools' ); ?></h2>
+					<p><?php esc_html_e( 'Showtime Pools has become a trusted name for homeowners, property managers, and businesses seeking long-lasting, high-performance pool systems. Repairs, weekly service, remodels, equipment, inspections, and outdoor living are all handled by one in-house team.', 'showtime-pools' ); ?></p>
+					<p><?php esc_html_e( 'We do not believe in shortcuts, only results that stand the test of time. Every project is treated like it is our own backyard. That means engineered structure, honest communication, premium materials, and standing behind our work with integrity.', 'showtime-pools' ); ?></p>
+					<p><?php esc_html_e( 'When something breaks, we identify the root cause first so you do not waste money on temporary patches. When you are remodeling, we coordinate every trade so you are not chasing five contractors. When you are buying a house, we inspect the pool independently and tell you the truth.', 'showtime-pools' ); ?></p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="int-section int-section--cream" data-reveal>
+		<div class="container">
+			<header class="int-section__head">
+				<span class="eyebrow"><?php esc_html_e( 'What we believe', 'showtime-pools' ); ?></span>
+				<h2 class="balance"><?php esc_html_e( 'Five commitments. Every project, every visit.', 'showtime-pools' ); ?></h2>
+			</header>
+			<div class="values-grid">
+				<?php
+				$values = array(
+					array( 'n' => '01', 'title' => __( 'Durable, safe, visually stunning pools', 'showtime-pools' ),     'body' => __( 'Pools that last decades and look better at year five than they did at year one. Engineered structure, premium finish, modern equipment.', 'showtime-pools' ) ),
+					array( 'n' => '02', 'title' => __( 'Proven methods, modern technology', 'showtime-pools' ),         'body' => __( 'We blend tested construction methods with current automation, salt systems, and energy-efficient equipment. No experiments on your dime.', 'showtime-pools' ) ),
+					array( 'n' => '03', 'title' => __( 'Honest communication start to finish', 'showtime-pools' ),     'body' => __( 'Itemized written quotes. Daily updates during construction. Final walk-through with a punch list. Nothing important happens verbally.', 'showtime-pools' ) ),
+					array( 'n' => '04', 'title' => __( 'Standing behind our work with integrity', 'showtime-pools' ),  'body' => __( 'Two-year workmanship warranty on construction. Five-year warranty on PebbleTec finishes. Manufacturer pass-through on every piece of equipment.', 'showtime-pools' ) ),
+					array( 'n' => '05', 'title' => __( 'Dedicated to everything we do', 'showtime-pools' ),            'body' => __( 'Same crew start to finish. No subcontractors. No rotating techs. The person who quotes the job is on-site when the work happens.', 'showtime-pools' ) ),
+					array( 'n' => '06', 'title' => __( 'No shortcuts, only lasting results', 'showtime-pools' ),       'body' => __( 'We say no to bad ideas, including our own. If a finish, a layout, or a piece of equipment will not last, we tell you up front.', 'showtime-pools' ) ),
+				);
+				foreach ( $values as $v ) :
+				?>
+					<article class="value-card">
+						<span class="value-card__num"><?php echo esc_html( $v['n'] ); ?></span>
+						<h3><?php echo esc_html( $v['title'] ); ?></h3>
+						<p><?php echo esc_html( $v['body'] ); ?></p>
+					</article>
+				<?php endforeach; ?>
+			</div>
+		</div>
+	</section>
+
+	<section class="int-section" data-reveal>
+		<div class="container">
+			<header class="int-section__head">
+				<span class="eyebrow"><?php esc_html_e( 'The team', 'showtime-pools' ); ?></span>
+				<h2 class="balance"><?php esc_html_e( 'Who actually shows up to your house.', 'showtime-pools' ); ?></h2>
+				<p class="int-section__lead"><?php esc_html_e( 'Four people you will meet. The same four who own your project from the first call to the final walk-through.', 'showtime-pools' ); ?></p>
+			</header>
+			<div class="team-grid">
+				<?php
+				$team = array(
+					array( 'name' => 'Steve Adams', 'role' => __( 'Founder & CEO', 'showtime-pools' ), 'note' => __( 'Founded Showtime Pools in 2003. On every quote, walks every site, pulls every permit personally. The phone you call rings on his desk.', 'showtime-pools' ), 'initials' => 'SA', 'href' => home_url( '/the-founder/' ) ),
+					array( 'name' => 'Viktor O',     'role' => __( 'Repair Manager', 'showtime-pools' ),         'note' => __( 'Runs the repair line. Diagnoses the failure before he quotes the fix. Pentair- and Jandy-certified for warranty pass-through.', 'showtime-pools' ), 'initials' => 'VO', 'href' => '' ),
+					array( 'name' => 'Felipe A',    'role' => __( 'Pool Service Technician', 'showtime-pools' ), 'note' => __( 'Senior route tech. Same customers every week. Photo report after every visit before he leaves the driveway.', 'showtime-pools' ), 'initials' => 'FA', 'href' => '' ),
+					array( 'name' => 'George C',    'role' => __( 'Senior Cleaner', 'showtime-pools' ),          'note' => __( 'Owns the chemistry-and-detail side of weekly maintenance. Tile-line wipe-down, full chemistry balance, equipment runtime check.', 'showtime-pools' ), 'initials' => 'GC', 'href' => '' ),
+				);
+				foreach ( $team as $t ) :
+				?>
+					<article class="team-card">
+						<div class="team-card__avatar" aria-hidden="true"><?php echo esc_html( $t['initials'] ); ?></div>
+						<h3 class="team-card__name"><?php echo esc_html( $t['name'] ); ?></h3>
+						<p class="team-card__role"><?php echo esc_html( $t['role'] ); ?></p>
+						<p class="team-card__note"><?php echo esc_html( $t['note'] ); ?></p>
+						<?php if ( ! empty( $t['href'] ) ) : ?>
+							<a class="team-card__link" href="<?php echo esc_url( $t['href'] ); ?>"><?php esc_html_e( 'Read more →', 'showtime-pools' ); ?></a>
+						<?php endif; ?>
+					</article>
+				<?php endforeach; ?>
+			</div>
+		</div>
+	</section>
+
+	<section class="int-section int-section--cream" data-reveal>
+		<div class="container">
+			<header class="int-section__head">
+				<span class="eyebrow"><?php esc_html_e( 'Credentials', 'showtime-pools' ); ?></span>
+				<h2 class="balance"><?php esc_html_e( 'Licensed, insured, certified, accountable.', 'showtime-pools' ); ?></h2>
+			</header>
+			<div class="creds-grid">
+				<?php
+				$creds = array(
+					array( 'h' => __( 'CSLB Licensed', 'showtime-pools' ),                'b' => __( 'C-53 Swimming Pool/Spa Contractor. License documentation provided on request.', 'showtime-pools' ) ),
+					array( 'h' => __( 'Fully Insured', 'showtime-pools' ),                'b' => __( '$2M general liability with full workers compensation. COI issued direct to property owners on request.', 'showtime-pools' ) ),
+					array( 'h' => __( 'Pentair Authorized Service', 'showtime-pools' ),   'b' => __( 'Manufacturer warranty pass-through on IntelliFlo, IntelliCenter, MasterTemp, and IC40 salt cells.', 'showtime-pools' ) ),
+					array( 'h' => __( 'Jandy Authorized Service', 'showtime-pools' ),     'b' => __( 'AquaLink, AquaPure, JXi heater, and Stealth pump warranty pass-through.', 'showtime-pools' ) ),
+					array( 'h' => __( 'PebbleTec Certified Applicator', 'showtime-pools' ),'b' => __( 'Five-year written finish warranty backed by PebbleTec. Annual applicator training.', 'showtime-pools' ) ),
+					array( 'h' => __( 'California Code Compliance', 'showtime-pools' ),   'b' => __( 'Every permit, bonding inspection, and electrical sign-off pulled through LA County and city counters in-house.', 'showtime-pools' ) ),
+				);
+				foreach ( $creds as $c ) :
+				?>
+					<article class="creds-card">
+						<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+						<div>
+							<h3><?php echo esc_html( $c['h'] ); ?></h3>
+							<p><?php echo esc_html( $c['b'] ); ?></p>
+						</div>
+					</article>
+				<?php endforeach; ?>
+			</div>
+		</div>
+	</section>
+
+
+</main>
+<script type="application/ld+json"><?php echo wp_json_encode( $person_schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ); ?></script>
+<?php get_footer();

@@ -1,0 +1,52 @@
+# Local environment artifacts
+.claude/
+.vscode/
+.idea/
+.zed/
+*.code-workspace
+
+# OS noise
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# Log + temp
+*.log
+*.tmp
+*.swp
+*.swo
+*~
+
+# Editor-saved backups
+*.bak
+*.orig
+
+# WordPress local-preview install (lives at ../wp/, but defensive guard)
+wp/
+wordpress/
+wp-latest.zip
+wp-config.php
+
+# Build / dependency artifacts that should never ship in this bundle
+node_modules/
+vendor/
+composer.lock
+package-lock.json
+yarn.lock
+
+# Secrets — never commit any of these
+.env
+.env.*
+*.pem
+*.key
+showtime-pools-core/secrets.php
+showtime-pools-core/.htaccess.local
+
+# ACF JSON cache (we keep the canonical group_*.json, ignore any auto-generated)
+showtime-pools-child/acf-json/cache/
+
+# Build outputs
+dist/
+build/
+*.zip

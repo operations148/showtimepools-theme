@@ -1,0 +1,25 @@
+/*
+ * Gutenberg editor styles — match the frontend so authors see what
+ * visitors will see. Imports are not used; we duplicate-by-link via
+ * theme-setup.php's add_editor_style(). For the editor, only tokens
+ * + base + blocks need to load.
+ */
+
+@import url("./tokens.css");
+@import url("./base.css");
+@import url("./blocks.css");
+
+/* Editor canvas inset feels nicer than the default 0 */
+.editor-styles-wrapper {
+	background: var(--c-bg);
+	color: var(--c-text);
+	font-family: var(--ff-body);
+}
+
+.editor-styles-wrapper .wp-block {
+	max-width: var(--container-max);
+}
+
+.editor-styles-wrapper .wp-block[data-align="wide"] {
+	max-width: calc(var(--container-max) + 200px);
+}

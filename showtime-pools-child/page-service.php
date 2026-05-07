@@ -1,0 +1,129 @@
+<?php
+/**
+ * Template Name: Service
+ *
+ * Single template for all 8 service pages. Resolves the service slug from
+ * post meta (`_showtime_service_slug`) or post slug, hydrates a context
+ * array from the registry merged over ACF overrides, then renders the
+ * section sequence. Sections are filterable so we can A/B test or reorder
+ * without touching this file.
+ *
+ * @package ShowtimePools
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+get_header();
+
+$service_slug = (string) get_post_meta( get_the_ID(), '_showtime_service_slug', true );
+if ( '' === $service_slug ) {
+	$service_slug = get_post_field( 'post_name', get_the_ID() );
+}
+
+$registry = class_exists( '\\Showtime\\Services' )
+	? \Showtime\Services::get( $service_slug )
+	: null;
+
+$acf = function_exists( 'get_field' );
+
+$ctx = array(
+	'slug'       => $service_slug,
+	'title'      => get_the_title(),
+	'summary'    => '',
+	'icon'       => $registry['icon']         ?? 'equipment',
+	'price'      => '',
+	'turnaround' => '',
+	'disclaimer' => '',
+	'includes'   => array(),
+	'faqs'       => array(),
+	'related'    => class_exists( '\\Showtime\\Services' ) ? \Showtime\Services::related( $service_slug, 3 ) : array(),
+	'related_areas' => array(),
+);
+
+// Layer registry defaults first.
+if ( $registry ) {
+	$ctx['summary']    = (string) ( $registry['summary'] ?? '' );
+	$ctx['price']      = (string) ( $registry['default_price'] ?? '' );
+	$ctx['turnaround'] = (string) ( $registry['default_turnaround'] ?? '' );
+	$ctx['includes']   = (array)  ( $registry['default_includes'] ?? array() );
+	$ctx['faqs']       = (array)  ( $registry['default_faqs'] ?? array() );
+}
+
+// Layer ACF overrides on top (only when populated).
+if ( $acf ) {
+	$summary    = (string) get_field( 'hero_summary' );
+	$price      = (string) get_field( 'price_starting_at' );
+	$turnaround = (string) get_field( 'turnaround' );
+	$disclaimer = (string) get_field( 'pricing_disclaimer' );
+	$includes   = (array)  ( get_field( 'includes' ) ?: array() );
+	$faqs_acf   = (array)  ( get_field( 'faqs' ) ?: array() );
+	$rel_areas  = (array)  ( get_field( 'related_areas' ) ?: array() );
+
+	if ( $summary    !== '' ) { $ctx['summary']    = $summary; }
+	if ( $price      !== '' ) { $ctx['price']      = $price; }
+	if ( $turnaround !== '' ) { $ctx['turnaround'] = $turnaround; }
+	if ( $disclaimer !== '' ) { $ctx['disclaimer'] = $disclaimer; }
+
+	if ( $includes ) {
+		$ctx['includes'] = array_values(
+			array_filter(
+				array_map(
+					static fn( $row ) => is_array( $row ) ? (string) ( $row['text'] ?? '' ) : (string) $row,
+					$includes
+				)
+			)
+		);
+	}
+
+	if ( $faqs_acf ) {
+		$ctx['faqs'] = array_values(
+			array_filter(
+				array_map(
+					static fn( $row ) => is_array( $row ) && ! empty( $row['q'] )
+						? array( 'q' => (string) $row['q'], 'a' => (string) ( $row['a'] ?? '' ) )
+						: null,
+					$faqs_acf
+				)
+			)
+		);
+	}
+
+	if ( $rel_areas ) {
+		$ctx['related_areas'] = array_values( array_filter( $rel_areas ) );
+	}
+}
+
+// Make the context available to template-parts via a global. set_query_var
+// doesn't survive get_template_part on every WP version reliably for arrays,
+// so we use a request-scoped global guarded by a unique name.
+$GLOBALS['showtime_service_ctx'] = $ctx;
+
+// 'cta' intentionally NOT in this list. The sitewide footer CTA tier
+// (template-parts/footer/footer-cta.php) is the page closer for every
+// template — adding 'cta' here would render two black CTA blocks back
+// to back. Re-add via the showtime/service_sections filter only if a
+// service variant truly needs a service-specific closer.
+$sections = apply_filters(
+	'showtime/service_sections',
+	array(
+		'hero',
+		'includes',
+		'process',
+		'pricing',
+		'faq',
+		'related',
+	),
+	$ctx
+);
+?>
+<main id="primary" class="site-main service-page">
+	<?php
+	foreach ( $sections as $slug ) {
+		get_template_part( 'template-parts/service/section', $slug );
+	}
+	get_template_part( 'template-parts/service/schema' );
+	?>
+</main>
+<?php
+unset( $GLOBALS['showtime_service_ctx'] );
+get_footer();

@@ -1,0 +1,486 @@
+/*
+ * Site header — single-bar layout, sticky, opinionated.
+ *
+ * Layout: logo left  |  centered nav  |  phone + CTA + mobile toggle right.
+ * Drops the old utility-bar entirely. Sticky from page load with subtle
+ * elevation on scroll. Mobile collapses nav into a drawer.
+ */
+
+/* SENIOR DESIGN DECISION: header is SOLID on every page including home.
+   Previous transparent-over-hero treatment caused (1) "blurry" perception
+   from backdrop-filter + busy photo, (2) low contrast on white-on-photo
+   nav text, (3) cross-page inconsistency. A solid header reads sharp,
+   matches Brikly's reference, and lets the hero stand on its own below. */
+.site-header {
+	position: sticky;
+	top: 0;
+	z-index: var(--z-sticky);
+	background: var(--c-bg-pure);
+	-webkit-backdrop-filter: none;
+	backdrop-filter: none;
+	border-bottom: 1px solid var(--c-border);
+	transition: box-shadow var(--dur-base) var(--ease-out);
+}
+
+.site-header[data-scrolled="true"] {
+	box-shadow: 0 8px 24px rgba(10,10,10,0.06);
+}
+
+.site-header__bar {
+	min-height: var(--header-h);
+	display: flex;
+	align-items: center;
+}
+
+.site-header__inner {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--sp-6);
+	width: 100%;
+}
+
+/* ─── Branding ──────────────────────────────────────────────────── */
+.site-branding {
+	display: inline-flex;
+	align-items: center;
+	text-decoration: none;
+	flex-shrink: 0;
+	color: var(--c-ink);
+}
+
+.site-branding .custom-logo,
+.site-branding__logo {
+	display: block;
+	height: 64px;
+	width: auto;
+	max-width: 240px;
+	object-fit: contain;
+}
+
+@media (max-width: 540px) {
+	.site-branding .custom-logo,
+	.site-branding__logo { height: 48px; max-width: 180px; }
+}
+
+/* (Header is solid on every page now — no logo invert filter needed.) */
+
+.site-branding__wordmark {
+	display: inline-flex;
+	flex-direction: column;
+	gap: 2px;
+	line-height: 1;
+}
+
+.site-branding__main {
+	font-family: var(--ff-display);
+	font-weight: var(--fw-bold);
+	font-size: clamp(1.25rem, 1.05rem + 0.5vw, 1.5rem);
+	letter-spacing: -0.025em;
+	color: var(--c-ink);
+}
+.site-branding__accent {
+	font-style: normal;
+	font-weight: var(--fw-medium);
+	color: var(--c-aqua-700);
+	margin-left: 2px;
+}
+
+.site-branding__sub {
+	font-family: var(--ff-body);
+	font-size: 0.6875rem; /* 11 */
+	font-weight: var(--fw-semibold);
+	letter-spacing: var(--ls-wide);
+	text-transform: uppercase;
+	color: var(--c-text-muted);
+}
+
+/* ─── Primary nav ───────────────────────────────────────────────── */
+.primary-nav {
+	flex: 1;
+	display: flex;
+	justify-content: center;
+}
+
+.primary-nav__list {
+	display: flex;
+	align-items: center;
+	gap: var(--sp-5);
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+/* Explicit zero-margin reset so no default UA stylesheet or Astra
+   parent rule can introduce a top/bottom offset between LI items —
+   "Home is higher than About" was caused by the multi-line PHP
+   whitespace inside the link (now fixed) and any UA defaults. */
+.primary-nav__item {
+	position: relative;
+	margin: 0 !important;
+	padding: 0 !important;
+	display: flex;
+	align-items: center;
+}
+.primary-nav__link { line-height: 1.2; }
+
+.primary-nav__link {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: var(--sp-2) var(--sp-3);
+	font-family: var(--ff-body);
+	font-size: 0.9375rem;
+	font-weight: var(--fw-semibold);
+	color: var(--c-ink);
+	text-decoration: none;
+	transition: color var(--dur-fast) var(--ease-out);
+	white-space: nowrap;
+	letter-spacing: -0.005em;
+	position: relative;
+}
+
+/* Active-page underline indicator */
+.primary-nav__item.current-menu-item > .primary-nav__link::after,
+.primary-nav__item.current-menu-parent > .primary-nav__link::after,
+.primary-nav__item.current_page_item > .primary-nav__link::after,
+.primary-nav__item.current_page_parent > .primary-nav__link::after,
+.primary-nav__item.is-active > .primary-nav__link::after {
+	content: '';
+	position: absolute;
+	left: var(--sp-3);
+	right: var(--sp-3);
+	bottom: -2px;
+	height: 2px;
+	background: var(--c-aqua-700);
+	border-radius: var(--r-full);
+}
+
+.primary-nav__link:hover,
+.primary-nav__item:focus-within > .primary-nav__link,
+.primary-nav__item.is-active > .primary-nav__link {
+	color: var(--c-aqua-700);
+}
+
+/* Mega menu — hover-bridge is provided by .primary-nav__mega::before
+   below, NOT by padding on the LI. Adding padding-bottom here used to
+   make About/Services taller than the non-mega items, which broke
+   vertical alignment in the flex row (Home appeared offset from About). */
+.primary-nav__item--has-mega { /* no extra padding; pseudo-element bridges */ }
+
+.primary-nav__mega {
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	transform: translateX(-50%) translateY(-4px);
+	min-width: 720px;
+	background: #fff;
+	border: 1px solid var(--c-border);
+	border-radius: var(--r-lg);
+	box-shadow: var(--sh-lg);
+	padding: var(--sp-6);
+	margin-top: 12px; /* visual gap below the link */
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity var(--dur-fast) var(--ease-out),
+	            transform var(--dur-fast) var(--ease-out);
+}
+
+/* Invisible hover bridge between link and panel — kills the close-on-traverse bug */
+.primary-nav__mega::before {
+	content: '';
+	position: absolute;
+	left: 0; right: 0;
+	top: -16px;
+	height: 16px;
+}
+
+.primary-nav__mega--narrow { min-width: 320px; }
+
+.primary-nav__item--has-mega:hover > .primary-nav__mega,
+.primary-nav__item--has-mega:focus-within > .primary-nav__mega {
+	opacity: 1;
+	pointer-events: auto;
+	transform: translateX(-50%) translateY(0);
+}
+
+.primary-nav__mega-grid {
+	display: grid;
+	gap: var(--sp-3);
+	grid-template-columns: 1fr 1fr;
+}
+
+.primary-nav__mega-grid--single { grid-template-columns: 1fr; }
+.primary-nav__mega-grid--3 { grid-template-columns: repeat(3, 1fr); }
+
+.primary-nav__mega-item {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	padding: var(--sp-3) var(--sp-4);
+	border-radius: var(--r-sm);
+	text-decoration: none;
+	transition: background var(--dur-fast) var(--ease-out);
+}
+
+.primary-nav__mega-item:hover {
+	background: var(--c-aqua-50);
+}
+
+.primary-nav__mega-item span {
+	font-family: var(--ff-display);
+	font-weight: var(--fw-medium);
+	font-size: var(--fs-md);
+	color: var(--c-ink);
+	letter-spacing: -0.012em;
+}
+
+.primary-nav__mega-item small {
+	font-family: var(--ff-body);
+	font-size: var(--fs-xs);
+	color: var(--c-text-muted);
+	line-height: var(--lh-snug);
+}
+
+.primary-nav__mega-cta {
+	margin-top: var(--sp-4);
+	padding-top: var(--sp-4);
+	border-top: 1px solid var(--c-border);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: var(--sp-4);
+}
+.primary-nav__mega-cta .eyebrow { color: var(--c-text-muted); }
+
+/* ─── Right-side actions ────────────────────────────────────────── */
+.site-header__actions {
+	display: flex;
+	align-items: center;
+	gap: var(--sp-3);
+	flex-shrink: 0;
+}
+
+/* Click-to-call: visible on desktop, hidden on small screens (still in drawer) */
+.site-header__phone {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--sp-2);
+	padding: 8px var(--sp-3);
+	font-family: var(--ff-body);
+	font-size: 0.875rem;
+	font-weight: var(--fw-semibold);
+	color: var(--c-ink);
+	text-decoration: none;
+	letter-spacing: -0.005em;
+	white-space: nowrap;
+	transition: color var(--dur-fast) var(--ease-out);
+}
+.site-header__phone svg { color: var(--c-aqua-700); flex: 0 0 auto; }
+.site-header__phone:hover { color: var(--c-aqua-700); }
+
+@media (max-width: 1100px) {
+	.site-header__phone span { display: none; }
+	.site-header__phone {
+		width: 40px; height: 40px;
+		padding: 0;
+		display: grid; place-items: center;
+		border-radius: var(--r-full);
+		border: 1px solid var(--c-border);
+	}
+	.site-header__phone svg { width: 16px; height: 16px; }
+}
+@media (max-width: 540px) {
+	.site-header__phone { display: none; } /* phone surfaces inside the drawer on phones */
+}
+
+.site-header__cta {
+	--_btn-px: var(--sp-5);
+	--_btn-py: 10px;
+	--_btn-fs: 0.875rem;
+	--_btn-bg:       var(--c-ink);
+	--_btn-bg-hover: var(--c-aqua-700);
+	--_btn-fg:       #fff;
+	--_btn-border:   transparent;
+	border-radius: var(--r-full);
+	letter-spacing: 0.005em;
+	font-weight: var(--fw-semibold);
+}
+.site-header__cta:hover { color: #fff; }
+
+/* (Header is solid sitewide — no transparent-over-hero variant needed.) */
+
+@media (max-width: 480px) {
+	.site-header__cta { display: none; }
+}
+
+/* ─── Mobile menu toggle ────────────────────────────────────────── */
+/* Hamburger only appears under 960px — most laptops get the desktop nav */
+.site-header__menu-toggle { display: none; }
+
+@media (max-width: 959px) {
+	.primary-nav { display: none; }
+	.site-header__menu-toggle { display: grid; }
+}
+
+.site-header__menu-toggle {
+	width: 44px; height: 44px;
+	place-items: center;
+	gap: 5px;
+	border-radius: var(--r-full);
+	background: transparent;
+	border: 1px solid var(--c-border);
+	cursor: pointer;
+	transition: background var(--dur-fast) var(--ease-out);
+}
+.site-header__menu-toggle:hover { background: var(--c-paper); }
+
+.site-header__menu-toggle-bar {
+	display: block;
+	width: 18px;
+	height: 1.5px;
+	background: var(--c-ink);
+	transition: transform var(--dur-fast) var(--ease-out),
+	            opacity var(--dur-fast) var(--ease-out);
+}
+
+[aria-expanded="true"] .site-header__menu-toggle-bar:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+[aria-expanded="true"] .site-header__menu-toggle-bar:nth-child(2) { opacity: 0; }
+[aria-expanded="true"] .site-header__menu-toggle-bar:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+/* ─── Mobile drawer ─────────────────────────────────────────────── */
+.mobile-drawer {
+	position: fixed;
+	inset: 0;
+	/* Above the body::after film-grain overlay (z-index 9998) so the panel
+	   never reads as "blurry/noisy" through the texture. */
+	z-index: 9999;
+	display: block;
+	pointer-events: none;
+}
+.mobile-drawer[hidden] { display: none; }
+.mobile-drawer.is-open { pointer-events: auto; }
+
+.mobile-drawer__backdrop {
+	position: absolute;
+	inset: 0;
+	background: rgba(10, 10, 10, 0.5);
+	-webkit-backdrop-filter: blur(2px);
+	backdrop-filter: blur(2px);
+	opacity: 0;
+	transition: opacity var(--dur-base) var(--ease-out);
+	cursor: pointer;
+}
+.mobile-drawer.is-open .mobile-drawer__backdrop { opacity: 1; }
+
+.mobile-drawer__panel {
+	position: absolute;
+	top: 0; right: 0; bottom: 0;
+	width: min(380px, 88vw);
+	background: #fff;
+	display: flex;
+	flex-direction: column;
+	box-shadow: -24px 0 60px -20px rgba(10,10,10,0.25);
+	transform: translateX(100%);
+	transition: transform var(--dur-base) var(--ease-out);
+	overflow-y: auto;
+	overscroll-behavior: contain;
+}
+.mobile-drawer.is-open .mobile-drawer__panel { transform: translateX(0); }
+
+.mobile-drawer__head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: var(--sp-5) var(--sp-6);
+	border-bottom: 1px solid var(--c-border);
+	gap: var(--sp-4);
+	flex: 0 0 auto;
+}
+
+.mobile-drawer__close {
+	width: 40px; height: 40px;
+	display: grid; place-items: center;
+	background: transparent;
+	border: 1px solid var(--c-border);
+	border-radius: var(--r-full);
+	color: var(--c-ink);
+	cursor: pointer;
+	transition: background var(--dur-fast) var(--ease-out),
+	            border-color var(--dur-fast) var(--ease-out);
+	flex: 0 0 auto;
+}
+.mobile-drawer__close:hover { background: var(--c-paper); border-color: var(--c-ink); }
+
+.mobile-drawer__nav {
+	flex: 1 1 auto;
+	padding: var(--sp-3) 0;
+}
+
+.mobile-drawer__list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.mobile-drawer__list li { margin: 0; }
+
+.mobile-drawer__list a {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: var(--sp-4) var(--sp-6);
+	font-family: var(--ff-display);
+	font-weight: var(--fw-medium);
+	font-size: var(--fs-lg);
+	letter-spacing: -0.018em;
+	color: var(--c-ink);
+	text-decoration: none;
+	border-bottom: 1px solid var(--c-border);
+	transition: background var(--dur-fast) var(--ease-out),
+	            color var(--dur-fast) var(--ease-out);
+}
+.mobile-drawer__list a:hover,
+.mobile-drawer__list a:focus-visible {
+	background: var(--c-paper);
+	color: var(--c-aqua-700);
+}
+
+/* Sub-items (depth-2 children of mega items) */
+.mobile-drawer__list .sub-menu,
+.mobile-drawer__list ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	background: var(--c-sand-50, #F1ECE3);
+}
+.mobile-drawer__list .sub-menu a,
+.mobile-drawer__list ul a {
+	padding-left: var(--sp-9);
+	font-family: var(--ff-body);
+	font-weight: var(--fw-regular);
+	font-size: var(--fs-sm);
+	color: var(--c-text-muted);
+}
+
+.mobile-drawer__cta-stack {
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-3);
+	padding: var(--sp-5) var(--sp-6) calc(var(--sp-5) + env(safe-area-inset-bottom));
+	border-top: 1px solid var(--c-border);
+	background: var(--c-sand-50, #F1ECE3);
+	flex: 0 0 auto;
+}
+.mobile-drawer__cta-stack .btn { width: 100%; justify-content: center; }
+.mobile-drawer__cta-stack .btn:first-child {
+	border-radius: var(--r-full);
+}
+.mobile-drawer__cta-stack .btn:last-child {
+	border-radius: var(--r-full);
+}
+
+/* Lock body scroll while drawer is open */
+body.is-drawer-open { overflow: hidden; }

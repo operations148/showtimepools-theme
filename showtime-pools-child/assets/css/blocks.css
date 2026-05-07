@@ -1,0 +1,127 @@
+/*
+ * Block overrides — Gutenberg + Blocksy block defaults retuned to our
+ * design system. Scoped to the .wp-block-* selectors so we never leak
+ * into our custom components.
+ */
+
+/* WP buttons → use our .btn styles when authors apply our class */
+.wp-block-buttons .wp-block-button__link {
+	font-family: var(--ff-body);
+	font-weight: var(--fw-semibold);
+	border-radius: var(--r-md);
+	padding: var(--sp-3) var(--sp-6);
+	transition: transform var(--dur-fast) var(--ease-out),
+	            box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.wp-block-buttons .wp-block-button__link:hover {
+	transform: translateY(-1px);
+	box-shadow: var(--sh-md);
+}
+
+.wp-block-buttons .is-style-outline > .wp-block-button__link {
+	border-width: 1.5px;
+}
+
+/* Quote block — match our blockquote rhythm */
+.wp-block-quote,
+.wp-block-pullquote {
+	border-left: 3px solid var(--c-accent-500);
+	padding: var(--sp-2) var(--sp-5);
+	font-size: var(--fs-lg);
+	font-style: italic;
+	color: var(--c-text);
+}
+.wp-block-quote cite,
+.wp-block-pullquote cite {
+	display: block;
+	margin-top: var(--sp-3);
+	font-size: var(--fs-sm);
+	font-style: normal;
+	color: var(--c-text-muted);
+}
+
+/* Cover block — better text contrast guard */
+.wp-block-cover {
+	border-radius: var(--r-lg);
+	overflow: hidden;
+}
+
+.wp-block-cover .wp-block-cover__inner-container {
+	max-width: var(--container-narrow);
+}
+
+/* Image block — rounded corners by default */
+.wp-block-image img {
+	border-radius: var(--r-md);
+}
+
+.wp-block-image figcaption {
+	font-size: var(--fs-sm);
+	color: var(--c-text-muted);
+	margin-top: var(--sp-2);
+	text-align: center;
+}
+
+/* Group block as section wrapper */
+.wp-block-group.is-style-section {
+	padding-block: var(--section-py);
+}
+
+/* Columns gap consistency */
+.wp-block-columns {
+	gap: var(--sp-8);
+}
+
+/* Separator block */
+.wp-block-separator {
+	border: 0;
+	border-top: 1px solid var(--c-border);
+	margin-block: var(--sp-12);
+	max-width: var(--container-prose);
+}
+
+.wp-block-separator.is-style-wide {
+	max-width: 100%;
+}
+
+/* Table block */
+.wp-block-table table {
+	border-collapse: collapse;
+	font-size: var(--fs-sm);
+}
+
+.wp-block-table th,
+.wp-block-table td {
+	padding: var(--sp-3) var(--sp-4);
+	border-bottom: 1px solid var(--c-border);
+	text-align: left;
+}
+
+/* Code block */
+.wp-block-code {
+	background: var(--c-ink-900);
+	color: var(--c-ink-100);
+	border-radius: var(--r-md);
+	padding: var(--sp-4);
+	font-family: var(--ff-mono);
+	font-size: var(--fs-sm);
+}
+
+/* List block */
+.wp-block-list { padding-left: var(--sp-6); }
+.wp-block-list li + li { margin-top: var(--sp-2); }
+
+/* Heading block — defer to our base.css h1-h6 styles, just clear margins */
+.wp-block-heading { margin: 0; }
+
+/* Embed block — rounded video */
+.wp-block-embed iframe,
+.wp-block-embed video {
+	border-radius: var(--r-md);
+}
+
+/* Blocksy-specific — hero overlay tone */
+.ct-cover-image-after::after {
+	background: linear-gradient(180deg, rgba(8, 26, 44, 0) 35%, rgba(8, 26, 44, 0.55) 100%);
+}

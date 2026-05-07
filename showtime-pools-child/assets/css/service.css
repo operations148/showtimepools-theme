@@ -1,0 +1,274 @@
+/*
+ * service.css — page-service.php only.
+ * Hero, includes grid, process, pricing card, related cards, CTA.
+ * Composes existing component classes (.btn, .badge, .container, .stack,
+ * .cluster, .faq, .cta-banner) — only adds what's net-new for service pages.
+ * All values pulled from tokens.
+ */
+
+/* ─── Hero ──────────────────────────────────────────────────────── */
+.svc-hero {
+	position: relative;
+	overflow: hidden;
+	color: var(--c-text-invert);
+	background:
+		radial-gradient(1200px 600px at 90% -10%, rgba(15, 181, 186, 0.35) 0%, transparent 60%),
+		linear-gradient(150deg, var(--c-brand-900) 0%, var(--c-brand-700) 55%, var(--c-brand-600) 100%);
+	padding-top: clamp(3rem, 8vw, 6rem);
+	padding-bottom: clamp(3rem, 8vw, 6rem);
+}
+
+.svc-hero__pattern {
+	position: absolute;
+	inset: 0;
+	background-image:
+		radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.07) 1px, transparent 0);
+	background-size: 24px 24px;
+	mask-image: radial-gradient(ellipse 70% 60% at 50% 100%, black, transparent 80%);
+	-webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 100%, black, transparent 80%);
+	pointer-events: none;
+	opacity: 0.6;
+}
+
+.svc-hero > .container { position: relative; z-index: 1; }
+
+.svc-hero__crumbs {
+	color: rgba(255, 255, 255, 0.7);
+	margin-bottom: var(--sp-8);
+}
+.svc-hero__crumbs a { color: rgba(255, 255, 255, 0.85); }
+.svc-hero__crumbs a:hover { color: #fff; }
+.svc-hero__crumbs [aria-current="page"] { color: #fff; font-weight: var(--fw-semibold); }
+
+.svc-hero__inner { max-width: 56rem; }
+
+.svc-hero__eyebrow {
+	color: var(--c-accent-300);
+}
+
+.svc-hero__title {
+	font-family: var(--ff-display);
+	font-weight: var(--fw-extra);
+	font-size: var(--fs-5xl);
+	line-height: var(--lh-tight);
+	letter-spacing: var(--ls-tight);
+	color: #fff;
+	margin: 0;
+}
+
+.svc-hero__lead {
+	font-size: var(--fs-xl);
+	line-height: var(--lh-relaxed);
+	color: rgba(255, 255, 255, 0.85);
+	max-width: 56ch;
+	margin: 0;
+}
+
+.svc-hero__btn-ghost {
+	color: #fff;
+	border-color: rgba(255, 255, 255, 0.4);
+}
+.svc-hero__btn-ghost:hover {
+	color: var(--c-brand-900);
+	background: #fff;
+	border-color: #fff;
+}
+
+/* ─── Includes ─────────────────────────────────────────────────── */
+.svc-includes__grid {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: var(--sp-5) var(--sp-8);
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.svc-includes__item {
+	display: flex;
+	gap: var(--sp-3);
+	align-items: flex-start;
+	padding: var(--sp-5) var(--sp-6);
+	background: var(--c-surface-2);
+	border: 1px solid var(--c-border);
+	border-radius: var(--r-lg);
+	box-shadow: var(--sh-xs);
+	color: var(--c-text);
+	font-size: var(--fs-md);
+	line-height: var(--lh-snug);
+	transition: transform var(--dur-fast) var(--ease-out),
+	            box-shadow var(--dur-fast) var(--ease-out),
+	            border-color var(--dur-fast) var(--ease-out);
+}
+
+.svc-includes__item:hover {
+	transform: translateY(-1px);
+	box-shadow: var(--sh-sm);
+	border-color: var(--c-accent-200);
+}
+
+.svc-includes__check {
+	flex: 0 0 auto;
+	color: var(--c-accent-600);
+	margin-top: 2px;
+}
+
+/* ─── Process ──────────────────────────────────────────────────── */
+.svc-process__list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: var(--sp-6);
+	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+	counter-reset: svc-step;
+}
+
+.svc-process__step {
+	position: relative;
+	padding: var(--sp-6) var(--sp-6) var(--sp-6) var(--sp-6);
+	background: var(--c-surface-2);
+	border: 1px solid var(--c-border);
+	border-radius: var(--r-lg);
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-3);
+}
+
+.svc-process__num {
+	font-family: var(--ff-display);
+	font-size: var(--fs-2xl);
+	font-weight: var(--fw-extra);
+	color: var(--c-accent-500);
+	letter-spacing: var(--ls-tight);
+	line-height: 1;
+}
+
+.svc-process__title {
+	font-family: var(--ff-display);
+	font-size: var(--fs-xl);
+	font-weight: var(--fw-bold);
+	color: var(--c-ink-900);
+	margin: 0;
+}
+
+.svc-process__body {
+	margin: 0;
+	color: var(--c-text);
+	font-size: var(--fs-base);
+	line-height: var(--lh-relaxed);
+}
+
+/* ─── Pricing ──────────────────────────────────────────────────── */
+.svc-pricing__card {
+	max-width: 52rem;
+	margin: 0 auto;
+	padding: clamp(1.5rem, 4vw, 3rem);
+	background:
+		linear-gradient(160deg, var(--c-brand-50) 0%, var(--c-bg) 50%);
+	border: 1px solid var(--c-brand-100);
+	border-radius: var(--r-2xl);
+	box-shadow: var(--sh-md);
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-6);
+}
+
+.svc-pricing__pair {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: var(--sp-6);
+	border-bottom: 1px dashed var(--c-border);
+	padding-bottom: var(--sp-6);
+}
+
+.svc-pricing__cell {
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-1);
+}
+
+.svc-pricing__label {
+	font-size: var(--fs-xs);
+	letter-spacing: var(--ls-wide);
+	text-transform: uppercase;
+	font-weight: var(--fw-semibold);
+	color: var(--c-text-muted);
+}
+
+.svc-pricing__value {
+	font-family: var(--ff-display);
+	font-size: var(--fs-3xl);
+	font-weight: var(--fw-extra);
+	color: var(--c-brand-800);
+	line-height: var(--lh-tight);
+	letter-spacing: var(--ls-tight);
+}
+
+.svc-pricing__disclaimer {
+	color: var(--c-text-muted);
+	font-size: var(--fs-sm);
+	line-height: var(--lh-relaxed);
+	margin: 0;
+}
+
+/* ─── Related ──────────────────────────────────────────────────── */
+.svc-related__grid {
+	display: grid;
+	gap: var(--sp-5);
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.svc-related__card {
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-3);
+	padding: var(--sp-6);
+	background: var(--c-surface-2);
+	border: 1px solid var(--c-border);
+	border-top: 4px solid var(--c-accent-500);
+	border-radius: var(--r-lg);
+	text-decoration: none;
+	color: inherit;
+	transition: transform var(--dur-fast) var(--ease-out),
+	            box-shadow var(--dur-fast) var(--ease-out),
+	            border-color var(--dur-fast) var(--ease-out);
+}
+
+.svc-related__card:hover {
+	transform: translateY(-2px);
+	box-shadow: var(--sh-md);
+	border-top-color: var(--c-brand-700);
+}
+
+.svc-related__title {
+	font-family: var(--ff-display);
+	font-size: var(--fs-xl);
+	font-weight: var(--fw-bold);
+	color: var(--c-ink-900);
+	margin: 0;
+}
+
+.svc-related__blurb {
+	margin: 0;
+	font-size: var(--fs-base);
+	line-height: var(--lh-relaxed);
+	color: var(--c-text);
+	flex: 1;
+}
+
+.svc-related__cta {
+	font-weight: var(--fw-semibold);
+	color: var(--c-brand-700);
+	font-size: var(--fs-sm);
+}
+
+.svc-related__card:hover .svc-related__cta { color: var(--c-accent-700); }
+
+/* ─── Section rhythm cleanup ───────────────────────────────────── */
+.service-page > .section + .section { padding-top: var(--section-py); }
+
+@media (max-width: 640px) {
+	.svc-hero__title { font-size: var(--fs-4xl); }
+	.svc-pricing__value { font-size: var(--fs-2xl); }
+}

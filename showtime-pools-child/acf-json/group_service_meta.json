@@ -1,0 +1,123 @@
+{
+	"key": "group_showtime_service_meta",
+	"title": "Service Meta",
+	"fields": [
+		{
+			"key": "field_svc_hero_summary",
+			"label": "Hero summary",
+			"name": "hero_summary",
+			"type": "textarea",
+			"instructions": "Override the registry default summary shown under the H1. Aim for under 220 characters.",
+			"required": 0,
+			"maxlength": 280,
+			"rows": 3,
+			"new_lines": ""
+		},
+		{
+			"key": "field_svc_price_starting_at",
+			"label": "Price (starting at)",
+			"name": "price_starting_at",
+			"type": "text",
+			"instructions": "Public-facing range. Examples: \"Starts at $7,800\" or \"From $185/month\". Leave empty to suppress the pricing block.",
+			"required": 0
+		},
+		{
+			"key": "field_svc_turnaround",
+			"label": "Turnaround / timeline",
+			"name": "turnaround",
+			"type": "text",
+			"instructions": "Examples: \"3-5 weeks\" or \"Same-day for active customers\".",
+			"required": 0
+		},
+		{
+			"key": "field_svc_pricing_disclaimer",
+			"label": "Pricing disclaimer",
+			"name": "pricing_disclaimer",
+			"type": "textarea",
+			"instructions": "Optional. Replaces the default disclaimer about written quotes.",
+			"required": 0,
+			"rows": 3
+		},
+		{
+			"key": "field_svc_includes",
+			"label": "What's included",
+			"name": "includes",
+			"type": "repeater",
+			"instructions": "Override the registry default \"What's included\" list. Aim for 6 items.",
+			"required": 0,
+			"min": 0,
+			"max": 12,
+			"layout": "table",
+			"button_label": "Add item",
+			"sub_fields": [
+				{
+					"key": "field_svc_includes_text",
+					"label": "Item",
+					"name": "text",
+					"type": "text",
+					"required": 1
+				}
+			]
+		},
+		{
+			"key": "field_svc_faqs",
+			"label": "FAQs",
+			"name": "faqs",
+			"type": "repeater",
+			"instructions": "Override the registry default FAQs. Each FAQ is also emitted as JSON-LD for SERP rich results.",
+			"required": 0,
+			"min": 0,
+			"max": 12,
+			"layout": "block",
+			"button_label": "Add FAQ",
+			"sub_fields": [
+				{
+					"key": "field_svc_faq_q",
+					"label": "Question",
+					"name": "q",
+					"type": "text",
+					"required": 1
+				},
+				{
+					"key": "field_svc_faq_a",
+					"label": "Answer",
+					"name": "a",
+					"type": "textarea",
+					"rows": 4,
+					"new_lines": "wpautop",
+					"required": 1
+				}
+			]
+		},
+		{
+			"key": "field_svc_related_areas",
+			"label": "Related service areas",
+			"name": "related_areas",
+			"type": "relationship",
+			"instructions": "Cross-link to up to 3 service-area pages (Phase 2D).",
+			"required": 0,
+			"post_type": ["page"],
+			"min": 0,
+			"max": 3,
+			"return_format": "object"
+		}
+	],
+	"location": [
+		[
+			{
+				"param": "page_template",
+				"operator": "==",
+				"value": "page-service.php"
+			}
+		]
+	],
+	"menu_order": 0,
+	"position": "normal",
+	"style": "default",
+	"label_placement": "top",
+	"instruction_placement": "label",
+	"hide_on_screen": "",
+	"active": true,
+	"description": "Per-page overrides for service pages. All fields fall back to the registry defaults in showtime-pools-core/includes/data/services.php when empty.",
+	"modified": 1746576000
+}

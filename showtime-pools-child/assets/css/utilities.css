@@ -1,0 +1,128 @@
+/*
+ * Utilities — minimal, single-purpose helpers used across templates.
+ * Resist the urge to expand. If a utility appears once, it belongs in
+ * the component's own CSS. We are not building Tailwind.
+ */
+
+/* Container — every section uses this for horizontal rhythm */
+.container {
+	width: 100%;
+	max-width: var(--container-max);
+	margin-inline: auto;
+	padding-inline: var(--gutter);
+}
+
+.container--narrow { max-width: var(--container-narrow); }
+.container--prose  { max-width: var(--container-prose); }
+
+/* Section vertical rhythm */
+.section {
+	padding-block: var(--section-py);
+}
+
+.section--tight { padding-block: clamp(2rem, 4vw, 3rem); }
+.section--loose { padding-block: clamp(4rem, 9vw, 8rem); }
+
+.section--surface { background: var(--c-surface); }
+.section--brand   { background: var(--c-brand-700); color: var(--c-text-invert); }
+.section--brand h1, .section--brand h2, .section--brand h3,
+.section--brand h4, .section--brand h5 { color: var(--c-text-invert); }
+.section--ink     { background: var(--c-ink-900); color: var(--c-text-invert); }
+.section--ink h1, .section--ink h2, .section--ink h3,
+.section--ink h4, .section--ink h5 { color: var(--c-text-invert); }
+
+/* Stack — vertical rhythm controlled by gap, not margin */
+.stack       { display: flex; flex-direction: column; gap: var(--sp-4); }
+.stack--xs   { gap: var(--sp-1); }
+.stack--sm   { gap: var(--sp-2); }
+.stack--md   { gap: var(--sp-4); }
+.stack--lg   { gap: var(--sp-6); }
+.stack--xl   { gap: var(--sp-10); }
+.stack--2xl  { gap: var(--sp-16); }
+
+/* Cluster — horizontal flex with wrap, used for tag rows, button rows */
+.cluster {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--sp-3);
+	align-items: center;
+}
+
+/* Grid presets */
+.grid-2 { display: grid; gap: var(--sp-6); grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr)); }
+.grid-3 { display: grid; gap: var(--sp-6); grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); }
+.grid-4 { display: grid; gap: var(--sp-5); grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); }
+
+/* Sidebar layout — main + aside, aside drops below at narrow widths */
+.with-sidebar {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--sp-10);
+}
+.with-sidebar > :first-child { flex-grow: 999; flex-basis: 0; min-inline-size: 50%; }
+.with-sidebar > :last-child  { flex-basis: 18rem; flex-grow: 1; }
+
+/* Text alignment + balance */
+.text-center { text-align: center; }
+.text-left   { text-align: left; }
+.text-right  { text-align: right; }
+.balance     { text-wrap: balance; }
+.pretty      { text-wrap: pretty; }
+
+/* Visually hidden (accessible) */
+.visually-hidden {
+	position: absolute !important;
+	width: 1px; height: 1px;
+	padding: 0; margin: -1px;
+	overflow: hidden; clip: rect(0,0,0,0);
+	white-space: nowrap; border: 0;
+}
+
+/* Skip link target */
+.skip-link {
+	position: absolute;
+	top: -100px;
+	left: var(--sp-4);
+	background: var(--c-ink-900);
+	color: var(--c-text-invert);
+	padding: var(--sp-3) var(--sp-4);
+	border-radius: var(--r-sm);
+	z-index: var(--z-toast);
+}
+.skip-link:focus { top: var(--sp-4); }
+
+/* Eyebrow — small uppercase label above a heading */
+.eyebrow {
+	display: inline-block;
+	font-family: var(--ff-body);
+	font-size: var(--fs-xs);
+	font-weight: var(--fw-semibold);
+	letter-spacing: var(--ls-wide);
+	text-transform: uppercase;
+	color: var(--c-accent-700);
+}
+
+/* Lead — intro paragraph, larger and softer */
+.lead {
+	font-size: var(--fs-lg);
+	line-height: var(--lh-relaxed);
+	color: var(--c-text-muted);
+	max-width: 60ch;
+}
+
+/* Token color helpers (rare, used in style guide swatches) */
+.muted { color: var(--c-text-muted); }
+.soft  { color: var(--c-text-soft); }
+
+/* Aspect ratios */
+.ratio-16x9 { aspect-ratio: 16 / 9; }
+.ratio-4x3  { aspect-ratio: 4 / 3; }
+.ratio-1x1  { aspect-ratio: 1 / 1; }
+.ratio-3x4  { aspect-ratio: 3 / 4; }
+
+/* Object fit */
+.cover { object-fit: cover; width: 100%; height: 100%; }
+
+/* Misc */
+.full-bleed { width: 100vw; margin-inline: calc(50% - 50vw); }
+.no-wrap    { white-space: nowrap; }

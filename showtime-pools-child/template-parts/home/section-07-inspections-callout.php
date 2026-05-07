@@ -1,0 +1,35 @@
+<?php
+/**
+ * Inspections callout — clean centered band. Single H2 + lead + dual CTA.
+ * Brikly bones, main palette (no sub-brand color fork).
+ *
+ * @package ShowtimePools
+ */
+
+defined( 'ABSPATH' ) || exit;
+?>
+<section class="inspections-callout" data-reveal>
+	<div class="container inspections-callout__inner">
+		<span class="eyebrow inspections-callout__eyebrow">
+			<?php esc_html_e( 'Showtime Pools Mechanics · Inspections', 'showtime-pools' ); ?>
+		</span>
+
+		<h2 class="inspections-callout__title balance">
+			<?php esc_html_e( 'Buying a house with a pool? We inspect it before you sign.', 'showtime-pools' ); ?>
+		</h2>
+
+		<p class="inspections-callout__lead">
+			<?php esc_html_e( 'Pre-purchase inspections, seasonal diagnostics, and equipment health checks. Written report in 24 hours so you negotiate with leverage — or walk away clean.', 'showtime-pools' ); ?>
+		</p>
+
+		<div class="cluster inspections-callout__ctas">
+			<a class="btn btn--primary btn--lg btn--pill" href="<?php echo esc_url( home_url( '/pool-inspections/' ) ); ?>">
+				<?php esc_html_e( 'Book an Inspection', 'showtime-pools' ); ?>
+			</a>
+			<a class="btn btn--ghost-on-dark btn--lg btn--pill" href="<?php echo esc_url( home_url( '/pool-inspections/pre-purchase-inspection/' ) ); ?>">
+				<?php esc_html_e( 'See What\'s Covered', 'showtime-pools' ); ?>
+				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+			</a>
+		</div>
+	</div>
+</section>

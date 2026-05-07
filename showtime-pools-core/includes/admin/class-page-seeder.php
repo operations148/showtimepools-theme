@@ -1,0 +1,419 @@
+<?php
+/**
+ * Page seeder. Creates the standard page structure on demand.
+ *
+ * Idempotent: existing pages by slug are skipped, never duplicated.
+ * Triggered manually from Showtime Pools → Tools (no auto-creation on
+ * activation — that's an anti-pattern).
+ *
+ * Phase 1F seeds: parent /services/ + 8 service children
+ * Phase 1H seeds: /contact/, /quote/, /book/
+ * Future phases register their own seed groups via the same UI.
+ *
+ * @package ShowtimePoolsCore
+ */
+
+namespace Showtime\Admin;
+
+use Showtime\Services;
+use Showtime\Areas;
+use Showtime\Inspections;
+
+defined( 'ABSPATH' ) || exit;
+
+final class PageSeeder {
+
+	private const PAGE_SLUG       = 'showtime-tools';
+	private const NONCE_SERVICES  = 'showtime_seed_services';
+	private const NONCE_STATIC    = 'showtime_seed_static';
+	private const SVC_PARENT      = 'services';
+	private const DEFAULT_STATUS  = 'publish';
+
+	/**
+	 * Static pages registry (contact, quote, book). Each entry tells the
+	 * seeder what slug, title, template, and meta to use. Adding a new
+	 * structural page = one entry here, no template changes.
+	 *
+	 * @return array<int, array<string, mixed>>
+	 */
+	private function static_pages(): array {
+		return array(
+			array( 'slug' => 'contact', 'title' => __( 'Contact', 'showtime-pools-core' ),            'template' => 'page-contact.php',     'meta' => array( '_showtime_section' => 'contact' ) ),
+			array( 'slug' => 'quote',   'title' => __( 'Get a Quote', 'showtime-pools-core' ),       'template' => 'page-iframe.php',      'meta' => array( '_showtime_section' => 'iframe', '_showtime_iframe_kind' => 'quote' ) ),
+			array( 'slug' => 'book',    'title' => __( 'Book an Inspection', 'showtime-pools-core' ),'template' => 'page-iframe.php',      'meta' => array( '_showtime_section' => 'iframe', '_showtime_iframe_kind' => 'book' ) ),
+			array( 'slug' => 'about',   'title' => __( 'About', 'showtime-pools-core' ),             'template' => 'page-about.php',       'meta' => array( '_showtime_section' => 'about' ) ),
+			array( 'slug' => 'projects','title' => __( 'Projects', 'showtime-pools-core' ),          'template' => 'page-projects.php',    'meta' => array( '_showtime_section' => 'projects' ) ),
+			array( 'slug' => 'reviews', 'title' => __( 'Reviews', 'showtime-pools-core' ),           'template' => 'page-reviews.php',     'meta' => array( '_showtime_section' => 'reviews' ) ),
+			array( 'slug' => 'service-areas', 'title' => __( 'Service Areas', 'showtime-pools-core' ), 'template' => 'page-areas.php',     'meta' => array( '_showtime_section' => 'areas-hub' ) ),
+			array( 'slug' => 'pool-inspections', 'title' => __( 'Pool Inspections', 'showtime-pools-core' ), 'template' => 'page-inspections.php', 'meta' => array( '_showtime_section' => 'inspections-hub' ) ),
+			array( 'slug' => 'privacy', 'title' => __( 'Privacy Policy', 'showtime-pools-core' ),    'template' => 'page-legal.php',       'meta' => array( '_showtime_section' => 'legal' ) ),
+			array( 'slug' => 'terms',   'title' => __( 'Terms', 'showtime-pools-core' ),             'template' => 'page-legal.php',       'meta' => array( '_showtime_section' => 'legal' ) ),
+		);
+	}
+
+	/**
+	 * Area children registered under /service-areas/.
+	 *
+	 * @return array<int, array<string, mixed>>
+	 */
+	private function area_pages(): array {
+		if ( ! class_exists( '\\Showtime\\Areas' ) ) {
+			return array();
+		}
+		return array_map(
+			static fn( $area ) => array(
+				'slug'     => (string) ( $area['slug'] ?? '' ),
+				'title'    => (string) ( $area['name'] ?? '' ),
+				'template' => 'page-area.php',
+				'meta'     => array( '_showtime_area_slug' => (string) ( $area['slug'] ?? '' ), '_showtime_section' => 'area' ),
+				'excerpt'  => (string) ( $area['lead'] ?? '' ),
+			),
+			Areas::all()
+		);
+	}
+
+	/**
+	 * Inspection children registered under /pool-inspections/.
+	 *
+	 * @return array<int, array<string, mixed>>
+	 */
+	private function inspection_pages(): array {
+		if ( ! class_exists( '\\Showtime\\Inspections' ) ) {
+			return array();
+		}
+		return array_map(
+			static fn( $i ) => array(
+				'slug'     => (string) ( $i['slug'] ?? '' ),
+				'title'    => (string) ( $i['name'] ?? '' ),
+				'template' => 'page-inspection.php',
+				'meta'     => array( '_showtime_inspection_slug' => (string) ( $i['slug'] ?? '' ), '_showtime_section' => 'inspection' ),
+				'excerpt'  => (string) ( $i['lead'] ?? '' ),
+			),
+			Inspections::all()
+		);
+	}
+
+	public function register(): void {
+		add_action( 'admin_menu', array( $this, 'register_menu' ), 11 );
+		add_action( 'admin_post_showtime_seed_services', array( $this, 'handle_seed_services' ) );
+		add_action( 'admin_post_showtime_seed_static',   array( $this, 'handle_seed_static' ) );
+	}
+
+	public function register_menu(): void {
+		add_submenu_page(
+			'showtime-settings',
+			__( 'Tools', 'showtime-pools-core' ),
+			__( 'Tools', 'showtime-pools-core' ),
+			'manage_options',
+			self::PAGE_SLUG,
+			array( $this, 'render' )
+		);
+	}
+
+	public function render(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		$notice = '';
+		if ( isset( $_GET['seeded'] ) ) {
+			$created = (int) ( $_GET['created'] ?? 0 );
+			$skipped = (int) ( $_GET['skipped'] ?? 0 );
+			$notice  = sprintf(
+				/* translators: 1: created count, 2: skipped count */
+				__( 'Seed complete. %1$d created, %2$d already existed.', 'showtime-pools-core' ),
+				$created,
+				$skipped
+			);
+		}
+		?>
+		<div class="wrap">
+			<h1><?php esc_html_e( 'Showtime Pools — Tools', 'showtime-pools-core' ); ?></h1>
+
+			<?php if ( $notice ) : ?>
+				<div class="notice notice-success is-dismissible"><p><?php echo esc_html( $notice ); ?></p></div>
+			<?php endif; ?>
+
+			<div class="card" style="max-width:760px">
+				<h2><?php esc_html_e( 'Seed service pages', 'showtime-pools-core' ); ?></h2>
+				<p>
+					<?php esc_html_e( 'Creates /services/ + 8 service child pages wired to the Service template. Existing pages by slug are skipped.', 'showtime-pools-core' ); ?>
+				</p>
+
+				<?php $this->render_table( $this->services_status() ); ?>
+
+				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+					<input type="hidden" name="action" value="showtime_seed_services">
+					<?php wp_nonce_field( self::NONCE_SERVICES ); ?>
+					<?php submit_button( __( 'Seed missing service pages', 'showtime-pools-core' ) ); ?>
+				</form>
+			</div>
+
+			<div class="card" style="max-width:760px;margin-top:1.5em">
+				<h2><?php esc_html_e( 'Seed contact, quote, and booking pages', 'showtime-pools-core' ); ?></h2>
+				<p>
+					<?php esc_html_e( 'Creates /contact/ (native form → GHL), /quote/ (GHL iframe), and /book/ (GHL iframe). Set the iframe URLs in Showtime Pools → Settings.', 'showtime-pools-core' ); ?>
+				</p>
+
+				<?php $this->render_table( $this->static_pages_status() ); ?>
+
+				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+					<input type="hidden" name="action" value="showtime_seed_static">
+					<?php wp_nonce_field( self::NONCE_STATIC ); ?>
+					<?php submit_button( __( 'Seed missing static pages', 'showtime-pools-core' ) ); ?>
+				</form>
+			</div>
+		</div>
+		<?php
+	}
+
+	/**
+	 * @param array<int, array{slug:string,title:string,exists:bool,post_status:string}> $rows
+	 */
+	private function render_table( array $rows ): void {
+		?>
+		<table class="widefat striped" style="margin:1em 0">
+			<thead>
+				<tr>
+					<th><?php esc_html_e( 'Slug', 'showtime-pools-core' ); ?></th>
+					<th><?php esc_html_e( 'Title', 'showtime-pools-core' ); ?></th>
+					<th><?php esc_html_e( 'Status', 'showtime-pools-core' ); ?></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach ( $rows as $row ) : ?>
+					<tr>
+						<td><code><?php echo esc_html( $row['slug'] ); ?></code></td>
+						<td><?php echo esc_html( $row['title'] ); ?></td>
+						<td>
+							<?php if ( $row['exists'] ) : ?>
+								<span style="color:#15803D">✓ <?php echo esc_html( $row['post_status'] ); ?></span>
+							<?php else : ?>
+								<span style="color:#92400E">— not yet</span>
+							<?php endif; ?>
+						</td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+		<?php
+	}
+
+	public function handle_seed_services(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Forbidden.', 'showtime-pools-core' ), 403 );
+		}
+		check_admin_referer( self::NONCE_SERVICES );
+
+		$created = 0;
+		$skipped = 0;
+
+		$parent_ok = $this->ensure_page(
+			self::SVC_PARENT,
+			__( 'Services', 'showtime-pools-core' ),
+			0,
+			array(
+				'meta_input' => array(
+					'_showtime_section' => 'services-hub',
+				),
+			)
+		);
+		$parent_ok ? $created++ : $skipped++;
+
+		$parent_id = $this->page_id( self::SVC_PARENT );
+
+		foreach ( Services::all() as $svc ) {
+			if ( empty( $svc['slug'] ) ) {
+				continue;
+			}
+			$ok = $this->ensure_page(
+				$svc['slug'],
+				(string) ( $svc['title'] ?? $svc['slug'] ),
+				(int) $parent_id,
+				array(
+					'page_template' => 'page-service.php',
+					'meta_input'    => array(
+						'_showtime_service_slug' => $svc['slug'],
+						'_showtime_section'      => 'service',
+					),
+					'post_excerpt'  => (string) ( $svc['summary'] ?? '' ),
+				)
+			);
+			$ok ? $created++ : $skipped++;
+		}
+
+		$this->finish( $created, $skipped );
+	}
+
+	public function handle_seed_static(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Forbidden.', 'showtime-pools-core' ), 403 );
+		}
+		check_admin_referer( self::NONCE_STATIC );
+
+		$created = 0;
+		$skipped = 0;
+
+		foreach ( $this->static_pages() as $page ) {
+			$ok = $this->ensure_page(
+				$page['slug'],
+				$page['title'],
+				0,
+				array(
+					'page_template' => $page['template'],
+					'meta_input'    => $page['meta'],
+				)
+			);
+			$ok ? $created++ : $skipped++;
+		}
+
+		// Areas: parent /service-areas/ + 6 children
+		$areas_parent_id = $this->page_id( 'service-areas' );
+		foreach ( $this->area_pages() as $page ) {
+			if ( '' === $page['slug'] ) { continue; }
+			$ok = $this->ensure_page(
+				$page['slug'],
+				$page['title'],
+				(int) $areas_parent_id,
+				array(
+					'page_template' => $page['template'],
+					'meta_input'    => $page['meta'],
+					'post_excerpt'  => $page['excerpt'] ?? '',
+				)
+			);
+			$ok ? $created++ : $skipped++;
+		}
+
+		// Inspections: parent /pool-inspections/ + 3 children
+		$insp_parent_id = $this->page_id( 'pool-inspections' );
+		foreach ( $this->inspection_pages() as $page ) {
+			if ( '' === $page['slug'] ) { continue; }
+			$ok = $this->ensure_page(
+				$page['slug'],
+				$page['title'],
+				(int) $insp_parent_id,
+				array(
+					'page_template' => $page['template'],
+					'meta_input'    => $page['meta'],
+					'post_excerpt'  => $page['excerpt'] ?? '',
+				)
+			);
+			$ok ? $created++ : $skipped++;
+		}
+
+		$this->finish( $created, $skipped );
+	}
+
+	private function finish( int $created, int $skipped ): void {
+		flush_rewrite_rules();
+		wp_safe_redirect(
+			add_query_arg(
+				array(
+					'page'    => self::PAGE_SLUG,
+					'seeded'  => 1,
+					'created' => $created,
+					'skipped' => $skipped,
+				),
+				admin_url( 'admin.php' )
+			)
+		);
+		exit;
+	}
+
+	/**
+	 * Create a page if missing. Returns true on create, false on skip.
+	 *
+	 * @param array<string, mixed> $extras page_template, meta_input, post_excerpt, post_status
+	 */
+	private function ensure_page( string $slug, string $title, int $parent_id, array $extras = array() ): bool {
+		$existing = get_page_by_path( $parent_id ? $this->path_for( $slug, $parent_id ) : $slug, OBJECT, 'page' );
+		if ( $existing instanceof \WP_Post ) {
+			return false;
+		}
+
+		$post_args = array(
+			'post_title'   => $title,
+			'post_name'    => $slug,
+			'post_type'    => 'page',
+			'post_status'  => $extras['post_status'] ?? self::DEFAULT_STATUS,
+			'post_parent'  => $parent_id,
+			'post_content' => '',
+			'post_excerpt' => $extras['post_excerpt'] ?? '',
+			'meta_input'   => $extras['meta_input'] ?? array(),
+		);
+
+		$id = wp_insert_post( $post_args, true );
+		if ( is_wp_error( $id ) || ! $id ) {
+			return false;
+		}
+
+		if ( ! empty( $extras['page_template'] ) ) {
+			update_post_meta( $id, '_wp_page_template', (string) $extras['page_template'] );
+		}
+
+		return true;
+	}
+
+	private function path_for( string $slug, int $parent_id ): string {
+		$parent = get_post( $parent_id );
+		if ( ! $parent ) {
+			return $slug;
+		}
+		return $parent->post_name . '/' . $slug;
+	}
+
+	private function page_id( string $slug ): int {
+		$p = get_page_by_path( $slug, OBJECT, 'page' );
+		return $p instanceof \WP_Post ? (int) $p->ID : 0;
+	}
+
+	/**
+	 * @return array<int, array{slug:string,title:string,exists:bool,post_status:string}>
+	 */
+	private function services_status(): array {
+		$rows = array();
+
+		$p = get_page_by_path( self::SVC_PARENT, OBJECT, 'page' );
+		$rows[] = array(
+			'slug'        => self::SVC_PARENT,
+			'title'       => __( 'Services (parent hub)', 'showtime-pools-core' ),
+			'exists'      => (bool) $p,
+			'post_status' => $p ? (string) $p->post_status : '',
+		);
+
+		$parent_id = $p ? (int) $p->ID : 0;
+
+		foreach ( Services::all() as $svc ) {
+			$slug = (string) ( $svc['slug'] ?? '' );
+			if ( '' === $slug ) {
+				continue;
+			}
+			$child = $parent_id ? get_page_by_path( self::SVC_PARENT . '/' . $slug, OBJECT, 'page' ) : null;
+			$rows[] = array(
+				'slug'        => $slug,
+				'title'       => (string) ( $svc['title'] ?? $slug ),
+				'exists'      => (bool) $child,
+				'post_status' => $child ? (string) $child->post_status : '',
+			);
+		}
+
+		return $rows;
+	}
+
+	/**
+	 * @return array<int, array{slug:string,title:string,exists:bool,post_status:string}>
+	 */
+	private function static_pages_status(): array {
+		$rows = array();
+		foreach ( $this->static_pages() as $page ) {
+			$p = get_page_by_path( $page['slug'], OBJECT, 'page' );
+			$rows[] = array(
+				'slug'        => $page['slug'],
+				'title'       => (string) $page['title'],
+				'exists'      => (bool) $p,
+				'post_status' => $p ? (string) $p->post_status : '',
+			);
+		}
+		return $rows;
+	}
+}

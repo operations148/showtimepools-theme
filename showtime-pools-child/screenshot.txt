@@ -1,0 +1,4 @@
+Replace this file with screenshot.png (1200×900) before launch.
+
+The PNG should show the homepage hero on a desktop viewport. WordPress
+displays it in Appearance → Themes; not user-visible on the frontend.
