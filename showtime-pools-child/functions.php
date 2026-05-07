@@ -17,4 +17,5 @@ require_once SHOWTIME_CHILD_DIR . '/inc/blocksy-overrides.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/security.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/performance.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/imagery.php';
+require_once SHOWTIME_CHILD_DIR . '/inc/acf-readers.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/seo.php';

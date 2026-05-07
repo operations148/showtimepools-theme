@@ -48,6 +48,10 @@ final class Plugin {
 		// frontend so live values render in templates.
 		( new Admin\Customizer() )->register();
 
+		// ACF options page — "Site Content" menu in WP admin. Hooks into
+		// `acf/init` so it self-skips if ACF Pro isn't active.
+		( new Admin\OptionsPage() )->register();
+
 		// REST endpoints.
 		( new Rest\ContactController() )->register();
 

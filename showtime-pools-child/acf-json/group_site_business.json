@@ -1,0 +1,92 @@
+{
+    "key": "group_showtime_business",
+    "title": "Offices & hours",
+    "fields": [
+        {
+            "key": "field_st_offices",
+            "label": "Offices",
+            "name": "offices",
+            "type": "repeater",
+            "instructions": "Office locations shown in the footer. Order here = order rendered. Three is the typical max but you can add more.",
+            "min": 0,
+            "max": 6,
+            "layout": "block",
+            "button_label": "Add office",
+            "sub_fields": [
+                {
+                    "key": "field_st_office_label",
+                    "label": "Label",
+                    "name": "label",
+                    "type": "text",
+                    "required": 1,
+                    "placeholder": "Sherman Oaks (Main)",
+                    "wrapper": { "width": "30" }
+                },
+                {
+                    "key": "field_st_office_street",
+                    "label": "Street",
+                    "name": "street",
+                    "type": "text",
+                    "required": 1,
+                    "placeholder": "15301 Ventura Blvd.",
+                    "wrapper": { "width": "35" }
+                },
+                {
+                    "key": "field_st_office_city",
+                    "label": "City, State Zip",
+                    "name": "city",
+                    "type": "text",
+                    "required": 1,
+                    "placeholder": "Sherman Oaks, CA 91403",
+                    "wrapper": { "width": "35" }
+                }
+            ]
+        },
+        {
+            "key": "field_st_hours_rows",
+            "label": "Hours rows",
+            "name": "hours_rows",
+            "type": "repeater",
+            "instructions": "Days + hours, shown in the footer hours block.",
+            "min": 0,
+            "max": 7,
+            "layout": "table",
+            "button_label": "Add row",
+            "sub_fields": [
+                {
+                    "key": "field_st_hours_day",
+                    "label": "Day(s)",
+                    "name": "day",
+                    "type": "text",
+                    "required": 1,
+                    "placeholder": "Mon-Sat",
+                    "wrapper": { "width": "30" }
+                },
+                {
+                    "key": "field_st_hours_time",
+                    "label": "Hours",
+                    "name": "time",
+                    "type": "text",
+                    "required": 1,
+                    "placeholder": "8:00 AM - 5:00 PM",
+                    "wrapper": { "width": "70" }
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "options_page",
+                "operator": "==",
+                "value": "showtime-content-business"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "active": true
+}

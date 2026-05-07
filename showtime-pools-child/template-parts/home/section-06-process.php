@@ -8,26 +8,24 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$steps = apply_filters(
-	'showtime/home_process_steps',
+$steps_default = array(
 	array(
-		array(
-			'n'     => '01',
-			'title' => __( 'Request Your Free Assessment', 'showtime-pools' ),
-			'body'  => __( 'Takes 30 seconds. Tell us what you need and your address so we can route you correctly. Phone, form, or text — all routes hit Steve\'s desk.', 'showtime-pools' ),
-		),
-		array(
-			'n'     => '02',
-			'title' => __( 'We Assess And Provide Options', 'showtime-pools' ),
-			'body'  => __( 'Photo or virtual review, or onsite visit when needed. Then clear recommendations for next steps with itemized pricing. No verbal estimates, no pressure.', 'showtime-pools' ),
-		),
-		array(
-			'n'     => '03',
-			'title' => __( 'Expert Execution, Start to Finish', 'showtime-pools' ),
-			'body'  => __( 'Pick the option you want. We handle the work, send daily updates, and walk through the punch list before you pay the balance.', 'showtime-pools' ),
-		),
-	)
+		'n'     => '01',
+		'title' => __( 'Request Your Free Assessment', 'showtime-pools' ),
+		'body'  => __( 'Takes 30 seconds. Tell us what you need and your address so we can route you correctly. Phone, form, or text — all routes hit Steve\'s desk.', 'showtime-pools' ),
+	),
+	array(
+		'n'     => '02',
+		'title' => __( 'We Assess And Provide Options', 'showtime-pools' ),
+		'body'  => __( 'Photo or virtual review, or onsite visit when needed. Then clear recommendations for next steps with itemized pricing. No verbal estimates, no pressure.', 'showtime-pools' ),
+	),
+	array(
+		'n'     => '03',
+		'title' => __( 'Expert Execution, Start to Finish', 'showtime-pools' ),
+		'body'  => __( 'Pick the option you want. We handle the work, send daily updates, and walk through the punch list before you pay the balance.', 'showtime-pools' ),
+	),
 );
+$steps = apply_filters( 'showtime/home_process_steps', showtime_acf_rows( 'process_steps', $steps_default ) );
 ?>
 <section class="process section section--ink" data-reveal>
 	<div class="container">

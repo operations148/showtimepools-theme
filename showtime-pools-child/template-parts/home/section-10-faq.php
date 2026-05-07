@@ -7,9 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$faqs = apply_filters(
-	'showtime/home_faqs',
-	array(
+$faqs_default = array(
 		array(
 			'q' => __( 'How much does weekly pool service cost?', 'showtime-pools' ),
 			'a' => __( 'Standard residential weekly service starts at $185/month for chemistry, debris, and equipment check. Larger pools, salt systems, and pools with spas are quoted individually after a free site visit.', 'showtime-pools' ),
@@ -30,8 +28,8 @@ $faqs = apply_filters(
 			'q' => __( 'Do you serve outside Sherman Oaks?', 'showtime-pools' ),
 			'a' => __( 'We service Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills on regular weekly routes. Outside that zone, we take occasional construction and remodel projects but not weekly maintenance.', 'showtime-pools' ),
 		),
-	)
-);
+	);
+$faqs = apply_filters( 'showtime/home_faqs', showtime_acf_rows( 'home_faqs', $faqs_default ) );
 
 $faq_schema = array(
 	'@context' => 'https://schema.org',

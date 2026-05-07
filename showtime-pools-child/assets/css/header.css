@@ -448,21 +448,75 @@
 	color: var(--c-aqua-700);
 }
 
-/* Sub-items (depth-2 children of mega items) */
+/* Collapsible sub-menu — uses native <details> for zero JS toggle. */
+.mobile-drawer__sub {
+	border-bottom: 1px solid var(--c-border);
+}
+.mobile-drawer__sub > summary {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: var(--sp-4) var(--sp-6);
+	font-family: var(--ff-display);
+	font-weight: var(--fw-medium);
+	font-size: var(--fs-lg);
+	letter-spacing: -0.018em;
+	color: var(--c-ink);
+	cursor: pointer;
+	list-style: none; /* hide native triangle */
+}
+.mobile-drawer__sub > summary::-webkit-details-marker { display: none; }
+.mobile-drawer__sub > summary:hover,
+.mobile-drawer__sub > summary:focus-visible {
+	background: var(--c-paper);
+	color: var(--c-aqua-700);
+}
+.mobile-drawer__sub-chev {
+	flex: 0 0 auto;
+	color: var(--c-text-muted);
+	transition: transform var(--dur-fast) var(--ease-out);
+}
+.mobile-drawer__sub[open] .mobile-drawer__sub-chev {
+	transform: rotate(180deg);
+}
+
+/* Sub-items list (revealed when <details> is open). Solid ink color so
+   it reads as legitimate nav, not the previous "ghost gray" look. */
 .mobile-drawer__list .sub-menu,
-.mobile-drawer__list ul {
+.mobile-drawer__list ul,
+.mobile-drawer__sublist {
 	list-style: none;
 	margin: 0;
 	padding: 0;
 	background: var(--c-sand-50, #F1ECE3);
+	border-top: 1px solid var(--c-border);
 }
 .mobile-drawer__list .sub-menu a,
-.mobile-drawer__list ul a {
-	padding-left: var(--sp-9);
+.mobile-drawer__list ul a,
+.mobile-drawer__sublist a {
+	padding: var(--sp-3) var(--sp-6) var(--sp-3) var(--sp-9);
 	font-family: var(--ff-body);
-	font-weight: var(--fw-regular);
-	font-size: var(--fs-sm);
-	color: var(--c-text-muted);
+	font-weight: var(--fw-medium);
+	font-size: var(--fs-md);
+	color: var(--c-ink-800);
+	border-bottom: 1px solid rgba(10, 10, 10, 0.06);
+	position: relative;
+}
+.mobile-drawer__sublist li:last-child a { border-bottom: 0; }
+.mobile-drawer__sublist a::before {
+	content: '';
+	position: absolute;
+	left: var(--sp-6);
+	top: 50%;
+	width: 8px;
+	height: 1px;
+	background: var(--c-aqua-500);
+	transform: translateY(-50%);
+}
+.mobile-drawer__sublist a:hover,
+.mobile-drawer__sublist a:focus-visible {
+	background: var(--c-bg-pure);
+	color: var(--c-aqua-700);
 }
 
 .mobile-drawer__cta-stack {

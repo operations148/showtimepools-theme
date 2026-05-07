@@ -8,26 +8,24 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$pillars = apply_filters(
-	'showtime/home_trust_pillars',
+$pillars_default = array(
 	array(
-		array(
-			'icon'  => 'shield',
-			'title' => __( 'Licensed & Insured', 'showtime-pools' ),
-			'body'  => __( 'CSLB #985241 with $2M liability + full workers comp on every crew.', 'showtime-pools' ),
-		),
-		array(
-			'icon'  => 'clock',
-			'title' => __( 'On Time, On Budget', 'showtime-pools' ),
-			'body'  => __( 'We respect your time with clear timelines and predictable pricing — no surprises.', 'showtime-pools' ),
-		),
-		array(
-			'icon'  => 'sparkle',
-			'title' => __( 'Quality Workmanship', 'showtime-pools' ),
-			'body'  => __( 'Pentair + Jandy authorized service, PebbleTec certified — built right the first time.', 'showtime-pools' ),
-		),
-	)
+		'icon'  => 'shield',
+		'title' => __( 'Licensed & Insured', 'showtime-pools' ),
+		'body'  => __( 'CSLB #985241 with $2M liability + full workers comp on every crew.', 'showtime-pools' ),
+	),
+	array(
+		'icon'  => 'clock',
+		'title' => __( 'On Time, On Budget', 'showtime-pools' ),
+		'body'  => __( 'We respect your time with clear timelines and predictable pricing — no surprises.', 'showtime-pools' ),
+	),
+	array(
+		'icon'  => 'sparkle',
+		'title' => __( 'Quality Workmanship', 'showtime-pools' ),
+		'body'  => __( 'Pentair + Jandy authorized service, PebbleTec certified — built right the first time.', 'showtime-pools' ),
+	),
 );
+$pillars = apply_filters( 'showtime/home_trust_pillars', showtime_acf_rows( 'trust_pillars', $pillars_default ) );
 
 $icons = array(
 	'shield'  => '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/>',

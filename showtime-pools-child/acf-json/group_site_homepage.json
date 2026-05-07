@@ -1,0 +1,157 @@
+{
+    "key": "group_showtime_homepage",
+    "title": "Homepage sections",
+    "fields": [
+        {
+            "key": "field_st_trust_pillars",
+            "label": "Trust pillars (3)",
+            "name": "trust_pillars",
+            "type": "repeater",
+            "instructions": "Three credibility pillars shown right under the hero. Icon options: shield, clock, sparkle, gem, check, star, compass.",
+            "min": 0,
+            "max": 5,
+            "layout": "block",
+            "button_label": "Add pillar",
+            "sub_fields": [
+                {
+                    "key": "field_st_tp_icon",
+                    "label": "Icon",
+                    "name": "icon",
+                    "type": "select",
+                    "choices": {
+                        "shield": "Shield",
+                        "clock": "Clock",
+                        "sparkle": "Sparkle",
+                        "gem": "Gem",
+                        "check": "Check",
+                        "star": "Star",
+                        "compass": "Compass"
+                    },
+                    "default_value": "shield",
+                    "wrapper": { "width": "20" }
+                },
+                {
+                    "key": "field_st_tp_title",
+                    "label": "Title",
+                    "name": "title",
+                    "type": "text",
+                    "required": 1,
+                    "placeholder": "Licensed & Insured",
+                    "wrapper": { "width": "40" }
+                },
+                {
+                    "key": "field_st_tp_body",
+                    "label": "Body",
+                    "name": "body",
+                    "type": "textarea",
+                    "rows": 2,
+                    "required": 1,
+                    "placeholder": "CSLB #985241 with $2M liability + full workers comp on every crew.",
+                    "wrapper": { "width": "40" }
+                }
+            ]
+        },
+        {
+            "key": "field_st_why_us_pillars",
+            "label": "Why us — pillars (6)",
+            "name": "why_us_pillars",
+            "type": "repeater",
+            "instructions": "Six trust-pillars in the Why Us grid further down the homepage.",
+            "min": 0,
+            "max": 9,
+            "layout": "block",
+            "button_label": "Add pillar",
+            "sub_fields": [
+                {
+                    "key": "field_st_wu_icon",
+                    "label": "Icon",
+                    "name": "icon",
+                    "type": "select",
+                    "choices": {
+                        "shield": "Shield",
+                        "clock": "Clock",
+                        "sparkle": "Sparkle",
+                        "gem": "Gem",
+                        "check": "Check",
+                        "star": "Star",
+                        "compass": "Compass"
+                    },
+                    "default_value": "check",
+                    "wrapper": { "width": "20" }
+                },
+                {
+                    "key": "field_st_wu_title",
+                    "label": "Title",
+                    "name": "title",
+                    "type": "text",
+                    "required": 1,
+                    "wrapper": { "width": "40" }
+                },
+                {
+                    "key": "field_st_wu_body",
+                    "label": "Body",
+                    "name": "body",
+                    "type": "textarea",
+                    "rows": 2,
+                    "required": 1,
+                    "wrapper": { "width": "40" }
+                }
+            ]
+        },
+        {
+            "key": "field_st_process_steps",
+            "label": "Process steps (3)",
+            "name": "process_steps",
+            "type": "repeater",
+            "instructions": "Three-step process shown on the homepage and quote page. Number is the big numeral (01, 02, 03).",
+            "min": 0,
+            "max": 5,
+            "layout": "block",
+            "button_label": "Add step",
+            "sub_fields": [
+                {
+                    "key": "field_st_ps_n",
+                    "label": "Number",
+                    "name": "n",
+                    "type": "text",
+                    "required": 1,
+                    "placeholder": "01",
+                    "wrapper": { "width": "15" }
+                },
+                {
+                    "key": "field_st_ps_title",
+                    "label": "Title",
+                    "name": "title",
+                    "type": "text",
+                    "required": 1,
+                    "placeholder": "Request Your Free Assessment",
+                    "wrapper": { "width": "40" }
+                },
+                {
+                    "key": "field_st_ps_body",
+                    "label": "Body",
+                    "name": "body",
+                    "type": "textarea",
+                    "rows": 3,
+                    "required": 1,
+                    "wrapper": { "width": "45" }
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "options_page",
+                "operator": "==",
+                "value": "showtime-content-homepage"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "active": true
+}

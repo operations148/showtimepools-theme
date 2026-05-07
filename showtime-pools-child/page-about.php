@@ -123,21 +123,31 @@ $person_schema = array(
 			</header>
 			<div class="team-grid">
 				<?php
-				$team = array(
-					array( 'name' => 'Steve Adams', 'role' => __( 'Founder & CEO', 'showtime-pools' ), 'note' => __( 'Founded Showtime Pools in 2003. On every quote, walks every site, pulls every permit personally. The phone you call rings on his desk.', 'showtime-pools' ), 'initials' => 'SA', 'href' => home_url( '/the-founder/' ) ),
+				$team_default = array(
+					array( 'name' => 'Steve Adams', 'role' => __( 'Founder & CEO', 'showtime-pools' ), 'note' => __( 'On every quote, walks every site, pulls every permit personally. The phone you call rings on his desk.', 'showtime-pools' ), 'initials' => 'SA', 'href' => home_url( '/the-founder/' ) ),
 					array( 'name' => 'Viktor O',     'role' => __( 'Repair Manager', 'showtime-pools' ),         'note' => __( 'Runs the repair line. Diagnoses the failure before he quotes the fix. Pentair- and Jandy-certified for warranty pass-through.', 'showtime-pools' ), 'initials' => 'VO', 'href' => '' ),
 					array( 'name' => 'Felipe A',    'role' => __( 'Pool Service Technician', 'showtime-pools' ), 'note' => __( 'Senior route tech. Same customers every week. Photo report after every visit before he leaves the driveway.', 'showtime-pools' ), 'initials' => 'FA', 'href' => '' ),
 					array( 'name' => 'George C',    'role' => __( 'Senior Cleaner', 'showtime-pools' ),          'note' => __( 'Owns the chemistry-and-detail side of weekly maintenance. Tile-line wipe-down, full chemistry balance, equipment runtime check.', 'showtime-pools' ), 'initials' => 'GC', 'href' => '' ),
 				);
+				$team = showtime_acf_rows( 'team', $team_default );
 				foreach ( $team as $t ) :
+					$t_name     = (string) ( $t['name'] ?? '' );
+					$t_role     = (string) ( $t['role'] ?? '' );
+					$t_note     = (string) ( $t['note'] ?? '' );
+					$t_href     = (string) ( $t['href'] ?? '' );
+					$t_initials = (string) ( $t['initials'] ?? '' );
+					if ( '' === $t_initials && '' !== $t_name ) {
+						$parts = preg_split( '/\s+/', $t_name );
+						$t_initials = strtoupper( substr( $parts[0] ?? '', 0, 1 ) . substr( $parts[1] ?? '', 0, 1 ) );
+					}
 				?>
 					<article class="team-card">
-						<div class="team-card__avatar" aria-hidden="true"><?php echo esc_html( $t['initials'] ); ?></div>
-						<h3 class="team-card__name"><?php echo esc_html( $t['name'] ); ?></h3>
-						<p class="team-card__role"><?php echo esc_html( $t['role'] ); ?></p>
-						<p class="team-card__note"><?php echo esc_html( $t['note'] ); ?></p>
-						<?php if ( ! empty( $t['href'] ) ) : ?>
-							<a class="team-card__link" href="<?php echo esc_url( $t['href'] ); ?>"><?php esc_html_e( 'Read more →', 'showtime-pools' ); ?></a>
+						<div class="team-card__avatar" aria-hidden="true"><?php echo esc_html( $t_initials ); ?></div>
+						<h3 class="team-card__name"><?php echo esc_html( $t_name ); ?></h3>
+						<p class="team-card__role"><?php echo esc_html( $t_role ); ?></p>
+						<p class="team-card__note"><?php echo esc_html( $t_note ); ?></p>
+						<?php if ( '' !== $t_href ) : ?>
+							<a class="team-card__link" href="<?php echo esc_url( $t_href ); ?>"><?php esc_html_e( 'Read more →', 'showtime-pools' ); ?></a>
 						<?php endif; ?>
 					</article>
 				<?php endforeach; ?>
@@ -153,7 +163,7 @@ $person_schema = array(
 			</header>
 			<div class="creds-grid">
 				<?php
-				$creds = array(
+				$creds_default = array(
 					array( 'h' => __( 'CSLB Licensed', 'showtime-pools' ),                'b' => __( 'C-53 Swimming Pool/Spa Contractor. License documentation provided on request.', 'showtime-pools' ) ),
 					array( 'h' => __( 'Fully Insured', 'showtime-pools' ),                'b' => __( '$2M general liability with full workers compensation. COI issued direct to property owners on request.', 'showtime-pools' ) ),
 					array( 'h' => __( 'Pentair Authorized Service', 'showtime-pools' ),   'b' => __( 'Manufacturer warranty pass-through on IntelliFlo, IntelliCenter, MasterTemp, and IC40 salt cells.', 'showtime-pools' ) ),
@@ -161,6 +171,7 @@ $person_schema = array(
 					array( 'h' => __( 'PebbleTec Certified Applicator', 'showtime-pools' ),'b' => __( 'Five-year written finish warranty backed by PebbleTec. Annual applicator training.', 'showtime-pools' ) ),
 					array( 'h' => __( 'California Code Compliance', 'showtime-pools' ),   'b' => __( 'Every permit, bonding inspection, and electrical sign-off pulled through LA County and city counters in-house.', 'showtime-pools' ) ),
 				);
+				$creds = showtime_acf_rows( 'credentials', $creds_default );
 				foreach ( $creds as $c ) :
 				?>
 					<article class="creds-card">

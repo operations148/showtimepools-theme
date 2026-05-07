@@ -9,9 +9,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$reviews = apply_filters(
-	'showtime/home_reviews',
-	array(
+$reviews_default = array(
 		array(
 			'rating' => 5,
 			'name'   => 'Mark D.',
@@ -60,8 +58,8 @@ $reviews = apply_filters(
 			'source' => 'Google',
 			'body'   => __( 'Pump died Sunday morning before a birthday party. Steve himself rolled up with a new IntelliFlo at 11am. Pool was running by 1pm. Active service customers really do get same-day priority.', 'showtime-pools' ),
 		),
-	)
-);
+	);
+$reviews = apply_filters( 'showtime/home_reviews', showtime_acf_rows( 'home_reviews', $reviews_default ) );
 ?>
 <section class="reviews section section--cream" data-reveal>
 	<div class="container">

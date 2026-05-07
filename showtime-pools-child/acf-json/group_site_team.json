@@ -1,0 +1,117 @@
+{
+    "key": "group_showtime_team",
+    "title": "Team & credentials",
+    "fields": [
+        {
+            "key": "field_st_team",
+            "label": "Team",
+            "name": "team",
+            "type": "repeater",
+            "instructions": "People shown on /about/. Initials are auto-generated from the name if you leave them blank.",
+            "min": 0,
+            "max": 12,
+            "layout": "block",
+            "button_label": "Add team member",
+            "sub_fields": [
+                {
+                    "key": "field_st_team_name",
+                    "label": "Name",
+                    "name": "name",
+                    "type": "text",
+                    "required": 1,
+                    "placeholder": "Steve Adams",
+                    "wrapper": { "width": "25" }
+                },
+                {
+                    "key": "field_st_team_role",
+                    "label": "Role",
+                    "name": "role",
+                    "type": "text",
+                    "required": 1,
+                    "placeholder": "Founder & CEO",
+                    "wrapper": { "width": "25" }
+                },
+                {
+                    "key": "field_st_team_initials",
+                    "label": "Initials",
+                    "name": "initials",
+                    "type": "text",
+                    "maxlength": 3,
+                    "placeholder": "SA",
+                    "wrapper": { "width": "10" }
+                },
+                {
+                    "key": "field_st_team_note",
+                    "label": "Note",
+                    "name": "note",
+                    "type": "textarea",
+                    "rows": 2,
+                    "wrapper": { "width": "40" }
+                },
+                {
+                    "key": "field_st_team_href",
+                    "label": "Link (optional)",
+                    "name": "href",
+                    "type": "url",
+                    "instructions": "e.g. /the-founder/ for Steve. Leave blank for crew members.",
+                    "wrapper": { "width": "60" }
+                },
+                {
+                    "key": "field_st_team_photo",
+                    "label": "Photo (optional)",
+                    "name": "photo",
+                    "type": "image",
+                    "return_format": "array",
+                    "preview_size": "medium",
+                    "wrapper": { "width": "40" }
+                }
+            ]
+        },
+        {
+            "key": "field_st_credentials",
+            "label": "Credentials",
+            "name": "credentials",
+            "type": "repeater",
+            "instructions": "Licenses, certifications, insurance. Shown on /about/ and /the-founder/.",
+            "min": 0,
+            "max": 12,
+            "layout": "block",
+            "button_label": "Add credential",
+            "sub_fields": [
+                {
+                    "key": "field_st_cred_h",
+                    "label": "Heading",
+                    "name": "h",
+                    "type": "text",
+                    "required": 1,
+                    "placeholder": "CSLB Licensed",
+                    "wrapper": { "width": "30" }
+                },
+                {
+                    "key": "field_st_cred_b",
+                    "label": "Body",
+                    "name": "b",
+                    "type": "textarea",
+                    "rows": 2,
+                    "required": 1,
+                    "wrapper": { "width": "70" }
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "options_page",
+                "operator": "==",
+                "value": "showtime-content-team"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "active": true
+}

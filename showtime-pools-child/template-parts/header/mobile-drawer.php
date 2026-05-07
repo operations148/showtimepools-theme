@@ -48,12 +48,17 @@ $phone = apply_filters( 'showtime/business/phone', '(323) 825-2099' );
 				<ul class="mobile-drawer__list">
 					<li><a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'showtime-pools' ); ?></a></li>
 					<li class="mobile-drawer__has-sub">
-						<a href="<?php echo esc_url( home_url( '/about/' ) ); ?>"><?php esc_html_e( 'About', 'showtime-pools' ); ?></a>
-						<ul class="mobile-drawer__sublist">
-							<li><a href="<?php echo esc_url( home_url( '/about/' ) ); ?>"><?php esc_html_e( 'About Us', 'showtime-pools' ); ?></a></li>
-							<li><a href="<?php echo esc_url( home_url( '/the-founder/' ) ); ?>"><?php esc_html_e( 'The Founder', 'showtime-pools' ); ?></a></li>
-							<li><a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>"><?php esc_html_e( 'Blog Insights', 'showtime-pools' ); ?></a></li>
-						</ul>
+						<details class="mobile-drawer__sub">
+							<summary>
+								<span><?php esc_html_e( 'About', 'showtime-pools' ); ?></span>
+								<svg class="mobile-drawer__sub-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
+							</summary>
+							<ul class="mobile-drawer__sublist">
+								<li><a href="<?php echo esc_url( home_url( '/about/' ) ); ?>"><?php esc_html_e( 'About Us', 'showtime-pools' ); ?></a></li>
+								<li><a href="<?php echo esc_url( home_url( '/the-founder/' ) ); ?>"><?php esc_html_e( 'The Founder', 'showtime-pools' ); ?></a></li>
+								<li><a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>"><?php esc_html_e( 'Blog Insights', 'showtime-pools' ); ?></a></li>
+							</ul>
+						</details>
 					</li>
 					<li><a href="<?php echo esc_url( home_url( '/services/' ) ); ?>"><?php esc_html_e( 'Services', 'showtime-pools' ); ?></a></li>
 					<li><a href="<?php echo esc_url( home_url( '/projects/' ) ); ?>"><?php esc_html_e( 'Projects', 'showtime-pools' ); ?></a></li>

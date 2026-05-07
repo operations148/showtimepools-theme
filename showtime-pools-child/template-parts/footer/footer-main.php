@@ -13,22 +13,35 @@ $phone = apply_filters( 'showtime/business/phone', '(323) 825-2099' );
 // once a primary @showtimepools.com mailbox is provisioned.
 $email = (string) apply_filters( 'showtime/business/email', 'operations@showtimepoolmechanics.com' );
 
-$offices = apply_filters(
-	'showtime/business/offices',
-	array(
-		array( 'label' => __( 'Sherman Oaks (Main)', 'showtime-pools' ), 'street' => '15301 Ventura Blvd.', 'city' => 'Sherman Oaks, CA 91403' ),
-		array( 'label' => __( 'Century City', 'showtime-pools' ),         'street' => '1925 Century Park East, Suite 1700', 'city' => 'Los Angeles, CA 90067' ),
-		array( 'label' => __( 'Beverly Hills', 'showtime-pools' ),        'street' => '9461 Charleville Blvd. #1902', 'city' => 'Beverly Hills, CA 90212' ),
-	)
+// PHP defaults — match the legacy hardcoded arrays so the site renders
+// correctly when ACF is inactive or no rows have been entered yet.
+$offices_default = array(
+	array( 'label' => __( 'Sherman Oaks (Main)', 'showtime-pools' ), 'street' => '15301 Ventura Blvd.', 'city' => 'Sherman Oaks, CA 91403' ),
+	array( 'label' => __( 'Century City', 'showtime-pools' ),         'street' => '1925 Century Park East, Suite 1700', 'city' => 'Los Angeles, CA 90067' ),
+	array( 'label' => __( 'Beverly Hills', 'showtime-pools' ),        'street' => '9461 Charleville Blvd. #1902', 'city' => 'Beverly Hills, CA 90212' ),
 );
+$offices = apply_filters( 'showtime/business/offices', showtime_acf_rows( 'offices', $offices_default ) );
 
-$hours = apply_filters(
-	'showtime/business/hours',
-	array(
-		__( 'Mon-Sat', 'showtime-pools' ) => __( '8:00 AM - 5:00 PM', 'showtime-pools' ),
-		__( 'Sunday', 'showtime-pools' )  => __( 'Emergencies by appointment', 'showtime-pools' ),
-	)
+// Hours: ACF stores as repeater rows [{day, time}], legacy was day=>time map.
+// Normalize to legacy shape so the dl renderer below stays unchanged.
+$hours_default_map = array(
+	__( 'Mon-Sat', 'showtime-pools' ) => __( '8:00 AM - 5:00 PM', 'showtime-pools' ),
+	__( 'Sunday', 'showtime-pools' )  => __( 'Emergencies by appointment', 'showtime-pools' ),
 );
+$hours_rows = function_exists( 'get_field' ) ? get_field( 'hours_rows', 'option' ) : null;
+if ( is_array( $hours_rows ) && ! empty( $hours_rows ) ) {
+	$hours = array();
+	foreach ( $hours_rows as $row ) {
+		$d = (string) ( $row['day'] ?? '' );
+		$t = (string) ( $row['time'] ?? '' );
+		if ( '' !== $d ) {
+			$hours[ $d ] = $t;
+		}
+	}
+} else {
+	$hours = $hours_default_map;
+}
+$hours = apply_filters( 'showtime/business/hours', $hours );
 
 $socials = apply_filters(
 	'showtime/business/socials',

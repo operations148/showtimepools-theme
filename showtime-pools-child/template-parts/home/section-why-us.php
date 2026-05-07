@@ -11,41 +11,39 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$pillars = apply_filters(
-	'showtime/why_us_pillars',
+$pillars_default = array(
 	array(
-		array(
-			'icon'  => 'shield',
-			'title' => __( 'Licensed & experienced', 'showtime-pools' ),
-			'body'  => __( 'CSLB-licensed professionals with deep field experience across construction, remodeling, equipment, and weekly service. The same team start to finish.', 'showtime-pools' ),
-		),
-		array(
-			'icon'  => 'clock',
-			'title' => __( 'Clear timelines, transparent pricing', 'showtime-pools' ),
-			'body'  => __( 'Itemized written quotes, written schedules, and 24-hour reminders before crew visits. No verbal estimates, no surprise upcharges.', 'showtime-pools' ),
-		),
-		array(
-			'icon'  => 'gem',
-			'title' => __( 'Quality materials, trusted brands', 'showtime-pools' ),
-			'body'  => __( 'Pentair and Jandy authorized service. PebbleTec Certified Applicator. We install what we would put in our own pools.', 'showtime-pools' ),
-		),
-		array(
-			'icon'  => 'check',
-			'title' => __( 'California & LA regulation compliance', 'showtime-pools' ),
-			'body'  => __( 'Every permit, bonding inspection, and code requirement handled in-house. We pull permits at the LA County and Sherman Oaks counters ourselves.', 'showtime-pools' ),
-		),
-		array(
-			'icon'  => 'star',
-			'title' => __( 'Residential, commercial, luxury', 'showtime-pools' ),
-			'body'  => __( 'From weekly maintenance on a single-family home to ground-up luxury builds and commercial property service. One team, every scope.', 'showtime-pools' ),
-		),
-		array(
-			'icon'  => 'compass',
-			'title' => __( 'Root-cause diagnosis, not patches', 'showtime-pools' ),
-			'body'  => __( 'We identify the root cause first so you do not waste money on temporary fixes. Diagnostics are firewalled from the construction quote.', 'showtime-pools' ),
-		),
-	)
+		'icon'  => 'shield',
+		'title' => __( 'Licensed & experienced', 'showtime-pools' ),
+		'body'  => __( 'CSLB-licensed professionals with deep field experience across construction, remodeling, equipment, and weekly service. The same team start to finish.', 'showtime-pools' ),
+	),
+	array(
+		'icon'  => 'clock',
+		'title' => __( 'Clear timelines, transparent pricing', 'showtime-pools' ),
+		'body'  => __( 'Itemized written quotes, written schedules, and 24-hour reminders before crew visits. No verbal estimates, no surprise upcharges.', 'showtime-pools' ),
+	),
+	array(
+		'icon'  => 'gem',
+		'title' => __( 'Quality materials, trusted brands', 'showtime-pools' ),
+		'body'  => __( 'Pentair and Jandy authorized service. PebbleTec Certified Applicator. We install what we would put in our own pools.', 'showtime-pools' ),
+	),
+	array(
+		'icon'  => 'check',
+		'title' => __( 'California & LA regulation compliance', 'showtime-pools' ),
+		'body'  => __( 'Every permit, bonding inspection, and code requirement handled in-house. We pull permits at the LA County and Sherman Oaks counters ourselves.', 'showtime-pools' ),
+	),
+	array(
+		'icon'  => 'star',
+		'title' => __( 'Residential, commercial, luxury', 'showtime-pools' ),
+		'body'  => __( 'From weekly maintenance on a single-family home to ground-up luxury builds and commercial property service. One team, every scope.', 'showtime-pools' ),
+	),
+	array(
+		'icon'  => 'compass',
+		'title' => __( 'Root-cause diagnosis, not patches', 'showtime-pools' ),
+		'body'  => __( 'We identify the root cause first so you do not waste money on temporary fixes. Diagnostics are firewalled from the construction quote.', 'showtime-pools' ),
+	),
 );
+$pillars = apply_filters( 'showtime/why_us_pillars', showtime_acf_rows( 'why_us_pillars', $pillars_default ) );
 
 $icon = function ( string $key ): string {
 	$svgs = array(
