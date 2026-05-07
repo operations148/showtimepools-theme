@@ -99,6 +99,112 @@ final class PageSeeder {
 		add_action( 'admin_post_showtime_seed_static',   array( $this, 'handle_seed_static' ) );
 	}
 
+	/**
+	 * Idempotent first-run seed. Called from the plugin activation hook so
+	 * a clean live deploy renders the same site the developer sees locally,
+	 * with zero admin clicks. Skips silently if pages exist (idempotent).
+	 *
+	 * Auth checks are intentionally NOT performed here — activation hooks
+	 * run in a privileged WP-internal context, not a user-facing request.
+	 *
+	 * @return array{created:int,skipped:int}
+	 */
+	public function run_all_idempotent(): array {
+		$created = 0;
+		$skipped = 0;
+
+		// 1) Services parent + service child pages
+		$ok = $this->ensure_page(
+			self::SVC_PARENT,
+			__( 'Services', 'showtime-pools-core' ),
+			0,
+			array( 'meta_input' => array( '_showtime_section' => 'services-hub' ) )
+		);
+		$ok ? $created++ : $skipped++;
+
+		$svc_parent_id = $this->page_id( self::SVC_PARENT );
+		if ( class_exists( '\\Showtime\\Services' ) ) {
+			foreach ( Services::all() as $svc ) {
+				if ( empty( $svc['slug'] ) ) {
+					continue;
+				}
+				$ok = $this->ensure_page(
+					(string) $svc['slug'],
+					(string) ( $svc['title'] ?? $svc['slug'] ),
+					(int) $svc_parent_id,
+					array(
+						'page_template' => 'page-service.php',
+						'meta_input'    => array(
+							'_showtime_service_slug' => (string) $svc['slug'],
+							'_showtime_section'      => 'service',
+						),
+						'post_excerpt'  => (string) ( $svc['summary'] ?? '' ),
+					)
+				);
+				$ok ? $created++ : $skipped++;
+			}
+		}
+
+		// 2) Static pages (contact, quote, book, about, projects, reviews, areas-hub, inspections-hub, privacy, terms)
+		foreach ( $this->static_pages() as $page ) {
+			$ok = $this->ensure_page(
+				(string) $page['slug'],
+				(string) $page['title'],
+				0,
+				array(
+					'page_template' => $page['template'],
+					'meta_input'    => $page['meta'],
+				)
+			);
+			$ok ? $created++ : $skipped++;
+		}
+
+		// 3) Area children under /service-areas/
+		$areas_parent_id = $this->page_id( 'service-areas' );
+		foreach ( $this->area_pages() as $page ) {
+			if ( '' === (string) ( $page['slug'] ?? '' ) ) {
+				continue;
+			}
+			$ok = $this->ensure_page(
+				(string) $page['slug'],
+				(string) $page['title'],
+				(int) $areas_parent_id,
+				array(
+					'page_template' => $page['template'],
+					'meta_input'    => $page['meta'],
+					'post_excerpt'  => (string) ( $page['excerpt'] ?? '' ),
+				)
+			);
+			$ok ? $created++ : $skipped++;
+		}
+
+		// 4) Inspection children under /pool-inspections/
+		$insp_parent_id = $this->page_id( 'pool-inspections' );
+		foreach ( $this->inspection_pages() as $page ) {
+			if ( '' === (string) ( $page['slug'] ?? '' ) ) {
+				continue;
+			}
+			$ok = $this->ensure_page(
+				(string) $page['slug'],
+				(string) $page['title'],
+				(int) $insp_parent_id,
+				array(
+					'page_template' => $page['template'],
+					'meta_input'    => $page['meta'],
+					'post_excerpt'  => (string) ( $page['excerpt'] ?? '' ),
+				)
+			);
+			$ok ? $created++ : $skipped++;
+		}
+
+		flush_rewrite_rules();
+
+		return array(
+			'created' => $created,
+			'skipped' => $skipped,
+		);
+	}
+
 	public function register_menu(): void {
 		add_submenu_page(
 			'showtime-settings',

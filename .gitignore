@@ -50,3 +50,16 @@ showtime-pools-child/acf-json/cache/
 dist/
 build/
 *.zip
+
+# Database dumps — never commit DB content (WP DB is the live source of truth)
+*.sql
+*.sql.gz
+
+# Folder-snapshot checkpoints (fallback when git tags aren't enough)
+.checkpoints/
+
+# PHP test runner cache
+.phpunit.result.cache
+
+# Plan files written by AI tooling (live in user-scoped paths, defensive)
+plans/

@@ -47,9 +47,44 @@ require_once SHOWTIME_CORE_DIR . 'includes/class-plugin.php';
 register_activation_hook(
 	__FILE__,
 	function () {
-		// Flush rewrites so CPT permalinks resolve immediately on activation.
-		// CPT registration runs on `init` so we trigger the bootstrap once first.
+		// Boot subsystems so CPTs / nav / customizer hooks register before
+		// the first-run setup runs (the seeder reads from \Showtime\Services).
 		\Showtime\Plugin::instance()->register();
+
+		// One-time first-run setup. Gated by a wp_options flag so the seed
+		// never runs twice — reactivating the plugin won't re-create pages.
+		// The 'showtime_first_run_complete' flag is the source of truth; to
+		// re-run after manual cleanup, delete that option from wp_options.
+		if ( ! get_option( 'showtime_first_run_complete' ) ) {
+
+			// Permalinks → /post-name/. WP defaults to plain ?p=123 on a fresh
+			// install; we need pretty permalinks for our slug-based templates
+			// to resolve (page-service.php, page-area.php, etc.).
+			if ( '' === (string) get_option( 'permalink_structure' ) ) {
+				update_option( 'permalink_structure', '/%postname%/' );
+			}
+
+			// Brand the WP install. We only set these on first run — never
+			// overwrite a value the site owner has already customized.
+			if ( in_array( get_option( 'blogname' ), array( '', 'My Site', 'Just another WordPress site' ), true ) ) {
+				update_option( 'blogname', 'Showtime Pools' );
+			}
+			if ( '' === (string) get_option( 'timezone_string' ) ) {
+				update_option( 'timezone_string', 'America/Los_Angeles' );
+			}
+
+			// Seed every structural page idempotently. Existing pages by slug
+			// are skipped — safe to re-run after deleting the flag.
+			$seeder = new \Showtime\Admin\PageSeeder();
+			$result = $seeder->run_all_idempotent();
+
+			update_option( 'showtime_first_run_complete', '1' );
+			update_option( 'showtime_first_run_result', $result );
+			update_option( 'showtime_first_run_at', gmdate( 'c' ) );
+		}
+
+		// Always flush on activation so newly registered CPT / page slugs
+		// resolve immediately without a manual Settings → Permalinks → Save.
 		flush_rewrite_rules();
 	}
 );

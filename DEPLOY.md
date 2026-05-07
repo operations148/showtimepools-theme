@@ -11,19 +11,19 @@ Two equivalent paths — pick one.
 1. In the Cloudways panel: **Application → Deployment via Git**.
 2. Connect the GitHub repo (private is fine; add the deploy key Cloudways generates as a GitHub deploy key).
 3. **Branch:** `main`.
-4. **Deployment path:** `public_html/` (the repo lands at `public_html/`, then symlink the two deployable folders into place — see step 0.1 below).
+4. **Deployment path:** `private_html/showtimepools-src` (clone outside the web root; we symlink into `public_html/wp-content/` next).
 
 ### B) Manual git clone over SSH
 
 ```bash
-ssh master_user@APP_IP -p 22  # Cloudways gives the master SSH creds
+ssh master_user@APP_IP -p 22   # Cloudways gives master SSH creds
 cd ~/applications/APP_ID/private_html
 git clone git@github.com:USER/REPO.git showtimepools-src
 ```
 
 ### 0.1 Symlink the two deployable folders into wp-content
 
-The repo contains the whole build context (docs, tasks, tools); only the two folders below ship into the running WP install. Symlink them so a `git pull` updates the live site instantly with zero copy step.
+The repo contains the whole build context (docs, tasks, tools); only the two folders below ship into the running WP install. Symlinks mean a `git pull` updates the live site instantly with zero copy step.
 
 ```bash
 cd ~/applications/APP_ID/public_html/wp-content/themes
@@ -38,20 +38,19 @@ Future updates from your laptop:
 ```bash
 # laptop
 git push origin main
-# Cloudways auto-pulls (option A) OR ssh + cd to repo + git pull (option B)
+# Cloudways auto-pulls (option A) OR: ssh + cd to repo + git pull (option B)
 ```
 
-That's the entire deploy story. Symlinks mean no rsync, no copy step, no drift.
+No rsync, no copy step, no local↔live drift.
 
 ## 1. Install the parent theme + required plugins
 
-From WP admin → Appearance → Themes → Add New, install and activate **Blocksy** (free).
+WP admin → Appearance → Themes → Add New → install and activate **Astra** (free, wp.org repo). The child theme declares `Template: astra` and depends on it being present.
 
-From WP admin → Plugins → Add New, install and activate (in this order):
+WP admin → Plugins → Add New, install and activate (in this order):
 
 | Plugin | Source | License needed at this step |
 | --- | --- | --- |
-| Blocksy Companion Pro | upload .zip | Yes |
 | Advanced Custom Fields Pro | upload .zip | Yes |
 | FluentForms Pro | upload .zip | Yes |
 | Rank Math Pro | upload .zip | Yes |
@@ -60,49 +59,77 @@ From WP admin → Plugins → Add New, install and activate (in this order):
 | UpdraftPlus Premium | upload .zip | Yes |
 | Wordfence Security | wp.org repo | Free is fine for launch |
 
-Total: 8 plugins after our `showtime-pools-core` is added. Cap is 12.
+Plus our own **Showtime Pools — Core** (already symlinked in step 0.1; just activate it).
 
-## 2. Drop in the child theme
-
-SFTP/SSH to `/applications/{app-id}/public_html/wp-content/themes/`.
-
-Upload the `showtime-pools-child/` folder from this repo.
+## 2. Activate the child theme
 
 WP admin → Appearance → Themes → activate **Showtime Pools Child**.
 
-## 3. Drop in the core plugin
+(The folder is already in place from step 0.1's symlink.)
 
-Upload `showtime-pools-core/` to `/wp-content/plugins/`.
+## 3. Activate the core plugin
 
 WP admin → Plugins → activate **Showtime Pools — Core**.
+
+**On first activation, the plugin runs a one-time setup that:**
+
+- Sets permalink structure to `/post-name/` (required for our slug-based templates)
+- Brands the site name (`Showtime Pools`) and timezone (`America/Los_Angeles`)
+- Seeds every structural page idempotently — services parent + 8 service children, areas parent + 6 area children, inspections parent + 3 inspection children, plus contact / quote / book / about / projects / reviews / privacy / terms
+
+A `showtime_first_run_complete` flag is set in `wp_options` so reactivating the plugin will not re-seed. To force a re-run after manual cleanup, delete that single option.
 
 ## 4. Configure secrets (Showtime Pools → Settings)
 
 Fill in only what's needed for the current phase. Phase 1B = nothing yet. Phase 1H = GHL webhook URL. Phase 1I = OpenAI key + assistant ID. Phase 2A = Mapbox token. Phase 2B = GBP IDs.
 
-## 5. Set permalinks
+## 5. Optional: upload a custom Site Icon (favicon)
 
-WP admin → Settings → Permalinks → Post name. Save (forces a flush).
+The theme ships with a bundled favicon generated from `assets/img/logo.png`. For the cleanest browser-tab presentation, upload a hand-tuned 512×512 mark via **Customizer → Site Identity → Site Icon**. The bundled fallback automatically steps aside the moment you save a Customizer site icon.
 
 ## 6. Verify
 
 - Frontend loads, no PHP warnings (check WP debug log).
-- `/wp-json/showtime/v1/` responds 404 with WP REST envelope (no endpoints yet, that's correct for Phase 1B).
+- Visit `/services/`, `/contact/`, `/quote/`, `/about/` — every URL resolves (the seeder created them).
+- Browser tab shows the favicon.
 - View source: no `<meta name="generator" content="WordPress ...">`, no emoji JS, no `?ver=` query strings on assets.
 - Login error returns generic message regardless of which field is wrong.
 - Showtime Pools menu item visible in WP admin sidebar.
+- `/wp-json/showtime/v1/` responds with WP REST envelope.
 
-If all six pass, Phase 1B is live. Move to Phase 1C.
+If all six pass, the deploy is live.
 
 ## File map
 
 ```
-showtimepools/                   <- this repo (local)
-├── showtime-pools-child/        <- deploys to /wp-content/themes/
-├── showtime-pools-core/         <- deploys to /wp-content/plugins/
+showtimepools/                   <- this repo, lands at private_html/showtimepools-src/
+├── showtime-pools-child/        <- symlinked into wp-content/themes/
+├── showtime-pools-core/         <- symlinked into wp-content/plugins/
+├── tools/                       <- repo-only utilities (favicon generator, etc.)
 ├── tasks/
 │   ├── todo.md                  <- live build plan
 │   └── lessons.md               <- corrections received
 ├── DEPLOY.md                    <- this file
+├── README.md                    <- repo overview
 └── CLAUDE.md                    <- workflow contract for the dev agent
 ```
+
+## What ships via git vs. what does not
+
+**Ships via git (visual parity local↔live, automatic):**
+- All theme code, CSS, JS, templates, fonts, images bundled in `showtime-pools-child/assets/`
+- All plugin code, CPTs, REST endpoints, integrations, admin pages
+- ACF Pro field-group definitions (`showtime-pools-child/acf-json/group_*.json` — auto-loaded by ACF Pro)
+- Customizer setting **defaults** (every setting has a hardcoded default, used until you customize)
+- Page structure (auto-seeded on plugin activation)
+- Site name + timezone + permalink structure (set on activation)
+- Bundled favicon
+
+**Does NOT ship via git (these live in the WP database, not in code):**
+- Media library uploads (`wp-content/uploads/` — gitignored on purpose, since user uploads accumulate over time)
+- Plugin licenses (entered in each plugin's settings panel)
+- Customizer values you've changed from default
+- ACF Options page values (e.g., business address, hours table content)
+- Posts and post revisions
+
+For phase 1, all of the above either have hardcoded defaults that render correctly out of the box, or are configured per-environment (licenses, secrets). When you start adding ACF Options content or media uploads on the live site, those stay on live — that is the intended source-of-truth split.
