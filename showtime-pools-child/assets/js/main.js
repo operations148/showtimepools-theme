@@ -50,19 +50,42 @@
 
 		// Mobile drawer — single source of truth. Pure class toggle.
 		// .mobile-drawer lives in the DOM at all times; CSS handles all
-		// visibility (transform + visibility transition). Attaches click
-		// handlers to EVERY .js-mobile-toggle element (hamburger, close X,
-		// backdrop) so any of them flips state.
+		// visibility (opacity + translate transition). Attaches click
+		// handlers to EVERY .js-mobile-toggle element (hamburger, close X)
+		// so any of them flips state.
 		const drawer = document.getElementById('mobile-drawer');
 		if (drawer) {
 			const toggles = document.querySelectorAll('.js-mobile-toggle');
+			// The hamburger lives in the header; remember it so we can
+			// return focus to it when the drawer closes (a11y).
+			const hamburger = document.querySelector('.site-header__menu-toggle.js-mobile-toggle');
 			const isOpen = () => drawer.classList.contains('is-open');
+
+			// Selector for everything inside the drawer that can take focus.
+			const FOCUSABLE = 'a[href], button:not([disabled]), summary, [tabindex]:not([tabindex="-1"])';
+			const getFocusable = () =>
+				Array.from(drawer.querySelectorAll(FOCUSABLE)).filter(
+					(el) => !el.hasAttribute('hidden') && el.offsetParent !== null
+				);
 
 			const setOpen = (open) => {
 				toggles.forEach((b) => b.setAttribute('aria-expanded', open ? 'true' : 'false'));
 				drawer.classList.toggle('is-open', open);
 				drawer.setAttribute('aria-hidden', open ? 'false' : 'true');
 				document.body.classList.toggle('is-drawer-open', open);
+
+				if (open) {
+					// Land focus on the first nav link after the open
+					// transition starts — feels intentional, not jumpy.
+					setTimeout(() => {
+						const firstLink = drawer.querySelector('.mobile-drawer__list a, .mobile-drawer__list summary');
+						if (firstLink) firstLink.focus();
+					}, 60);
+				} else if (hamburger) {
+					// Return focus to the trigger so keyboard users don't
+					// get stranded at <body> when the drawer closes.
+					hamburger.focus();
+				}
 			};
 
 			toggles.forEach((btn) => {
@@ -78,8 +101,30 @@
 				link.addEventListener('click', () => setOpen(false));
 			});
 
+			// Keyboard handling: Escape closes; Tab is trapped so focus
+			// can't escape into the page beneath the overlay.
 			document.addEventListener('keydown', (e) => {
-				if (e.key === 'Escape' && isOpen()) setOpen(false);
+				if (!isOpen()) return;
+				if (e.key === 'Escape') {
+					e.preventDefault();
+					setOpen(false);
+					return;
+				}
+				if (e.key !== 'Tab') return;
+
+				const focusable = getFocusable();
+				if (focusable.length === 0) return;
+				const first = focusable[0];
+				const last = focusable[focusable.length - 1];
+				const active = document.activeElement;
+
+				if (e.shiftKey && (active === first || !drawer.contains(active))) {
+					e.preventDefault();
+					last.focus();
+				} else if (!e.shiftKey && active === last) {
+					e.preventDefault();
+					first.focus();
+				}
 			});
 		}
 

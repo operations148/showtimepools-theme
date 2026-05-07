@@ -43,3 +43,19 @@ Corrections received from user. Re-read at session start. Add a new entry every 
 **Rule:** At session start: read CLAUDE.md + tasks/lessons.md. Before non-trivial work: write plan to tasks/todo.md. After every correction: update tasks/lessons.md. Mark tasks complete only after verification.
 
 **How to apply:** Treat the CLAUDE.md in the working directory as binding workflow law for this project regardless of which prior project it references.
+
+---
+
+## L-004 — Source bundle vs deployed theme: always run the local WP install as a junction
+
+**Date:** 2026-05-07
+
+**Correction:** "i shutdown and restart my laptop, none of it change the hamburger menu on mobile! please extensively review it why its not changing"
+
+**Pattern:** I had been editing `C:\xampp\htdocs\showtimepools\showtimepools\showtime-pools-child\` (the deliverable bundle) while the user's local WP at `localhost/showtimepools/wp/` loaded a separate, stale physical copy at `C:\xampp\htdocs\showtimepools\wp\wp-content\themes\showtime-pools-child\`. Two divergent folders. Restarts cannot reconcile that.
+
+**Rule:** On any local WordPress test environment for this project, the `wp-content/themes/showtime-pools-child` path must be an NTFS junction (`mklink /J`) pointing at the source bundle in this repo. Same goes for `showtime-pools-core` once it's added. Never maintain two physical copies.
+
+**Why:** `inc/enqueue.php:20` already cache-busts assets via `filemtime()`, so a junction gives instant feedback on save with zero sync overhead. ACF JSON two-way writes still work through a junction, and the Cloudways deploy story (one-shot upload of the bundle folder) is unchanged.
+
+**How to apply:** Every new local WP install for this project — first verify (`dir wp-content\themes` → look for `<JUNCTION>`); if it's a real folder, `rmdir /S /Q` the deployed copy and `mklink /J` it to the bundle. Do this before any visual debugging session. If the user reports "my edits aren't showing," check the junction first before suspecting browser cache, opcache, or asset enqueue.
