@@ -2,6 +2,47 @@
 
 Once the Cloudways DigitalOcean Premium 2GB instance is up and WP 6.7+ / PHP 8.2 is installed, follow these steps. This file is the only thing you need to read.
 
+## 0. Get the code onto the server
+
+Two equivalent paths — pick one.
+
+### A) Cloudways Git Deployment (recommended)
+
+1. In the Cloudways panel: **Application → Deployment via Git**.
+2. Connect the GitHub repo (private is fine; add the deploy key Cloudways generates as a GitHub deploy key).
+3. **Branch:** `main`.
+4. **Deployment path:** `public_html/` (the repo lands at `public_html/`, then symlink the two deployable folders into place — see step 0.1 below).
+
+### B) Manual git clone over SSH
+
+```bash
+ssh master_user@APP_IP -p 22  # Cloudways gives the master SSH creds
+cd ~/applications/APP_ID/private_html
+git clone git@github.com:USER/REPO.git showtimepools-src
+```
+
+### 0.1 Symlink the two deployable folders into wp-content
+
+The repo contains the whole build context (docs, tasks, tools); only the two folders below ship into the running WP install. Symlink them so a `git pull` updates the live site instantly with zero copy step.
+
+```bash
+cd ~/applications/APP_ID/public_html/wp-content/themes
+ln -s ~/applications/APP_ID/private_html/showtimepools-src/showtime-pools-child .
+
+cd ~/applications/APP_ID/public_html/wp-content/plugins
+ln -s ~/applications/APP_ID/private_html/showtimepools-src/showtime-pools-core .
+```
+
+Future updates from your laptop:
+
+```bash
+# laptop
+git push origin main
+# Cloudways auto-pulls (option A) OR ssh + cd to repo + git pull (option B)
+```
+
+That's the entire deploy story. Symlinks mean no rsync, no copy step, no drift.
+
 ## 1. Install the parent theme + required plugins
 
 From WP admin → Appearance → Themes → Add New, install and activate **Blocksy** (free).
