@@ -48,23 +48,38 @@
 			});
 		}
 
-		// Mobile menu toggle (drawer open/close).
-		const toggleBtn = document.querySelector('.js-mobile-toggle');
-		const drawer    = document.getElementById('mobile-drawer');
-		if (toggleBtn && drawer) {
+		// Mobile drawer — single source of truth. Pure class toggle.
+		// .mobile-drawer lives in the DOM at all times; CSS handles all
+		// visibility (transform + visibility transition). Attaches click
+		// handlers to EVERY .js-mobile-toggle element (hamburger, close X,
+		// backdrop) so any of them flips state.
+		const drawer = document.getElementById('mobile-drawer');
+		if (drawer) {
+			const toggles = document.querySelectorAll('.js-mobile-toggle');
+			const isOpen = () => drawer.classList.contains('is-open');
+
 			const setOpen = (open) => {
-				toggleBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+				toggles.forEach((b) => b.setAttribute('aria-expanded', open ? 'true' : 'false'));
 				drawer.classList.toggle('is-open', open);
+				drawer.setAttribute('aria-hidden', open ? 'false' : 'true');
 				document.body.classList.toggle('is-drawer-open', open);
 			};
-			toggleBtn.addEventListener('click', () => {
-				setOpen(toggleBtn.getAttribute('aria-expanded') !== 'true');
+
+			toggles.forEach((btn) => {
+				btn.addEventListener('click', (e) => {
+					e.preventDefault();
+					setOpen(!isOpen());
+				});
 			});
-			drawer.querySelectorAll('[data-drawer-close], a').forEach((el) => {
-				el.addEventListener('click', () => setOpen(false));
+
+			// Closing on any in-drawer link click means menu navigation
+			// doesn't leave a stuck panel mid-transition.
+			drawer.querySelectorAll('a[href]').forEach((link) => {
+				link.addEventListener('click', () => setOpen(false));
 			});
+
 			document.addEventListener('keydown', (e) => {
-				if (e.key === 'Escape') setOpen(false);
+				if (e.key === 'Escape' && isOpen()) setOpen(false);
 			});
 		}
 

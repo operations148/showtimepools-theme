@@ -16,7 +16,7 @@ $phone = apply_filters( 'showtime/business/phone', '(323) 825-2099' );
 	role="dialog"
 	aria-modal="true"
 	aria-labelledby="mobile-drawer-title"
-	hidden
+	aria-hidden="true"
 >
 	<div class="mobile-drawer__panel">
 		<div class="mobile-drawer__head">

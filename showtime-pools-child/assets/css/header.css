@@ -349,17 +349,25 @@
 [aria-expanded="true"] .site-header__menu-toggle-bar:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
 /* ─── Mobile drawer ─────────────────────────────────────────────── */
+/* Always rendered in the DOM — visibility is controlled purely by CSS:
+   panel is translateX(100%) by default (off the right edge), backdrop
+   is opacity:0. Adding .is-open slides the panel in and fades the
+   backdrop. No [hidden] attribute toggle, no display:none. Bulletproof
+   across browser cache states and JS race conditions. */
 .mobile-drawer {
 	position: fixed;
 	inset: 0;
-	/* Above the body::after film-grain overlay (z-index 9998) so the panel
-	   never reads as "blurry/noisy" through the texture. */
 	z-index: 9999;
 	display: block;
 	pointer-events: none;
+	visibility: hidden;
+	transition: visibility 0s linear var(--dur-base);
 }
-.mobile-drawer[hidden] { display: none; }
-.mobile-drawer.is-open { pointer-events: auto; }
+.mobile-drawer.is-open {
+	pointer-events: auto;
+	visibility: visible;
+	transition: visibility 0s linear 0s;
+}
 
 .mobile-drawer__backdrop {
 	position: absolute;
