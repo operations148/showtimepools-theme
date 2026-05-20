@@ -102,12 +102,17 @@ function showtime_image( string $slot, int $w = 1600, int $h = 0 ): string {
 	// project photos) without touching WP admin OR PHP. Drop the file,
 	// hard-refresh, done.
 	$local_slots = array( 'founder', 'about_hero', 'hero', 'lifestyle_main', 'lifestyle_1', 'lifestyle_2', 'lifestyle_3', 'lifestyle_4', 'inspections_bg' );
-	// Allow every area_* slot too (sherman-oaks, encino, etc.).
-	if ( str_starts_with( $slot, 'area_' ) || str_starts_with( $slot, 'project_' ) ) {
+	// Allow every area_*, project_*, service_*, blog_*, team_* slot too.
+	if ( str_starts_with( $slot, 'area_' )
+		|| str_starts_with( $slot, 'project_' )
+		|| str_starts_with( $slot, 'service_' )
+		|| str_starts_with( $slot, 'blog_' )
+		|| str_starts_with( $slot, 'team_' ) ) {
 		$local_slots[] = $slot;
 	}
 	if ( in_array( $slot, $local_slots, true ) ) {
-		foreach ( array( 'jpg', 'jpeg', 'png', 'webp', 'avif' ) as $ext ) {
+		// Prefer modern formats first; .webp wins where the browser supports it.
+		foreach ( array( 'webp', 'avif', 'jpg', 'jpeg', 'png' ) as $ext ) {
 			$rel = "assets/img/{$slot}.{$ext}";
 			if ( file_exists( SHOWTIME_CHILD_DIR . '/' . $rel ) ) {
 				return apply_filters( 'showtime/image/' . $slot, SHOWTIME_CHILD_URI . '/' . $rel, $slot, $w, $h );
@@ -133,6 +138,56 @@ function showtime_image( string $slot, int $w = 1600, int $h = 0 ): string {
 	 * @param int    $h
 	 */
 	return (string) apply_filters( 'showtime/image/' . $slot, $url, $slot, $w, $h );
+}
+
+/**
+ * Render a `<picture>` element with a WebP source and JPG fallback when
+ * both bundled files exist on disk. Falls back to a plain `<img>` (using
+ * `showtime_image()`) when only a single format is available or the slot
+ * resolves to a remote URL.
+ *
+ * Modern browsers download .webp ( ~30–50% smaller than the .jpg ); legacy
+ * Safari < 14 and old Edge fall through to the .jpg. No JS, no flash.
+ *
+ * @param string $slot   Slot key (must match bundled file name in /assets/img/).
+ * @param array  $attrs  Attrs for the <img> ('alt', 'class', 'loading', 'sizes', etc.)
+ */
+function showtime_picture( string $slot, array $attrs = array() ): string {
+	$webp_rel = "assets/img/{$slot}.webp";
+	$jpg_rel  = "assets/img/{$slot}.jpg";
+
+	$webp_path = SHOWTIME_CHILD_DIR . '/' . $webp_rel;
+	$jpg_path  = SHOWTIME_CHILD_DIR . '/' . $jpg_rel;
+
+	// Both bundled formats present → real <picture> element.
+	if ( file_exists( $webp_path ) && file_exists( $jpg_path ) ) {
+		$webp_url = SHOWTIME_CHILD_URI . '/' . $webp_rel;
+		$jpg_url  = SHOWTIME_CHILD_URI . '/' . $jpg_rel;
+
+		$defaults = array(
+			'src'      => $jpg_url,
+			'alt'      => '',
+			'loading'  => 'lazy',
+			'decoding' => 'async',
+		);
+		$attrs = array_merge( $defaults, $attrs );
+
+		$img = '<img';
+		foreach ( $attrs as $k => $v ) {
+			if ( '' === $v && 'alt' !== $k ) { continue; }
+			$img .= ' ' . esc_attr( $k ) . '="' . esc_attr( (string) $v ) . '"';
+		}
+		$img .= '>';
+
+		return sprintf(
+			'<picture><source srcset="%s" type="image/webp">%s</picture>',
+			esc_url( $webp_url ),
+			$img
+		);
+	}
+
+	// Either format missing → plain <img> via existing resolver.
+	return showtime_image_tag( $slot, $attrs );
 }
 
 /**

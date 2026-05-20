@@ -15,6 +15,55 @@ defined( 'ABSPATH' ) || exit;
 get_header();
 
 $services = class_exists( '\\Showtime\\Services' ) ? \Showtime\Services::all() : array();
+
+// Page Copy → Contact page. Every label is editable from WP admin.
+$opt = function_exists( 'get_field' ) ? 'option' : false;
+$c_eyebrow = $opt ? (string) get_field( 'contact_eyebrow', $opt ) : '';
+$c_title   = $opt ? (string) get_field( 'contact_title', $opt ) : '';
+$c_lead    = $opt ? (string) get_field( 'contact_lead', $opt ) : '';
+$c_ftitle  = $opt ? (string) get_field( 'contact_form_title', $opt ) : '';
+$c_fbody   = $opt ? (string) get_field( 'contact_form_body', $opt ) : '';
+
+$c_eyebrow = '' !== $c_eyebrow ? $c_eyebrow : __( 'Talk to us', 'showtime-pools' );
+$c_title   = '' !== $c_title   ? $c_title   : __( 'Talk to a real human at Showtime Pools.', 'showtime-pools' );
+$c_lead    = '' !== $c_lead    ? $c_lead    : __( 'Send us a note and Steve or a senior tech replies within one business day. Same-day for active service customers.', 'showtime-pools' );
+$c_ftitle  = '' !== $c_ftitle  ? $c_ftitle  : __( 'Tell us about your pool.', 'showtime-pools' );
+
+// Phone + email come from Customizer (Showtime Brand panel) via filter bridge.
+$phone = (string) apply_filters( 'showtime/business/phone', '(323) 825-2099' );
+$email = (string) apply_filters( 'showtime/business/email', 'operations@showtimepoolmechanics.com' );
+
+// Offices + hours come from Site Content → Offices & hours ACF repeaters.
+$offices_default = array(
+	array( 'label' => __( 'Sherman Oaks (Main)', 'showtime-pools' ), 'street' => '15301 Ventura Blvd.', 'city' => 'Sherman Oaks, CA 91403' ),
+	array( 'label' => __( 'Century City', 'showtime-pools' ),         'street' => '1925 Century Park East, Suite 1700', 'city' => 'Los Angeles, CA 90067' ),
+	array( 'label' => __( 'Beverly Hills', 'showtime-pools' ),        'street' => '9461 Charleville Blvd. #1902', 'city' => 'Beverly Hills, CA 90212' ),
+);
+$offices = function_exists( 'showtime_acf_rows' )
+	? showtime_acf_rows( 'offices', $offices_default )
+	: $offices_default;
+$offices = apply_filters( 'showtime/business/offices', $offices );
+
+$hours_default_map = array(
+	__( 'Mon-Sat', 'showtime-pools' ) => __( '8:00 AM - 5:00 PM', 'showtime-pools' ),
+	__( 'Sunday', 'showtime-pools' )  => __( 'By appointment for emergencies', 'showtime-pools' ),
+);
+$hours_rows = $opt ? get_field( 'hours_rows', $opt ) : null;
+if ( is_array( $hours_rows ) && ! empty( $hours_rows ) ) {
+	$hours = array();
+	foreach ( $hours_rows as $row ) {
+		$d = (string) ( $row['day'] ?? '' );
+		$t = (string) ( $row['time'] ?? '' );
+		if ( '' !== $d ) { $hours[ $d ] = $t; }
+	}
+} else {
+	$hours = $hours_default_map;
+}
+
+// Use the first office for the map embed (defaults to Sherman Oaks).
+$map_office = $offices[0] ?? $offices_default[0];
+$map_query = trim( ( (string) ( $map_office['street'] ?? '' ) ) . ' ' . ( (string) ( $map_office['city'] ?? '' ) ) );
+$map_url   = 'https://www.google.com/maps?q=' . rawurlencode( $map_query ) . '&output=embed';
 ?>
 <main id="primary" class="site-main contact-page">
 
@@ -31,9 +80,9 @@ $services = class_exists( '\\Showtime\\Services' ) ? \Showtime\Services::all() :
 				<span aria-current="page"><?php esc_html_e( 'Contact', 'showtime-pools' ); ?></span>
 			</nav>
 			<div class="contact-hero__inner stack stack--md">
-				<span class="eyebrow contact-hero__eyebrow"><?php esc_html_e( 'Talk to us', 'showtime-pools' ); ?></span>
-				<h1 class="contact-hero__title balance"><?php esc_html_e( 'Talk to a real human at Showtime Pools.', 'showtime-pools' ); ?></h1>
-				<p class="contact-hero__lead"><?php esc_html_e( 'Send us a note and Steve or a senior tech replies within one business day. Same-day for active service customers.', 'showtime-pools' ); ?></p>
+				<span class="eyebrow contact-hero__eyebrow"><?php echo esc_html( $c_eyebrow ); ?></span>
+				<h1 class="contact-hero__title balance"><?php echo esc_html( $c_title ); ?></h1>
+				<p class="contact-hero__lead"><?php echo esc_html( $c_lead ); ?></p>
 			</div>
 		</div>
 	</section>
@@ -45,7 +94,10 @@ $services = class_exists( '\\Showtime\\Services' ) ? \Showtime\Services::all() :
 				<div class="contact-form-wrap">
 					<header class="stack stack--sm" style="margin-bottom:var(--sp-6)">
 						<span class="eyebrow"><?php esc_html_e( 'Send a message', 'showtime-pools' ); ?></span>
-						<h2><?php esc_html_e( 'Tell us about your pool.', 'showtime-pools' ); ?></h2>
+						<h2><?php echo esc_html( $c_ftitle ); ?></h2>
+						<?php if ( '' !== $c_fbody ) : ?>
+							<p><?php echo esc_html( $c_fbody ); ?></p>
+						<?php endif; ?>
 					</header>
 
 					<form class="contact-form" id="showtime-contact-form" novalidate>
@@ -113,39 +165,42 @@ $services = class_exists( '\\Showtime\\Services' ) ? \Showtime\Services::all() :
 					<div class="contact-info__card">
 						<h2 class="contact-info__title"><?php esc_html_e( 'Or reach us directly', 'showtime-pools' ); ?></h2>
 						<ul class="contact-info__list" role="list">
+							<?php $tel = preg_replace( '/[^0-9+]/', '', $phone ); ?>
 							<li>
 								<span class="contact-info__label"><?php esc_html_e( 'Call', 'showtime-pools' ); ?></span>
-								<a href="tel:+13238252099" class="contact-info__value">(323) 825-2099</a>
+								<a href="tel:<?php echo esc_attr( $tel ); ?>" class="contact-info__value"><?php echo esc_html( $phone ); ?></a>
 							</li>
-							<li>
-								<span class="contact-info__label"><?php esc_html_e( 'Email', 'showtime-pools' ); ?></span>
-								<a href="mailto:operations@showtimepoolmechanics.com" class="contact-info__value">operations@showtimepoolmechanics.com</a>
-							</li>
-							<li>
-								<span class="contact-info__label"><?php esc_html_e( 'Sherman Oaks (Main)', 'showtime-pools' ); ?></span>
-								<span class="contact-info__value">15301 Ventura Blvd.<br>Sherman Oaks, CA 91403</span>
-							</li>
-							<li>
-								<span class="contact-info__label"><?php esc_html_e( 'Century City', 'showtime-pools' ); ?></span>
-								<span class="contact-info__value">1925 Century Park East, Suite 1700<br>Los Angeles, CA 90067</span>
-							</li>
-							<li>
-								<span class="contact-info__label"><?php esc_html_e( 'Beverly Hills', 'showtime-pools' ); ?></span>
-								<span class="contact-info__value">9461 Charleville Blvd. #1902<br>Beverly Hills, CA 90212</span>
-							</li>
+							<?php if ( '' !== $email ) : ?>
+								<li>
+									<span class="contact-info__label"><?php esc_html_e( 'Email', 'showtime-pools' ); ?></span>
+									<a href="mailto:<?php echo esc_attr( $email ); ?>" class="contact-info__value"><?php echo esc_html( $email ); ?></a>
+								</li>
+							<?php endif; ?>
+							<?php foreach ( $offices as $o ) :
+								$label  = (string) ( $o['label']  ?? '' );
+								$street = (string) ( $o['street'] ?? '' );
+								$city   = (string) ( $o['city']   ?? '' );
+								if ( '' === $label && '' === $street ) { continue; }
+							?>
+								<li>
+									<span class="contact-info__label"><?php echo esc_html( $label ); ?></span>
+									<span class="contact-info__value"><?php echo esc_html( $street ); ?><br><?php echo esc_html( $city ); ?></span>
+								</li>
+							<?php endforeach; ?>
 						</ul>
 
 						<div class="contact-info__hours">
 							<h3 class="contact-info__sub"><?php esc_html_e( 'Hours', 'showtime-pools' ); ?></h3>
 							<dl class="contact-info__dl">
-								<dt><?php esc_html_e( 'Mon-Sat', 'showtime-pools' ); ?></dt><dd>8:00a &mdash; 5:00p</dd>
-								<dt><?php esc_html_e( 'Sunday', 'showtime-pools' ); ?></dt><dd><?php esc_html_e( 'By appointment for emergencies', 'showtime-pools' ); ?></dd>
+								<?php foreach ( $hours as $day => $time ) : ?>
+									<dt><?php echo esc_html( $day ); ?></dt><dd><?php echo esc_html( $time ); ?></dd>
+								<?php endforeach; ?>
 							</dl>
 						</div>
 
 						<div class="contact-info__map" aria-hidden="true">
 							<iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen
-								src="https://www.google.com/maps?q=15303+Ventura+Blvd+Sherman+Oaks+CA+91403&output=embed"
+								src="<?php echo esc_url( $map_url ); ?>"
 								title="<?php esc_attr_e( 'Showtime Pools location map', 'showtime-pools' ); ?>"
 							></iframe>
 						</div>

@@ -1,0 +1,426 @@
+{
+    "key": "group_showtime_page_copy",
+    "title": "Page Copy",
+    "fields": [
+        { "key": "field_st_pc_tab_hero", "label": "Hero block", "name": "", "type": "tab", "placement": "left" },
+        {
+            "key": "field_st_pc_hero_eyebrow",
+            "label": "Hero eyebrow",
+            "name": "hero_eyebrow",
+            "type": "text",
+            "placeholder": "Family-owned · Sherman Oaks · Since 2002",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_st_pc_hero_title",
+            "label": "Hero title (Playfair Display)",
+            "name": "hero_title",
+            "type": "text",
+            "required": 1,
+            "placeholder": "Stop juggling contractors.",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_st_pc_hero_accent",
+            "label": "Hero accent line (in pool aqua)",
+            "name": "hero_accent_line",
+            "type": "text",
+            "placeholder": "One team handles it all.",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_st_pc_hero_lead",
+            "label": "Hero lead paragraph",
+            "name": "hero_lead",
+            "type": "textarea",
+            "rows": 3,
+            "placeholder": "Repairs, weekly service, remodels, and new equipment — handled end-to-end by one team licensed, insured, and named on the warranty.",
+            "wrapper": { "width": "100" }
+        },
+        {
+            "key": "field_st_pc_hero_image",
+            "label": "Hero image (overrides bundled photo)",
+            "name": "hero_image",
+            "type": "image",
+            "return_format": "array",
+            "preview_size": "medium",
+            "instructions": "Leave empty to use the bundled hero photo at /assets/img/hero.{webp,jpg}.",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_st_pc_hero_image_alt",
+            "label": "Hero image alt text",
+            "name": "hero_image_alt",
+            "type": "text",
+            "placeholder": "Showtime Pools crew finishing a Sherman Oaks remodel",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_st_pc_hero_cta_label",
+            "label": "Primary CTA label",
+            "name": "hero_cta_label",
+            "type": "text",
+            "default_value": "Get a Free Quote",
+            "wrapper": { "width": "25" }
+        },
+        {
+            "key": "field_st_pc_hero_cta_url",
+            "label": "Primary CTA URL",
+            "name": "hero_cta_url",
+            "type": "url",
+            "default_value": "/quote/",
+            "wrapper": { "width": "25" }
+        },
+        {
+            "key": "field_st_pc_hero_cta2_label",
+            "label": "Secondary CTA label",
+            "name": "hero_secondary_label",
+            "type": "text",
+            "default_value": "See our work",
+            "wrapper": { "width": "25" }
+        },
+        {
+            "key": "field_st_pc_hero_cta2_url",
+            "label": "Secondary CTA URL",
+            "name": "hero_secondary_url",
+            "type": "url",
+            "default_value": "/projects/",
+            "wrapper": { "width": "25" }
+        },
+
+        { "key": "field_st_pc_tab_inspections", "label": "Inspections CTA", "name": "", "type": "tab", "placement": "left" },
+        {
+            "key": "field_st_pc_insp_title",
+            "label": "Inspections CTA title",
+            "name": "inspections_cta_title",
+            "type": "text",
+            "placeholder": "Buying a house with a pool? We inspect it before you sign.",
+            "wrapper": { "width": "100" }
+        },
+        {
+            "key": "field_st_pc_insp_body",
+            "label": "Inspections CTA body",
+            "name": "inspections_cta_body",
+            "type": "textarea",
+            "rows": 3,
+            "placeholder": "Pre-purchase inspections, seasonal diagnostics, and equipment audits by a CSLB-licensed pool company — never a generic home inspector.",
+            "wrapper": { "width": "100" }
+        },
+        {
+            "key": "field_st_pc_insp_cta_label",
+            "label": "Inspections CTA button label",
+            "name": "inspections_cta_label",
+            "type": "text",
+            "default_value": "Book an inspection",
+            "wrapper": { "width": "50" }
+        },
+
+        { "key": "field_st_pc_tab_about", "label": "About page", "name": "", "type": "tab", "placement": "left" },
+        {
+            "key": "field_st_pc_about_eyebrow",
+            "label": "Who we are — eyebrow",
+            "name": "about_who_we_are_eyebrow",
+            "type": "text",
+            "default_value": "About Showtime Pools",
+            "wrapper": { "width": "33" }
+        },
+        {
+            "key": "field_st_pc_about_title",
+            "label": "Who we are — title",
+            "name": "about_who_we_are_title",
+            "type": "text",
+            "placeholder": "A pool company, run like a small shop.",
+            "wrapper": { "width": "67" }
+        },
+        {
+            "key": "field_st_pc_about_body",
+            "label": "Who we are — body",
+            "name": "about_who_we_are_body",
+            "type": "wysiwyg",
+            "toolbar": "basic",
+            "media_upload": 0,
+            "wrapper": { "width": "100" }
+        },
+        {
+            "key": "field_st_pc_values_title",
+            "label": "Values section title",
+            "name": "about_values_intro_title",
+            "type": "text",
+            "placeholder": "What we believe.",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_st_pc_values_intro",
+            "label": "Values section intro",
+            "name": "about_values_intro_body",
+            "type": "textarea",
+            "rows": 2,
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_st_pc_value_cards",
+            "label": "Value cards (up to 6)",
+            "name": "about_value_cards",
+            "type": "repeater",
+            "instructions": "Cards shown in the 'What we believe' grid. Six is the visual sweet spot.",
+            "min": 0,
+            "max": 9,
+            "layout": "block",
+            "button_label": "Add value card",
+            "sub_fields": [
+                {
+                    "key": "field_st_pc_vc_icon",
+                    "label": "Icon",
+                    "name": "icon",
+                    "type": "select",
+                    "choices": {
+                        "shield": "Shield",
+                        "clock": "Clock",
+                        "sparkle": "Sparkle",
+                        "gem": "Gem",
+                        "check": "Check",
+                        "star": "Star",
+                        "compass": "Compass",
+                        "heart": "Heart",
+                        "tool": "Tool"
+                    },
+                    "default_value": "check",
+                    "wrapper": { "width": "20" }
+                },
+                {
+                    "key": "field_st_pc_vc_title",
+                    "label": "Title",
+                    "name": "title",
+                    "type": "text",
+                    "required": 1,
+                    "wrapper": { "width": "30" }
+                },
+                {
+                    "key": "field_st_pc_vc_body",
+                    "label": "Body",
+                    "name": "body",
+                    "type": "textarea",
+                    "rows": 3,
+                    "required": 1,
+                    "wrapper": { "width": "50" }
+                }
+            ]
+        },
+
+        { "key": "field_st_pc_tab_founder", "label": "Founder page", "name": "", "type": "tab", "placement": "left" },
+        {
+            "key": "field_st_pc_founder_name",
+            "label": "Founder name",
+            "name": "founder_name",
+            "type": "text",
+            "default_value": "Steve Adams",
+            "wrapper": { "width": "33" }
+        },
+        {
+            "key": "field_st_pc_founder_title",
+            "label": "Founder title",
+            "name": "founder_title",
+            "type": "text",
+            "default_value": "Founder & CEO",
+            "wrapper": { "width": "33" }
+        },
+        {
+            "key": "field_st_pc_founder_eyebrow",
+            "label": "Eyebrow",
+            "name": "founder_eyebrow",
+            "type": "text",
+            "default_value": "The Founder",
+            "wrapper": { "width": "34" }
+        },
+        {
+            "key": "field_st_pc_founder_h1",
+            "label": "H1",
+            "name": "founder_h1",
+            "type": "text",
+            "placeholder": "A pool company, run like a small shop.",
+            "wrapper": { "width": "100" }
+        },
+        {
+            "key": "field_st_pc_founder_lead",
+            "label": "Lead paragraph",
+            "name": "founder_lead",
+            "type": "textarea",
+            "rows": 3,
+            "wrapper": { "width": "100" }
+        },
+        {
+            "key": "field_st_pc_founder_portrait",
+            "label": "Founder portrait (overrides bundled photo)",
+            "name": "founder_portrait",
+            "type": "image",
+            "return_format": "array",
+            "preview_size": "medium",
+            "instructions": "Leave empty to use /assets/img/founder.{webp,jpg}.",
+            "wrapper": { "width": "100" }
+        },
+        {
+            "key": "field_st_pc_founder_blocks",
+            "label": "Story blocks",
+            "name": "founder_story_blocks",
+            "type": "repeater",
+            "instructions": "Alternating photo+text rows that tell Steve's story. First row sits below the lead; rows after alternate left/right automatically.",
+            "min": 0,
+            "max": 6,
+            "layout": "block",
+            "button_label": "Add story block",
+            "sub_fields": [
+                {
+                    "key": "field_st_pc_fb_heading",
+                    "label": "Heading",
+                    "name": "heading",
+                    "type": "text",
+                    "required": 1,
+                    "wrapper": { "width": "100" }
+                },
+                {
+                    "key": "field_st_pc_fb_body",
+                    "label": "Body",
+                    "name": "body",
+                    "type": "wysiwyg",
+                    "toolbar": "basic",
+                    "media_upload": 0,
+                    "wrapper": { "width": "65" }
+                },
+                {
+                    "key": "field_st_pc_fb_image",
+                    "label": "Image (optional)",
+                    "name": "image",
+                    "type": "image",
+                    "return_format": "array",
+                    "preview_size": "medium",
+                    "wrapper": { "width": "35" }
+                }
+            ]
+        },
+        {
+            "key": "field_st_pc_founder_quote",
+            "label": "Pull quote",
+            "name": "founder_quote",
+            "type": "textarea",
+            "rows": 2,
+            "placeholder": "If my name is on the warranty, my crew earns it on every job.",
+            "wrapper": { "width": "70" }
+        },
+        {
+            "key": "field_st_pc_founder_quote_attr",
+            "label": "Pull quote attribution",
+            "name": "founder_quote_attribution",
+            "type": "text",
+            "placeholder": "Steve Adams, Founder",
+            "wrapper": { "width": "30" }
+        },
+
+        { "key": "field_st_pc_tab_contact", "label": "Contact page", "name": "", "type": "tab", "placement": "left" },
+        {
+            "key": "field_st_pc_contact_eyebrow",
+            "label": "Eyebrow",
+            "name": "contact_eyebrow",
+            "type": "text",
+            "default_value": "Contact",
+            "wrapper": { "width": "33" }
+        },
+        {
+            "key": "field_st_pc_contact_title",
+            "label": "Title",
+            "name": "contact_title",
+            "type": "text",
+            "placeholder": "Talk to a real human at Showtime Pools.",
+            "wrapper": { "width": "67" }
+        },
+        {
+            "key": "field_st_pc_contact_lead",
+            "label": "Lead paragraph",
+            "name": "contact_lead",
+            "type": "textarea",
+            "rows": 3,
+            "wrapper": { "width": "100" }
+        },
+        {
+            "key": "field_st_pc_contact_form_title",
+            "label": "Form column title",
+            "name": "contact_form_title",
+            "type": "text",
+            "default_value": "Send us a note",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_st_pc_contact_form_body",
+            "label": "Form column body",
+            "name": "contact_form_body",
+            "type": "textarea",
+            "rows": 2,
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_st_pc_contact_after_submit",
+            "label": "After-submit confirmation message",
+            "name": "contact_after_submit_message",
+            "type": "textarea",
+            "rows": 2,
+            "default_value": "Thanks. We got it. Steve or someone on the team will call you back within one business day.",
+            "wrapper": { "width": "100" }
+        },
+
+        { "key": "field_st_pc_tab_trust", "label": "Trust & credentials", "name": "", "type": "tab", "placement": "left" },
+        {
+            "key": "field_st_pc_cslb",
+            "label": "CSLB license number",
+            "name": "cslb_license_number",
+            "type": "text",
+            "default_value": "985241",
+            "wrapper": { "width": "25" }
+        },
+        {
+            "key": "field_st_pc_insurance",
+            "label": "Insurance amount",
+            "name": "insurance_amount",
+            "type": "text",
+            "default_value": "$2M",
+            "wrapper": { "width": "25" }
+        },
+        {
+            "key": "field_st_pc_rating_val",
+            "label": "Aggregate rating value",
+            "name": "aggregate_rating_value",
+            "type": "text",
+            "default_value": "4.9",
+            "wrapper": { "width": "25" }
+        },
+        {
+            "key": "field_st_pc_rating_count",
+            "label": "Aggregate rating count",
+            "name": "aggregate_rating_count",
+            "type": "text",
+            "default_value": "184",
+            "wrapper": { "width": "25" }
+        },
+        {
+            "key": "field_st_pc_employees",
+            "label": "Employee count (for schema)",
+            "name": "number_of_employees",
+            "type": "number",
+            "default_value": 12,
+            "wrapper": { "width": "25" }
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "options_page",
+                "operator": "==",
+                "value": "showtime-content-page-copy"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "active": true
+}

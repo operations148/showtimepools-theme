@@ -7,6 +7,16 @@
  */
 
 defined( 'ABSPATH' ) || exit;
+
+$opt = function_exists( 'get_field' ) ? 'option' : false;
+
+$insp_title = $opt ? (string) get_field( 'inspections_cta_title', $opt ) : '';
+$insp_body  = $opt ? (string) get_field( 'inspections_cta_body', $opt ) : '';
+$insp_label = $opt ? (string) get_field( 'inspections_cta_label', $opt ) : '';
+
+$insp_title = '' !== $insp_title ? $insp_title : __( 'Buying a house with a pool? We inspect it before you sign.', 'showtime-pools' );
+$insp_body  = '' !== $insp_body  ? $insp_body  : __( 'Pre-purchase inspections, seasonal diagnostics, and equipment health checks. Written report in 24 hours so you negotiate with leverage — or walk away clean.', 'showtime-pools' );
+$insp_label = '' !== $insp_label ? $insp_label : __( 'Book an Inspection', 'showtime-pools' );
 ?>
 <section class="inspections-callout" data-reveal>
 	<div class="container inspections-callout__inner">
@@ -15,16 +25,16 @@ defined( 'ABSPATH' ) || exit;
 		</span>
 
 		<h2 class="inspections-callout__title balance">
-			<?php esc_html_e( 'Buying a house with a pool? We inspect it before you sign.', 'showtime-pools' ); ?>
+			<?php echo esc_html( $insp_title ); ?>
 		</h2>
 
 		<p class="inspections-callout__lead">
-			<?php esc_html_e( 'Pre-purchase inspections, seasonal diagnostics, and equipment health checks. Written report in 24 hours so you negotiate with leverage — or walk away clean.', 'showtime-pools' ); ?>
+			<?php echo esc_html( $insp_body ); ?>
 		</p>
 
 		<div class="cluster inspections-callout__ctas">
 			<a class="btn btn--primary btn--lg btn--pill" href="<?php echo esc_url( home_url( '/pool-inspections/' ) ); ?>">
-				<?php esc_html_e( 'Book an Inspection', 'showtime-pools' ); ?>
+				<?php echo esc_html( $insp_label ); ?>
 			</a>
 			<a class="btn btn--ghost-on-dark btn--lg btn--pill" href="<?php echo esc_url( home_url( '/pool-inspections/pre-purchase-inspection/' ) ); ?>">
 				<?php esc_html_e( 'See What\'s Covered', 'showtime-pools' ); ?>

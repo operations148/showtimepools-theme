@@ -9,7 +9,7 @@ defined( 'ABSPATH' ) || exit;
 
 $year      = current_time( 'Y' );
 $license   = apply_filters( 'showtime/business/license', __( 'CSLB License #985241', 'showtime-pools' ) );
-$socials   = apply_filters(
+$socials_raw = apply_filters(
 	'showtime/business/socials',
 	array(
 		'instagram' => 'https://www.instagram.com/showtimepools',
@@ -18,6 +18,20 @@ $socials   = apply_filters(
 		'google'    => 'https://g.page/showtimepools',
 	)
 );
+
+// Normalize: the Customizer bridge yields list-of-dicts [{label,url}, …]
+// while the legacy fallback above is dict-with-keys {instagram:url, …}.
+// Templates expect $socials as key => url so they can pick an SVG by key.
+$socials = array();
+foreach ( (array) $socials_raw as $k => $v ) {
+	if ( is_array( $v ) ) {
+		$label = strtolower( (string) ( $v['label'] ?? '' ) );
+		$url   = (string) ( $v['url'] ?? '' );
+		if ( '' !== $label && '' !== $url ) { $socials[ $label ] = $url; }
+	} else {
+		$socials[ (string) $k ] = (string) $v;
+	}
+}
 ?>
 <div class="footer-legal">
 	<div class="container footer-legal__inner">

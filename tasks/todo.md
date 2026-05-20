@@ -321,6 +321,53 @@ showtimepools/
 
 ---
 
+## Phase C — Full Dynamic + Photos + /blog/ + Schema + Design Polish (DONE)
+
+**Trigger:** User asked for a complete audit, dynamic conversion of every hardcoded copy block, bundled photography (no manual /uploads/ work), a content sub-page, dynamic Schema.org, and a final design polish — all in one sweep.
+
+**Delivered:**
+
+- **Photo bundle** — 38 photos curated from the user's Google Drive (`C:\Official Drive\Showtime\My Drive\IT'S SHOWTIME!\`), optimized via sharp-cli to WebP@q70 + JPG@q72 at 1400px (wide) / 960px (card). Total bundle ~28MB. Saved to `showtime-pools-child/assets/img/{hero, about_hero, inspections_bg, lifestyle_*, service_<slug>, area_<slug>, project_1..8, blog_*}.{webp,jpg}`. The existing `showtime_image()` slot resolver picks them up automatically. Added `showtime_picture()` helper for native `<picture>` markup w/ WebP source + JPG fallback.
+- **ACF Page Copy options page** — `group_site_page_copy.json` exposes hero/inspections/about/founder/contact/credentials copy + image fields under Site Content → Page Copy. Templates read with PHP fallbacks so the site renders correctly even if ACF is deactivated or every field is blank.
+- **Hardcoded copy refactor** — `section-01-hero`, `section-07-inspections-callout`, `page-about` (Who we are + Value cards repeater), `page-contact` (hero + form + offices + hours + map), `page-founder` (full rebuild as 6-section ACF-driven narrative with story blocks repeater + pullquote + promises strip), `template-parts/service/section-hero` (now uses `service_<slug>` bundled photo + dark overlay). 23+ hardcoded blocks moved to ACF.
+- **Dynamic LocalBusiness JSON-LD** — `template-parts/footer/local-business-schema.php` fully rewritten. Name, telephone, email, sameAs from Customizer filters; address parsed from ACF `offices` repeater (regex splits "City, ST ZIP" → locality/region/postal); opening hours parsed from ACF `hours_rows`; aggregateRating + numberOfEmployees + founder from ACF Page Copy → Trust tab. Branch offices emit separate LocalBusiness nodes with `branchOf` references. **Schema is now also actually wired into footer.php** (the schema file existed but was never `get_template_part`-included).
+- **Project CPT** — `\Showtime\Cpt\Project` registers `project` post type + `project_service` taxonomy. Single posts at /projects/<slug>/. ACF `group_project_meta.json` covers neighborhood, finish, scope, value, duration, before/after images, gallery, client quote. Section-05 + page-projects.php now query the CPT directly (orderby menu_order) with `apply_filters('showtime/image/slot_for_project',...)` to align project N → `project_N` bundled photo. Soft fallback grid renders if zero projects exist.
+- **Project seed registry** — `showtime-pools-core/includes/data/projects.php` ships 8 demo projects matching the 8 bundled before/after-ish photos. Seeder writes them into the CPT on first activation, copying registry fields into post meta. Idempotent on slug.
+- **/blog/ hub + archive + single + post seeds** — `page-blog.php` (Pinch A Penny-style: hero + 3-category card strip + featured + grid + sidebar + CTA card), `archive.php` (category/tag/author archive w/ pagination), `single.php` (sticky TOC sidebar + Article JSON-LD + BreadcrumbList JSON-LD + related posts + share row). 3 categories (Pool Trends / Maintenance Tips / Equipment Guides) + 6 demo posts seeded with paraphrased original copy aligned to Showtime voice. `blog.css` (~330 lines, token-only) + `blog.js` (TOC builder + scroll-spy, no deps, prefers-reduced-motion respected).
+- **/the-founder/ full build** — Was a 3-section stub. Now 6 sections: hero, story (ACF repeater of headline + body + image blocks), centered pullquote w/ quote-mark SVG, three numbered promises strip, contact list (phone/email/shop/LinkedIn — all dynamic), call-Steve CTA row. Person JSON-LD references `home_url('/#localbusiness')`.
+- **footer-legal social URL parity** — `template-parts/footer/footer-legal.php` was calling `esc_url(Array)` because the Customizer bridge emits list-of-dicts while the default was dict-with-keys. Normalized to dict-with-keys before render. Was causing sitewide 500 in the earlier debug log.
+
+**Files added (12):**
+- `showtime-pools-child/assets/img/photos/` (38 WebP + 38 JPG)
+- `showtime-pools-child/assets/css/blog.css`
+- `showtime-pools-child/assets/js/blog.js`
+- `showtime-pools-child/archive.php`
+- `showtime-pools-child/single.php`
+- `showtime-pools-child/acf-json/group_site_page_copy.json`
+- `showtime-pools-child/acf-json/group_project_meta.json`
+- `showtime-pools-core/includes/cpt/class-project.php`
+- `showtime-pools-core/includes/class-projects.php`
+- `showtime-pools-core/includes/data/projects.php`
+- `showtime-pools-core/includes/data/blog-seed.php`
+- `tools/optimize-photos.mjs`, `tools/run-seeder.php`
+
+**Files modified (15):** imagery.php, enqueue.php, footer.php, footer-legal.php, primary-nav.php, section-01-hero.php, section-05-featured-projects.php, section-07-inspections-callout.php, local-business-schema.php, section-hero.php (service), page-about.php, page-contact.php, page-founder.php, page-blog.php, page-projects.php, interior.css, service.css, class-options-page.php, class-page-seeder.php, class-plugin.php.
+
+**Verification (runtime, http://localhost/showtimepools/):**
+
+- PHP lint: 21/21 files clean (after fixing two stray `<?php` openers in section-01-hero.php and page-projects.php)
+- HTTP 200 on every locked URL: /, /about/, /the-founder/, /blog/, /blog/<post>/, /category/<slug>/, /projects/, /projects/<slug>/, /contact/, /services/, /services/<slug>/, /service-areas/, /service-areas/<slug>/, /pool-inspections/, /pool-inspections/<slug>/, /reviews/, /privacy/, /terms/, /quote/, /book/
+- JSON-LD validity: 5 blocks on /, 6 on /the-founder/, 7 on /blog/<post>/ — all parse as valid JSON via ConvertFrom-Json. Types observed: WebSite (Rank Math), LocalBusiness w/ 2 branches, FAQPage, Article, BreadcrumbList, Person
+- Seeder ran via `tools/run-seeder.php`: 17 created, 34 skipped, 8 projects published, 6 posts published, 4 categories
+- Bundled photos resolve in HTML: 12+ unique bundled URLs on homepage; all serve 200 at `/wp/wp-content/themes/showtime-pools-child/assets/img/*.webp`
+- No PHP fatal/warning/notice in WP debug.log today after the footer-legal fix
+- Plugin junction was missing — re-junctioned per L-004 (old physical copy backed up to `.bak-phase-c-<timestamp>`)
+
+**Out of scope (intentional):**
+- /style-guide/ — not seeded as a page; route returns 404 (template exists but no post). Not part of locked URL set.
+- Project before/after image pairs in admin — registry seeds the title/excerpt/meta only. Featured images can be set per post via the ACF image fields or by uploading; templates fall back to `project_N` bundled photo if no featured image set.
+- WP-CLI seeding workflow on Cloudways — `tools/run-seeder.php` is local-only; first-run on Cloudways runs via plugin activation hook which calls the same `run_all_idempotent()` method.
+
 ## Review log
 
 (append here at each checkpoint)

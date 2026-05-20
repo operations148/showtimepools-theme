@@ -10,8 +10,18 @@ defined( 'ABSPATH' ) || exit;
 $ctx = $GLOBALS['showtime_service_ctx'] ?? array();
 $title    = $ctx['title']   ?? get_the_title();
 $summary  = $ctx['summary'] ?? '';
+$slug     = (string) ( $ctx['slug'] ?? '' );
+
+// Per-service hero photo from bundled set: /assets/img/service_<slug>.{webp,jpg}
+$svc_hero_img = '';
+if ( $slug && function_exists( 'showtime_image' ) ) {
+	$svc_hero_img = showtime_image( 'service_' . $slug, 1920 );
+}
 ?>
-<section class="svc-hero section section--brand" data-reveal>
+<section class="svc-hero section section--brand svc-hero--photo" data-reveal>
+	<?php if ( $svc_hero_img ) : ?>
+		<img class="svc-hero__photo" src="<?php echo esc_url( $svc_hero_img ); ?>" alt="" loading="eager" fetchpriority="high" decoding="async">
+	<?php endif; ?>
 	<div class="svc-hero__pattern" aria-hidden="true"></div>
 	<div class="container">
 		<nav class="breadcrumbs svc-hero__crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'showtime-pools' ); ?>">

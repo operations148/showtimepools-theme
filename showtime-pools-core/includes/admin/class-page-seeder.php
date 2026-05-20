@@ -18,6 +18,7 @@ namespace Showtime\Admin;
 use Showtime\Services;
 use Showtime\Areas;
 use Showtime\Inspections;
+use Showtime\Projects;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -41,9 +42,11 @@ final class PageSeeder {
 			array( 'slug' => 'contact', 'title' => __( 'Contact', 'showtime-pools-core' ),            'template' => 'page-contact.php',     'meta' => array( '_showtime_section' => 'contact' ) ),
 			array( 'slug' => 'quote',   'title' => __( 'Get a Quote', 'showtime-pools-core' ),       'template' => 'page-iframe.php',      'meta' => array( '_showtime_section' => 'iframe', '_showtime_iframe_kind' => 'quote' ) ),
 			array( 'slug' => 'book',    'title' => __( 'Book an Inspection', 'showtime-pools-core' ),'template' => 'page-iframe.php',      'meta' => array( '_showtime_section' => 'iframe', '_showtime_iframe_kind' => 'book' ) ),
-			array( 'slug' => 'about',   'title' => __( 'About', 'showtime-pools-core' ),             'template' => 'page-about.php',       'meta' => array( '_showtime_section' => 'about' ) ),
-			array( 'slug' => 'projects','title' => __( 'Projects', 'showtime-pools-core' ),          'template' => 'page-projects.php',    'meta' => array( '_showtime_section' => 'projects' ) ),
-			array( 'slug' => 'reviews', 'title' => __( 'Reviews', 'showtime-pools-core' ),           'template' => 'page-reviews.php',     'meta' => array( '_showtime_section' => 'reviews' ) ),
+			array( 'slug' => 'about',       'title' => __( 'About', 'showtime-pools-core' ),         'template' => 'page-about.php',       'meta' => array( '_showtime_section' => 'about' ) ),
+			array( 'slug' => 'the-founder', 'title' => __( 'The Founder', 'showtime-pools-core' ),  'template' => 'page-founder.php',     'meta' => array( '_showtime_section' => 'founder' ) ),
+			array( 'slug' => 'projects',    'title' => __( 'Projects', 'showtime-pools-core' ),     'template' => 'page-projects.php',    'meta' => array( '_showtime_section' => 'projects' ) ),
+			array( 'slug' => 'reviews',     'title' => __( 'Reviews', 'showtime-pools-core' ),      'template' => 'page-reviews.php',     'meta' => array( '_showtime_section' => 'reviews' ) ),
+			array( 'slug' => 'blog',        'title' => __( 'Blog', 'showtime-pools-core' ),         'template' => 'page-blog.php',        'meta' => array( '_showtime_section' => 'blog-hub' ) ),
 			array( 'slug' => 'service-areas', 'title' => __( 'Service Areas', 'showtime-pools-core' ), 'template' => 'page-areas.php',     'meta' => array( '_showtime_section' => 'areas-hub' ) ),
 			array( 'slug' => 'pool-inspections', 'title' => __( 'Pool Inspections', 'showtime-pools-core' ), 'template' => 'page-inspections.php', 'meta' => array( '_showtime_section' => 'inspections-hub' ) ),
 			array( 'slug' => 'privacy', 'title' => __( 'Privacy Policy', 'showtime-pools-core' ),    'template' => 'page-legal.php',       'meta' => array( '_showtime_section' => 'legal' ) ),
@@ -197,12 +200,163 @@ final class PageSeeder {
 			$ok ? $created++ : $skipped++;
 		}
 
+		// 5) Project CPT — seed 8 demo projects matched to bundled photos.
+		$proj_result = $this->seed_projects();
+		$created += $proj_result['created'];
+		$skipped += $proj_result['skipped'];
+
+		// 6) Blog — seed 3 categories + 6 demo posts.
+		$blog_result = $this->seed_blog();
+		$created += $blog_result['created'];
+		$skipped += $blog_result['skipped'];
+
 		flush_rewrite_rules();
 
 		return array(
 			'created' => $created,
 			'skipped' => $skipped,
 		);
+	}
+
+	/**
+	 * Seed the `project` CPT from the bundled registry. Idempotent — a
+	 * project with the same slug is skipped on subsequent runs.
+	 *
+	 * @return array{created:int,skipped:int}
+	 */
+	public function seed_projects(): array {
+		$created = 0;
+		$skipped = 0;
+
+		if ( ! class_exists( '\\Showtime\\Projects' ) ) {
+			return array( 'created' => 0, 'skipped' => 0 );
+		}
+
+		$projects = Projects::all();
+		$n = 0;
+		foreach ( $projects as $p ) {
+			$n++;
+			$slug = (string) ( $p['slug'] ?? '' );
+			if ( '' === $slug ) { continue; }
+
+			$existing = get_page_by_path( $slug, OBJECT, 'project' );
+			if ( $existing instanceof \WP_Post ) {
+				$skipped++;
+				continue;
+			}
+
+			$post_id = wp_insert_post(
+				array(
+					'post_title'   => (string) ( $p['title']   ?? $slug ),
+					'post_name'    => $slug,
+					'post_type'    => 'project',
+					'post_status'  => 'publish',
+					'post_excerpt' => (string) ( $p['excerpt'] ?? '' ),
+					'menu_order'   => $n, // drives bundled photo slot (project_1..8)
+				),
+				true
+			);
+			if ( is_wp_error( $post_id ) || ! $post_id ) {
+				$skipped++;
+				continue;
+			}
+
+			// Copy registry fields into post meta. ACF reads these via field name.
+			foreach ( array( 'neighborhood', 'completion_date', 'finish', 'scope', 'value_label', 'duration_label', 'client_quote', 'client_name' ) as $key ) {
+				if ( isset( $p[ $key ] ) && '' !== $p[ $key ] ) {
+					update_post_meta( $post_id, $key, (string) $p[ $key ] );
+				}
+			}
+
+			$created++;
+		}
+
+		return array( 'created' => $created, 'skipped' => $skipped );
+	}
+
+	/**
+	 * Seed the blog: 3 categories + 6 demo posts. Idempotent — categories
+	 * are looked up by slug, posts by slug. Existing items are skipped.
+	 *
+	 * @return array{created:int,skipped:int}
+	 */
+	public function seed_blog(): array {
+		$created = 0;
+		$skipped = 0;
+
+		$seed_path = SHOWTIME_CORE_DIR . 'includes/data/blog-seed.php';
+		if ( ! file_exists( $seed_path ) ) {
+			return array( 'created' => 0, 'skipped' => 0 );
+		}
+		$seed = (array) include $seed_path;
+		$cats = (array) ( $seed['categories'] ?? array() );
+		$posts = (array) ( $seed['posts'] ?? array() );
+
+		$cat_ids = array(); // slug → term_id
+
+		foreach ( $cats as $c ) {
+			$slug = (string) ( $c['slug'] ?? '' );
+			if ( '' === $slug ) { continue; }
+			$existing = get_term_by( 'slug', $slug, 'category' );
+			if ( $existing instanceof \WP_Term ) {
+				$cat_ids[ $slug ] = (int) $existing->term_id;
+				$skipped++;
+				continue;
+			}
+			$res = wp_insert_term(
+				(string) ( $c['name'] ?? $slug ),
+				'category',
+				array(
+					'slug'        => $slug,
+					'description' => (string) ( $c['description'] ?? '' ),
+				)
+			);
+			if ( ! is_wp_error( $res ) ) {
+				$cat_ids[ $slug ] = (int) $res['term_id'];
+				$created++;
+			}
+		}
+
+		foreach ( $posts as $p ) {
+			$slug = (string) ( $p['slug'] ?? '' );
+			if ( '' === $slug ) { continue; }
+
+			$existing = get_page_by_path( $slug, OBJECT, 'post' );
+			if ( $existing instanceof \WP_Post ) {
+				$skipped++;
+				continue;
+			}
+
+			$cat_slug = (string) ( $p['category'] ?? '' );
+			$cat_id   = $cat_ids[ $cat_slug ] ?? 0;
+
+			$post_id = wp_insert_post(
+				array(
+					'post_title'    => (string) ( $p['title']   ?? $slug ),
+					'post_name'     => $slug,
+					'post_type'     => 'post',
+					'post_status'   => 'publish',
+					'post_excerpt'  => (string) ( $p['excerpt'] ?? '' ),
+					'post_content'  => (string) ( $p['content'] ?? '' ),
+					'post_category' => $cat_id ? array( $cat_id ) : array(),
+				),
+				true
+			);
+			if ( is_wp_error( $post_id ) || ! $post_id ) {
+				$skipped++;
+				continue;
+			}
+
+			// Store bundled image slot for templates: post-meta `_showtime_image_slot`
+			$slot = (string) ( $p['image_slot'] ?? '' );
+			if ( '' !== $slot ) {
+				update_post_meta( $post_id, '_showtime_image_slot', $slot );
+			}
+
+			$created++;
+		}
+
+		return array( 'created' => $created, 'skipped' => $skipped );
 	}
 
 	public function register_menu(): void {

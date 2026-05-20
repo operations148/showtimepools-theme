@@ -16,22 +16,31 @@ if ( post_type_exists( 'project' ) ) {
 		array(
 			'post_type'      => 'project',
 			'posts_per_page' => 3,
-			'orderby'        => 'date',
-			'order'          => 'DESC',
+			'orderby'        => 'menu_order',
+			'order'          => 'ASC',
 			'no_found_rows'  => true,
 		)
 	);
 	if ( $q->have_posts() ) {
 		while ( $q->have_posts() ) {
 			$q->the_post();
+			$pid = get_the_ID();
+			$slot = apply_filters( 'showtime/image/slot_for_project', 'project_1', (int) $pid );
+			$image = '';
+			if ( has_post_thumbnail( $pid ) ) {
+				$image = (string) get_the_post_thumbnail_url( $pid, 'large' );
+			} elseif ( function_exists( 'showtime_image' ) ) {
+				$image = showtime_image( $slot, 1024 );
+			}
 			$projects[] = array(
 				'title'        => get_the_title(),
 				'href'         => get_permalink(),
-				'neighborhood' => function_exists( 'get_field' ) ? (string) get_field( 'neighborhood' ) : '',
-				'scope'        => function_exists( 'get_field' ) ? (string) get_field( 'scope' ) : '',
-				'finish'       => function_exists( 'get_field' ) ? (string) get_field( 'finish' ) : '',
-				'duration'     => function_exists( 'get_field' ) ? (string) get_field( 'duration' ) : '',
-				'value'        => function_exists( 'get_field' ) ? (string) get_field( 'value' ) : '',
+				'neighborhood' => function_exists( 'get_field' ) ? (string) get_field( 'neighborhood', $pid ) : '',
+				'scope'        => function_exists( 'get_field' ) ? (string) get_field( 'scope', $pid ) : '',
+				'finish'       => function_exists( 'get_field' ) ? (string) get_field( 'finish', $pid ) : '',
+				'duration'     => function_exists( 'get_field' ) ? (string) get_field( 'duration_label', $pid ) : '',
+				'value'        => function_exists( 'get_field' ) ? (string) get_field( 'value_label', $pid ) : '',
+				'image'        => $image,
 				'gradient'     => 'linear-gradient(135deg,#1F2F3A 0%,#5C8A9E 100%)',
 			);
 		}
@@ -40,40 +49,42 @@ if ( post_type_exists( 'project' ) ) {
 }
 
 if ( empty( $projects ) ) {
-	$img = function_exists( 'showtime_image' ) ? 'showtime_image' : null;
+	// Soft fallback when the CPT hasn't been seeded yet — shows 3 stylized
+	// cards pointing to /projects/ instead of dead air.
+	$img = function_exists( 'showtime_image' );
 	$projects = apply_filters(
 		'showtime/home_featured_projects',
 		array(
 			array(
-				'title'        => __( 'Sherman Oaks ranch — full remodel', 'showtime-pools' ),
+				'title'        => __( 'Sherman Oaks mid-century remodel', 'showtime-pools' ),
 				'neighborhood' => __( 'Sherman Oaks', 'showtime-pools' ),
-				'scope'        => __( 'Replaster · Tile · Pebble · Equipment swap', 'showtime-pools' ),
-				'duration'     => __( '4 weeks', 'showtime-pools' ),
-				'value'        => __( '$28,400', 'showtime-pools' ),
-				'finish'       => __( 'PebbleTec Midnight Blue', 'showtime-pools' ),
-				'image'        => $img ? showtime_image( 'project_1', 800 ) : '',
+				'scope'        => __( 'Resurface · Tile · Coping · Equipment', 'showtime-pools' ),
+				'duration'     => __( '12 days', 'showtime-pools' ),
+				'value'        => __( '$28k', 'showtime-pools' ),
+				'finish'       => __( 'PebbleTec Cool Blue', 'showtime-pools' ),
+				'image'        => $img ? showtime_image( 'project_1', 1024 ) : '',
 				'gradient'     => 'linear-gradient(135deg,#1F2F3A 0%,#5C8A9E 100%)',
 				'href'         => home_url( '/projects/' ),
 			),
 			array(
-				'title'        => __( 'Encino estate — new construction', 'showtime-pools' ),
+				'title'        => __( 'Encino estate new construction', 'showtime-pools' ),
 				'neighborhood' => __( 'Encino', 'showtime-pools' ),
-				'scope'        => __( 'New gunite · Spa · Sheer descent · Automation', 'showtime-pools' ),
-				'duration'     => __( '11 weeks', 'showtime-pools' ),
-				'value'        => __( '$142,000', 'showtime-pools' ),
-				'finish'       => __( 'Quartz · Travertine coping', 'showtime-pools' ),
-				'image'        => $img ? showtime_image( 'project_2', 800 ) : '',
+				'scope'        => __( 'New build · Hardscape · Fire features', 'showtime-pools' ),
+				'duration'     => __( '10 weeks', 'showtime-pools' ),
+				'value'        => __( '$142k', 'showtime-pools' ),
+				'finish'       => __( 'PebbleTec Aqua White', 'showtime-pools' ),
+				'image'        => $img ? showtime_image( 'project_2', 1024 ) : '',
 				'gradient'     => 'linear-gradient(135deg,#314A58 0%,#88A4B6 100%)',
 				'href'         => home_url( '/projects/' ),
 			),
 			array(
-				'title'        => __( 'Studio City modern — equipment + automation', 'showtime-pools' ),
+				'title'        => __( 'Studio City equipment overhaul', 'showtime-pools' ),
 				'neighborhood' => __( 'Studio City', 'showtime-pools' ),
-				'scope'        => __( 'Pentair IntelliCenter · VS pump · Salt cell', 'showtime-pools' ),
-				'duration'     => __( '4 days', 'showtime-pools' ),
-				'value'        => __( '$8,650', 'showtime-pools' ),
-				'finish'       => __( 'Existing pebble retained', 'showtime-pools' ),
-				'image'        => $img ? showtime_image( 'project_3', 800 ) : '',
+				'scope'        => __( 'Automation · Pump · Salt · Heater', 'showtime-pools' ),
+				'duration'     => __( '3 days', 'showtime-pools' ),
+				'value'        => __( '$8.6k', 'showtime-pools' ),
+				'finish'       => __( 'Equipment only', 'showtime-pools' ),
+				'image'        => $img ? showtime_image( 'project_3', 1024 ) : '',
 				'gradient'     => 'linear-gradient(135deg,#3F6072 0%,#6E94A9 100%)',
 				'href'         => home_url( '/projects/' ),
 			),

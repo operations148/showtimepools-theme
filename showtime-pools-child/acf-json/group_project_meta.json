@@ -1,0 +1,113 @@
+{
+    "key": "group_showtime_project_meta",
+    "title": "Project meta",
+    "fields": [
+        {
+            "key": "field_st_proj_neighborhood",
+            "label": "Neighborhood",
+            "name": "neighborhood",
+            "type": "text",
+            "placeholder": "Sherman Oaks",
+            "wrapper": { "width": "33" }
+        },
+        {
+            "key": "field_st_proj_finish",
+            "label": "Finish",
+            "name": "finish",
+            "type": "text",
+            "placeholder": "PebbleTec Cool Blue · 6×6 ceramic tile",
+            "wrapper": { "width": "67" }
+        },
+        {
+            "key": "field_st_proj_scope",
+            "label": "Scope",
+            "name": "scope",
+            "type": "text",
+            "placeholder": "Resurface · Tile · Coping · Equipment",
+            "wrapper": { "width": "100" }
+        },
+        {
+            "key": "field_st_proj_value",
+            "label": "Value label",
+            "name": "value_label",
+            "type": "text",
+            "placeholder": "$28k",
+            "wrapper": { "width": "33" }
+        },
+        {
+            "key": "field_st_proj_duration",
+            "label": "Duration label",
+            "name": "duration_label",
+            "type": "text",
+            "placeholder": "12 days",
+            "wrapper": { "width": "33" }
+        },
+        {
+            "key": "field_st_proj_date",
+            "label": "Completion (YYYY-MM)",
+            "name": "completion_date",
+            "type": "text",
+            "placeholder": "2025-09",
+            "wrapper": { "width": "34" }
+        },
+        {
+            "key": "field_st_proj_before",
+            "label": "Before image",
+            "name": "before_image",
+            "type": "image",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_st_proj_after",
+            "label": "After image (or main hero if no before)",
+            "name": "after_image",
+            "type": "image",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_st_proj_gallery",
+            "label": "Gallery",
+            "name": "gallery",
+            "type": "gallery",
+            "return_format": "array",
+            "preview_size": "medium",
+            "min": 0,
+            "wrapper": { "width": "100" }
+        },
+        {
+            "key": "field_st_proj_client_quote",
+            "label": "Client quote",
+            "name": "client_quote",
+            "type": "textarea",
+            "rows": 3,
+            "wrapper": { "width": "70" }
+        },
+        {
+            "key": "field_st_proj_client_name",
+            "label": "Client (first name + neighborhood is fine)",
+            "name": "client_name",
+            "type": "text",
+            "placeholder": "James · Sherman Oaks",
+            "wrapper": { "width": "30" }
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "project"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "active": true
+}

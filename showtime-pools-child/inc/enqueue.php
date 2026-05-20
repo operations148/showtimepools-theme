@@ -77,9 +77,21 @@ add_action(
 		foreach ( $interior_templates as $tpl ) {
 			if ( is_page_template( $tpl ) ) { $is_interior = true; break; }
 		}
-		if ( $is_interior || is_404() ) {
+		if ( $is_interior || is_404() || is_singular( 'post' ) || is_archive() || is_home() ) {
 			[ $uri, $ver ] = showtime_asset( 'assets/css/interior.css' );
 			wp_enqueue_style( 'showtime-interior', $uri, array( 'showtime-components' ), $ver );
+		}
+
+		// Blog hub + archives + single posts get the dedicated blog stylesheet.
+		if ( is_page_template( 'page-blog.php' ) || is_singular( 'post' ) || is_archive() || is_home() ) {
+			[ $uri, $ver ] = showtime_asset( 'assets/css/blog.css' );
+			wp_enqueue_style( 'showtime-blog', $uri, array( 'showtime-components', 'showtime-interior' ), $ver );
+		}
+
+		// TOC + scroll-spy only on single posts (article body required).
+		if ( is_singular( 'post' ) ) {
+			[ $uri, $ver ] = showtime_asset( 'assets/js/blog.js' );
+			wp_enqueue_script( 'showtime-blog', $uri, array(), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );
 		}
 
 		// Global JS, deferred (no render-block).

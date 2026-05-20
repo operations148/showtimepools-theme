@@ -40,8 +40,8 @@ $services = class_exists( '\\Showtime\\Services' ) ? \Showtime\Services::all() :
 					<div class="primary-nav__mega-grid primary-nav__mega-grid--single">
 						<a class="primary-nav__mega-item" href="<?php echo esc_url( home_url( '/about/' ) ); ?>"><span><?php esc_html_e( 'About Us', 'showtime-pools' ); ?></span><small><?php esc_html_e( 'Who we are, what we do', 'showtime-pools' ); ?></small></a>
 						<a class="primary-nav__mega-item" href="<?php echo esc_url( home_url( '/the-founder/' ) ); ?>"><span><?php esc_html_e( 'The Founder', 'showtime-pools' ); ?></span><small><?php esc_html_e( "Steve Adams' story", 'showtime-pools' ); ?></small></a>
-						<a class="primary-nav__mega-item" href="<?php echo esc_url( home_url( '/blog/' ) ); ?>"><span><?php esc_html_e( 'Blog Insights', 'showtime-pools' ); ?></span><small><?php esc_html_e( 'Pool care, equipment, design', 'showtime-pools' ); ?></small></a>
-						<a class="primary-nav__mega-item" href="<?php echo esc_url( home_url( '/blog/recent/' ) ); ?>"><span><?php esc_html_e( 'Recent Articles', 'showtime-pools' ); ?></span><small><?php esc_html_e( 'Latest updates', 'showtime-pools' ); ?></small></a>
+						<a class="primary-nav__mega-item" href="<?php echo esc_url( home_url( '/blog/' ) ); ?>"><span><?php esc_html_e( 'Blog', 'showtime-pools' ); ?></span><small><?php esc_html_e( 'Pool care, equipment, design', 'showtime-pools' ); ?></small></a>
+						<a class="primary-nav__mega-item" href="<?php echo esc_url( home_url( '/projects/' ) ); ?>"><span><?php esc_html_e( 'Projects', 'showtime-pools' ); ?></span><small><?php esc_html_e( 'Recent work across LA', 'showtime-pools' ); ?></small></a>
 					</div>
 				</div>
 			</li>

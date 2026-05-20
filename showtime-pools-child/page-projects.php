@@ -12,20 +12,66 @@ defined( 'ABSPATH' ) || exit;
 
 get_header();
 
-$projects = apply_filters(
-	'showtime/projects_grid',
-	array(
-		array( 'image' => function_exists('showtime_image') ? showtime_image('project_1', 800) : '', 'title' => 'Sherman Oaks ranch — full remodel',           'neighborhood' => 'Sherman Oaks',  'scope' => 'Replaster · Tile · PebbleTec · Equipment swap',         'finish' => 'PebbleTec Midnight Blue',  'duration' => '4 weeks',  'value' => '$28,400',  'gradient' => 'linear-gradient(135deg,#1F2F3A,#5C8A9E)' ),
-		array( 'image' => function_exists('showtime_image') ? showtime_image('project_2', 800) : '', 'title' => 'Encino estate — new construction',            'neighborhood' => 'Encino',        'scope' => 'New gunite · Spa · Sheer descent · Automation',          'finish' => 'Quartz · Travertine coping','duration' => '11 weeks', 'value' => '$142,000', 'gradient' => 'linear-gradient(135deg,#314A58,#88A4B6)' ),
-		array( 'image' => function_exists('showtime_image') ? showtime_image('project_3', 800) : '', 'title' => 'Studio City modern — equipment + automation', 'neighborhood' => 'Studio City',   'scope' => 'Pentair IntelliCenter · VS pump · Salt cell',            'finish' => 'Existing pebble retained',  'duration' => '4 days',   'value' => '$8,650',   'gradient' => 'linear-gradient(135deg,#3F6072,#B0C5D2)' ),
-		array( 'image' => function_exists('showtime_image') ? showtime_image('project_4', 800) : '', 'title' => 'Beverly Hills 1962 rebuild',                  'neighborhood' => 'Beverly Hills', 'scope' => 'Partial gunite · Tile · Coping · Pebble',                'finish' => 'PebbleSheen Caribbean',     'duration' => '7 weeks',  'value' => '$54,200',  'gradient' => 'linear-gradient(135deg,#0A0A0A,#4D7589)' ),
-		array( 'image' => function_exists('showtime_image') ? showtime_image('project_5', 800) : '', 'title' => 'Tarzana 1980s remodel',                       'neighborhood' => 'Tarzana',       'scope' => 'Replaster · Equipment swap · Heater · Salt cell',        'finish' => 'White plaster + glass tile','duration' => '3 weeks',  'value' => '$19,800',  'gradient' => 'linear-gradient(135deg,#1F1F1F,#6E94A9)' ),
-		array( 'image' => function_exists('showtime_image') ? showtime_image('project_6', 800) : '', 'title' => 'Woodland Hills heater + salt cell',           'neighborhood' => 'Woodland Hills','scope' => 'Raypak 406A · Pentair IC40 · LADWP rebate paperwork',    'finish' => 'Existing finish retained',  'duration' => '2 days',   'value' => '$4,950',   'gradient' => 'linear-gradient(135deg,#314A58,#5C8A9E)' ),
-		array( 'image' => function_exists('showtime_image') ? showtime_image('project_7', 800) : '', 'title' => 'Sherman Oaks tile + coping refresh',          'neighborhood' => 'Sherman Oaks',  'scope' => 'Waterline tile · Travertine coping · Caulk replacement', 'finish' => 'Glass mosaic step accent',  'duration' => '10 days',  'value' => '$11,200',  'gradient' => 'linear-gradient(135deg,#1F2F3A,#5C8A9E)' ),
-		array( 'image' => function_exists('showtime_image') ? showtime_image('project_8', 800) : '', 'title' => 'Studio City hillside bonding retrofit',       'neighborhood' => 'Studio City',   'scope' => 'Bonding grid · Electrical permit · Inspection',          'finish' => 'Code compliance only',      'duration' => '6 days',   'value' => '$7,400',   'gradient' => 'linear-gradient(135deg,#3F6072,#B0C5D2)' ),
-		array( 'image' => function_exists('showtime_image') ? showtime_image('project_9', 800) : '', 'title' => 'Encino spa add-on',                           'neighborhood' => 'Encino',        'scope' => 'Raised spa · Spillway · Heater · Plumbing',              'finish' => 'Travertine deck match',     'duration' => '5 weeks',  'value' => '$38,900',  'gradient' => 'linear-gradient(135deg,#314A58,#88A4B6)' ),
-	)
+// /projects/ now queries the live Project CPT. Seeder writes 8 demo
+// projects on first activation; admin can add more (or replace) freely.
+// Gradients cycle so the grid stays visually rhythmic.
+$gradients = array(
+	'linear-gradient(135deg,#1F2F3A,#5C8A9E)',
+	'linear-gradient(135deg,#314A58,#88A4B6)',
+	'linear-gradient(135deg,#3F6072,#B0C5D2)',
+	'linear-gradient(135deg,#0A0A0A,#4D7589)',
+	'linear-gradient(135deg,#1F1F1F,#6E94A9)',
 );
+
+$projects = array();
+if ( post_type_exists( 'project' ) ) {
+	$q = new WP_Query(
+		array(
+			'post_type'      => 'project',
+			'posts_per_page' => 24,
+			'orderby'        => 'menu_order',
+			'order'          => 'ASC',
+			'no_found_rows'  => true,
+		)
+	);
+	$i = 0;
+	while ( $q->have_posts() ) :
+		$q->the_post();
+		$pid  = get_the_ID();
+		$slot = apply_filters( 'showtime/image/slot_for_project', 'project_1', (int) $pid );
+		$image = '';
+		if ( has_post_thumbnail( $pid ) ) {
+			$image = (string) get_the_post_thumbnail_url( $pid, 'large' );
+		} elseif ( function_exists( 'showtime_image' ) ) {
+			$image = showtime_image( $slot, 1024 );
+		}
+		$projects[] = array(
+			'image'        => $image,
+			'title'        => get_the_title(),
+			'href'         => get_permalink(),
+			'neighborhood' => function_exists( 'get_field' ) ? (string) get_field( 'neighborhood', $pid ) : '',
+			'scope'        => function_exists( 'get_field' ) ? (string) get_field( 'scope', $pid ) : '',
+			'finish'       => function_exists( 'get_field' ) ? (string) get_field( 'finish', $pid ) : '',
+			'duration'     => function_exists( 'get_field' ) ? (string) get_field( 'duration_label', $pid ) : '',
+			'value'        => function_exists( 'get_field' ) ? (string) get_field( 'value_label', $pid ) : '',
+			'gradient'     => $gradients[ $i++ % count( $gradients ) ],
+		);
+	endwhile;
+	wp_reset_postdata();
+}
+
+// Soft fallback so the page never renders empty if the seeder hasn't run.
+if ( empty( $projects ) ) {
+	$projects = apply_filters(
+		'showtime/projects_grid',
+		array(
+			array( 'image' => function_exists('showtime_image') ? showtime_image('project_1', 1024) : '', 'title' => 'Sherman Oaks mid-century remodel', 'href' => home_url('/projects/'), 'neighborhood' => 'Sherman Oaks',  'scope' => 'Resurface · Tile · Coping · Equipment', 'finish' => 'PebbleTec Cool Blue', 'duration' => '12 days', 'value' => '$28k',  'gradient' => $gradients[0] ),
+			array( 'image' => function_exists('showtime_image') ? showtime_image('project_2', 1024) : '', 'title' => 'Encino estate new construction',   'href' => home_url('/projects/'), 'neighborhood' => 'Encino',        'scope' => 'New build · Hardscape · Fire features', 'finish' => 'PebbleTec Aqua White', 'duration' => '10 weeks', 'value' => '$142k', 'gradient' => $gradients[1] ),
+			array( 'image' => function_exists('showtime_image') ? showtime_image('project_3', 1024) : '', 'title' => 'Studio City equipment overhaul',   'href' => home_url('/projects/'), 'neighborhood' => 'Studio City',   'scope' => 'Automation · Pump · Salt · Heater',     'finish' => 'Equipment only', 'duration' => '3 days', 'value' => '$8.6k', 'gradient' => $gradients[2] ),
+		)
+	);
+}
+?>
 ?>
 <main id="primary" class="site-main interior-page">
 
@@ -57,24 +103,29 @@ $projects = apply_filters(
 	<section class="int-section" data-reveal>
 		<div class="container">
 			<div class="featured-projects__grid">
-				<?php foreach ( $projects as $p ) : ?>
-					<article class="proj-card">
+				<?php foreach ( $projects as $p ) :
+					$href = (string) ( $p['href'] ?? '#' );
+					$tag  = '#' === $href ? 'article' : 'a';
+				?>
+					<<?php echo esc_html( $tag ); ?> class="proj-card"<?php if ( '#' !== $href ) : ?> href="<?php echo esc_url( $href ); ?>"<?php endif; ?>>
 						<div class="proj-card__media" style="background:<?php echo esc_attr( $p['gradient'] ); ?>">
 							<?php if ( ! empty( $p['image'] ) ) : ?>
 								<img class="proj-card__media-img" src="<?php echo esc_url( $p['image'] ); ?>" alt="" loading="lazy" decoding="async">
 							<?php endif; ?>
-							<span class="proj-card__neighborhood"><?php echo esc_html( $p['neighborhood'] ); ?></span>
+							<?php if ( ! empty( $p['neighborhood'] ) ) : ?>
+								<span class="proj-card__neighborhood"><?php echo esc_html( $p['neighborhood'] ); ?></span>
+							<?php endif; ?>
 						</div>
 						<div class="proj-card__body">
 							<h3 class="proj-card__title"><?php echo esc_html( $p['title'] ); ?></h3>
 							<dl class="proj-card__meta">
-								<div><dt><?php esc_html_e( 'Scope', 'showtime-pools' ); ?></dt><dd><?php echo esc_html( $p['scope'] ); ?></dd></div>
-								<div><dt><?php esc_html_e( 'Finish', 'showtime-pools' ); ?></dt><dd><?php echo esc_html( $p['finish'] ); ?></dd></div>
-								<div><dt><?php esc_html_e( 'Duration', 'showtime-pools' ); ?></dt><dd><?php echo esc_html( $p['duration'] ); ?></dd></div>
-								<div><dt><?php esc_html_e( 'Investment', 'showtime-pools' ); ?></dt><dd><?php echo esc_html( $p['value'] ); ?></dd></div>
+								<?php if ( ! empty( $p['scope'] ) ) : ?><div><dt><?php esc_html_e( 'Scope', 'showtime-pools' ); ?></dt><dd><?php echo esc_html( $p['scope'] ); ?></dd></div><?php endif; ?>
+								<?php if ( ! empty( $p['finish'] ) ) : ?><div><dt><?php esc_html_e( 'Finish', 'showtime-pools' ); ?></dt><dd><?php echo esc_html( $p['finish'] ); ?></dd></div><?php endif; ?>
+								<?php if ( ! empty( $p['duration'] ) ) : ?><div><dt><?php esc_html_e( 'Duration', 'showtime-pools' ); ?></dt><dd><?php echo esc_html( $p['duration'] ); ?></dd></div><?php endif; ?>
+								<?php if ( ! empty( $p['value'] ) ) : ?><div><dt><?php esc_html_e( 'Investment', 'showtime-pools' ); ?></dt><dd><?php echo esc_html( $p['value'] ); ?></dd></div><?php endif; ?>
 							</dl>
 						</div>
-					</article>
+					</<?php echo esc_html( $tag ); ?>>
 				<?php endforeach; ?>
 			</div>
 		</div>

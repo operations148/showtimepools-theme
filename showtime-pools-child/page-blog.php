@@ -2,9 +2,15 @@
 /**
  * Template Name: Blog Hub
  *
- * /blog/ — Blog landing page. Pulls latest posts when the WP `post` type
- * has content; falls back to a substantive "what we are writing about"
- * preview so the page is never empty.
+ * /blog/ — content hub. Pinch A Penny-style editorial IA: hero with
+ * eyebrow + H1 + lead, 3-category strip with photo + count, featured
+ * post + grid of recent posts, sidebar with categories + recent post
+ * list. Single posts live at /<post-slug>/ (WP default), Article
+ * JSON-LD in single.php.
+ *
+ * Editors add new posts in WP admin → Posts; categories under Posts →
+ * Categories. Three seed categories ship by default (Pool Trends,
+ * Maintenance Tips, Equipment Guides).
  *
  * @package ShowtimePools
  */
@@ -13,21 +19,40 @@ defined( 'ABSPATH' ) || exit;
 
 get_header();
 
-$hero_img = function_exists( 'showtime_image' ) ? showtime_image( 'lifestyle_main', 1600 ) : '';
+// All non-Uncategorized post categories.
+$categories = get_categories(
+	array(
+		'orderby'    => 'name',
+		'order'      => 'ASC',
+		'hide_empty' => false,
+		'exclude'    => array( 1 ),
+	)
+);
 
-$posts = get_posts(
+// Latest 9 posts.
+$q = new WP_Query(
 	array(
 		'post_type'      => 'post',
 		'posts_per_page' => 9,
 		'post_status'    => 'publish',
+		'no_found_rows'  => true,
 	)
 );
+
+$blog_hero_img = function_exists( 'showtime_image' ) ? showtime_image( 'blog_default', 1920 ) : '';
+
+// Map seeded category slugs → bundled hero slots.
+$category_slot_map = array(
+	'pool-trends'      => 'blog_trends',
+	'maintenance-tips' => 'blog_tips',
+	'equipment-guides' => 'blog_equipment',
+);
 ?>
-<main id="primary" class="site-main interior-page">
+<main id="primary" class="site-main blog-hub">
 
 	<section class="int-hero int-hero--brand int-hero--photo" data-reveal>
-		<?php if ( $hero_img ) : ?>
-			<img class="int-hero__photo" src="<?php echo esc_url( $hero_img ); ?>" alt="" loading="eager" fetchpriority="high" decoding="async">
+		<?php if ( $blog_hero_img ) : ?>
+			<img class="int-hero__photo" src="<?php echo esc_url( $blog_hero_img ); ?>" alt="" loading="eager" fetchpriority="high" decoding="async">
 		<?php endif; ?>
 		<div class="int-hero__pattern" aria-hidden="true"></div>
 		<div class="container">
@@ -37,120 +62,162 @@ $posts = get_posts(
 				<span aria-current="page"><?php esc_html_e( 'Blog', 'showtime-pools' ); ?></span>
 			</nav>
 			<div class="int-hero__inner">
-				<span class="eyebrow eyebrow--invert"><?php esc_html_e( 'Blog Insights', 'showtime-pools' ); ?></span>
-				<h1 class="int-hero__title balance"><?php esc_html_e( 'Pool care, equipment, and design notes from the field.', 'showtime-pools' ); ?></h1>
+				<span class="eyebrow eyebrow--invert"><?php esc_html_e( 'Pool insights · From the crew', 'showtime-pools' ); ?></span>
+				<h1 class="int-hero__title balance"><?php esc_html_e( 'Trends, tips, and equipment guides from the team that does it every week.', 'showtime-pools' ); ?></h1>
 				<p class="int-hero__lead">
-					<?php esc_html_e( 'Real lessons from 1,800+ Sherman Oaks, Encino, Beverly Hills, and West Valley pools. Equipment recommendations we actually stand behind. Chemistry that works in LA water.', 'showtime-pools' ); ?>
+					<?php esc_html_e( 'Practical pool knowledge from Steve and the crew. Real water, real equipment, real LA backyards.', 'showtime-pools' ); ?>
 				</p>
 			</div>
 		</div>
 	</section>
 
-	<?php if ( ! empty( $posts ) ) : ?>
-
-		<section class="int-section" data-reveal>
+	<?php if ( ! empty( $categories ) ) : ?>
+		<section class="blog-categories" data-reveal>
 			<div class="container">
-				<div class="blog-grid">
-					<?php foreach ( $posts as $p ) : setup_postdata( $p ); ?>
-						<article class="blog-card">
-							<?php $thumb = get_the_post_thumbnail_url( $p->ID, 'large' ); ?>
-							<?php if ( $thumb ) : ?>
-								<a class="blog-card__media" href="<?php echo esc_url( get_permalink( $p->ID ) ); ?>">
-									<img src="<?php echo esc_url( $thumb ); ?>" alt="<?php echo esc_attr( get_the_title( $p->ID ) ); ?>" loading="lazy">
-								</a>
-							<?php endif; ?>
-							<div class="blog-card__body">
-								<div class="blog-card__meta">
-									<time datetime="<?php echo esc_attr( get_the_date( 'c', $p->ID ) ); ?>"><?php echo esc_html( get_the_date( '', $p->ID ) ); ?></time>
-									<span aria-hidden="true">·</span>
-									<span><?php echo esc_html( wp_trim_words( wp_strip_all_tags( get_the_excerpt( $p ) ), 4, '' ) ); ?></span>
-								</div>
-								<h2 class="blog-card__title"><a href="<?php echo esc_url( get_permalink( $p->ID ) ); ?>"><?php echo esc_html( get_the_title( $p->ID ) ); ?></a></h2>
-								<p class="blog-card__excerpt"><?php echo esc_html( wp_trim_words( wp_strip_all_tags( get_the_excerpt( $p ) ), 30 ) ); ?></p>
-								<a class="blog-card__cta" href="<?php echo esc_url( get_permalink( $p->ID ) ); ?>"><?php esc_html_e( 'Read article →', 'showtime-pools' ); ?></a>
-							</div>
-						</article>
-					<?php endforeach; wp_reset_postdata(); ?>
-				</div>
-			</div>
-		</section>
-
-	<?php else : ?>
-
-		<section class="int-section" data-reveal>
-			<div class="container">
-				<header class="int-section__head">
-					<span class="eyebrow"><?php esc_html_e( 'In the pipeline', 'showtime-pools' ); ?></span>
-					<h2 class="balance"><?php esc_html_e( 'Articles dropping over the next few weeks.', 'showtime-pools' ); ?></h2>
-					<p class="int-section__lead"><?php esc_html_e( 'Subscribe at the bottom of any page and we will send the first post when it goes live. No drip campaigns, just the article.', 'showtime-pools' ); ?></p>
+				<header class="blog-categories__head">
+					<span class="eyebrow"><?php esc_html_e( 'Browse by topic', 'showtime-pools' ); ?></span>
+					<h2 class="balance"><?php esc_html_e( 'Three topics, written by people who do this every day.', 'showtime-pools' ); ?></h2>
 				</header>
-
-				<div class="blog-grid">
-					<?php
-					$preview = array(
-						array(
-							'cat'   => 'Equipment',
-							'title' => 'Variable-Speed Pumps in LA: When the LADWP Rebate Pays Back the Upgrade',
-							'body'  => 'A breakdown of what the LADWP rebate actually covers, what it does not, and the real-world payback math on a Pentair IntelliFlo3 in a 14×28 backyard pool in Sherman Oaks.',
-							'img'   => 'project_3',
-						),
-						array(
-							'cat'   => 'Chemistry',
-							'title' => 'Why LA Water Calcium Scaling Wrecks Plaster Faster Than You Think',
-							'body'  => 'LADWP water clocks 280-320 ppm calcium hardness. Untreated, that is the #1 reason a five-year plaster reads like a ten-year plaster. The 30-day balance plan we run on every new finish.',
-							'img'   => 'project_4',
-						),
-						array(
-							'cat'   => 'Inspections',
-							'title' => 'Pre-Purchase Pool Inspection: Five Things General Home Inspectors Always Miss',
-							'body'  => 'Bonding grid continuity. VGB drain compliance. Heater chimney clearance. Pad-to-pool plumbing layout. Pump runtime hours. None of these get five minutes from a generalist; we spend ninety on each.',
-							'img'   => 'project_6',
-						),
-						array(
-							'cat'   => 'Remodel',
-							'title' => 'PebbleTec vs Quartz vs White Plaster: Honest Cost-per-Year Math',
-							'body'  => 'White plaster lasts 7-12 years. Quartz lasts 12-18. PebbleTec runs 20+. With a 5-year warranty in the picture, the cost-per-year picture flips by a lot. The full breakdown with current LA pricing.',
-							'img'   => 'project_5',
-						),
-						array(
-							'cat'   => 'Service',
-							'title' => 'Same-Tech-Every-Week: Why Tight Geography Beats National Pool Chains',
-							'body'  => 'Why we restrict our weekly route to six neighborhoods on purpose. The math on why same-tech-every-week beats five-techs-a-year, even when the chain quotes you 25 percent less.',
-							'img'   => 'project_7',
-						),
-						array(
-							'cat'   => 'Construction',
-							'title' => 'Hillside Pool Builds in Studio City: Pier Engineering, Bonding, Permits',
-							'body'  => 'Studio City hillside lots are pier-supported. Bonding grids on older builds are non-existent. The permit path through LA County for a hillside pool, with timelines, costs, and what derails most builds.',
-							'img'   => 'project_8',
-						),
-					);
-					foreach ( $preview as $p ) :
-						$img = function_exists( 'showtime_image' ) ? showtime_image( $p['img'], 800 ) : '';
+				<div class="blog-categories__grid">
+					<?php foreach ( $categories as $cat ) :
+						$slot = $category_slot_map[ $cat->slug ] ?? 'blog_default';
+						$cat_img = function_exists( 'showtime_image' ) ? showtime_image( $slot, 1024 ) : '';
 					?>
-						<article class="blog-card">
-							<?php if ( $img ) : ?>
-								<div class="blog-card__media">
-									<img src="<?php echo esc_url( $img ); ?>" alt="" loading="lazy">
-								</div>
-							<?php endif; ?>
-							<div class="blog-card__body">
-								<div class="blog-card__meta">
-									<span class="blog-card__cat"><?php echo esc_html( $p['cat'] ); ?></span>
-									<span aria-hidden="true">·</span>
-									<span><?php esc_html_e( 'Coming soon', 'showtime-pools' ); ?></span>
-								</div>
-								<h2 class="blog-card__title"><?php echo esc_html( $p['title'] ); ?></h2>
-								<p class="blog-card__excerpt"><?php echo esc_html( $p['body'] ); ?></p>
+						<a class="blog-cat-card" href="<?php echo esc_url( get_category_link( $cat ) ); ?>">
+							<div class="blog-cat-card__media">
+								<?php if ( $cat_img ) : ?>
+									<img src="<?php echo esc_url( $cat_img ); ?>" alt="" loading="lazy" decoding="async">
+								<?php endif; ?>
 							</div>
-						</article>
+							<div class="blog-cat-card__body">
+								<h3 class="blog-cat-card__title"><?php echo esc_html( $cat->name ); ?></h3>
+								<?php if ( ! empty( $cat->description ) ) : ?>
+									<p class="blog-cat-card__desc"><?php echo esc_html( $cat->description ); ?></p>
+								<?php endif; ?>
+								<span class="blog-cat-card__count">
+									<?php
+									printf(
+										/* translators: %d: number of posts in this category */
+										esc_html( _n( '%d article', '%d articles', (int) $cat->count, 'showtime-pools' ) ),
+										(int) $cat->count
+									);
+									?>
+									<span aria-hidden="true"> →</span>
+								</span>
+							</div>
+						</a>
 					<?php endforeach; ?>
 				</div>
 			</div>
 		</section>
-
 	<?php endif; ?>
 
+	<section class="blog-feed" data-reveal>
+		<div class="container">
+			<div class="blog-feed__inner">
+
+				<div class="blog-feed__main">
+					<header class="blog-feed__head">
+						<span class="eyebrow"><?php esc_html_e( 'Latest articles', 'showtime-pools' ); ?></span>
+						<h2 class="balance"><?php esc_html_e( 'What we are writing about now.', 'showtime-pools' ); ?></h2>
+					</header>
+
+					<?php if ( $q->have_posts() ) : ?>
+						<div class="blog-grid">
+							<?php $first = true; while ( $q->have_posts() ) : $q->the_post();
+								$pid  = get_the_ID();
+								$slot = (string) get_post_meta( $pid, '_showtime_image_slot', true );
+								if ( '' === $slot ) {
+									$cats = get_the_category( $pid );
+									$slot = isset( $cats[0] ) && isset( $category_slot_map[ $cats[0]->slug ] ) ? $category_slot_map[ $cats[0]->slug ] : 'blog_default';
+								}
+								$post_img = has_post_thumbnail( $pid )
+									? (string) get_the_post_thumbnail_url( $pid, 'large' )
+									: ( function_exists( 'showtime_image' ) ? showtime_image( $slot, 1024 ) : '' );
+								$cls = $first ? 'blog-card blog-card--feature' : 'blog-card';
+								$first = false;
+								$primary_cat = get_the_category( $pid );
+								$primary_cat = $primary_cat[0] ?? null;
+							?>
+								<article class="<?php echo esc_attr( $cls ); ?>">
+									<a class="blog-card__link" href="<?php the_permalink(); ?>">
+										<div class="blog-card__media">
+											<?php if ( $post_img ) : ?>
+												<img src="<?php echo esc_url( $post_img ); ?>" alt="" loading="lazy" decoding="async">
+											<?php endif; ?>
+											<?php if ( $primary_cat ) : ?>
+												<span class="blog-card__pill"><?php echo esc_html( $primary_cat->name ); ?></span>
+											<?php endif; ?>
+										</div>
+										<div class="blog-card__body">
+											<time class="blog-card__date" datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>"><?php echo esc_html( get_the_date() ); ?></time>
+											<h3 class="blog-card__title"><?php the_title(); ?></h3>
+											<p class="blog-card__excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 28 ) ); ?></p>
+											<span class="blog-card__read"><?php esc_html_e( 'Read article', 'showtime-pools' ); ?> <span aria-hidden="true">→</span></span>
+										</div>
+									</a>
+								</article>
+							<?php endwhile; wp_reset_postdata(); ?>
+						</div>
+					<?php else : ?>
+						<p class="blog-empty"><?php esc_html_e( 'Articles coming soon — the crew is writing.', 'showtime-pools' ); ?></p>
+					<?php endif; ?>
+				</div>
+
+				<aside class="blog-feed__side">
+
+					<?php if ( ! empty( $categories ) ) : ?>
+						<section class="blog-side blog-side--cats">
+							<h3 class="blog-side__title"><?php esc_html_e( 'Categories', 'showtime-pools' ); ?></h3>
+							<ul class="blog-side__list">
+								<?php foreach ( $categories as $cat ) : ?>
+									<li>
+										<a href="<?php echo esc_url( get_category_link( $cat ) ); ?>">
+											<?php echo esc_html( $cat->name ); ?>
+											<span class="blog-side__count">(<?php echo (int) $cat->count; ?>)</span>
+										</a>
+									</li>
+								<?php endforeach; ?>
+							</ul>
+						</section>
+					<?php endif; ?>
+
+					<section class="blog-side">
+						<h3 class="blog-side__title"><?php esc_html_e( 'Recent articles', 'showtime-pools' ); ?></h3>
+						<?php
+						$recent = new WP_Query(
+							array(
+								'post_type'      => 'post',
+								'posts_per_page' => 5,
+								'post_status'    => 'publish',
+								'no_found_rows'  => true,
+							)
+						);
+						?>
+						<ul class="blog-side__list">
+							<?php while ( $recent->have_posts() ) : $recent->the_post(); ?>
+								<li>
+									<a href="<?php the_permalink(); ?>">
+										<strong><?php the_title(); ?></strong>
+										<time datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>"><?php echo esc_html( get_the_date() ); ?></time>
+									</a>
+								</li>
+							<?php endwhile; wp_reset_postdata(); ?>
+						</ul>
+					</section>
+
+					<section class="blog-side blog-side--cta">
+						<h3 class="blog-side__title"><?php esc_html_e( 'Ready to talk to a real human?', 'showtime-pools' ); ?></h3>
+						<p><?php esc_html_e( 'Get a free quote on a repair, remodel, or weekly service.', 'showtime-pools' ); ?></p>
+						<a class="btn btn--primary" href="<?php echo esc_url( home_url( '/quote/' ) ); ?>"><?php esc_html_e( 'Get a free quote', 'showtime-pools' ); ?></a>
+					</section>
+
+				</aside>
+
+			</div>
+		</div>
+	</section>
 
 </main>
-<?php get_footer();
+<?php
+get_footer();

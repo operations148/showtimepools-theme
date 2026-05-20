@@ -2,10 +2,18 @@
 /**
  * Template Name: The Founder
  *
- * /the-founder/ — Steve Adams story page. Mirrors /about/ rhythm:
- *   1. Text-only hero (eyebrow + H1 + lead, no photo background)
- *   2. Story section using .about-story pattern (portrait beside prose)
- *   3. Contact list
+ * /the-founder/ — Steve Adams story page. Every label, every block, the
+ * portrait, the pull quote, and the contact list is editable from
+ * Site Content → Page Copy → Founder page. PHP fallbacks below preserve
+ * the original copy when ACF fields are empty.
+ *
+ * Structure:
+ *   1. Hero          (eyebrow + H1 + lead, full-bleed photo)
+ *   2. Story         (portrait + 3-paragraph default OR ACF story blocks)
+ *   3. Pull quote    (oversized quote + attribution, off-white surface)
+ *   4. Values strip  (3 promises pulled from About value_cards or defaults)
+ *   5. Contact list  (phone/email/shop/social — dynamic from Customizer + ACF)
+ *   6. CTA banner    (Call Steve + Get a Quote)
  *
  * @package ShowtimePools
  */
@@ -14,32 +22,90 @@ defined( 'ABSPATH' ) || exit;
 
 get_header();
 
-$founder_img = function_exists( 'showtime_image' ) ? showtime_image( 'founder', 1200 ) : '';
-$hero_bg     = function_exists( 'showtime_image' ) ? showtime_image( 'about_hero', 1920 ) : '';
+$opt = function_exists( 'get_field' ) ? 'option' : false;
 
+// --- ACF copy fields, with PHP fallbacks --------------------------------
+$f_name      = $opt ? (string) get_field( 'founder_name', $opt ) : '';
+$f_title     = $opt ? (string) get_field( 'founder_title', $opt ) : '';
+$f_eyebrow   = $opt ? (string) get_field( 'founder_eyebrow', $opt ) : '';
+$f_h1        = $opt ? (string) get_field( 'founder_h1', $opt ) : '';
+$f_lead      = $opt ? (string) get_field( 'founder_lead', $opt ) : '';
+$f_quote     = $opt ? (string) get_field( 'founder_quote', $opt ) : '';
+$f_qattr     = $opt ? (string) get_field( 'founder_quote_attribution', $opt ) : '';
+$f_blocks    = $opt ? get_field( 'founder_story_blocks', $opt ) : null;
+$f_portrait  = $opt ? get_field( 'founder_portrait', $opt ) : null;
+
+$f_name    = '' !== $f_name    ? $f_name    : __( 'Steve Adams', 'showtime-pools' );
+$f_title   = '' !== $f_title   ? $f_title   : __( 'Founder & CEO', 'showtime-pools' );
+$f_eyebrow = '' !== $f_eyebrow ? $f_eyebrow : __( 'The Founder', 'showtime-pools' );
+$f_h1      = '' !== $f_h1      ? $f_h1      : __( 'A pool company, run like a small shop.', 'showtime-pools' );
+$f_lead    = '' !== $f_lead    ? $f_lead    : __( 'Showtime Pools is owner-operated. The shop on Ventura Boulevard. The crew is W-2. The phone is a real phone, answered by a real person.', 'showtime-pools' );
+$f_quote   = '' !== $f_quote   ? $f_quote   : __( 'If my name is on the warranty, my crew earns it on every job.', 'showtime-pools' );
+$f_qattr   = '' !== $f_qattr   ? $f_qattr   : $f_name . ', ' . $f_title;
+
+// Portrait: ACF Image override → bundled /assets/img/founder.{webp,jpg} → CDN.
+if ( is_array( $f_portrait ) && ! empty( $f_portrait['url'] ) ) {
+	$portrait_url = $f_portrait['sizes']['large'] ?? $f_portrait['url'];
+} else {
+	$portrait_url = function_exists( 'showtime_image' ) ? showtime_image( 'founder', 1200 ) : '';
+}
+
+$hero_bg = function_exists( 'showtime_image' ) ? showtime_image( 'about_hero', 1920 ) : '';
+
+// Sitewide contact data.
+$phone = (string) apply_filters( 'showtime/business/phone', '(323) 825-2099' );
+$email = (string) apply_filters( 'showtime/business/email', 'operations@showtimepoolmechanics.com' );
+
+// Offices + socials from same sources as footer + contact page.
+$offices = function_exists( 'showtime_acf_rows' ) ? showtime_acf_rows( 'offices', array(
+	array( 'label' => 'Sherman Oaks (Main)', 'street' => '15301 Ventura Blvd.', 'city' => 'Sherman Oaks, CA 91403' ),
+) ) : array();
+$shop = $offices[0] ?? array( 'street' => '15301 Ventura Blvd.', 'city' => 'Sherman Oaks, CA 91403' );
+
+$socials = (array) apply_filters( 'showtime/business/socials', array() );
+$linkedin = '';
+foreach ( $socials as $s ) {
+	$label = strtolower( (string) ( is_array( $s ) ? ( $s['label'] ?? '' ) : '' ) );
+	$url   = (string) ( is_array( $s ) ? ( $s['url'] ?? '' ) : $s );
+	if ( $label === 'linkedin' ) { $linkedin = $url; break; }
+}
+
+// Values strip — reuse About value cards if defined, else fall back to 3 lines.
+$values_strip = array();
+if ( function_exists( 'showtime_acf_rows' ) ) {
+	$values_strip = showtime_acf_rows( 'about_value_cards', array() );
+}
+if ( empty( $values_strip ) ) {
+	$values_strip = array(
+		array( 'title' => __( 'On every quote', 'showtime-pools' ),         'body' => __( 'I walk every site and sign every itemized estimate. The person who quotes the job is on-site when the work happens.', 'showtime-pools' ) ),
+		array( 'title' => __( 'Permits in person', 'showtime-pools' ),       'body' => __( 'I pull every permit in person at LA County and Sherman Oaks Building & Safety. No expediters, no surprises.', 'showtime-pools' ) ),
+		array( 'title' => __( 'Independent inspections', 'showtime-pools' ), 'body' => __( 'When the inspection says walk away, that is what we say, even when it costs us a six-figure construction quote.', 'showtime-pools' ) ),
+	);
+}
+$values_strip = array_slice( $values_strip, 0, 3 );
+
+// Person JSON-LD — anchored to the LocalBusiness node.
 $person_schema = array(
-	'@context'      => 'https://schema.org',
-	'@type'         => 'Person',
-	'@id'           => home_url( '/the-founder/#person' ),
-	'name'          => 'Steve Adams',
-	'jobTitle'      => 'Founder & CEO',
-	'worksFor'      => array(
+	'@context'    => 'https://schema.org',
+	'@type'       => 'Person',
+	'@id'         => home_url( '/the-founder/#person' ),
+	'name'        => $f_name,
+	'jobTitle'    => $f_title,
+	'worksFor'    => array(
 		'@type' => 'Organization',
 		'@id'   => home_url( '/#localbusiness' ),
-		'name'  => 'Showtime Pools',
+		'name'  => get_bloginfo( 'name' ),
 	),
-	'description'   => 'Founder of Showtime Pools (Sherman Oaks, LA). Personally walks every quote and pulls every permit at the LA County and Sherman Oaks Building & Safety counter.',
-	'address'       => array(
+	'description' => wp_strip_all_tags( $f_lead ),
+	'address'     => array(
 		'@type'           => 'PostalAddress',
 		'addressLocality' => 'Sherman Oaks',
 		'addressRegion'   => 'CA',
 		'addressCountry'  => 'US',
 	),
-	'image'         => $founder_img,
-	'sameAs'        => array(
-		'https://linkedin.com/in/showtimepoolssocal/',
-	),
-	'knowsAbout'    => array(
+	'image'       => $portrait_url,
+	'sameAs'      => $linkedin ? array( $linkedin ) : array(),
+	'knowsAbout'  => array(
 		'Pool construction',
 		'Pool remodeling',
 		'Pool plaster and PebbleTec finishes',
@@ -49,7 +115,7 @@ $person_schema = array(
 	),
 );
 ?>
-<main id="primary" class="site-main interior-page">
+<main id="primary" class="site-main interior-page founder-page">
 
 	<section class="int-hero int-hero--brand int-hero--photo" data-reveal>
 		<?php if ( $hero_bg ) : ?>
@@ -65,11 +131,9 @@ $person_schema = array(
 				<span aria-current="page"><?php esc_html_e( 'The Founder', 'showtime-pools' ); ?></span>
 			</nav>
 			<div class="int-hero__inner">
-				<span class="eyebrow eyebrow--invert"><?php esc_html_e( 'The Founder', 'showtime-pools' ); ?></span>
-				<h1 class="int-hero__title balance"><?php esc_html_e( 'A pool company, run like a small shop.', 'showtime-pools' ); ?></h1>
-				<p class="int-hero__lead">
-					<?php esc_html_e( 'Showtime Pools is owner-operated. The shop on Ventura Boulevard. The crew is W-2. The phone is a real phone, answered by a real person.', 'showtime-pools' ); ?>
-				</p>
+				<span class="eyebrow eyebrow--invert"><?php echo esc_html( $f_eyebrow ); ?></span>
+				<h1 class="int-hero__title balance"><?php echo esc_html( $f_h1 ); ?></h1>
+				<p class="int-hero__lead"><?php echo esc_html( $f_lead ); ?></p>
 			</div>
 		</div>
 	</section>
@@ -79,23 +143,71 @@ $person_schema = array(
 			<div class="about-story">
 				<aside class="about-story__photo">
 					<div class="about-story__photo-frame">
-						<?php if ( $founder_img ) : ?>
-							<img src="<?php echo esc_url( $founder_img ); ?>" alt="<?php esc_attr_e( 'Steve Adams, Founder and CEO of Showtime Pools', 'showtime-pools' ); ?>" loading="lazy" decoding="async">
+						<?php if ( $portrait_url ) : ?>
+							<img src="<?php echo esc_url( $portrait_url ); ?>" alt="<?php echo esc_attr( $f_name . ', ' . $f_title ); ?>" loading="lazy" decoding="async">
 						<?php endif; ?>
 					</div>
-					<figcaption><?php esc_html_e( 'Steve Adams · Founder & CEO', 'showtime-pools' ); ?></figcaption>
+					<figcaption><?php echo esc_html( $f_name . ' · ' . $f_title ); ?></figcaption>
 				</aside>
 
 				<div class="about-story__copy">
-					<span class="eyebrow"><?php esc_html_e( 'Steve Adams', 'showtime-pools' ); ?></span>
+					<span class="eyebrow"><?php echo esc_html( $f_name ); ?></span>
 					<h2><?php esc_html_e( 'Founder, CEO, on every quote.', 'showtime-pools' ); ?></h2>
-					<p><?php esc_html_e( 'Steve started Showtime Pools with one truck and a handful of weekly customers in Sherman Oaks. The first decade was just service: drive the route, balance the chemistry, fix what breaks, send a photo report before leaving the driveway. Customers asked when we would start doing remodels. Steve said no for years.', 'showtime-pools' ); ?></p>
-					<p><?php esc_html_e( 'When we finally added construction, it was because the same handful of customers kept asking. We built a pool for one. Then a remodel for another. Word got around. Today the construction line and the service line are both staffed by W-2 crew, both supervised by Steve, both working off the same standards. Same shop on Ventura Boulevard. Same trucks. Same number.', 'showtime-pools' ); ?></p>
-					<p><?php esc_html_e( 'Quotes are written and itemized. Permits are pulled in person. The person who walks your site is on the job when the work happens. When the inspection says walk away from a deal, that is what the inspection says, even when it costs us a six-figure construction quote. Independence is the whole point.', 'showtime-pools' ); ?></p>
+
+					<?php if ( is_array( $f_blocks ) && ! empty( $f_blocks ) ) : ?>
+						<?php foreach ( $f_blocks as $block ) :
+							$heading = (string) ( $block['heading'] ?? '' );
+							$body    = (string) ( $block['body'] ?? '' );
+							if ( '' === $heading && '' === $body ) { continue; }
+						?>
+							<?php if ( '' !== $heading ) : ?>
+								<h3><?php echo esc_html( $heading ); ?></h3>
+							<?php endif; ?>
+							<?php if ( '' !== $body ) : ?>
+								<?php echo wp_kses_post( wpautop( $body ) ); ?>
+							<?php endif; ?>
+						<?php endforeach; ?>
+					<?php else : ?>
+						<p><?php esc_html_e( 'Steve started Showtime Pools with one truck and a handful of weekly customers in Sherman Oaks. The first decade was just service: drive the route, balance the chemistry, fix what breaks, send a photo report before leaving the driveway. Customers asked when we would start doing remodels. Steve said no for years.', 'showtime-pools' ); ?></p>
+						<p><?php esc_html_e( 'When we finally added construction, it was because the same handful of customers kept asking. We built a pool for one. Then a remodel for another. Word got around. Today the construction line and the service line are both staffed by W-2 crew, both supervised by Steve, both working off the same standards. Same shop on Ventura Boulevard. Same trucks. Same number.', 'showtime-pools' ); ?></p>
+						<p><?php esc_html_e( 'Quotes are written and itemized. Permits are pulled in person. The person who walks your site is on the job when the work happens. When the inspection says walk away from a deal, that is what the inspection says, even when it costs us a six-figure construction quote. Independence is the whole point.', 'showtime-pools' ); ?></p>
+					<?php endif; ?>
 				</div>
 			</div>
 		</div>
 	</section>
+
+	<section class="int-section int-section--cream founder-quote-section" data-reveal>
+		<div class="container">
+			<figure class="founder-quote">
+				<svg class="founder-quote__mark" width="56" height="56" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+					<path d="M14 14h10v10c0 5.523-4.477 10-10 10V30c2.761 0 5-2.239 5-5h-5V14zM30 14h10v10c0 5.523-4.477 10-10 10V30c2.761 0 5-2.239 5-5h-5V14z" fill="currentColor"/>
+				</svg>
+				<blockquote><?php echo esc_html( $f_quote ); ?></blockquote>
+				<figcaption><?php echo esc_html( $f_qattr ); ?></figcaption>
+			</figure>
+		</div>
+	</section>
+
+	<?php if ( ! empty( $values_strip ) ) : ?>
+		<section class="int-section founder-promises" data-reveal>
+			<div class="container">
+				<header class="int-section__head">
+					<span class="eyebrow"><?php esc_html_e( 'What you can expect', 'showtime-pools' ); ?></span>
+					<h2 class="balance"><?php esc_html_e( 'Three promises Steve signs his name on.', 'showtime-pools' ); ?></h2>
+				</header>
+				<div class="founder-promises__grid">
+					<?php $n = 0; foreach ( $values_strip as $v ) : $n++; ?>
+						<article class="founder-promise">
+							<span class="founder-promise__num"><?php echo esc_html( str_pad( (string) $n, 2, '0', STR_PAD_LEFT ) ); ?></span>
+							<h3><?php echo esc_html( (string) ( $v['title'] ?? '' ) ); ?></h3>
+							<p><?php echo esc_html( (string) ( $v['body'] ?? '' ) ); ?></p>
+						</article>
+					<?php endforeach; ?>
+				</div>
+			</div>
+		</section>
+	<?php endif; ?>
 
 	<section class="int-section int-section--cream" data-reveal>
 		<div class="container" style="max-width:var(--container-narrow)">
@@ -103,15 +215,29 @@ $person_schema = array(
 				<span class="eyebrow"><?php esc_html_e( 'Where to find Steve', 'showtime-pools' ); ?></span>
 				<h2 class="balance"><?php esc_html_e( 'The phone, the email, the shop.', 'showtime-pools' ); ?></h2>
 			</header>
+			<?php $tel = preg_replace( '/[^0-9+]/', '', $phone ); ?>
 			<ul class="founder-contact-list">
-				<li><strong><?php esc_html_e( 'Phone', 'showtime-pools' ); ?>:</strong> <a href="tel:+13238252099">(323) 825-2099</a></li>
-				<li><strong><?php esc_html_e( 'Email', 'showtime-pools' ); ?>:</strong> <a href="mailto:operations@showtimepoolmechanics.com">operations@showtimepoolmechanics.com</a></li>
-				<li><strong><?php esc_html_e( 'Sherman Oaks shop', 'showtime-pools' ); ?>:</strong> 15301 Ventura Blvd., Sherman Oaks, CA 91403</li>
-				<li><strong><?php esc_html_e( 'LinkedIn', 'showtime-pools' ); ?>:</strong> <a href="https://linkedin.com/in/showtimepoolssocal/" target="_blank" rel="noopener">@showtimepoolssocal</a></li>
+				<li><strong><?php esc_html_e( 'Phone', 'showtime-pools' ); ?>:</strong> <a href="tel:<?php echo esc_attr( $tel ); ?>"><?php echo esc_html( $phone ); ?></a></li>
+				<?php if ( '' !== $email ) : ?>
+					<li><strong><?php esc_html_e( 'Email', 'showtime-pools' ); ?>:</strong> <a href="mailto:<?php echo esc_attr( $email ); ?>"><?php echo esc_html( $email ); ?></a></li>
+				<?php endif; ?>
+				<li>
+					<strong><?php esc_html_e( 'Sherman Oaks shop', 'showtime-pools' ); ?>:</strong>
+					<?php echo esc_html( (string) ( $shop['street'] ?? '' ) . ', ' . (string) ( $shop['city'] ?? '' ) ); ?>
+				</li>
+				<?php if ( '' !== $linkedin ) : ?>
+					<li><strong><?php esc_html_e( 'LinkedIn', 'showtime-pools' ); ?>:</strong> <a href="<?php echo esc_url( $linkedin ); ?>" target="_blank" rel="noopener">@showtimepoolssocal</a></li>
+				<?php endif; ?>
 			</ul>
+
+			<div class="cluster" style="margin-top:var(--sp-7)">
+				<a class="btn btn--primary btn--lg" href="<?php echo esc_url( home_url( '/quote/' ) ); ?>"><?php esc_html_e( 'Get a free quote', 'showtime-pools' ); ?></a>
+				<a class="btn btn--ghost btn--lg" href="tel:<?php echo esc_attr( $tel ); ?>"><?php esc_html_e( 'Call Steve direct', 'showtime-pools' ); ?> · <?php echo esc_html( $phone ); ?></a>
+			</div>
 		</div>
 	</section>
 
 </main>
 <script type="application/ld+json"><?php echo wp_json_encode( $person_schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ); ?></script>
-<?php get_footer();
+<?php
+get_footer();

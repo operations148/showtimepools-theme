@@ -63,6 +63,22 @@ $person_schema = array(
 		</div>
 	</section>
 
+	<?php
+	// Section 2 ("Who we are") + Section 3 ("What we believe") read from
+	// Site Content → Page Copy → About page tab. PHP defaults below preserve
+	// editorial voice if ACF is deactivated or fields are blank.
+	$opt = function_exists( 'get_field' ) ? 'option' : false;
+
+	$about_eyebrow = $opt ? (string) get_field( 'about_who_we_are_eyebrow', $opt ) : '';
+	$about_title   = $opt ? (string) get_field( 'about_who_we_are_title', $opt ) : '';
+	$about_body    = $opt ? (string) get_field( 'about_who_we_are_body', $opt ) : '';
+	$values_title  = $opt ? (string) get_field( 'about_values_intro_title', $opt ) : '';
+	$values_intro  = $opt ? (string) get_field( 'about_values_intro_body', $opt ) : '';
+
+	$about_eyebrow = '' !== $about_eyebrow ? $about_eyebrow : __( 'Who we are', 'showtime-pools' );
+	$about_title   = '' !== $about_title   ? $about_title   : __( 'Years of hands-on experience. Built on quality, transparency, and reliability.', 'showtime-pools' );
+	$values_title  = '' !== $values_title  ? $values_title  : __( 'Five commitments. Every project, every visit.', 'showtime-pools' );
+	?>
 	<section class="int-section" data-reveal>
 		<div class="container">
 			<div class="about-story">
@@ -76,11 +92,15 @@ $person_schema = array(
 				</aside>
 
 				<div class="about-story__copy">
-					<span class="eyebrow"><?php esc_html_e( 'Who we are', 'showtime-pools' ); ?></span>
-					<h2><?php esc_html_e( 'Years of hands-on experience. Built on quality, transparency, and reliability.', 'showtime-pools' ); ?></h2>
-					<p><?php esc_html_e( 'Showtime Pools has become a trusted name for homeowners, property managers, and businesses seeking long-lasting, high-performance pool systems. Repairs, weekly service, remodels, equipment, inspections, and outdoor living are all handled by one in-house team.', 'showtime-pools' ); ?></p>
-					<p><?php esc_html_e( 'We do not believe in shortcuts, only results that stand the test of time. Every project is treated like it is our own backyard. That means engineered structure, honest communication, premium materials, and standing behind our work with integrity.', 'showtime-pools' ); ?></p>
-					<p><?php esc_html_e( 'When something breaks, we identify the root cause first so you do not waste money on temporary patches. When you are remodeling, we coordinate every trade so you are not chasing five contractors. When you are buying a house, we inspect the pool independently and tell you the truth.', 'showtime-pools' ); ?></p>
+					<span class="eyebrow"><?php echo esc_html( $about_eyebrow ); ?></span>
+					<h2><?php echo esc_html( $about_title ); ?></h2>
+					<?php if ( '' !== $about_body ) : ?>
+						<?php echo wp_kses_post( wpautop( $about_body ) ); ?>
+					<?php else : ?>
+						<p><?php esc_html_e( 'Showtime Pools has become a trusted name for homeowners, property managers, and businesses seeking long-lasting, high-performance pool systems. Repairs, weekly service, remodels, equipment, inspections, and outdoor living are all handled by one in-house team.', 'showtime-pools' ); ?></p>
+						<p><?php esc_html_e( 'We do not believe in shortcuts, only results that stand the test of time. Every project is treated like it is our own backyard. That means engineered structure, honest communication, premium materials, and standing behind our work with integrity.', 'showtime-pools' ); ?></p>
+						<p><?php esc_html_e( 'When something breaks, we identify the root cause first so you do not waste money on temporary patches. When you are remodeling, we coordinate every trade so you are not chasing five contractors. When you are buying a house, we inspect the pool independently and tell you the truth.', 'showtime-pools' ); ?></p>
+					<?php endif; ?>
 				</div>
 			</div>
 		</div>
@@ -90,24 +110,36 @@ $person_schema = array(
 		<div class="container">
 			<header class="int-section__head">
 				<span class="eyebrow"><?php esc_html_e( 'What we believe', 'showtime-pools' ); ?></span>
-				<h2 class="balance"><?php esc_html_e( 'Five commitments. Every project, every visit.', 'showtime-pools' ); ?></h2>
+				<h2 class="balance"><?php echo esc_html( $values_title ); ?></h2>
+				<?php if ( '' !== $values_intro ) : ?>
+					<p class="int-section__lead"><?php echo esc_html( $values_intro ); ?></p>
+				<?php endif; ?>
 			</header>
 			<div class="values-grid">
 				<?php
-				$values = array(
-					array( 'n' => '01', 'title' => __( 'Durable, safe, visually stunning pools', 'showtime-pools' ),     'body' => __( 'Pools that last decades and look better at year five than they did at year one. Engineered structure, premium finish, modern equipment.', 'showtime-pools' ) ),
-					array( 'n' => '02', 'title' => __( 'Proven methods, modern technology', 'showtime-pools' ),         'body' => __( 'We blend tested construction methods with current automation, salt systems, and energy-efficient equipment. No experiments on your dime.', 'showtime-pools' ) ),
-					array( 'n' => '03', 'title' => __( 'Honest communication start to finish', 'showtime-pools' ),     'body' => __( 'Itemized written quotes. Daily updates during construction. Final walk-through with a punch list. Nothing important happens verbally.', 'showtime-pools' ) ),
-					array( 'n' => '04', 'title' => __( 'Standing behind our work with integrity', 'showtime-pools' ),  'body' => __( 'Two-year workmanship warranty on construction. Five-year warranty on PebbleTec finishes. Manufacturer pass-through on every piece of equipment.', 'showtime-pools' ) ),
-					array( 'n' => '05', 'title' => __( 'Dedicated to everything we do', 'showtime-pools' ),            'body' => __( 'Same crew start to finish. No subcontractors. No rotating techs. The person who quotes the job is on-site when the work happens.', 'showtime-pools' ) ),
-					array( 'n' => '06', 'title' => __( 'No shortcuts, only lasting results', 'showtime-pools' ),       'body' => __( 'We say no to bad ideas, including our own. If a finish, a layout, or a piece of equipment will not last, we tell you up front.', 'showtime-pools' ) ),
+				$values_default = array(
+					array( 'icon' => 'gem',     'title' => __( 'Durable, safe, visually stunning pools', 'showtime-pools' ),     'body' => __( 'Pools that last decades and look better at year five than they did at year one. Engineered structure, premium finish, modern equipment.', 'showtime-pools' ) ),
+					array( 'icon' => 'sparkle', 'title' => __( 'Proven methods, modern technology', 'showtime-pools' ),         'body' => __( 'We blend tested construction methods with current automation, salt systems, and energy-efficient equipment. No experiments on your dime.', 'showtime-pools' ) ),
+					array( 'icon' => 'check',   'title' => __( 'Honest communication start to finish', 'showtime-pools' ),     'body' => __( 'Itemized written quotes. Daily updates during construction. Final walk-through with a punch list. Nothing important happens verbally.', 'showtime-pools' ) ),
+					array( 'icon' => 'shield',  'title' => __( 'Standing behind our work with integrity', 'showtime-pools' ),  'body' => __( 'Two-year workmanship warranty on construction. Five-year warranty on PebbleTec finishes. Manufacturer pass-through on every piece of equipment.', 'showtime-pools' ) ),
+					array( 'icon' => 'heart',   'title' => __( 'Dedicated to everything we do', 'showtime-pools' ),            'body' => __( 'Same crew start to finish. No subcontractors. No rotating techs. The person who quotes the job is on-site when the work happens.', 'showtime-pools' ) ),
+					array( 'icon' => 'star',    'title' => __( 'No shortcuts, only lasting results', 'showtime-pools' ),       'body' => __( 'We say no to bad ideas, including our own. If a finish, a layout, or a piece of equipment will not last, we tell you up front.', 'showtime-pools' ) ),
 				);
+				$values = function_exists( 'showtime_acf_rows' )
+					? showtime_acf_rows( 'about_value_cards', $values_default )
+					: $values_default;
+				$n = 0;
 				foreach ( $values as $v ) :
+					$n++;
+					$num   = str_pad( (string) $n, 2, '0', STR_PAD_LEFT );
+					$title = (string) ( $v['title'] ?? '' );
+					$body  = (string) ( $v['body'] ?? '' );
+					if ( '' === $title && '' === $body ) { continue; }
 				?>
 					<article class="value-card">
-						<span class="value-card__num"><?php echo esc_html( $v['n'] ); ?></span>
-						<h3><?php echo esc_html( $v['title'] ); ?></h3>
-						<p><?php echo esc_html( $v['body'] ); ?></p>
+						<span class="value-card__num"><?php echo esc_html( $num ); ?></span>
+						<h3><?php echo esc_html( $title ); ?></h3>
+						<p><?php echo esc_html( $body ); ?></p>
 					</article>
 				<?php endforeach; ?>
 			</div>

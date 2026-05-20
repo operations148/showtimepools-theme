@@ -51,6 +51,10 @@ final class OptionsPage {
 
 		$subpages = array(
 			array(
+				'slug'  => 'showtime-content-page-copy',
+				'title' => __( 'Page Copy', 'showtime-pools' ),
+			),
+			array(
 				'slug'  => 'showtime-content-business',
 				'title' => __( 'Offices & hours', 'showtime-pools' ),
 			),

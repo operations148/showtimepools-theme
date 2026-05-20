@@ -58,6 +58,9 @@ final class Plugin {
 		// Integrations.
 		( new Integrations\FluentForms() )->register();
 
+		// CPTs (Phase C — Project CPT for /projects/ + future Mapbox).
+		( new Cpt\Project() )->register();
+
 		$this->registered = true;
 	}
 }
