@@ -11,69 +11,103 @@
  * Run:  node tools/optimize-photos.mjs
  */
 import sharp from "sharp";
-import { existsSync, mkdirSync, statSync } from "node:fs";
+import { existsSync, mkdirSync, statSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 
-const SRC = "C:\\Official Drive\\Showtime\\My Drive\\IT'S SHOWTIME!";
+// Phase E — read slot→file map from tools/photos.json. The picker HTML at
+// tools/image-picker.html writes this file; we read it. Underscore-prefixed
+// keys (_comment, _root) are ignored. Falls back to the hardcoded CURATION
+// constant below if photos.json is missing or unreadable.
+const MANIFEST_PATH = "C:\\xampp\\htdocs\\showtimepools\\showtimepools\\tools\\photos.json";
+let MANIFEST_CURATION = null;
+if (existsSync(MANIFEST_PATH)) {
+	try {
+		const raw = readFileSync(MANIFEST_PATH, "utf8").replace(/^﻿/, "");
+		const parsed = JSON.parse(raw);
+		const filtered = {};
+		for (const [k, v] of Object.entries(parsed)) {
+			if (!k.startsWith("_") && typeof v === "string" && v.length) filtered[k] = v;
+		}
+		if (Object.keys(filtered).length > 0) MANIFEST_CURATION = filtered;
+		console.log(`Loaded ${Object.keys(filtered).length} slot picks from photos.json`);
+	} catch (e) {
+		console.warn(`Failed to parse photos.json: ${e.message} — falling back to hardcoded CURATION.`);
+	}
+}
+
+// Phase F — Drive is now read-zero. All sourcing happens from a local
+// staging folder under Downloads. To repopulate staging, run a manual
+// PowerShell copy or open the Drive in Explorer and drag-drop. The
+// optimize pipeline and the picker never touch the Drive directly.
+const SRC = "C:\\Users\\dogom\\Downloads\\showtime-staging";
 const DEST = "C:\\xampp\\htdocs\\showtimepools\\showtimepools\\showtime-pools-child\\assets\\img";
 
 /**
  * Slot → source-relative-path
  * Slot becomes the filename: {slot}.webp + {slot}.jpg
  * Matches the imagery.php local-file resolver.
+ *
+ * Source: Steve's CANONICAL "Showtime Pools NN.jpg" portfolio set —
+ * 88 files he pre-curated and numbered, spread across the topic
+ * folders. These are the "publish-ready" shots; previous Phase C
+ * pulled raw largest-file picks from each folder which often landed
+ * on in-progress jobsite shots (bug). This map fixes that.
  */
 const CURATION = {
-  // Homepage hero
-  "hero": "POOLS/IMG-20260325-WA0053.jpg",
+  // Homepage hero — most premium finished pool shot from curated set.
+  "hero": "POOLS/Showtime Pools 47.jpg",
 
-  // About / founder
-  "about_hero": "REMODELING/IMG-20260302-WA0143.jpg",
-  "inspections_bg": "TASKS/POOL INSPECTIONS & DIAGNOSTICS/IMG-20260208-WA0045.jpg",
+  // About hero — different finished-pool angle for visual variety.
+  "about_hero": "POOLS/Showtime Pools 50.jpg",
 
-  // Lifestyle (existing slots)
-  "lifestyle_main": "POOLS/IMG-20260325-WA0093.jpg",
-  "lifestyle_1": "POOLS/IMG-20260324-WA0094.jpg",
-  "lifestyle_2": "POOLS/IMG-20260204-WA0192.jpg",
-  "lifestyle_3": "POOLS/IMG-20260413-WA0070.jpg",
-  "lifestyle_4": "POOLS/IMG-20260325-WA0051.jpg",
+  // Inspections backdrop — diagnostic-feeling pool shot.
+  "inspections_bg": "POOLS/Showtime Pools 09.jpg",
 
-  // 12 services
-  "service_pool-repairs-plumbing": "TASKS/POOL REPAIRS & PLUMBING/IMG-20260324-WA0238.jpg",
-  "service_weekly-pool-maintenance": "TASKS/WEEKLY POOL MAINTENANCE/IMG-20251106-WA0024.jpg",
-  "service_pool-remodeling-resurfacing": "TASKS/POOL REMODELING, RESURFACING & FINISHES/IMG-20260324-WA0114.jpg",
-  "service_equipment-installation-upgrades": "TASKS/EQUIPMENT INSTALLATION & UPGRADES/IMG-20260204-WA0285.jpg",
-  "service_pool-inspections-diagnostics": "TASKS/POOL INSPECTIONS & DIAGNOSTICS/IMG-20260125-WA0140.jpg",
-  "service_smart-pool-automation": "TASKS/SMART POOL AUTOMATION UPGRADES/IMG-20260204-WA0458.jpg",
-  "service_custom-pool-design-construction": "TASKS/CUSTOM POOL DESIGN & NEW CONSTRUCTION/IMG-20260302-WA0036.jpg",
-  "service_spa-installation-renovations": "TASKS/SPA INSTALLATION & RENOVATIONS/IMG-20260204-WA0064.jpg",
-  "service_tile-coping-plaster-decking": "TASKS/TILE, COPING, PLASTER & DECKING/IMG-20260208-WA0082.jpg",
-  "service_outdoor-living-hardscape": "TASKS/OUTDOOR LIVING & HARDSCAPE/IMG-20260131-WA0016.jpg",
-  "service_outdoor-kitchens-bbq": "TASKS/OUTDOOR KITCHENS & BBQ AREAS/IMG-20260306-WA0082.jpg",
-  "service_fire-water-features": "TASKS/FIRE FEATURES & WATER FEATURES/IMG-20260203-WA0047.jpg",
+  // Lifestyle slots — five distinct finished-pool shots.
+  "lifestyle_main": "POOLS/Showtime Pools 48.jpg",
+  "lifestyle_1": "POOLS/Showtime Pools 49.jpg",
+  "lifestyle_2": "POOLS/Showtime Pools 51.jpg",
+  "lifestyle_3": "POOLS/Showtime Pools 52.jpg",
+  "lifestyle_4": "POOLS/Showtime Pools 70.jpg",
 
-  // 6 service areas (lifestyle pool shots, distinct from above)
-  "area_sherman-oaks": "REMODELING/IMG-20260302-WA0136.jpg",
-  "area_encino": "REMODELING/IMG-20260302-WA0139.jpg",
-  "area_beverly-hills": "REMODELING/IMG-20260324-WA0112.jpg",
-  "area_studio-city": "REMODELING/IMG-20260302-WA0144.jpg",
-  "area_tarzana": "REMODELING/IMG-20260324-WA0113.jpg",
-  "area_woodland-hills": "REMODELING/IMG-20260302-WA0142.jpg",
+  // 12 services — each from the canonical set, topic-aligned via folder.
+  "service_pool-repairs-plumbing": "REPAIR/Showtime Pools 07.jpg",
+  "service_weekly-pool-maintenance": "WEEKLY CLEANING/Showtime Pools 24.jpg",
+  "service_pool-remodeling-resurfacing": "REMODELING/Showtime Pools 26.jpg",
+  "service_equipment-installation-upgrades": "EQUIPMENT & PLUMBING/Showtime Pools 79.jpg",
+  "service_pool-inspections-diagnostics": "POOLS/Showtime Pools 11.jpg",
+  "service_smart-pool-automation": "EQUIPMENT & PLUMBING/Showtime Pools 80.jpg",
+  "service_custom-pool-design-construction": "POOLS/Showtime Pools 36.jpg",
+  "service_spa-installation-renovations": "SPA/Showtime Pools 20.jpg",
+  "service_tile-coping-plaster-decking": "POOLS/Showtime Pools 84.jpg",
+  "service_outdoor-living-hardscape": "POOLS/Showtime Pools 12.jpg",
+  "service_outdoor-kitchens-bbq": "POOLS/Showtime Pools 13.jpg",
+  "service_fire-water-features": "POOLS/Showtime Pools 35.jpg",
 
-  // 8 featured/projects gallery (REMODELING after-shots)
-  "project_1": "REMODELING/IMG-20260309-WA0011.jpg",
-  "project_2": "REMODELING/IMG-20260208-WA0079.jpg",
-  "project_3": "REMODELING/IMG-20260324-WA0114.jpg",
-  "project_4": "REMODELING/IMG-20260324-WA0225.jpg",
-  "project_5": "REMODELING/IMG-20260324-WA0345.jpg",
-  "project_6": "TASKS/POOL REMODELING, RESURFACING & FINISHES/IMG-20260208-WA0079.jpg",
-  "project_7": "TASKS/TILE, COPING, PLASTER & DECKING/IMG-20260302-WA0035.jpg",
-  "project_8": "TASKS/CUSTOM POOL DESIGN & NEW CONSTRUCTION/IMG-20260208-WA0082.jpg",
+  // 6 service areas — each a finished pool shot, one per neighborhood.
+  "area_sherman-oaks": "POOLS/Showtime Pools 30.jpg",
+  "area_encino": "POOLS/Showtime Pools 35.jpg",
+  "area_beverly-hills": "POOLS/Showtime Pools 36.jpg",
+  "area_studio-city": "POOLS/Showtime Pools 39.jpg",
+  "area_tarzana": "POOLS/Showtime Pools 42.jpg",
+  "area_woodland-hills": "POOLS/Showtime Pools 43.jpg",
 
-  // Blog category covers
-  "blog_trends": "REMODELING/IMG-20260302-WA0143.jpg",
-  "blog_tips": "TASKS/WEEKLY POOL MAINTENANCE/IMG-20251106-WA0024.jpg",
-  "blog_equipment": "TASKS/EQUIPMENT INSTALLATION & UPGRADES/IMG-20260204-WA0285.jpg",
-  "blog_default": "POOLS/IMG-20260325-WA0093.jpg",
+  // 8 projects — largest curated POOLS shots used as portfolio hero
+  // images when the project has no featured image set in WP admin.
+  "project_1": "POOLS/Showtime Pools 47.jpg",
+  "project_2": "POOLS/Showtime Pools 48.jpg",
+  "project_3": "POOLS/Showtime Pools 49.jpg",
+  "project_4": "POOLS/Showtime Pools 50.jpg",
+  "project_5": "POOLS/Showtime Pools 51.jpg",
+  "project_6": "POOLS/Showtime Pools 52.jpg",
+  "project_7": "POOLS/Showtime Pools 18.jpg",
+  "project_8": "POOLS/Showtime Pools 19.jpg",
+
+  // Blog category covers.
+  "blog_trends": "POOLS/Showtime Pools 27.jpg",
+  "blog_tips": "WEEKLY CLEANING/Showtime Pools 53.jpg",
+  "blog_equipment": "EQUIPMENT & PLUMBING/Showtime Pools 17.jpg",
+  "blog_default": "POOLS/Showtime Pools 06.jpg",
 };
 
 // Photos used as backgrounds/heroes/lifestyles keep extra width.
@@ -92,11 +126,14 @@ const JPG_QUALITY = 72;
 
 if (!existsSync(DEST)) mkdirSync(DEST, { recursive: true });
 
+// Live curation comes from photos.json when present, hardcoded fallback otherwise.
+const LIVE_CURATION = MANIFEST_CURATION ?? CURATION;
+
 let okCount = 0;
 let errCount = 0;
 let totalBytes = 0;
 
-for (const [slot, srcRel] of Object.entries(CURATION)) {
+for (const [slot, srcRel] of Object.entries(LIVE_CURATION)) {
   const srcPath = join(SRC, srcRel.replace(/\//g, "\\"));
   if (!existsSync(srcPath)) {
     console.error(`MISS ${slot}  ←  ${srcRel}`);

@@ -12,6 +12,14 @@ $title    = $ctx['title']   ?? get_the_title();
 $summary  = $ctx['summary'] ?? '';
 $slug     = (string) ( $ctx['slug'] ?? '' );
 
+// SEO H1 takes precedence over the natural title — keyword-led wording
+// for organic search. Nav, breadcrumb, footer, related cards keep the
+// natural title via $ctx['title'].
+$h1   = '' !== (string) ( $ctx['seo_h1'] ?? '' )    ? (string) $ctx['seo_h1']    : $title;
+// SEO intro (keyword + geo + brand) wins the lead slot when present;
+// otherwise the original short summary stays.
+$lead = '' !== (string) ( $ctx['seo_intro'] ?? '' ) ? (string) $ctx['seo_intro'] : (string) $summary;
+
 // Per-service hero photo from bundled set: /assets/img/service_<slug>.{webp,jpg}
 $svc_hero_img = '';
 if ( $slug && function_exists( 'showtime_image' ) ) {
@@ -34,9 +42,9 @@ if ( $slug && function_exists( 'showtime_image' ) ) {
 
 		<div class="svc-hero__inner stack stack--lg">
 			<span class="eyebrow svc-hero__eyebrow"><?php esc_html_e( 'Showtime Pools service', 'showtime-pools' ); ?></span>
-			<h1 class="svc-hero__title balance"><?php echo esc_html( $title ); ?></h1>
-			<?php if ( $summary ) : ?>
-				<p class="svc-hero__lead"><?php echo esc_html( $summary ); ?></p>
+			<h1 class="svc-hero__title balance"><?php echo esc_html( $h1 ); ?></h1>
+			<?php if ( $lead ) : ?>
+				<p class="svc-hero__lead"><?php echo esc_html( $lead ); ?></p>
 			<?php endif; ?>
 			<div class="cluster">
 				<a class="btn btn--invert btn--lg" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>">

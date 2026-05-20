@@ -19,4 +19,5 @@ require_once SHOWTIME_CHILD_DIR . '/inc/performance.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/imagery.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/acf-readers.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/seo.php';
+require_once SHOWTIME_CHILD_DIR . '/inc/seo-defaults.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/site-icon.php';

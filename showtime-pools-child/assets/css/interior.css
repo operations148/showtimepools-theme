@@ -889,7 +889,7 @@
 	margin-bottom: var(--sp-3);
 }
 .founder-quote blockquote {
-	font-family: var(--ff-display, "Playfair Display", Georgia, serif);
+	font-family: var(--ff-display);
 	font-weight: 500;
 	font-size: clamp(1.5rem, 1.1rem + 1.8vw, 2.2rem);
 	line-height: 1.3;
@@ -927,7 +927,7 @@
 .founder-promise:hover { border-color: var(--c-aqua-300); transform: translateY(-2px); }
 .founder-promise__num {
 	display: inline-block;
-	font-family: var(--ff-display, "Playfair Display", Georgia, serif);
+	font-family: var(--ff-display);
 	font-weight: 500;
 	font-size: 2rem;
 	color: var(--c-aqua-500);
@@ -935,7 +935,7 @@
 	margin-bottom: var(--sp-3);
 }
 .founder-promise h3 {
-	font-family: var(--ff-display, "Playfair Display", Georgia, serif);
+	font-family: var(--ff-display);
 	font-weight: 500;
 	font-size: 1.25rem;
 	line-height: 1.3;

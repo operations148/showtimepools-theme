@@ -16,24 +16,24 @@
  */
 
 :root {
-	/* ─── Color: foundation ──────────────────────────────────────────── */
-	--c-ink:        #0A0A0A;   /* primary text + ultra-dark surfaces */
-	--c-ink-soft:   #1F1F1F;   /* mid-charcoal, hover states + secondary surfaces */
-	--c-bg:         #F5F2ED;   /* warm off-white page background */
+	/* ─── Color: foundation (Phase E — Poolax aligned) ───────────────── */
+	--c-ink:        #0B1733;   /* deep cool navy text + ultra-dark surfaces */
+	--c-ink-soft:   #1B2547;   /* mid-cool charcoal, hover states + secondary surfaces */
+	--c-bg:         #FFFFFF;   /* pure white page background — was warm cream */
 	--c-bg-pure:    #FFFFFF;   /* card and modal surfaces */
-	--c-paper:      #FBFAF6;   /* slightly warmer than pure white for alt sections */
+	--c-paper:      #F1F7FF;   /* cool sky-blue tinted alt section — was warm paper */
 
-	/* ─── Color: pool aqua (single chromatic accent) ────────────────── */
-	--c-aqua-50:  #EEF3F6;
-	--c-aqua-100: #D6E1E9;
-	--c-aqua-200: #B0C5D2;
-	--c-aqua-300: #88A4B6;
-	--c-aqua-400: #6E94A9;
-	--c-aqua-500: #5C8A9E; /* primary aqua, brand water accent */
-	--c-aqua-600: #4D7589;
-	--c-aqua-700: #3F6072;
-	--c-aqua-800: #314A58;
-	--c-aqua-900: #1F2F3A;
+	/* ─── Color: pool blue (single chromatic accent — Poolax electric) ─ */
+	--c-aqua-50:  #EAF2FF;
+	--c-aqua-100: #D2E2FF;
+	--c-aqua-200: #A5C3FF;
+	--c-aqua-300: #6797FF;
+	--c-aqua-400: #3F77FF;
+	--c-aqua-500: #1E5DFF; /* primary pool brand blue — was muted #5C8A9E */
+	--c-aqua-600: #1849D9;
+	--c-aqua-700: #1438AC;
+	--c-aqua-800: #102C85;
+	--c-aqua-900: #0A1F66;
 
 	/* ─── Color: sand (soft neutral, badges + dividers) ─────────────── */
 	--c-sand-50:  #FBF8F1;
@@ -60,15 +60,15 @@
 	--c-surface:      var(--c-bg);
 	--c-surface-2:    var(--c-bg-pure);
 	--c-surface-3:    var(--c-paper);
-	--c-border:       rgba(10, 10, 10, 0.12); /* hairline */
-	--c-border-strong:rgba(10, 10, 10, 0.22);
+	--c-border:       rgba(11, 23, 51, 0.08);  /* hairline — cool gray, was rgba(10,10,10,.12) */
+	--c-border-strong:rgba(11, 23, 51, 0.16);
 	--c-text:         var(--c-ink);
-	--c-text-muted:   rgba(10, 10, 10, 0.62);
-	--c-text-soft:    rgba(10, 10, 10, 0.45);
+	--c-text-muted:   rgba(11, 23, 51, 0.62);
+	--c-text-soft:    rgba(11, 23, 51, 0.45);
 	--c-text-invert:  #FFFFFF;
-	--c-link:         var(--c-aqua-600);
-	--c-link-hover:   var(--c-ink);
-	--c-focus-ring:   color-mix(in oklab, var(--c-aqua-500) 50%, white);
+	--c-link:         var(--c-aqua-500);
+	--c-link-hover:   var(--c-aqua-700);
+	--c-focus-ring:   color-mix(in oklab, var(--c-aqua-500) 45%, white);
 
 	/* Legacy aliases (so existing components don't break during the swap) */
 	--c-brand-50:  var(--c-aqua-50);
@@ -103,9 +103,10 @@
 	--c-ink-800: var(--c-ink-soft);
 	--c-ink-900: var(--c-ink);
 
-	/* ─── Type: families ─────────────────────────────────────────────── */
-	/* Single family per Brikly reference. DM Sans handles display + body
-	   at weights 400/500/700; the variable axis covers what we need. */
+	/* ─── Type: families (Phase E — single sans, no serif) ───────────── */
+	/* Pure sans stack. Display + body both DM Sans. The Playfair Display
+	   fallback that lived in template selectors is now neutralized
+	   because --ff-display resolves to the same family as --ff-body. */
 	--ff-display: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 	--ff-body:    "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 	--ff-mono:    ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
@@ -163,22 +164,28 @@
 	--sp-32:  128px;
 	--sp-40:  160px;
 
-	/* ─── Radius (kept tight, Brikly is sharp not rounded) ──────────── */
-	--r-xs:   2px;
-	--r-sm:   3px;
-	--r-md:   4px;
-	--r-lg:   6px;
-	--r-xl:   10px;
-	--r-2xl:  16px;
-	--r-3xl:  24px;
+	/* ─── Radius (Phase E — Poolax: roomier, pills for CTAs) ─────────── */
+	--r-xs:   4px;
+	--r-sm:   6px;
+	--r-md:   10px;
+	--r-lg:   14px;
+	--r-xl:   18px;
+	--r-2xl:  20px;
+	--r-3xl:  28px;
 	--r-full: 9999px;
+	--radius-card: 20px;          /* Poolax-aligned card radius alias */
+	--radius-pill: 9999px;        /* CTA pills */
 
-	/* ─── Shadow (subtle, not theatrical) ───────────────────────────── */
-	--sh-xs:   0 1px 2px rgba(10, 10, 10, 0.04);
-	--sh-sm:   0 2px 4px rgba(10, 10, 10, 0.04), 0 1px 2px rgba(10, 10, 10, 0.03);
-	--sh-md:   0 8px 24px rgba(10, 10, 10, 0.06), 0 2px 4px rgba(10, 10, 10, 0.03);
-	--sh-lg:   0 24px 48px rgba(10, 10, 10, 0.08), 0 6px 12px rgba(10, 10, 10, 0.04);
-	--sh-xl:   0 40px 80px rgba(10, 10, 10, 0.12), 0 10px 20px rgba(10, 10, 10, 0.05);
+	/* ─── Shadow (Phase J — tinted blue, premium SaaS feel) ──────────
+	   Shadows carry a hint of brand blue. Pure cool-gray feels generic;
+	   blue-tinted shadows quietly reinforce the chromatic identity even
+	   when the user isn't consciously noticing. */
+	--sh-xs:   0 1px 2px rgba(11, 23, 51, 0.05);
+	--sh-sm:   0 2px 6px rgba(30, 93, 255, 0.06), 0 1px 2px rgba(11, 23, 51, 0.04);
+	--sh-md:   0 10px 28px rgba(30, 93, 255, 0.08), 0 2px 4px rgba(11, 23, 51, 0.04);
+	--sh-lg:   0 24px 56px rgba(30, 93, 255, 0.10), 0 6px 14px rgba(11, 23, 51, 0.06);
+	--sh-xl:   0 40px 88px rgba(30, 93, 255, 0.13), 0 10px 24px rgba(11, 23, 51, 0.07);
+	--sh-blue: 0 14px 32px -8px rgba(30, 93, 255, 0.45);
 	--sh-ring: 0 0 0 3px var(--c-focus-ring);
 
 	/* ─── Motion ─────────────────────────────────────────────────────── */

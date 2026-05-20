@@ -33,9 +33,9 @@ $outdoor  = array_slice( $services, 6, 6 );
 			</nav>
 			<div class="int-hero__inner">
 				<span class="eyebrow eyebrow--invert"><?php esc_html_e( 'Twelve services, one team', 'showtime-pools' ); ?></span>
-				<h1 class="int-hero__title balance"><?php esc_html_e( 'Complete pool care, start to finish.', 'showtime-pools' ); ?></h1>
+				<h1 class="int-hero__title balance"><?php esc_html_e( 'Pool services in Los Angeles.', 'showtime-pools' ); ?></h1>
 				<p class="int-hero__lead">
-					<?php esc_html_e( 'Repairs, weekly service, remodels, equipment, inspections, custom construction, spa work, and outdoor living. All handled by one in-house team across Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills.', 'showtime-pools' ); ?>
+					<?php esc_html_e( 'Pool repair, pool cleaning service, pool remodeling, pool installation, equipment upgrades, inspections, spa work, and outdoor living — handled by one in-house team across Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills.', 'showtime-pools' ); ?>
 				</p>
 				<div class="cluster">
 					<a class="btn btn--invert btn--lg" href="<?php echo esc_url( home_url( '/quote/' ) ); ?>"><?php esc_html_e( 'Get a Free Quote', 'showtime-pools' ); ?></a>

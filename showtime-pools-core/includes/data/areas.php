@@ -15,6 +15,8 @@ return array(
 	array(
 		'slug'        => 'sherman-oaks',
 		'name'        => 'Sherman Oaks',
+		'seo_h1'      => 'Pool Service in Sherman Oaks',
+		'seo_intro'   => 'Pool service near you in Sherman Oaks. Showtime Pools is headquartered on Ventura Boulevard and handles weekly pool cleaning, repairs, remodels, and equipment upgrades across all Sherman Oaks ZIP codes (91403, 91423, 91436).',
 		'tag'         => 'Home base · 7 days a week',
 		'pool_count'  => '420+',
 		'gradient'    => 'linear-gradient(135deg,#1F2F3A 0%,#5C8A9E 100%)',
@@ -40,6 +42,8 @@ return array(
 	array(
 		'slug'        => 'encino',
 		'name'        => 'Encino',
+		'seo_h1'      => 'Pool Service in Encino',
+		'seo_intro'   => 'Pool service near you in Encino. Showtime Pools handles weekly pool cleaning, pool repair, remodels, and custom construction on Encino estates and Reseda/Encino flat lots — ZIP codes 91316 and 91436.',
 		'tag'         => '5 days a week',
 		'pool_count'  => '310+',
 		'gradient'    => 'linear-gradient(135deg,#314A58 0%,#88A4B6 100%)',
@@ -65,6 +69,8 @@ return array(
 	array(
 		'slug'        => 'beverly-hills',
 		'name'        => 'Beverly Hills',
+		'seo_h1'      => 'Pool Service in Beverly Hills',
+		'seo_intro'   => 'Pool service near you in Beverly Hills. Showtime Pools runs discreet weekly pool cleaning, high-end remodels, and equipment upgrades behind 90210, 90211, and 90212 gates with badged vehicles and a scheduled, named-tech crew.',
 		'tag'         => '3 days a week',
 		'pool_count'  => '180+',
 		'gradient'    => 'linear-gradient(135deg,#0A0A0A 0%,#4D7589 100%)',
@@ -90,6 +96,8 @@ return array(
 	array(
 		'slug'        => 'studio-city',
 		'name'        => 'Studio City',
+		'seo_h1'      => 'Pool Service in Studio City',
+		'seo_intro'   => 'Pool service near you in Studio City. Showtime Pools handles hillside pools, pier-supported decks, and canyon-side equipment pads across 91604 — structural, weekly, and emergency pool service from Coldwater to Laurel.',
 		'tag'         => '5 days a week',
 		'pool_count'  => '270+',
 		'gradient'    => 'linear-gradient(135deg,#3F6072 0%,#B0C5D2 100%)',
@@ -115,6 +123,8 @@ return array(
 	array(
 		'slug'        => 'tarzana',
 		'name'        => 'Tarzana',
+		'seo_h1'      => 'Pool Service in Tarzana',
+		'seo_intro'   => 'Pool service near you in Tarzana. Showtime Pools specializes in full pool remodels, equipment swaps, and resurfacing on 1970s-1990s vintage pools across 91335, 91356, and 91357 — often combining tile, plaster, equipment, and automation into a single contract.',
 		'tag'         => '4 days a week',
 		'pool_count'  => '230+',
 		'gradient'    => 'linear-gradient(135deg,#1F1F1F 0%,#6E94A9 100%)',
@@ -140,6 +150,8 @@ return array(
 	array(
 		'slug'        => 'woodland-hills',
 		'name'        => 'Woodland Hills',
+		'seo_h1'      => 'Pool Service in Woodland Hills',
+		'seo_intro'   => 'Pool service near you in Woodland Hills. Showtime Pools manages heater wear, salt cell life, summer chemistry, and new gunite construction across 91364 and 91367, plus the premium Calabasas-adjacent gated communities.',
 		'tag'         => '4 days a week',
 		'pool_count'  => '210+',
 		'gradient'    => 'linear-gradient(135deg,#314A58 0%,#5C8A9E 100%)',

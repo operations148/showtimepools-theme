@@ -18,13 +18,15 @@
 
 /* ─── Buttons ─────────────────────────────────────────────────────── */
 .btn {
-	--_btn-bg:        var(--c-brand-700);
-	--_btn-bg-hover:  var(--c-brand-800);
+	/* Phase E — Poolax-aligned: pill by default, vibrant blue primary, soft blue shadow */
+	--_btn-bg:        var(--c-aqua-500);
+	--_btn-bg-hover:  var(--c-aqua-600);
 	--_btn-fg:        var(--c-text-invert);
 	--_btn-border:    transparent;
-	--_btn-px:        var(--sp-6);
+	--_btn-px:        var(--sp-7);
 	--_btn-py:        var(--sp-3);
 	--_btn-fs:        var(--fs-base);
+	--_btn-shadow:    var(--sh-blue);
 
 	display: inline-flex;
 	align-items: center;
@@ -33,13 +35,14 @@
 	padding: var(--_btn-py) var(--_btn-px);
 	font-family: var(--ff-body);
 	font-size: var(--_btn-fs);
-	font-weight: var(--fw-semibold);
+	font-weight: var(--fw-bold);
 	line-height: 1.2;
 	letter-spacing: var(--ls-snug);
 	color: var(--_btn-fg);
 	background: var(--_btn-bg);
 	border: 1.5px solid var(--_btn-border);
-	border-radius: var(--r-md);
+	border-radius: var(--r-full);          /* PILL by default */
+	box-shadow: var(--_btn-shadow);
 	cursor: pointer;
 	text-decoration: none;
 	transition: background var(--dur-fast) var(--ease-out),
@@ -52,8 +55,8 @@
 .btn:hover {
 	background: var(--_btn-bg-hover);
 	color: var(--_btn-fg);
-	transform: translateY(-1px);
-	box-shadow: var(--sh-md);
+	transform: translateY(-2px);
+	box-shadow: 0 18px 36px -8px rgba(30, 93, 255, 0.55);
 }
 
 .btn:active {
@@ -74,23 +77,34 @@
 }
 
 /* Variants */
-.btn--primary   { /* default */ }
+.btn--primary   { /* default — vibrant blue pill */ }
 .btn--secondary {
-	--_btn-bg:       var(--c-accent-500);
-	--_btn-bg-hover: var(--c-accent-600);
+	--_btn-bg:       var(--c-ink);
+	--_btn-bg-hover: var(--c-ink-soft);
+	--_btn-shadow:   var(--sh-md);
 }
 .btn--ghost {
 	--_btn-bg:       transparent;
-	--_btn-bg-hover: var(--c-ink-100);
-	--_btn-fg:       var(--c-ink-800);
-	--_btn-border:   var(--c-border-strong);
+	--_btn-bg-hover: var(--c-aqua-500);
+	--_btn-fg:       var(--c-aqua-700);
+	--_btn-border:   var(--c-aqua-500);
+	--_btn-shadow:   none;
 }
-.btn--ghost:hover { color: var(--c-ink-900); }
+.btn--ghost:hover { color: #FFFFFF; }
+
+.btn--ghost-on-dark {
+	--_btn-bg:       transparent;
+	--_btn-bg-hover: rgba(255,255,255,0.12);
+	--_btn-fg:       #FFFFFF;
+	--_btn-border:   rgba(255,255,255,0.55);
+	--_btn-shadow:   none;
+}
 
 .btn--invert {
 	--_btn-bg:       #FFFFFF;
-	--_btn-bg-hover: var(--c-ink-100);
-	--_btn-fg:       var(--c-brand-800);
+	--_btn-bg-hover: var(--c-aqua-50);
+	--_btn-fg:       var(--c-aqua-700);
+	--_btn-shadow:   0 14px 32px -10px rgba(11,23,51,0.30);
 }
 
 .btn--link {
@@ -105,11 +119,12 @@
 .btn--link:hover { color: var(--c-link-hover); text-decoration: underline; }
 
 /* Sizes */
-.btn--sm { --_btn-px: var(--sp-4); --_btn-py: var(--sp-2); --_btn-fs: var(--fs-sm); }
-.btn--lg { --_btn-px: var(--sp-8); --_btn-py: var(--sp-4); --_btn-fs: var(--fs-md); border-radius: var(--r-lg); }
+.btn--sm { --_btn-px: var(--sp-5); --_btn-py: var(--sp-2); --_btn-fs: var(--fs-sm); }
+.btn--lg { --_btn-px: var(--sp-10); --_btn-py: var(--sp-4); --_btn-fs: var(--fs-lg); }
 
-/* Shape: full-pill, applied on top of any size variant */
+/* Shape modifier (kept for back-compat — all btns are pills by default now) */
 .btn--pill { border-radius: var(--r-full); }
+.btn--square { border-radius: var(--r-md); }
 
 /* Kill any Astra default scroll-to-top button — we ship our own .back-to-top */
 #ast-scroll-top,
@@ -137,7 +152,9 @@
 .badge--warning { background: #FEF3C7;             color: #92400E;              border-color: #FDE68A; }
 .badge--danger  { background: #FEE2E2;             color: #B91C1C;              border-color: #FECACA; }
 
-/* ─── Card ───────────────────────────────────────────────────────── */
+/* ─── Card ──────────────────────────────────────────────────────────
+   Phase E — Poolax aligned: 20px radius, soft cool-gray shadow, 3px hover lift
+   ─────────────────────────────────────────────────────────────────── */
 .card {
 	display: flex;
 	flex-direction: column;
@@ -145,22 +162,73 @@
 	padding: var(--sp-6);
 	background: var(--c-surface-2);
 	border: 1px solid var(--c-border);
-	border-radius: var(--r-lg);
-	box-shadow: var(--sh-xs);
+	border-radius: var(--radius-card);
+	box-shadow: 0 4px 20px -8px rgba(11, 23, 51, 0.06);
 	transition: transform var(--dur-base) var(--ease-out),
 	            box-shadow var(--dur-base) var(--ease-out),
 	            border-color var(--dur-fast) var(--ease-out);
 }
 
 .card:hover {
-	transform: translateY(-2px);
-	box-shadow: var(--sh-md);
-	border-color: var(--c-border-strong);
+	transform: translateY(-4px);
+	box-shadow:
+		0 28px 56px -28px rgba(30, 93, 255, 0.22),
+		0 8px 18px -12px rgba(11, 23, 51, 0.14);
+	border-color: var(--c-aqua-200);
 }
+
+/* Phase J — Ken-Burns slow zoom on any card photo when its parent
+   card-ish element is hovered. Targets the common photo class names
+   used across home, projects, services, areas, and blog. */
+.proj-card__media-img,
+.area-card__img,
+.blog-card__media img,
+.svc-card__media img,
+.blog-cat-card__media img,
+.home-about__photo img,
+.proj-gallery-grid__item img {
+	transition: transform .65s cubic-bezier(.2, .7, .2, 1);
+}
+.proj-card:hover .proj-card__media-img,
+.area-card:hover .area-card__img,
+.blog-card:hover .blog-card__media img,
+.svc-card:hover .svc-card__media img,
+.blog-cat-card:hover .blog-cat-card__media img,
+.proj-gallery-grid__item:hover img {
+	transform: scale(1.04);
+}
+@media (prefers-reduced-motion: reduce) {
+	.proj-card__media-img,
+	.area-card__img,
+	.blog-card__media img,
+	.svc-card__media img,
+	.blog-cat-card__media img,
+	.proj-gallery-grid__item img {
+		transition: none !important;
+	}
+}
+
+/* Phase J — sitewide noise overlay. Fixed-position behind content above
+   the background, kills the "flat plastic" feel without measurable
+   weight. Inline SVG noise filter, no extra HTTP request. */
+.page-grain {
+	position: fixed;
+	inset: 0;
+	z-index: 1;
+	pointer-events: none;
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .35 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+	opacity: .022;
+	mix-blend-mode: multiply;
+}
+.site-header,
+.site-footer,
+main,
+section,
+.container { position: relative; z-index: 2; }
 
 .card__media {
 	margin: calc(-1 * var(--sp-6)) calc(-1 * var(--sp-6)) 0;
-	border-radius: var(--r-lg) var(--r-lg) 0 0;
+	border-radius: var(--radius-card) var(--radius-card) 0 0;
 	overflow: hidden;
 }
 .card__media img { object-fit: cover; width: 100%; aspect-ratio: 4 / 3; }

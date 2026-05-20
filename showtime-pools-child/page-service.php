@@ -29,6 +29,8 @@ $acf = function_exists( 'get_field' );
 $ctx = array(
 	'slug'       => $service_slug,
 	'title'      => get_the_title(),
+	'seo_h1'    => '',
+	'seo_intro' => '',
 	'summary'    => '',
 	'icon'       => $registry['icon']         ?? 'equipment',
 	'price'      => '',
@@ -42,6 +44,8 @@ $ctx = array(
 
 // Layer registry defaults first.
 if ( $registry ) {
+	$ctx['seo_h1']     = (string) ( $registry['seo_h1'] ?? '' );
+	$ctx['seo_intro']  = (string) ( $registry['seo_intro'] ?? '' );
 	$ctx['summary']    = (string) ( $registry['summary'] ?? '' );
 	$ctx['price']      = (string) ( $registry['default_price'] ?? '' );
 	$ctx['turnaround'] = (string) ( $registry['default_turnaround'] ?? '' );

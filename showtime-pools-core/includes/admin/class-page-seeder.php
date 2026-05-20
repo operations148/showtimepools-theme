@@ -121,7 +121,10 @@ final class PageSeeder {
 			self::SVC_PARENT,
 			__( 'Services', 'showtime-pools-core' ),
 			0,
-			array( 'meta_input' => array( '_showtime_section' => 'services-hub' ) )
+			array(
+				'page_template' => 'page-services-hub.php',
+				'meta_input'    => array( '_showtime_section' => 'services-hub' ),
+			)
 		);
 		$ok ? $created++ : $skipped++;
 

@@ -22,6 +22,8 @@ defined( 'ABSPATH' ) || exit;
 get_template_part( 'template-parts/footer/local-business-schema' );
 ?>
 
+<div class="page-grain" aria-hidden="true"></div>
+
 <button type="button" class="back-to-top js-back-to-top" aria-label="<?php esc_attr_e( 'Back to top', 'showtime-pools' ); ?>">
 	<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 		<path d="M12 19V5M5 12l7-7 7 7"/>

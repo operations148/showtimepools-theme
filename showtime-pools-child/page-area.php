@@ -32,7 +32,12 @@ if ( ! $area ) {
 $name        = (string) $area['name'];
 $pool_count  = (string) $area['pool_count'];
 $tag         = (string) $area['tag'];
-$lead        = (string) $area['lead'];
+// SEO H1 / intro take precedence over the natural lead when the registry
+// provides them — keyword-led wording for organic search. Falls back to
+// the original `lead` paragraph so older area entries still render.
+$seo_h1      = (string) ( $area['seo_h1']    ?? '' );
+$seo_intro   = (string) ( $area['seo_intro'] ?? '' );
+$lead        = '' !== $seo_intro ? $seo_intro : (string) $area['lead'];
 $chars       = (array)  ( $area['characteristics'] ?? array() );
 $jobs        = (array)  ( $area['common_jobs'] ?? array() );
 $streets     = (array)  ( $area['sample_streets'] ?? array() );
@@ -86,7 +91,12 @@ $schema = array(
 			<div class="area-hero__inner">
 				<span class="area-hero__pill"><?php echo esc_html( $pool_count ); ?> <?php esc_html_e( 'pools', 'showtime-pools' ); ?> · <?php echo esc_html( $tag ); ?></span>
 				<h1 class="area-hero__title balance">
-					<?php /* translators: %s: neighborhood name */ printf( esc_html__( 'Pool service in %s.', 'showtime-pools' ), esc_html( $name ) ); ?>
+					<?php if ( '' !== $seo_h1 ) {
+						echo esc_html( $seo_h1 );
+					} else {
+						/* translators: %s: neighborhood name */
+						printf( esc_html__( 'Pool service in %s.', 'showtime-pools' ), esc_html( $name ) );
+					} ?>
 				</h1>
 				<p class="area-hero__lead"><?php echo esc_html( $lead ); ?></p>
 				<div class="cluster">

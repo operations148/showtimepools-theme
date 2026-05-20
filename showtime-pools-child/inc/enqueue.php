@@ -82,10 +82,23 @@ add_action(
 			wp_enqueue_style( 'showtime-interior', $uri, array( 'showtime-components' ), $ver );
 		}
 
-		// Blog hub + archives + single posts get the dedicated blog stylesheet.
-		if ( is_page_template( 'page-blog.php' ) || is_singular( 'post' ) || is_archive() || is_home() ) {
+		// Blog hub + archives + single posts + single projects get the
+		// dedicated blog/project stylesheet (single-project styles live
+		// inside blog.css alongside blog single styles — same token system).
+		if ( is_page_template( 'page-blog.php' )
+			|| is_singular( 'post' )
+			|| is_singular( 'project' )
+			|| is_archive()
+			|| is_home() ) {
 			[ $uri, $ver ] = showtime_asset( 'assets/css/blog.css' );
 			wp_enqueue_style( 'showtime-blog', $uri, array( 'showtime-components', 'showtime-interior' ), $ver );
+		}
+
+		// Single projects piggyback on interior.css for the .featured-projects__grid
+		// + .proj-card styles used in the Related block.
+		if ( is_singular( 'project' ) ) {
+			[ $uri, $ver ] = showtime_asset( 'assets/css/interior.css' );
+			wp_enqueue_style( 'showtime-interior', $uri, array( 'showtime-components' ), $ver );
 		}
 
 		// TOC + scroll-spy only on single posts (article body required).

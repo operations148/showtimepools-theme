@@ -45,15 +45,20 @@ if ( post_type_exists( 'project' ) ) {
 		} elseif ( function_exists( 'showtime_image' ) ) {
 			$image = showtime_image( $slot, 1024 );
 		}
+		$pm = static function ( string $k, int $id ): string {
+			$v = function_exists( 'get_field' ) ? get_field( $k, $id ) : null;
+			if ( null === $v || '' === $v ) { $v = get_post_meta( $id, $k, true ); }
+			return (string) $v;
+		};
 		$projects[] = array(
 			'image'        => $image,
 			'title'        => get_the_title(),
 			'href'         => get_permalink(),
-			'neighborhood' => function_exists( 'get_field' ) ? (string) get_field( 'neighborhood', $pid ) : '',
-			'scope'        => function_exists( 'get_field' ) ? (string) get_field( 'scope', $pid ) : '',
-			'finish'       => function_exists( 'get_field' ) ? (string) get_field( 'finish', $pid ) : '',
-			'duration'     => function_exists( 'get_field' ) ? (string) get_field( 'duration_label', $pid ) : '',
-			'value'        => function_exists( 'get_field' ) ? (string) get_field( 'value_label', $pid ) : '',
+			'neighborhood' => $pm( 'neighborhood', (int) $pid ),
+			'scope'        => $pm( 'scope', (int) $pid ),
+			'finish'       => $pm( 'finish', (int) $pid ),
+			'duration'     => $pm( 'duration_label', (int) $pid ),
+			'value'        => $pm( 'value_label', (int) $pid ),
 			'gradient'     => $gradients[ $i++ % count( $gradients ) ],
 		);
 	endwhile;

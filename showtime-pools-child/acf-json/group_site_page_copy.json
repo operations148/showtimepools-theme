@@ -5,27 +5,29 @@
         { "key": "field_st_pc_tab_hero", "label": "Hero block", "name": "", "type": "tab", "placement": "left" },
         {
             "key": "field_st_pc_hero_eyebrow",
-            "label": "Hero eyebrow",
+            "label": "Hero eyebrow (service line above H1)",
             "name": "hero_eyebrow",
             "type": "text",
-            "placeholder": "Family-owned · Sherman Oaks · Since 2002",
+            "instructions": "CRO: visitors must see what the business does in 3 seconds. Lead with the service surface.",
+            "placeholder": "POOL CLEANING · REPAIRS · REMODELS · INSPECTIONS",
             "wrapper": { "width": "50" }
         },
         {
             "key": "field_st_pc_hero_title",
-            "label": "Hero title (Playfair Display)",
+            "label": "Hero H1",
             "name": "hero_title",
             "type": "text",
             "required": 1,
-            "placeholder": "Stop juggling contractors.",
+            "instructions": "Must include 'Pool' + the geographic market. Keep it under 8 words.",
+            "placeholder": "Pool service in Los Angeles, done by one team.",
             "wrapper": { "width": "50" }
         },
         {
             "key": "field_st_pc_hero_accent",
-            "label": "Hero accent line (in pool aqua)",
+            "label": "Hero accent line (in pool blue)",
             "name": "hero_accent_line",
             "type": "text",
-            "placeholder": "One team handles it all.",
+            "placeholder": "Repairs, cleaning, remodels, equipment.",
             "wrapper": { "width": "50" }
         },
         {

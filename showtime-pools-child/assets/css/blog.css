@@ -58,7 +58,7 @@
 
 .blog-cat-card__body { padding: var(--sp-5) var(--sp-5) var(--sp-6); }
 .blog-cat-card__title {
-	font-family: var(--ff-display, "Playfair Display", Georgia, serif);
+	font-family: var(--ff-display);
 	font-weight: 500;
 	font-size: clamp(1.35rem, 1.05rem + .8vw, 1.65rem);
 	line-height: 1.2;
@@ -153,7 +153,7 @@
 	margin-bottom: var(--sp-2);
 }
 .blog-card__title {
-	font-family: var(--ff-display, "Playfair Display", Georgia, serif);
+	font-family: var(--ff-display);
 	font-weight: 500;
 	font-size: clamp(1.2rem, 1rem + .6vw, 1.55rem);
 	line-height: 1.25;
@@ -210,7 +210,7 @@
 	padding: var(--sp-6);
 }
 .blog-side__title {
-	font-family: var(--ff-display, "Playfair Display", Georgia, serif);
+	font-family: var(--ff-display);
 	font-weight: 500;
 	font-size: 1.2rem;
 	margin: 0 0 var(--sp-4);
@@ -275,7 +275,7 @@
 	margin-bottom: var(--sp-4);
 }
 .post-hero__title {
-	font-family: var(--ff-display, "Playfair Display", Georgia, serif);
+	font-family: var(--ff-display);
 	font-weight: 500;
 	font-size: clamp(2rem, 1.3rem + 2.8vw, 3.4rem);
 	line-height: 1.12;
@@ -310,7 +310,7 @@
 	max-width: 70ch;
 }
 .post-prose h2 {
-	font-family: var(--ff-display, "Playfair Display", Georgia, serif);
+	font-family: var(--ff-display);
 	font-weight: 500;
 	font-size: clamp(1.5rem, 1.2rem + 1.1vw, 2rem);
 	line-height: 1.25;
@@ -318,7 +318,7 @@
 	scroll-margin-top: 110px;
 }
 .post-prose h3 {
-	font-family: var(--ff-display, "Playfair Display", Georgia, serif);
+	font-family: var(--ff-display);
 	font-weight: 500;
 	font-size: 1.3rem;
 	line-height: 1.3;
@@ -405,4 +405,249 @@
 	}
 	.blog-card:hover { transform: none; }
 	.blog-cat-card:hover { transform: none; }
+}
+
+/* =========================================================================
+   Single Project (portfolio template — independent of blog single)
+   ========================================================================= */
+
+/* Hero — Poolax 2-column light layout. Copy LEFT, photo RIGHT in soft
+   blue circle backdrop. Mirrors the homepage hero treatment for brand
+   consistency. (Phase G rebuild — was dark-overlay full-bleed.) */
+.proj-single { background: var(--c-bg); }
+.proj-single__hero--poolax {
+	position: relative;
+	overflow: hidden;
+	background: linear-gradient(180deg, #FFFFFF 0%, var(--c-paper) 60%, #FFFFFF 100%);
+	color: var(--c-ink);
+	padding: clamp(2.5rem, 5vw, 4.5rem) 0 clamp(3rem, 6vw, 5rem);
+}
+.proj-single__hero-bg {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background:
+		radial-gradient(70% 60% at 85% 25%, rgba(30,93,255,0.06) 0%, transparent 70%),
+		radial-gradient(45% 35% at 12% 80%, rgba(30,93,255,0.04) 0%, transparent 70%);
+}
+.proj-single__hero--poolax > .container { position: relative; z-index: 1; }
+
+.proj-single__crumbs {
+	color: var(--c-text-muted);
+	margin-bottom: var(--sp-5);
+	font-size: .85rem;
+}
+.proj-single__crumbs a { color: var(--c-aqua-700); text-decoration: none; }
+.proj-single__crumbs a:hover { color: var(--c-aqua-500); }
+.proj-single__crumbs [aria-current="page"] { color: var(--c-ink); font-weight: 600; }
+
+.proj-single__hero-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--sp-8);
+	align-items: center;
+}
+@media (min-width: 960px) {
+	.proj-single__hero-grid { grid-template-columns: 1.05fr 1fr; gap: clamp(2rem, 5vw, 5rem); }
+}
+
+.proj-single__hero-text { max-width: 620px; }
+
+.proj-single__pill {
+	display: inline-block;
+	background: var(--c-aqua-500);
+	color: #fff;
+	font-size: .72rem;
+	font-weight: 700;
+	letter-spacing: .12em;
+	text-transform: uppercase;
+	padding: .45em .95em;
+	border-radius: 999px;
+	margin-bottom: var(--sp-4);
+	box-shadow: 0 10px 20px -8px rgba(30,93,255,.45);
+}
+.proj-single__title {
+	font-family: var(--ff-display);
+	font-weight: 700;
+	font-size: clamp(2rem, 1.4rem + 3vw, 3.4rem);
+	line-height: 1.08;
+	letter-spacing: -.02em;
+	color: var(--c-ink);
+	margin: 0 0 var(--sp-4);
+}
+.proj-single__lede {
+	font-size: clamp(1rem, .95rem + .25vw, 1.12rem);
+	line-height: 1.55;
+	max-width: 56ch;
+	color: var(--c-text-muted);
+	margin: 0;
+}
+
+.proj-single__hero-visual {
+	position: relative;
+	aspect-ratio: 1 / 1;
+	max-width: 520px;
+	margin: 0 auto;
+	width: 100%;
+}
+.proj-single__hero-circle {
+	position: absolute;
+	inset: 4%;
+	border-radius: 50%;
+	background: radial-gradient(circle at 30% 30%, var(--c-aqua-100) 0%, var(--c-aqua-50) 60%, transparent 100%);
+	box-shadow: inset 0 0 0 1px rgba(30,93,255,0.10);
+}
+.proj-single__hero-photo {
+	position: absolute;
+	inset: 10% 6% 10% 10%;
+	border-radius: 26px;
+	overflow: hidden;
+	box-shadow: 0 28px 60px -24px rgba(11,23,51,0.22);
+	background: var(--c-aqua-100);
+}
+.proj-single__hero-photo img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+/* Meta strip — sits flush under hero, off-white surface. */
+.proj-single__meta {
+	background: var(--c-paper);
+	border-bottom: 1px solid var(--c-border);
+	padding: var(--sp-6) 0;
+}
+.proj-meta-strip {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--sp-5);
+	margin: 0;
+}
+@media (min-width: 560px) { .proj-meta-strip { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 960px) { .proj-meta-strip { grid-template-columns: repeat(6, 1fr); gap: var(--sp-6); } }
+.proj-meta-strip__cell { display: flex; flex-direction: column; gap: 4px; }
+.proj-meta-strip dt {
+	color: var(--c-text-muted);
+	font-size: .72rem;
+	font-weight: 600;
+	letter-spacing: .12em;
+	text-transform: uppercase;
+}
+.proj-meta-strip dd {
+	margin: 0;
+	font-family: var(--ff-display);
+	font-weight: 500;
+	font-size: clamp(1rem, .95rem + .25vw, 1.18rem);
+	line-height: 1.3;
+	color: var(--c-text);
+}
+
+/* Long-form body — uses .post-prose token system from blog.css above. */
+.proj-single__body { padding: var(--sp-10) 0; }
+.proj-single__prose { max-width: 70ch; margin: 0 auto; }
+
+/* Section headers reused. */
+.proj-single__head { margin-bottom: var(--sp-7); max-width: 720px; }
+
+/* Before / After comparison */
+.proj-single__compare { padding: var(--sp-10) 0; background: var(--c-paper); }
+.proj-compare-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--sp-5);
+}
+@media (min-width: 768px) {
+	.proj-compare-grid { grid-template-columns: 1fr 1fr; gap: var(--sp-6); }
+	.proj-compare-grid--single { grid-template-columns: minmax(0, 720px); justify-content: center; }
+}
+.proj-compare-grid__item {
+	margin: 0;
+	background: var(--c-bg-pure);
+	border-radius: 14px;
+	overflow: hidden;
+	border: 1px solid var(--c-border);
+}
+.proj-compare-grid__item img {
+	width: 100%;
+	height: 100%;
+	aspect-ratio: 4 / 3;
+	object-fit: cover;
+	display: block;
+}
+.proj-compare-grid__item figcaption {
+	padding: var(--sp-3) var(--sp-4);
+	font-size: .8rem;
+	font-weight: 600;
+	letter-spacing: .12em;
+	text-transform: uppercase;
+	color: var(--c-text-muted);
+	border-top: 1px solid var(--c-border);
+}
+
+/* Gallery */
+.proj-single__gallery { padding: var(--sp-10) 0; }
+.proj-gallery-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--sp-3);
+}
+@media (min-width: 640px) { .proj-gallery-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .proj-gallery-grid { grid-template-columns: repeat(3, 1fr); } }
+.proj-gallery-grid__item {
+	display: block;
+	border-radius: 12px;
+	overflow: hidden;
+	background: var(--c-sand-100);
+	border: 1px solid var(--c-border);
+	transition: transform .25s ease, box-shadow .25s ease;
+}
+.proj-gallery-grid__item:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 16px 36px -24px rgba(10,10,10,.25);
+}
+.proj-gallery-grid__item img {
+	width: 100%;
+	aspect-ratio: 4 / 3;
+	object-fit: cover;
+	display: block;
+}
+
+/* Pull quote — also used on /the-founder/. Token-only. */
+.proj-single__quote { padding: var(--sp-12) 0; background: var(--c-paper); }
+.pull-quote {
+	max-width: 760px;
+	margin: 0 auto;
+	text-align: center;
+}
+.pull-quote__mark {
+	color: var(--c-aqua-300);
+	display: inline-block;
+	margin-bottom: var(--sp-3);
+}
+.pull-quote blockquote {
+	font-family: var(--ff-display);
+	font-weight: 500;
+	font-size: clamp(1.4rem, 1rem + 1.6vw, 2.05rem);
+	line-height: 1.3;
+	letter-spacing: -.01em;
+	margin: 0 0 var(--sp-5);
+	color: var(--c-ink);
+}
+.pull-quote figcaption {
+	display: inline-block;
+	color: var(--c-text-muted);
+	font-size: .85rem;
+	letter-spacing: .08em;
+	text-transform: uppercase;
+	padding-top: var(--sp-3);
+	border-top: 1px solid var(--c-border);
+}
+
+/* Related — reuses .featured-projects__grid / .proj-card from home/services CSS */
+.proj-single__related { padding: var(--sp-12) 0; background: var(--c-bg); }
+
+@media (prefers-reduced-motion: reduce) {
+	.proj-gallery-grid__item { transition: none !important; }
+	.proj-gallery-grid__item:hover { transform: none; }
 }

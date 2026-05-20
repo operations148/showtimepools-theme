@@ -29,9 +29,9 @@ $areas = class_exists( '\\Showtime\\Areas' ) ? \Showtime\Areas::all() : array();
 			</nav>
 			<div class="int-hero__inner">
 				<span class="eyebrow eyebrow--invert"><?php esc_html_e( 'Where we work', 'showtime-pools' ); ?></span>
-				<h1 class="int-hero__title balance"><?php esc_html_e( 'Six neighborhoods. One route. Same tech every visit.', 'showtime-pools' ); ?></h1>
+				<h1 class="int-hero__title balance"><?php esc_html_e( 'Pool service near you in Los Angeles.', 'showtime-pools' ); ?></h1>
 				<p class="int-hero__lead">
-					<?php esc_html_e( 'Tight geography is how we keep the same-tech-every-week promise. We work the West Valley and Westside on regular routes. Construction, remodel, and inspection are available across LA County, but weekly service is route-restricted on purpose.', 'showtime-pools' ); ?>
+					<?php esc_html_e( 'Pool service, pool cleaning, and pool repair across six West Valley and Westside neighborhoods. The same in-house tech every week — Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills. Custom construction and remodel work runs LA County-wide.', 'showtime-pools' ); ?>
 				</p>
 			</div>
 		</div>
