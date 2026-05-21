@@ -295,6 +295,7 @@
 }
 
 .post-lede {
+	max-width: 70ch;
 	font-size: clamp(1.1rem, 1rem + .35vw, 1.25rem);
 	line-height: 1.55;
 	color: var(--c-text-muted);
@@ -364,7 +365,7 @@
 	position: sticky;
 	top: 100px;
 	border-left: 2px solid var(--c-aqua-200);
-	padding: var(--sp-2) 0 var(--sp-2) var(--sp-4);
+	padding: var(--sp-4) 0 var(--sp-4) var(--sp-4);
 }
 .post-toc:empty,
 .post-toc[data-empty="1"] { display: none; }

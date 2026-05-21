@@ -67,7 +67,8 @@
 .svc-hero__inner { max-width: 56rem; }
 
 .svc-hero__eyebrow {
-	color: var(--c-accent-300);
+	color: rgba(255, 255, 255, 0.88);
+	text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
 }
 
 .svc-hero__title {

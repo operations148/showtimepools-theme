@@ -51,6 +51,14 @@
 .int-hero > .container { position: relative; z-index: 2; }
 
 .int-hero--photo { position: relative; }
+
+/* Eyebrow on photo heroes: force white so blue text doesn't vanish into
+   blue pool-water photos. Service hero uses the same rule via .svc-hero. */
+.int-hero--photo .eyebrow--invert,
+.area-hero .eyebrow--invert {
+	color: rgba(255, 255, 255, 0.88);
+	text-shadow: 0 1px 6px rgba(0, 0, 0, 0.50);
+}
 .int-hero__photo {
 	position: absolute; inset: 0;
 	width: 100%; height: 100%;
