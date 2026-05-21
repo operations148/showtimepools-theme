@@ -63,7 +63,7 @@ $stats = apply_filters( 'showtime/home_stats_strip', array(
 	array( 'icon' => 'pool',     'num' => '1,824+',      'label' => __( 'Pools serviced',   'showtime-pools' ) ),
 	array( 'icon' => 'calendar', 'num' => $about_years,  'label' => __( 'Years on the route', 'showtime-pools' ) ),
 	array( 'icon' => 'star',     'num' => $rating_value, 'label' => sprintf( /* translators: %s review count */ __( 'Google · %s reviews', 'showtime-pools' ), $rating_count ) ),
-	array( 'icon' => 'shield',   'num' => '0',           'label' => __( 'Subcontractors · same crew, every visit', 'showtime-pools' ) ),
+	array( 'icon' => 'shield',   'num' => 'Zero',        'label' => __( 'Subcontractors · same crew, every visit', 'showtime-pools' ) ),
 ) );
 
 $stat_icons = array(

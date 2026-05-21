@@ -66,7 +66,7 @@ $eyebrow_text = ( '' !== ( $opt ? (string) get_field( 'hero_eyebrow', $opt ) : '
 			</p>
 
 			<div class="home-hero__ctas">
-				<a class="btn btn--primary btn--lg" href="<?php echo esc_url( $cta1_url ); ?>">
+				<a class="btn btn--primary btn--lg" href="<?php echo esc_url( $cta1_url ); ?>" target="_blank" rel="noopener noreferrer">
 					<?php echo esc_html( $cta1_label ); ?>
 					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
 				</a>
