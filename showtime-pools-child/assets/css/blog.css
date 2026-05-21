@@ -258,6 +258,12 @@
 	background: linear-gradient(180deg, rgba(10,10,10,.25) 0%, rgba(10,10,10,.7) 100%);
 }
 .post-hero > .container { position: relative; z-index: 1; }
+/* All eyebrows/labels inside the blog hero must be white */
+.post-hero .eyebrow,
+.post-hero .eyebrow--invert {
+	color: rgba(255, 255, 255, 0.88);
+	text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
+}
 .post-hero__crumbs { color: rgba(255,255,255,.78); margin-bottom: var(--sp-5); }
 .post-hero__crumbs a { color: inherit; }
 .post-hero__crumbs a:hover { color: #fff; }
