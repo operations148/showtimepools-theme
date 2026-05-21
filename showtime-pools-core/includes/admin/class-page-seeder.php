@@ -49,8 +49,8 @@ final class PageSeeder {
 			array( 'slug' => 'blog',        'title' => __( 'Blog', 'showtime-pools-core' ),         'template' => 'page-blog.php',        'meta' => array( '_showtime_section' => 'blog-hub' ) ),
 			array( 'slug' => 'service-areas', 'title' => __( 'Service Areas', 'showtime-pools-core' ), 'template' => 'page-areas.php',     'meta' => array( '_showtime_section' => 'areas-hub' ) ),
 			array( 'slug' => 'pool-inspections', 'title' => __( 'Pool Inspections', 'showtime-pools-core' ), 'template' => 'page-inspections.php', 'meta' => array( '_showtime_section' => 'inspections-hub' ) ),
-			array( 'slug' => 'privacy', 'title' => __( 'Privacy Policy', 'showtime-pools-core' ),    'template' => 'page-legal.php',       'meta' => array( '_showtime_section' => 'legal' ) ),
-			array( 'slug' => 'terms',   'title' => __( 'Terms', 'showtime-pools-core' ),             'template' => 'page-legal.php',       'meta' => array( '_showtime_section' => 'legal' ) ),
+			array( 'slug' => 'privacy-policy', 'title' => __( 'Privacy Policy', 'showtime-pools-core' ), 'template' => 'page-legal.php', 'meta' => array( '_showtime_section' => 'legal' ) ),
+			array( 'slug' => 'terms',          'title' => __( 'Terms', 'showtime-pools-core' ),          'template' => 'page-legal.php', 'meta' => array( '_showtime_section' => 'legal' ) ),
 		);
 	}
 
