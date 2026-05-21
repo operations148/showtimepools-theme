@@ -38,7 +38,7 @@ $outdoor  = array_slice( $services, 6, 6 );
 					<?php esc_html_e( 'Pool repair, pool cleaning service, pool remodeling, pool installation, equipment upgrades, inspections, spa work, and outdoor living — handled by one in-house team across Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills.', 'showtime-pools' ); ?>
 				</p>
 				<div class="cluster">
-					<a class="btn btn--invert btn--lg" href="<?php echo esc_url( home_url( '/quote/' ) ); ?>"><?php esc_html_e( 'Get a Free Quote', 'showtime-pools' ); ?></a>
+					<a class="btn btn--invert btn--lg" href="<?php echo esc_url( SHOWTIME_BOOKING_URL ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Get a Free Quote', 'showtime-pools' ); ?></a>
 					<a class="btn btn--ghost-on-dark btn--lg" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php esc_html_e( 'Book Assessment', 'showtime-pools' ); ?></a>
 				</div>
 			</div>

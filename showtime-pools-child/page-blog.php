@@ -209,7 +209,7 @@ $category_slot_map = array(
 					<section class="blog-side blog-side--cta">
 						<h3 class="blog-side__title"><?php esc_html_e( 'Ready to talk to a real human?', 'showtime-pools' ); ?></h3>
 						<p><?php esc_html_e( 'Get a free quote on a repair, remodel, or weekly service.', 'showtime-pools' ); ?></p>
-						<a class="btn btn--primary" href="<?php echo esc_url( home_url( '/quote/' ) ); ?>"><?php esc_html_e( 'Get a free quote', 'showtime-pools' ); ?></a>
+						<a class="btn btn--primary" href="<?php echo esc_url( SHOWTIME_BOOKING_URL ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Get a free quote', 'showtime-pools' ); ?></a>
 					</section>
 
 				</aside>

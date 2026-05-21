@@ -8,6 +8,9 @@
 defined( 'ABSPATH' ) || exit;
 
 define( 'SHOWTIME_CHILD_VERSION', '0.1.0' );
+
+/** GHL booking URL — single source of truth. Replaces the old /quote/ page. */
+define( 'SHOWTIME_BOOKING_URL', 'https://app.showtimepoolmechanics.com/widget/booking/KkBpnBMhT5QXn8YtTsDb' );
 define( 'SHOWTIME_CHILD_DIR', get_stylesheet_directory() );
 define( 'SHOWTIME_CHILD_URI', get_stylesheet_directory_uri() );
 
