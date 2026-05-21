@@ -358,7 +358,7 @@
 }
 .post-share strong { color: var(--c-text-muted); text-transform: uppercase; letter-spacing: .08em; font-size: .78rem; }
 .post-share a {
-	color: var(--c-aqua-700); text-decoration: none;
+	color: var(--c-ink); text-decoration: none;
 	border: 1px solid var(--c-border);
 	padding: .45em .9em;
 	border-radius: 999px;
@@ -395,8 +395,12 @@
 	border-bottom: 1px solid transparent;
 	padding-bottom: 1px;
 }
-.post-toc__list a:hover,
-.post-toc__list a.is-current { color: var(--c-aqua-700); border-color: currentColor; }
+.post-toc__list a:hover { color: var(--c-aqua-700); border-color: currentColor; }
+.post-toc__list a.is-current {
+	color: var(--c-ink);
+	font-weight: 600;
+	border-color: var(--c-aqua-500);
+}
 
 /* ===== Related posts ===================================================== */
 .post-related { padding: var(--sp-12) 0; background: var(--c-paper); }
