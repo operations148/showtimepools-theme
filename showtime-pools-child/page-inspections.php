@@ -40,7 +40,7 @@ $types = class_exists( '\\Showtime\\Inspections' ) ? \Showtime\Inspections::all(
 					<?php esc_html_e( 'Pre-purchase, seasonal, and equipment-only inspections. Firewalled from the construction line so the report goes to you, not to a sales pipeline. We will tell you to walk away from a pool when walking away is the right call.', 'showtime-pools' ); ?>
 				</p>
 				<div class="cluster">
-					<a class="btn btn--inspections btn--lg" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php esc_html_e( 'Schedule an inspection', 'showtime-pools' ); ?></a>
+					<a class="btn btn--inspections btn--lg" href="<?php echo esc_url( SHOWTIME_BOOKING_URL ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Schedule an inspection', 'showtime-pools' ); ?></a>
 					<a class="btn btn--ghost-on-dark btn--lg" href="<?php echo esc_url( home_url( '/pool-inspections/pre-purchase-inspection/' ) ); ?>"><?php esc_html_e( 'Pre-purchase details →', 'showtime-pools' ); ?></a>
 				</div>
 			</div>

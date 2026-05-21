@@ -98,7 +98,7 @@ if ( empty( $projects ) ) {
 					<?php esc_html_e( 'A full interactive map with photos, scope, and verified review per pin is rolling out. Until then, here are recent projects from across the route.', 'showtime-pools' ); ?>
 				</p>
 				<div class="cluster">
-					<a class="btn btn--invert btn--lg" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php esc_html_e( 'Start your project', 'showtime-pools' ); ?></a>
+					<a class="btn btn--invert btn--lg" href="<?php echo esc_url( SHOWTIME_BOOKING_URL ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Start your project', 'showtime-pools' ); ?></a>
 				</div>
 			</div>
 		</div>

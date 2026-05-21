@@ -47,7 +47,7 @@ if ( $slug && function_exists( 'showtime_image' ) ) {
 				<p class="svc-hero__lead"><?php echo esc_html( $lead ); ?></p>
 			<?php endif; ?>
 			<div class="cluster">
-				<a class="btn btn--invert btn--lg" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>">
+				<a class="btn btn--invert btn--lg" href="<?php echo esc_url( SHOWTIME_BOOKING_URL ); ?>" target="_blank" rel="noopener noreferrer">
 					<?php esc_html_e( 'Request a Quote', 'showtime-pools' ); ?>
 				</a>
 				<a class="btn btn--ghost btn--lg svc-hero__btn-ghost" href="<?php echo esc_url( home_url( '/projects/' ) ); ?>">

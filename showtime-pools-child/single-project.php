@@ -158,9 +158,8 @@ while ( have_posts() ) :
 					<?php endif; ?>
 				</div>
 				<div class="proj-single__hero-visual" aria-hidden="true">
-					<span class="proj-single__hero-circle"></span>
 					<?php if ( $hero_img ) : ?>
-						<div class="proj-single__hero-photo">
+						<div class="proj-single__hero-photo proj-single__hero-photo--blob">
 							<img src="<?php echo esc_url( $hero_img ); ?>" alt="" loading="eager" fetchpriority="high" decoding="async">
 						</div>
 					<?php endif; ?>
