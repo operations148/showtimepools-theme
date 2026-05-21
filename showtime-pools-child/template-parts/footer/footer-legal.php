@@ -1,13 +1,14 @@
 <?php
+
 /**
  * Footer legal bar — copyright, license, social, legal links.
  *
  * @package ShowtimePools
  */
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
-$year      = current_time( 'Y' );
+$year      = current_time('Y');
 $socials_raw = apply_filters(
 	'showtime/business/socials',
 	array(
@@ -22,35 +23,37 @@ $socials_raw = apply_filters(
 // while the legacy fallback above is dict-with-keys {instagram:url, …}.
 // Templates expect $socials as key => url so they can pick an SVG by key.
 $socials = array();
-foreach ( (array) $socials_raw as $k => $v ) {
-	if ( is_array( $v ) ) {
-		$label = strtolower( (string) ( $v['label'] ?? '' ) );
-		$url   = (string) ( $v['url'] ?? '' );
-		if ( '' !== $label && '' !== $url ) { $socials[ $label ] = $url; }
+foreach ((array) $socials_raw as $k => $v) {
+	if (is_array($v)) {
+		$label = strtolower((string) ($v['label'] ?? ''));
+		$url   = (string) ($v['url'] ?? '');
+		if ('' !== $label && '' !== $url) {
+			$socials[$label] = $url;
+		}
 	} else {
-		$socials[ (string) $k ] = (string) $v;
+		$socials[(string) $k] = (string) $v;
 	}
 }
 ?>
 <div class="footer-legal">
 	<div class="container footer-legal__inner">
 		<p class="footer-legal__copy">
-			&copy; <?php echo esc_html( (string) $year ); ?> Showtime Pools.
-			<?php esc_html_e( 'All rights reserved.', 'showtime-pools' ); ?>
+			&copy; <?php echo esc_html((string) $year); ?> Showtime Pools.
+			<?php esc_html_e('All rights reserved.', 'showtime-pools'); ?>
 		</p>
 
 		<ul class="footer-legal__links">
-			<li><a href="<?php echo esc_url( home_url( '/privacy-policy/' ) ); ?>"><?php esc_html_e( 'Privacy', 'showtime-pools' ); ?></a></li>
-			<li><a href="<?php echo esc_url( home_url( '/terms/' ) ); ?>"><?php esc_html_e( 'Terms', 'showtime-pools' ); ?></a></li>
-			<li><a href="<?php echo esc_url( home_url( '/sitemap_index.xml' ) ); ?>"><?php esc_html_e( 'Sitemap', 'showtime-pools' ); ?></a></li>
+			<li><a href="<?php echo esc_url(home_url('/privacy-policy/')); ?>"><?php esc_html_e('Privacy', 'showtime-pools'); ?></a></li>
+			<li><a href="<?php echo esc_url(home_url('/terms/')); ?>"><?php esc_html_e('Terms', 'showtime-pools'); ?></a></li>
+			<li><a href="<?php echo esc_url(home_url('/wp-sitemap.xml')); ?>"><?php esc_html_e('Sitemap', 'showtime-pools'); ?></a></li>
 		</ul>
 
-		<ul class="footer-legal__socials" aria-label="<?php esc_attr_e( 'Social profiles', 'showtime-pools' ); ?>">
-			<?php foreach ( $socials as $key => $url ) : ?>
+		<ul class="footer-legal__socials" aria-label="<?php esc_attr_e('Social profiles', 'showtime-pools'); ?>">
+			<?php foreach ($socials as $key => $url) : ?>
 				<li>
-					<a href="<?php echo esc_url( $url ); ?>" target="_blank" rel="noopener noreferrer me" aria-label="<?php echo esc_attr( ucfirst( $key ) ); ?>">
+					<a href="<?php echo esc_url($url); ?>" target="_blank" rel="noopener noreferrer me" aria-label="<?php echo esc_attr(ucfirst($key)); ?>">
 						<?php
-						switch ( $key ) {
+						switch ($key) {
 							case 'instagram':
 								echo '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>';
 								break;
