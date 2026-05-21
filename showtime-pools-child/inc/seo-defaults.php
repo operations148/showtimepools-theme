@@ -58,7 +58,7 @@ function showtime_seo_context() {
 			'type'    => 'home',
 			'h1'      => 'Pool Service in Los Angeles',
 			'keyword' => 'pool service near me',
-			'intro'   => 'Pool repair, pool cleaning service, remodels, equipment installation, and new construction across Los Angeles. One in-house crew. CSLB licensed. Itemized written quote inside one business day.',
+			'intro'   => 'Pool repair, pool cleaning service, remodels, equipment installation, and new construction across Los Angeles. One in-house crew, no subcontractors. Itemized written quote inside one business day.',
 		);
 	}
 

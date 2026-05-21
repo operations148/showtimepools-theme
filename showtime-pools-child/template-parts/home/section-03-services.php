@@ -26,7 +26,7 @@ $services = class_exists( '\\Showtime\\Services' ) ? \Showtime\Services::all() :
 			</p>
 		</header>
 
-		<div class="services-grid">
+		<div class="services-grid" data-stagger>
 			<?php
 			$i = 1;
 			foreach ( $services as $svc ) :

@@ -141,25 +141,62 @@
 		onProgress();
 		window.addEventListener('scroll', onProgress, { passive: true });
 
-		// Reveal-on-scroll. Add `data-reveal` to opt in. Toggles the `is-revealed` class.
+		// ── Scroll reveal + stagger + counter animations ───────────────
+		// data-reveal   → fades/scales in when entering viewport
+		// data-stagger  → children animate in sequence (--i CSS var)
+		// data-count    → number counts up when first visible
+
 		const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-		const targets = document.querySelectorAll('[data-reveal]');
-		if (targets.length && !reduced && 'IntersectionObserver' in window) {
+
+		// Stamp --i on stagger children so CSS delay works.
+		document.querySelectorAll('[data-stagger]').forEach((container) => {
+			Array.from(container.children).forEach((child, i) => {
+				child.style.setProperty('--i', i);
+			});
+		});
+
+		// Counter animation — counts from 0 to data-count value.
+		function runCounter(el) {
+			const raw    = el.dataset.count || el.textContent;
+			const target = parseFloat(raw.replace(/[^0-9.]/g, ''));
+			const suffix = raw.replace(/[0-9.,]/g, '').trim(); // e.g. "+", "★"
+			if (!target) return;
+			const duration = 1800;
+			const start    = performance.now();
+			const isFloat  = target % 1 !== 0;
+			(function tick(now) {
+				const progress = Math.min((now - start) / duration, 1);
+				const ease     = 1 - Math.pow(1 - progress, 3); // cubic ease-out
+				const val      = isFloat
+					? (ease * target).toFixed(1)
+					: Math.round(ease * target).toLocaleString();
+				el.textContent = val + suffix;
+				if (progress < 1) requestAnimationFrame(tick);
+			})(start);
+		}
+
+		const allTargets = [
+			...document.querySelectorAll('[data-reveal]'),
+			...document.querySelectorAll('[data-stagger]'),
+		];
+
+		if (allTargets.length && 'IntersectionObserver' in window) {
 			const io = new IntersectionObserver(
 				(entries) => {
 					entries.forEach((e) => {
-						if (e.isIntersecting) {
-							e.target.classList.add('is-revealed');
-							io.unobserve(e.target);
-						}
+						if (!e.isIntersecting) return;
+						e.target.classList.add('is-revealed');
+						// Run counter on any [data-count] children
+						e.target.querySelectorAll('[data-count]').forEach(runCounter);
+						io.unobserve(e.target);
 					});
 				},
-				{ rootMargin: '0px 0px -10% 0px', threshold: 0.1 }
+				{ rootMargin: '0px 0px -8% 0px', threshold: 0.08 }
 			);
-			targets.forEach((el) => io.observe(el));
+			allTargets.forEach((el) => io.observe(el));
 		} else {
-			// Reduced motion or no IO — show immediately.
-			targets.forEach((el) => el.classList.add('is-revealed'));
+			// No IO support or reduced motion — show everything immediately.
+			allTargets.forEach((el) => el.classList.add('is-revealed'));
 		}
 	});
 

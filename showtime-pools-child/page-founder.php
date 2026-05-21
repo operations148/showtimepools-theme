@@ -111,7 +111,7 @@ $person_schema = array(
 		'Pool plaster and PebbleTec finishes',
 		'Pool equipment installation',
 		'Pool inspections',
-		'CSLB C-53 contractor compliance',
+		'California pool construction code compliance',
 	),
 );
 ?>

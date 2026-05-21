@@ -14,8 +14,8 @@ defined( 'ABSPATH' ) || exit;
 $pillars_default = array(
 	array(
 		'icon'  => 'shield',
-		'title' => __( 'Licensed & experienced', 'showtime-pools' ),
-		'body'  => __( 'CSLB-licensed professionals with deep field experience across construction, remodeling, equipment, and weekly service. The same team start to finish.', 'showtime-pools' ),
+		'title' => __( 'In-house crew, no subs', 'showtime-pools' ),
+		'body'  => __( 'Trained professionals with deep field experience across construction, remodeling, equipment, and weekly service. The same team start to finish — no rotating subcontractors.', 'showtime-pools' ),
 	),
 	array(
 		'icon'  => 'clock',
@@ -68,7 +68,7 @@ $icon = function ( string $key ): string {
 			</p>
 		</header>
 
-		<div class="why-us__grid">
+		<div class="why-us__grid" data-stagger>
 			<?php foreach ( $pillars as $p ) : ?>
 				<article class="why-card">
 					<div class="why-card__icon" aria-hidden="true"><?php echo $icon( (string) $p['icon'] ); // phpcs:ignore WordPress.Security.EscapeOutput ?></div>

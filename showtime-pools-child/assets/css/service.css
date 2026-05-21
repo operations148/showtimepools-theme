@@ -14,8 +14,14 @@
 	background:
 		radial-gradient(1200px 600px at 90% -10%, rgba(15, 181, 186, 0.35) 0%, transparent 60%),
 		linear-gradient(150deg, var(--c-brand-900) 0%, var(--c-brand-700) 55%, var(--c-brand-600) 100%);
-	padding-top: clamp(3rem, 8vw, 6rem);
-	padding-bottom: clamp(3rem, 8vw, 6rem);
+	/* Phase K — unified interior hero height (matches .int-hero + .area-hero). */
+	min-height: clamp(420px, 56vh, 580px);
+	padding-top: clamp(3rem, 6vw, 5rem);
+	padding-bottom: clamp(3rem, 6vw, 5rem);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	animation: stp-hero-settle 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .svc-hero__pattern {

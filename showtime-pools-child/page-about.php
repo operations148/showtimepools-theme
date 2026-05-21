@@ -190,14 +190,12 @@ $person_schema = array(
 	<section class="int-section int-section--cream" data-reveal>
 		<div class="container">
 			<header class="int-section__head">
-				<span class="eyebrow"><?php esc_html_e( 'Credentials', 'showtime-pools' ); ?></span>
-				<h2 class="balance"><?php esc_html_e( 'Licensed, insured, certified, accountable.', 'showtime-pools' ); ?></h2>
+				<span class="eyebrow"><?php esc_html_e( 'Certifications & partnerships', 'showtime-pools' ); ?></span>
+				<h2 class="balance"><?php esc_html_e( 'Manufacturer-certified. Trade-trained. Accountable.', 'showtime-pools' ); ?></h2>
 			</header>
 			<div class="creds-grid">
 				<?php
 				$creds_default = array(
-					array( 'h' => __( 'CSLB Licensed', 'showtime-pools' ),                'b' => __( 'C-53 Swimming Pool/Spa Contractor. License documentation provided on request.', 'showtime-pools' ) ),
-					array( 'h' => __( 'Fully Insured', 'showtime-pools' ),                'b' => __( '$2M general liability with full workers compensation. COI issued direct to property owners on request.', 'showtime-pools' ) ),
 					array( 'h' => __( 'Pentair Authorized Service', 'showtime-pools' ),   'b' => __( 'Manufacturer warranty pass-through on IntelliFlo, IntelliCenter, MasterTemp, and IC40 salt cells.', 'showtime-pools' ) ),
 					array( 'h' => __( 'Jandy Authorized Service', 'showtime-pools' ),     'b' => __( 'AquaLink, AquaPure, JXi heater, and Stealth pump warranty pass-through.', 'showtime-pools' ) ),
 					array( 'h' => __( 'PebbleTec Certified Applicator', 'showtime-pools' ),'b' => __( 'Five-year written finish warranty backed by PebbleTec. Annual applicator training.', 'showtime-pools' ) ),

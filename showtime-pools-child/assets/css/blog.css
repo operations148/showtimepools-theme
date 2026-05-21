@@ -420,7 +420,12 @@
 	overflow: hidden;
 	background: linear-gradient(180deg, #FFFFFF 0%, var(--c-paper) 60%, #FFFFFF 100%);
 	color: var(--c-ink);
+	/* Phase K — unified interior hero height. */
+	min-height: clamp(420px, 56vh, 580px);
 	padding: clamp(2.5rem, 5vw, 4.5rem) 0 clamp(3rem, 6vw, 5rem);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 }
 .proj-single__hero-bg {
 	position: absolute;

@@ -48,6 +48,7 @@ add_action(
 
 			[ $uri, $ver ] = showtime_asset( 'assets/js/home.js' );
 			wp_enqueue_script( 'showtime-home', $uri, array(), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );
+
 		}
 
 		if ( is_page_template( 'page-service.php' ) ) {

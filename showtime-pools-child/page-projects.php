@@ -77,7 +77,6 @@ if ( empty( $projects ) ) {
 	);
 }
 ?>
-?>
 <main id="primary" class="site-main interior-page">
 
 	<?php $projects_hero = function_exists( 'showtime_image' ) ? showtime_image( 'lifestyle_main', 1920 ) : ''; ?>

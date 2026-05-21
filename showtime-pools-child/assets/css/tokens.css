@@ -226,3 +226,11 @@
 
 /* Defensive: never let any descendant cause horizontal scroll on the page. */
 html, body { overflow-x: clip; }
+
+/* ── Hero zoom-settle — fires on every page load.
+   Heroes start slightly zoomed-in and settle to natural size.
+   Opposite of the scroll-reveal (which grows up from below). */
+@keyframes stp-hero-settle {
+	0%   { transform: scale(1.07); opacity: 0.85; }
+	100% { transform: scale(1);    opacity: 1;    }
+}

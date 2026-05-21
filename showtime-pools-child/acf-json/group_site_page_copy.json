@@ -36,7 +36,7 @@
             "name": "hero_lead",
             "type": "textarea",
             "rows": 3,
-            "placeholder": "Repairs, weekly service, remodels, and new equipment — handled end-to-end by one team licensed, insured, and named on the warranty.",
+            "placeholder": "Repairs, weekly service, remodels, and new equipment — handled end-to-end by one in-house crew named on the warranty.",
             "wrapper": { "width": "100" }
         },
         {
@@ -105,7 +105,7 @@
             "name": "inspections_cta_body",
             "type": "textarea",
             "rows": 3,
-            "placeholder": "Pre-purchase inspections, seasonal diagnostics, and equipment audits by a CSLB-licensed pool company — never a generic home inspector.",
+            "placeholder": "Pre-purchase inspections, seasonal diagnostics, and equipment audits by an experienced pool company — never a generic home inspector.",
             "wrapper": { "width": "100" }
         },
         {
@@ -369,22 +369,6 @@
         },
 
         { "key": "field_st_pc_tab_trust", "label": "Trust & credentials", "name": "", "type": "tab", "placement": "left" },
-        {
-            "key": "field_st_pc_cslb",
-            "label": "CSLB license number",
-            "name": "cslb_license_number",
-            "type": "text",
-            "default_value": "985241",
-            "wrapper": { "width": "25" }
-        },
-        {
-            "key": "field_st_pc_insurance",
-            "label": "Insurance amount",
-            "name": "insurance_amount",
-            "type": "text",
-            "default_value": "$2M",
-            "wrapper": { "width": "25" }
-        },
         {
             "key": "field_st_pc_rating_val",
             "label": "Aggregate rating value",

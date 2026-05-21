@@ -52,20 +52,18 @@ $bullets = is_array( $about_bullets ) && ! empty( $about_bullets ) ? $about_bull
 $phone     = (string) apply_filters( 'showtime/business/phone', '(323) 825-2099' );
 $phone_tel = preg_replace( '/[^0-9+]/', '', $phone );
 
-// Stats strip — 4-up Poolax-style proof markers (Phase E). The CSLB
-// number renders as a subtle proof badge here; not a prominent claim.
-$cslb_num      = $opt ? (string) get_field( 'cslb_license_number', $opt ) : '';
+// Stats strip — 4-up proof markers. License/insurance numbers removed
+// site-wide per user; the 4th slot now shows the same-tech promise.
 $rating_value  = $opt ? (string) get_field( 'aggregate_rating_value', $opt ) : '';
 $rating_count  = $opt ? (string) get_field( 'aggregate_rating_count', $opt ) : '';
-$cslb_num      = '' !== $cslb_num     ? $cslb_num     : '985241';
 $rating_value  = '' !== $rating_value ? $rating_value : '4.9';
 $rating_count  = '' !== $rating_count ? $rating_count : '184';
 
 $stats = apply_filters( 'showtime/home_stats_strip', array(
-	array( 'icon' => 'pool',     'num' => '1,824+',         'label' => __( 'Pools serviced',   'showtime-pools' ) ),
-	array( 'icon' => 'calendar', 'num' => $about_years,     'label' => __( 'Years on the route', 'showtime-pools' ) ),
-	array( 'icon' => 'star',     'num' => $rating_value,    'label' => sprintf( /* translators: %s review count */ __( 'Google · %s reviews', 'showtime-pools' ), $rating_count ) ),
-	array( 'icon' => 'shield',   'num' => '#' . $cslb_num,  'label' => __( 'CSLB · in-house crew', 'showtime-pools' ) ),
+	array( 'icon' => 'pool',     'num' => '1,824+',      'label' => __( 'Pools serviced',   'showtime-pools' ) ),
+	array( 'icon' => 'calendar', 'num' => $about_years,  'label' => __( 'Years on the route', 'showtime-pools' ) ),
+	array( 'icon' => 'star',     'num' => $rating_value, 'label' => sprintf( /* translators: %s review count */ __( 'Google · %s reviews', 'showtime-pools' ), $rating_count ) ),
+	array( 'icon' => 'shield',   'num' => '0',           'label' => __( 'Subcontractors · same crew, every visit', 'showtime-pools' ) ),
 ) );
 
 $stat_icons = array(
@@ -142,7 +140,7 @@ $about_img_bot = function_exists( 'showtime_image' ) ? showtime_image( 'service_
 
 <section class="home-stats" data-reveal>
 	<div class="container">
-		<dl class="home-stats__grid">
+		<dl class="home-stats__grid" data-stagger>
 			<?php foreach ( $stats as $s ) :
 				$icon_key = (string) ( $s['icon'] ?? '' );
 				$icon_svg = $stat_icons[ $icon_key ] ?? $stat_icons['star'];
@@ -150,7 +148,7 @@ $about_img_bot = function_exists( 'showtime_image' ) ? showtime_image( 'service_
 				<div class="home-stats__cell">
 					<span class="home-stats__badge" aria-hidden="true"><?php echo $icon_svg; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — static SVG ?></span>
 					<div class="home-stats__text">
-						<dt class="home-stats__num"><?php echo esc_html( (string) ( $s['num'] ?? '' ) ); ?></dt>
+						<dt class="home-stats__num" data-count="<?php echo esc_attr( (string) ( $s['num'] ?? '' ) ); ?>"><?php echo esc_html( (string) ( $s['num'] ?? '' ) ); ?></dt>
 						<dd class="home-stats__label"><?php echo esc_html( (string) ( $s['label'] ?? '' ) ); ?></dd>
 					</div>
 				</div>

@@ -10,8 +10,18 @@
 	position: relative;
 	overflow: hidden;
 	color: var(--c-text-invert);
-	padding-top: clamp(3rem, 7vw, 6rem);
-	padding-bottom: clamp(3rem, 7vw, 6rem);
+	/* Phase K — unified interior hero height. Same min-height across every
+	   page that uses .int-hero (services hub, projects hub, areas hub,
+	   inspections hub, about, founder, blog, archive). Match the home hero
+	   block height proportionally so the brand feels consistent
+	   page-to-page. */
+	min-height: clamp(420px, 56vh, 580px);
+	padding-top: clamp(3rem, 6vw, 5rem);
+	padding-bottom: clamp(3rem, 6vw, 5rem);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	animation: stp-hero-settle 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .int-hero--brand {
@@ -52,7 +62,11 @@
 .int-hero--photo::before {
 	content: '';
 	position: absolute; inset: 0;
-	background: linear-gradient(150deg, rgba(15,23,36,0.78) 0%, rgba(15,23,36,0.55) 60%, rgba(15,181,186,0.25) 100%);
+	/* Match the home hero veil — diagonal dark navy, heavier on the left
+	   for text contrast, lighter on the right so photo still reads. */
+	background:
+		linear-gradient(95deg, rgba(11, 23, 51, 0.82) 0%, rgba(11, 23, 51, 0.58) 45%, rgba(11, 23, 51, 0.28) 100%),
+		linear-gradient(180deg, rgba(11, 23, 51, 0.12) 0%, rgba(11, 23, 51, 0.32) 100%);
 	z-index: 1;
 }
 @keyframes stp-ken-burns-int {
@@ -190,8 +204,14 @@
 	overflow: hidden;
 	background: var(--_area-grad);
 	color: #fff;
-	padding-top: clamp(3rem, 7vw, 6rem);
-	padding-bottom: clamp(3rem, 7vw, 6rem);
+	/* Phase K — unified interior hero height. */
+	min-height: clamp(420px, 56vh, 580px);
+	padding-top: clamp(3rem, 6vw, 5rem);
+	padding-bottom: clamp(3rem, 6vw, 5rem);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	animation: stp-hero-settle 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 .area-hero__photo {
 	position: absolute; inset: 0;

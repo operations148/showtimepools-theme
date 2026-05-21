@@ -35,11 +35,12 @@ if (existsSync(MANIFEST_PATH)) {
 	}
 }
 
-// Phase F — Drive is now read-zero. All sourcing happens from a local
-// staging folder under Downloads. To repopulate staging, run a manual
-// PowerShell copy or open the Drive in Explorer and drag-drop. The
-// optimize pipeline and the picker never touch the Drive directly.
-const SRC = "C:\\Users\\dogom\\Downloads\\showtime-staging";
+// Steve's curated media library — lives at C:\xampp\htdocs\showtimepools\media\
+// in a clean lowercase-subfolder structure (pools, repair, spa, etc.)
+// plus a brand/ folder with logo + marketing PNGs. This is the canonical
+// source for the build now. Drive remains read-zero, the Downloads
+// staging copy is deprecated.
+const SRC = "C:\\xampp\\htdocs\\showtimepools\\media";
 const DEST = "C:\\xampp\\htdocs\\showtimepools\\showtimepools\\showtime-pools-child\\assets\\img";
 
 /**

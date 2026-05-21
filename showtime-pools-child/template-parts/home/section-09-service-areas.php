@@ -22,7 +22,7 @@ $areas = class_exists( '\\Showtime\\Areas' ) ? \Showtime\Areas::all() : array();
 			</a>
 		</header>
 
-		<div class="service-areas__grid">
+		<div class="service-areas__grid" data-stagger>
 			<?php foreach ( $areas as $area ) :
 				$slug    = (string) ( $area['slug'] ?? '' );
 				$img_url = function_exists( 'showtime_image' ) ? showtime_image( 'area_' . $slug, 800 ) : '';

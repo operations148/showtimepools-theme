@@ -192,18 +192,16 @@ if ( empty( $areaServed ) ) {
 	}
 }
 
-// Trust / credentials.
+// Trust / credentials (license number deliberately omitted sitewide).
 $rating_value = $opt ? (string) get_field( 'aggregate_rating_value', $opt ) : '';
 $rating_count = $opt ? (string) get_field( 'aggregate_rating_count', $opt ) : '';
 $employees    = $opt ? (int) get_field( 'number_of_employees', $opt ) : 0;
-$cslb         = $opt ? (string) get_field( 'cslb_license_number', $opt ) : '';
 $founder_name = $opt ? (string) get_field( 'founder_name', $opt ) : '';
 $founder_title= $opt ? (string) get_field( 'founder_title', $opt ) : '';
 
 $rating_value = '' !== $rating_value ? $rating_value : '4.9';
 $rating_count = '' !== $rating_count ? $rating_count : '184';
 $employees    = $employees > 0      ? $employees    : 12;
-$cslb         = '' !== $cslb         ? $cslb         : '985241';
 $founder_name = '' !== $founder_name ? $founder_name : 'Steve Adams';
 $founder_title= '' !== $founder_title ? $founder_title : 'Founder & CEO';
 
@@ -261,11 +259,6 @@ $schema = apply_filters(
 		'numberOfEmployees'       => array(
 			'@type' => 'QuantitativeValue',
 			'value' => $employees,
-		),
-		'identifier'              => array(
-			'@type'           => 'PropertyValue',
-			'propertyID'      => 'CSLB License',
-			'value'           => $cslb,
 		),
 	)
 );

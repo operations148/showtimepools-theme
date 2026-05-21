@@ -21,8 +21,8 @@ $faqs_default = array(
 			'a' => __( 'A standard replaster + retile + equipment refresh runs 2-4 weeks depending on scope and weather. New construction is 8-14 weeks. We commit to a written timeline before work starts.', 'showtime-pools' ),
 		),
 		array(
-			'q' => __( 'Are you licensed and insured?', 'showtime-pools' ),
-			'a' => __( 'Yes. CSLB License #985241, $2M liability insurance, full workers comp coverage. Documentation provided on request.', 'showtime-pools' ),
+			'q' => __( 'Who actually shows up to my house?', 'showtime-pools' ),
+			'a' => __( 'The same in-house W-2 tech every visit. We do not use subcontractors. Photo report after each visit. The person who quotes the job is on-site when the work happens.', 'showtime-pools' ),
 		),
 		array(
 			'q' => __( 'Do you serve outside Sherman Oaks?', 'showtime-pools' ),

@@ -84,7 +84,7 @@
                     "name": "h",
                     "type": "text",
                     "required": 1,
-                    "placeholder": "CSLB Licensed",
+                    "placeholder": "Pentair Authorized Service",
                     "wrapper": { "width": "30" }
                 },
                 {

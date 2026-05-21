@@ -8,7 +8,6 @@
 defined( 'ABSPATH' ) || exit;
 
 $year      = current_time( 'Y' );
-$license   = apply_filters( 'showtime/business/license', __( 'CSLB License #985241', 'showtime-pools' ) );
 $socials_raw = apply_filters(
 	'showtime/business/socials',
 	array(
@@ -37,7 +36,6 @@ foreach ( (array) $socials_raw as $k => $v ) {
 	<div class="container footer-legal__inner">
 		<p class="footer-legal__copy">
 			&copy; <?php echo esc_html( (string) $year ); ?> Showtime Pools.
-			<?php echo esc_html( $license ); ?>.
 			<?php esc_html_e( 'All rights reserved.', 'showtime-pools' ); ?>
 		</p>
 

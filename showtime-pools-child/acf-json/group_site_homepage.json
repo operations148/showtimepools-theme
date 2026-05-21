@@ -36,7 +36,7 @@
                     "name": "title",
                     "type": "text",
                     "required": 1,
-                    "placeholder": "Licensed & Insured",
+                    "placeholder": "In-house crew, no subs",
                     "wrapper": { "width": "40" }
                 },
                 {
@@ -46,7 +46,7 @@
                     "type": "textarea",
                     "rows": 2,
                     "required": 1,
-                    "placeholder": "CSLB #985241 with $2M liability + full workers comp on every crew.",
+                    "placeholder": "Same W-2 crew start to finish. No subcontractors. The person who quotes the job is on-site when work happens.",
                     "wrapper": { "width": "40" }
                 }
             ]

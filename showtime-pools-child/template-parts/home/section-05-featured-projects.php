@@ -110,7 +110,7 @@ if ( empty( $projects ) ) {
 			</a>
 		</header>
 
-		<div class="featured-projects__grid">
+		<div class="featured-projects__grid" data-stagger>
 			<?php foreach ( $projects as $p ) : ?>
 				<a class="proj-card" href="<?php echo esc_url( $p['href'] ); ?>">
 					<div class="proj-card__media" style="background:<?php echo esc_attr( $p['gradient'] ?? 'linear-gradient(135deg,#1F2F3A,#5C8A9E)' ); ?>">
