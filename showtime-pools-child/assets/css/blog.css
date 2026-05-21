@@ -241,9 +241,9 @@
 
 .post-hero {
 	position: relative;
-	min-height: clamp(260px, 32vw, 460px);
-	padding: var(--sp-10) 0 var(--sp-9);
-	color: var(--c-text-invert);
+	min-height: clamp(360px, 42vw, 540px);
+	padding: clamp(3.5rem, 6vw, 5.5rem) 0 clamp(3rem, 5vw, 4.5rem);
+	color: #fff; /* explicit white — Astra sets h1/h2 to #808285 via inheritance-bypassing rule */
 	overflow: hidden;
 	background: var(--c-aqua-900);
 }
@@ -258,6 +258,10 @@
 	background: linear-gradient(180deg, rgba(10,10,10,.25) 0%, rgba(10,10,10,.7) 100%);
 }
 .post-hero > .container { position: relative; z-index: 1; }
+/* Override Astra's global heading colors inside the hero */
+.post-hero h1,
+.post-hero h2,
+.post-hero h3 { color: #fff; }
 /* All eyebrows/labels inside the blog hero must be white */
 .post-hero .eyebrow,
 .post-hero .eyebrow--invert {
@@ -281,6 +285,7 @@
 	margin-bottom: var(--sp-4);
 }
 .post-hero__title {
+	color: #fff; /* explicit — beats Astra's global h1 { color:#808285 } */
 	font-family: var(--ff-display);
 	font-weight: 500;
 	font-size: clamp(2rem, 1.3rem + 2.8vw, 3.4rem);
