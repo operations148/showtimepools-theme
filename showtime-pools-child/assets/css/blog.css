@@ -352,6 +352,13 @@
 	.post-body__grid { grid-template-columns: minmax(0, 1fr) 300px; gap: clamp(3rem, 5vw, 5rem); }
 }
 
+/* Sidebar column — stack TOC + CTA with breathing room between them */
+.post-body__side {
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-6);
+}
+
 .post-lede {
 	max-width: 70ch;
 	font-size: clamp(1.1rem, 1rem + .35vw, 1.25rem);
