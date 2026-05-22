@@ -55,10 +55,8 @@ $person_schema = array(
 			</nav>
 			<div class="int-hero__inner">
 				<span class="eyebrow eyebrow--invert"><?php esc_html_e( 'About Showtime Pools', 'showtime-pools' ); ?></span>
-				<h1 class="int-hero__title balance"><?php esc_html_e( 'Complete pool care, start to finish.', 'showtime-pools' ); ?></h1>
-				<p class="int-hero__lead">
-					<?php esc_html_e( 'Showtime Pools designs, builds, and transforms pools and outdoor spaces that elevate the way you live. Based in Los Angeles, we are the trusted name for homeowners, property managers, and businesses across Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills.', 'showtime-pools' ); ?>
-				</p>
+				<h1 class="int-hero__title balance"><?php echo esc_html( $about_h1 ); ?></h1>
+				<p class="int-hero__lead"><?php echo esc_html( $about_hero_lead ); ?></p>
 			</div>
 		</div>
 	</section>
@@ -69,15 +67,30 @@ $person_schema = array(
 	// editorial voice if ACF is deactivated or fields are blank.
 	$opt = function_exists( 'get_field' ) ? 'option' : false;
 
-	$about_eyebrow = $opt ? (string) get_field( 'about_who_we_are_eyebrow', $opt ) : '';
-	$about_title   = $opt ? (string) get_field( 'about_who_we_are_title', $opt ) : '';
-	$about_body    = $opt ? (string) get_field( 'about_who_we_are_body', $opt ) : '';
-	$values_title  = $opt ? (string) get_field( 'about_values_intro_title', $opt ) : '';
-	$values_intro  = $opt ? (string) get_field( 'about_values_intro_body', $opt ) : '';
+	// Priority chain: native wp_options (Showtime Pools → Site Content) → ACF → PHP fallback.
+	$_ct = class_exists( '\\Showtime\\Admin\\ContentPage' ) ? '\\Showtime\\Admin\\ContentPage' : null;
 
-	$about_eyebrow = '' !== $about_eyebrow ? $about_eyebrow : __( 'Who we are', 'showtime-pools' );
-	$about_title   = '' !== $about_title   ? $about_title   : __( 'Years of hands-on experience. Built on quality, transparency, and reliability.', 'showtime-pools' );
-	$values_title  = '' !== $values_title  ? $values_title  : __( 'Five commitments. Every project, every visit.', 'showtime-pools' );
+	$about_h1        = $_ct ? $_ct::get( 'about_h1' ) : '';
+	$about_h1        = '' !== $about_h1 ? $about_h1 : __( 'Complete pool care, start to finish.', 'showtime-pools' );
+
+	$about_hero_lead = $_ct ? $_ct::get( 'about_lead' ) : '';
+	$about_hero_lead = '' !== $about_hero_lead ? $about_hero_lead : __( 'Showtime Pools designs, builds, and transforms pools and outdoor spaces that elevate the way you live. Based in Los Angeles, we are the trusted name for homeowners, property managers, and businesses across Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills.', 'showtime-pools' );
+
+	$about_eyebrow   = $opt ? (string) get_field( 'about_who_we_are_eyebrow', $opt ) : '';
+	$about_eyebrow   = '' !== $about_eyebrow ? $about_eyebrow : __( 'Who we are', 'showtime-pools' );
+
+	$about_title     = $_ct ? $_ct::get( 'about_wwa_title' ) : '';
+	if ( '' === $about_title ) { $about_title = $opt ? (string) get_field( 'about_who_we_are_title', $opt ) : ''; }
+	$about_title     = '' !== $about_title ? $about_title : __( 'Years of hands-on experience. Built on quality, transparency, and reliability.', 'showtime-pools' );
+
+	$about_body      = $_ct ? $_ct::get( 'about_wwa_body' ) : '';
+	if ( '' === $about_body ) { $about_body = $opt ? (string) get_field( 'about_who_we_are_body', $opt ) : ''; }
+
+	$values_title    = $_ct ? $_ct::get( 'about_values_title' ) : '';
+	if ( '' === $values_title ) { $values_title = $opt ? (string) get_field( 'about_values_intro_title', $opt ) : ''; }
+	$values_title    = '' !== $values_title ? $values_title : __( 'Five commitments. Every project, every visit.', 'showtime-pools' );
+
+	$values_intro    = $opt ? (string) get_field( 'about_values_intro_body', $opt ) : '';
 	?>
 	<section class="int-section" data-reveal>
 		<div class="container">
@@ -161,7 +174,12 @@ $person_schema = array(
 					array( 'name' => 'Felipe A',    'role' => __( 'Pool Service Technician', 'showtime-pools' ), 'note' => __( 'Senior route tech. Same customers every week. Photo report after every visit before he leaves the driveway.', 'showtime-pools' ), 'initials' => 'FA', 'href' => '' ),
 					array( 'name' => 'George C',    'role' => __( 'Senior Cleaner', 'showtime-pools' ),          'note' => __( 'Owns the chemistry-and-detail side of weekly maintenance. Tile-line wipe-down, full chemistry balance, equipment runtime check.', 'showtime-pools' ), 'initials' => 'GC', 'href' => '' ),
 				);
-				$team = showtime_acf_rows( 'team', $team_default );
+				// Priority: native wp_options (Showtime Pools → Site Content → Team) → ACF → PHP fallback.
+				if ( $_ct ) {
+					$team = $_ct::get_all_team();
+				} else {
+					$team = showtime_acf_rows( 'team', $team_default );
+				}
 				foreach ( $team as $t ) :
 					$t_name     = (string) ( $t['name'] ?? '' );
 					$t_role     = (string) ( $t['role'] ?? '' );
@@ -221,7 +239,8 @@ $person_schema = array(
 					array( 'h' => __( 'PebbleTec Certified Applicator', 'showtime-pools' ),'b' => __( 'Five-year written finish warranty backed by PebbleTec. Annual applicator training.', 'showtime-pools' ) ),
 					array( 'h' => __( 'California Code Compliance', 'showtime-pools' ),   'b' => __( 'Every permit, bonding inspection, and electrical sign-off pulled through LA County and city counters in-house.', 'showtime-pools' ) ),
 				);
-				$creds = showtime_acf_rows( 'credentials', $creds_default );
+				// Priority: native wp_options → ACF → PHP fallback.
+				$creds = $_ct ? $_ct::get_all_creds() : showtime_acf_rows( 'credentials', $creds_default );
 				foreach ( $creds as $c ) :
 				?>
 					<article class="creds-card">

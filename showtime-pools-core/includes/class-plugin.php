@@ -39,6 +39,7 @@ final class Plugin {
 
 		if ( is_admin() ) {
 			( new Admin\SettingsPage() )->register();
+			( new Admin\ContentPage() )->register();
 			( new Admin\PageSeeder() )->register();
 		}
 
