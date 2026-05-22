@@ -237,27 +237,6 @@
 .blog-side--cta p { color: rgba(255,255,255,.78); margin: 0 0 var(--sp-4); line-height: 1.55; }
 .blog-side--cta .btn { width: 100%; justify-content: center; }
 
-/* ===== Astra container reset for single posts ============================
-   Astra's ast-separate-container and ast-narrow-container add a white card,
-   max-width constraint, and padding to #primary on single posts. Our layout
-   is full-bleed so we reset all of it here.
-   ========================================================================= */
-.ast-narrow-container.ast-single-post #primary,
-.ast-separate-container.ast-single-post #primary {
-	max-width: 100% !important;
-	width: 100% !important;
-	padding-left: 0 !important;
-	padding-right: 0 !important;
-	margin-top: 0 !important;
-	margin-bottom: 0 !important;
-	background: transparent !important;
-	box-shadow: none !important;
-	border-radius: 0 !important;
-}
-.ast-narrow-container.ast-single-post .site-content,
-.ast-separate-container.ast-single-post .site-content {
-	padding-top: 0 !important;
-}
 
 /* ===== Single post ======================================================= */
 

@@ -39,33 +39,6 @@ add_filter(
 );
 
 /**
- * Astra overrides — force full-width layout on blog single posts and projects.
- *
- * Astra's "Separate Container" layout boxes the content into a narrow white
- * card. Our post-hero is full-bleed dark, so we need to escape that container.
- * These filters make Astra treat single posts as full-width pages.
- */
-add_filter(
-	'astra_site_layout',
-	function ( $layout ) {
-		if ( is_singular( 'post' ) || is_singular( 'project' ) ) {
-			return 'ast-full-width-layout';
-		}
-		return $layout;
-	}
-);
-
-add_filter(
-	'astra_page_layout',
-	function ( $layout ) {
-		if ( is_singular( 'post' ) || is_singular( 'project' ) ) {
-			return 'no-sidebar';
-		}
-		return $layout;
-	}
-);
-
-/**
  * TODO when Blocksy Companion Pro is active in target env:
  *   - Register custom header layouts via blocksy_register_header_section
  *   - Register custom footer rows via blocksy_register_footer_section

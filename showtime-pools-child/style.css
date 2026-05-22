@@ -1,11 +1,10 @@
 /*
-Theme Name:     Showtime Pools Child
+Theme Name:     Showtime Pools
 Theme URI:      https://showtimepools.com
-Description:    Custom child theme for Showtime Pools (Sherman Oaks, LA). All site customizations live here. Activates against the Astra parent theme; Astra acts as a thin host while this child owns every visual layer through tokens.css and component sheets.
+Description:    Custom WordPress theme for Showtime Pools (Sherman Oaks, LA). Standalone theme — no parent dependency. All styles in /assets/css/.
 Author:         Showtime Pools Dev
 Author URI:     https://showtimepools.com
-Template:       astra
-Version:        0.1.0
+Version:        1.0.0
 Requires at least: 6.7
 Requires PHP:   8.2
 License:        GNU General Public License v2 or later
