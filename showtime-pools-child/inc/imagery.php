@@ -50,6 +50,25 @@ function showtime_picsum_url( string $seed, int $w = 1600, int $h = 900 ): strin
  * @param int    $h    Height (0 = let Unsplash decide proportionally).
  */
 function showtime_image( string $slot, int $w = 1600, int $h = 0 ): string {
+
+	// ── Priority 1: ACF Options override ─────────────────────────────────────
+	// WP Admin → Site Content → Images → upload any image to override the
+	// bundled/Unsplash fallback. Field name = "img_" + slot with hyphens → underscores.
+	// This is the single entry-point for all dynamic image management.
+	if ( function_exists( 'get_field' ) ) {
+		$field_key = 'img_' . str_replace( '-', '_', $slot );
+		$acf_img   = get_field( $field_key, 'option' );
+		if ( ! empty( $acf_img ) ) {
+			$acf_url = is_array( $acf_img )
+				? (string) ( $acf_img['sizes']['large'] ?? $acf_img['sizes']['medium_large'] ?? $acf_img['url'] ?? '' )
+				: (string) $acf_img;
+			if ( '' !== $acf_url ) {
+				return (string) apply_filters( 'showtime/image/' . $slot, $acf_url, $slot, $w, $h );
+			}
+		}
+	}
+
+	// ── Priority 2: Curated Unsplash IDs (original fallback chain) ───────────
 	// Curated Unsplash IDs. These are popular pool/water/luxury-home photos.
 	// If any 404, the CSS background-color fallback keeps the page readable.
 	$photos = array(

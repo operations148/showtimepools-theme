@@ -1,0 +1,340 @@
+{
+    "key": "group_showtime_site_images",
+    "title": "Site Images",
+    "fields": [
+        {
+            "key": "field_si_tab_global",
+            "label": "Global Heroes",
+            "name": "",
+            "type": "tab",
+            "placement": "left",
+            "instructions": "Upload images here to override the default bundled photos. Leave blank to keep the current photo."
+        },
+        {
+            "key": "field_si_img_hero",
+            "label": "Homepage Hero",
+            "name": "img_hero",
+            "type": "image",
+            "instructions": "Main hero background on the homepage. Recommended: 1920×1080px minimum.",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_img_lifestyle_main",
+            "label": "Projects Page Hero",
+            "name": "img_lifestyle_main",
+            "type": "image",
+            "instructions": "Hero background on /projects/.",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_img_about_hero",
+            "label": "About / Founder Hero Background",
+            "name": "img_about_hero",
+            "type": "image",
+            "instructions": "Dark photo behind the hero on /about/ and /the-founder/.",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_img_inspections_bg",
+            "label": "Inspections Page Hero",
+            "name": "img_inspections_bg",
+            "type": "image",
+            "instructions": "Hero background on /pool-inspections/.",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_img_founder",
+            "label": "Founder Portrait (Steve Adams)",
+            "name": "img_founder",
+            "type": "image",
+            "instructions": "Steve's portrait on /the-founder/. Use a head-and-shoulders shot.",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_tab_lifestyle",
+            "label": "Lifestyle Photos",
+            "name": "",
+            "type": "tab",
+            "placement": "left"
+        },
+        {
+            "key": "field_si_img_lifestyle_1",
+            "label": "Lifestyle Photo 1",
+            "name": "img_lifestyle_1",
+            "type": "image",
+            "instructions": "Used in the About section on the homepage (left photo).",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_img_lifestyle_2",
+            "label": "Lifestyle Photo 2",
+            "name": "img_lifestyle_2",
+            "type": "image",
+            "instructions": "Used in the About section on the homepage (right photo).",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_img_lifestyle_3",
+            "label": "Lifestyle Photo 3",
+            "name": "img_lifestyle_3",
+            "type": "image",
+            "instructions": "Contact page hero background.",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_img_lifestyle_4",
+            "label": "Lifestyle Photo 4",
+            "name": "img_lifestyle_4",
+            "type": "image",
+            "instructions": "Supplementary lifestyle photo used in various sections.",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_tab_services",
+            "label": "Service Heroes",
+            "name": "",
+            "type": "tab",
+            "placement": "left"
+        },
+        {
+            "key": "field_si_img_service_repairs",
+            "label": "Pool Repairs & Plumbing",
+            "name": "img_service_pool_repairs_plumbing",
+            "type": "image",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_img_service_maintenance",
+            "label": "Weekly Pool Maintenance",
+            "name": "img_service_weekly_pool_maintenance",
+            "type": "image",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_img_service_remodeling",
+            "label": "Pool Remodeling & Resurfacing",
+            "name": "img_service_pool_remodeling_resurfacing",
+            "type": "image",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_img_service_equipment",
+            "label": "Equipment Installation",
+            "name": "img_service_equipment_installation_upgrades",
+            "type": "image",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_img_service_inspections",
+            "label": "Pool Inspections & Diagnostics",
+            "name": "img_service_pool_inspections_diagnostics",
+            "type": "image",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_img_service_automation",
+            "label": "Smart Pool Automation",
+            "name": "img_service_smart_pool_automation_upgrades",
+            "type": "image",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_img_service_construction",
+            "label": "Custom Pool Design & Construction",
+            "name": "img_service_custom_pool_design_construction",
+            "type": "image",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_img_service_spa",
+            "label": "Spa Installation & Renovations",
+            "name": "img_service_spa_installation_renovations",
+            "type": "image",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_img_service_tile",
+            "label": "Tile, Coping, Plaster & Decking",
+            "name": "img_service_tile_coping_plaster_decking",
+            "type": "image",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_img_service_outdoor",
+            "label": "Outdoor Living & Hardscape",
+            "name": "img_service_outdoor_living_hardscape",
+            "type": "image",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_img_service_kitchens",
+            "label": "Outdoor Kitchens & BBQ Areas",
+            "name": "img_service_outdoor_kitchens_bbq_areas",
+            "type": "image",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_img_service_fire",
+            "label": "Fire Features & Water Features",
+            "name": "img_service_fire_water_features",
+            "type": "image",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_tab_areas",
+            "label": "Service Area Heroes",
+            "name": "",
+            "type": "tab",
+            "placement": "left"
+        },
+        {
+            "key": "field_si_img_area_sherman",
+            "label": "Sherman Oaks",
+            "name": "img_area_sherman_oaks",
+            "type": "image",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_img_area_encino",
+            "label": "Encino",
+            "name": "img_area_encino",
+            "type": "image",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_img_area_bh",
+            "label": "Beverly Hills",
+            "name": "img_area_beverly_hills",
+            "type": "image",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_img_area_studio",
+            "label": "Studio City",
+            "name": "img_area_studio_city",
+            "type": "image",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_img_area_tarzana",
+            "label": "Tarzana",
+            "name": "img_area_tarzana",
+            "type": "image",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_img_area_woodland",
+            "label": "Woodland Hills",
+            "name": "img_area_woodland_hills",
+            "type": "image",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_tab_blog",
+            "label": "Blog Images",
+            "name": "",
+            "type": "tab",
+            "placement": "left"
+        },
+        {
+            "key": "field_si_img_blog_default",
+            "label": "Blog Default Image",
+            "name": "img_blog_default",
+            "type": "image",
+            "instructions": "Fallback image for blog posts with no featured image.",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_img_blog_trends",
+            "label": "Blog: Pool Trends category",
+            "name": "img_blog_trends",
+            "type": "image",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_img_blog_tips",
+            "label": "Blog: Maintenance Tips category",
+            "name": "img_blog_tips",
+            "type": "image",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        },
+        {
+            "key": "field_si_img_blog_equipment",
+            "label": "Blog: Equipment Guides category",
+            "name": "img_blog_equipment",
+            "type": "image",
+            "return_format": "array",
+            "preview_size": "medium",
+            "wrapper": { "width": "50" }
+        }
+    ],
+    "location": [
+        [ { "param": "options_page", "operator": "==", "value": "showtime-content-images" } ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "active": true
+}
