@@ -51,6 +51,21 @@ function showtime_picsum_url( string $seed, int $w = 1600, int $h = 900 ): strin
  */
 function showtime_image( string $slot, int $w = 1600, int $h = 0 ): string {
 
+	// ── Priority 0: Native WP option (no ACF Pro required) ───────────────────
+	// WP Admin → Showtime Pools → Site Images → upload any photo.
+	// Saves as attachment ID (int) or URL (string) in wp_options.
+	// Always available, even without ACF Pro on the server.
+	$opt_key = 'showtime_img_' . str_replace( '-', '_', $slot );
+	$native  = get_option( $opt_key, '' );
+	if ( '' !== (string) $native ) {
+		$native_url = is_numeric( $native )
+			? wp_get_attachment_url( (int) $native )
+			: (string) $native;
+		if ( $native_url ) {
+			return (string) apply_filters( 'showtime/image/' . $slot, $native_url, $slot, $w, $h );
+		}
+	}
+
 	// ── Priority 1: ACF Options override ─────────────────────────────────────
 	// WP Admin → Site Content → Images → upload any image to override the
 	// bundled/Unsplash fallback. Field name = "img_" + slot with hyphens → underscores.
