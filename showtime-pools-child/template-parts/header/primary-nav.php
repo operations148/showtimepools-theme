@@ -11,16 +11,23 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$has_primary = has_nav_menu( 'primary' );
+// Use WP menu if assigned to 'primary' location OR if any menu exists at all.
+// This means the user never has to manually assign a menu to a location —
+// any menu they create in WP Admin → Menus will be picked up automatically.
+$has_primary  = has_nav_menu( 'primary' );
+$all_menus    = wp_get_nav_menus();
+$has_any_menu = ! empty( $all_menus );
 
 $services = class_exists( '\\Showtime\\Services' ) ? \Showtime\Services::all() : array();
 ?>
 <nav class="primary-nav" aria-label="<?php esc_attr_e( 'Primary', 'showtime-pools' ); ?>">
-	<?php if ( $has_primary ) : ?>
+	<?php if ( $has_primary || $has_any_menu ) : ?>
 		<?php
 		wp_nav_menu(
 			array(
 				'theme_location' => 'primary',
+				// If no menu assigned to 'primary', fall back to the first available menu.
+				'menu'           => $has_primary ? 0 : (int) $all_menus[0]->term_id,
 				'container'      => false,
 				'menu_class'     => 'primary-nav__list',
 				'depth'          => 2,
