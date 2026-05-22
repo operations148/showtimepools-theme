@@ -172,15 +172,35 @@ $person_schema = array(
 						$parts = preg_split( '/\s+/', $t_name );
 						$t_initials = strtoupper( substr( $parts[0] ?? '', 0, 1 ) . substr( $parts[1] ?? '', 0, 1 ) );
 					}
+					// Photo field — ACF returns an array with url/sizes; plain string also accepted.
+					$t_photo_raw = $t['photo'] ?? '';
+					$t_photo_url = '';
+					if ( is_array( $t_photo_raw ) ) {
+						$t_photo_url = (string) ( $t_photo_raw['sizes']['medium_large'] ?? $t_photo_raw['sizes']['large'] ?? $t_photo_raw['url'] ?? '' );
+					} elseif ( is_string( $t_photo_raw ) ) {
+						$t_photo_url = $t_photo_raw;
+					}
 				?>
-					<article class="team-card">
-						<div class="team-card__avatar" aria-hidden="true"><?php echo esc_html( $t_initials ); ?></div>
-						<h3 class="team-card__name"><?php echo esc_html( $t_name ); ?></h3>
-						<p class="team-card__role"><?php echo esc_html( $t_role ); ?></p>
-						<p class="team-card__note"><?php echo esc_html( $t_note ); ?></p>
-						<?php if ( '' !== $t_href ) : ?>
-							<a class="team-card__link" href="<?php echo esc_url( $t_href ); ?>"><?php esc_html_e( 'Read more →', 'showtime-pools' ); ?></a>
+					<article class="team-card<?php echo $t_photo_url ? ' team-card--has-photo' : ''; ?>">
+						<?php if ( $t_photo_url ) : ?>
+							<div class="team-card__photo">
+								<img src="<?php echo esc_url( $t_photo_url ); ?>"
+									 alt="<?php echo esc_attr( $t_name ); ?>"
+									 loading="lazy" decoding="async">
+							</div>
+						<?php else : ?>
+							<div class="team-card__avatar" aria-hidden="true"><?php echo esc_html( $t_initials ); ?></div>
 						<?php endif; ?>
+						<div class="team-card__body">
+							<h3 class="team-card__name"><?php echo esc_html( $t_name ); ?></h3>
+							<p class="team-card__role"><?php echo esc_html( $t_role ); ?></p>
+							<?php if ( '' !== $t_note ) : ?>
+								<p class="team-card__note"><?php echo esc_html( $t_note ); ?></p>
+							<?php endif; ?>
+							<?php if ( '' !== $t_href ) : ?>
+								<a class="team-card__link" href="<?php echo esc_url( $t_href ); ?>"><?php esc_html_e( 'Full bio →', 'showtime-pools' ); ?></a>
+							<?php endif; ?>
+						</div>
 					</article>
 				<?php endforeach; ?>
 			</div>
