@@ -22,31 +22,86 @@ defined( 'ABSPATH' ) || exit;
 
 get_header();
 
+// Current page ID — used for WP native field reads.
+$page_id = (int) get_queried_object_id();
+
 $opt = function_exists( 'get_field' ) ? 'option' : false;
 
-// --- ACF copy fields, with PHP fallbacks --------------------------------
-$f_name      = $opt ? (string) get_field( 'founder_name', $opt ) : '';
-$f_title     = $opt ? (string) get_field( 'founder_title', $opt ) : '';
-$f_eyebrow   = $opt ? (string) get_field( 'founder_eyebrow', $opt ) : '';
-$f_h1        = $opt ? (string) get_field( 'founder_h1', $opt ) : '';
-$f_lead      = $opt ? (string) get_field( 'founder_lead', $opt ) : '';
-$f_quote     = $opt ? (string) get_field( 'founder_quote', $opt ) : '';
-$f_qattr     = $opt ? (string) get_field( 'founder_quote_attribution', $opt ) : '';
-$f_blocks    = $opt ? get_field( 'founder_story_blocks', $opt ) : null;
-$f_portrait  = $opt ? get_field( 'founder_portrait', $opt ) : null;
+// --- Priority chain: ACF Pro option → WP native field → PHP fallback --------
+//
+// ACF Pro (when active) wins — it adds rich editing UI to the Page Copy tab.
+// Without ACF Pro, native WP fields serve as the edit path:
+//   - H1        → WP Admin → Pages → The Founder → Page Title
+//   - Bio text  → WP Admin → Pages → The Founder → Page Content (Gutenberg)
+//   - Portrait  → WP Admin → Pages → The Founder → Featured Image
+//   - Quote     → WP Admin → Pages → The Founder → Custom Fields panel
+// PHP strings at the bottom are the last-resort display fallback only.
 
-$f_name    = '' !== $f_name    ? $f_name    : __( 'Steve Adams', 'showtime-pools' );
-$f_title   = '' !== $f_title   ? $f_title   : __( 'Founder & CEO', 'showtime-pools' );
+// Name + Title (display only; not a page field)
+$f_name    = $opt ? (string) get_field( 'founder_name', $opt ) : '';
+$f_title   = $opt ? (string) get_field( 'founder_title', $opt ) : '';
+$f_name    = '' !== $f_name  ? $f_name  : __( 'Steve Adams', 'showtime-pools' );
+$f_title   = '' !== $f_title ? $f_title : __( 'Founder & CEO', 'showtime-pools' );
+
+// Eyebrow chip
+$f_eyebrow = $opt ? (string) get_field( 'founder_eyebrow', $opt ) : '';
 $f_eyebrow = '' !== $f_eyebrow ? $f_eyebrow : __( 'The Founder', 'showtime-pools' );
-$f_h1      = '' !== $f_h1      ? $f_h1      : __( 'A pool company, run like a small shop.', 'showtime-pools' );
-$f_lead    = '' !== $f_lead    ? $f_lead    : __( 'Showtime Pools is owner-operated. The shop on Ventura Boulevard. The crew is W-2. The phone is a real phone, answered by a real person.', 'showtime-pools' );
-$f_quote   = '' !== $f_quote   ? $f_quote   : __( 'If my name is on the warranty, my crew earns it on every job.', 'showtime-pools' );
-$f_qattr   = '' !== $f_qattr   ? $f_qattr   : $f_name . ', ' . $f_title;
 
-// Portrait: ACF Image override → bundled /assets/img/founder.{webp,jpg} → CDN.
+// H1: ACF → WP page title → hardcoded default
+$f_h1 = $opt ? (string) get_field( 'founder_h1', $opt ) : '';
+if ( '' === $f_h1 && $page_id ) {
+	$wp_title = trim( get_the_title( $page_id ) );
+	// Only use the WP title if it's not the generic seeder default.
+	if ( '' !== $wp_title && __( 'The Founder', 'showtime-pools' ) !== $wp_title ) {
+		$f_h1 = $wp_title;
+	}
+}
+$f_h1 = '' !== $f_h1 ? $f_h1 : __( 'A pool company, run like a small shop.', 'showtime-pools' );
+
+// Lead (hero subheading): ACF → post excerpt → hardcoded
+$f_lead = $opt ? (string) get_field( 'founder_lead', $opt ) : '';
+if ( '' === $f_lead && $page_id ) {
+	$excerpt = get_the_excerpt( $page_id );
+	if ( '' !== $excerpt ) {
+		$f_lead = $excerpt;
+	}
+}
+$f_lead = '' !== $f_lead ? $f_lead : __( 'Showtime Pools is owner-operated. The shop on Ventura Boulevard. The crew is W-2. The phone is a real phone, answered by a real person.', 'showtime-pools' );
+
+// Story blocks: ACF repeater → WP page content → hardcoded paragraphs
+$f_blocks     = $opt ? get_field( 'founder_story_blocks', $opt ) : null;
+$use_wp_bio   = ( ! is_array( $f_blocks ) || empty( $f_blocks ) ) && $page_id;
+$wp_bio       = '';
+if ( $use_wp_bio ) {
+	$raw = get_post_field( 'post_content', $page_id );
+	if ( '' !== trim( $raw ) ) {
+		$wp_bio = apply_filters( 'the_content', $raw );
+	}
+}
+
+// Quote: ACF → post meta → hardcoded
+$f_quote = $opt ? (string) get_field( 'founder_quote', $opt ) : '';
+if ( '' === $f_quote && $page_id ) {
+	$meta_quote = get_post_meta( $page_id, 'founder_quote', true );
+	if ( '' !== (string) $meta_quote ) {
+		$f_quote = (string) $meta_quote;
+	}
+}
+$f_quote = '' !== $f_quote ? $f_quote : __( 'If my name is on the warranty, my crew earns it on every job.', 'showtime-pools' );
+
+// Quote attribution
+$f_qattr = $opt ? (string) get_field( 'founder_quote_attribution', $opt ) : '';
+$f_qattr = '' !== $f_qattr ? $f_qattr : $f_name . ', ' . $f_title;
+
+// Portrait: ACF → WP Featured Image → Site Images slot → CDN fallback
+$f_portrait = $opt ? get_field( 'founder_portrait', $opt ) : null;
 if ( is_array( $f_portrait ) && ! empty( $f_portrait['url'] ) ) {
 	$portrait_url = $f_portrait['sizes']['large'] ?? $f_portrait['url'];
+} elseif ( $page_id && has_post_thumbnail( $page_id ) ) {
+	// WP Admin → Pages → The Founder → Featured Image
+	$portrait_url = (string) get_the_post_thumbnail_url( $page_id, 'large' );
 } else {
+	// Showtime Pools → Site Images → Founder portrait (or bundled/CDN)
 	$portrait_url = function_exists( 'showtime_image' ) ? showtime_image( 'founder', 1200 ) : '';
 }
 
@@ -167,6 +222,12 @@ $person_schema = array(
 								<?php echo wp_kses_post( wpautop( $body ) ); ?>
 							<?php endif; ?>
 						<?php endforeach; ?>
+					<?php elseif ( '' !== $wp_bio ) : ?>
+						<?php
+						// WP page content from the Gutenberg/Classic editor.
+						// Edit: WP Admin → Pages → The Founder → Page Content.
+						echo wp_kses_post( $wp_bio );
+						?>
 					<?php else : ?>
 						<p><?php esc_html_e( 'Steve started Showtime Pools with one truck and a handful of weekly customers in Sherman Oaks. The first decade was just service: drive the route, balance the chemistry, fix what breaks, send a photo report before leaving the driveway. Customers asked when we would start doing remodels. Steve said no for years.', 'showtime-pools' ); ?></p>
 						<p><?php esc_html_e( 'When we finally added construction, it was because the same handful of customers kept asking. We built a pool for one. Then a remodel for another. Word got around. Today the construction line and the service line are both staffed by W-2 crew, both supervised by Steve, both working off the same standards. Same shop on Ventura Boulevard. Same trucks. Same number.', 'showtime-pools' ); ?></p>

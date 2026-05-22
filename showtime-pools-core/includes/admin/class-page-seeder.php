@@ -213,6 +213,15 @@ final class PageSeeder {
 		$created += $blog_result['created'];
 		$skipped += $blog_result['skipped'];
 
+		// 7) Fix page templates that may be wrong on existing installs.
+		$this->fix_page_templates();
+
+		// 8) Pre-fill founder page with default bio content if empty.
+		$this->fill_founder_content();
+
+		// 9) Auto-seed primary nav menu if none is assigned.
+		$this->seed_primary_menu();
+
 		flush_rewrite_rules();
 
 		return array(
@@ -360,6 +369,152 @@ final class PageSeeder {
 		}
 
 		return array( 'created' => $created, 'skipped' => $skipped );
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// FIX PAGE TEMPLATES
+	// ─────────────────────────────────────────────────────────────────────────
+
+	/**
+	 * Correct `_wp_page_template` on pages that exist but may have been seeded
+	 * without the correct template (e.g. blog page set to wrong template or to
+	 * WordPress's "Posts page" setting which overrides the page template).
+	 *
+	 * Also ensures the Blog page is NOT the WordPress Posts page — that setting
+	 * bypasses `page-blog.php` and sends the request through `index.php` instead.
+	 */
+	private function fix_page_templates(): void {
+		$template_map = array(
+			'blog'             => 'page-blog.php',
+			'the-founder'      => 'page-founder.php',
+			'about'            => 'page-about.php',
+			'projects'         => 'page-projects.php',
+			'service-areas'    => 'page-areas.php',
+			'pool-inspections' => 'page-inspections.php',
+			'contact'          => 'page-contact.php',
+		);
+
+		foreach ( $template_map as $slug => $tpl ) {
+			$page = get_page_by_path( $slug, OBJECT, 'page' );
+			if ( ! $page instanceof \WP_Post ) {
+				continue;
+			}
+			$current = (string) get_post_meta( $page->ID, '_wp_page_template', true );
+			if ( $current !== $tpl ) {
+				update_post_meta( $page->ID, '_wp_page_template', $tpl );
+			}
+		}
+
+		// Clear "page_for_posts" if it's pointing to our blog hub page — that
+		// setting makes WordPress bypass the page template entirely.
+		$blog_page = get_page_by_path( 'blog', OBJECT, 'page' );
+		if ( $blog_page instanceof \WP_Post ) {
+			if ( (int) get_option( 'page_for_posts' ) === (int) $blog_page->ID ) {
+				update_option( 'page_for_posts', 0 );
+			}
+		}
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// FOUNDER CONTENT PRE-FILL
+	// ─────────────────────────────────────────────────────────────────────────
+
+	/**
+	 * If the /the-founder/ page has empty post_content, write the default bio
+	 * text so the Gutenberg editor is pre-filled and the native WP edit path
+	 * works out of the box.
+	 */
+	private function fill_founder_content(): void {
+		$page = get_page_by_path( 'the-founder', OBJECT, 'page' );
+		if ( ! $page instanceof \WP_Post ) {
+			return;
+		}
+		if ( '' !== trim( $page->post_content ) ) {
+			return; // Already has content — don't overwrite.
+		}
+		wp_update_post( array(
+			'ID'           => $page->ID,
+			'post_content' => $this->founder_default_content(),
+		) );
+	}
+
+	/**
+	 * Default bio copy for the Founder page. Stored in post_content so the
+	 * user can edit it directly in WP Admin → Pages → The Founder.
+	 */
+	private function founder_default_content(): string {
+		return '<p>Steve started Showtime Pools with one truck and a handful of weekly customers in Sherman Oaks. The first decade was just service: drive the route, balance the chemistry, fix what breaks, send a photo report before leaving the driveway. Customers asked when we would start doing remodels. Steve said no for years.</p>
+
+<p>When we finally added construction, it was because the same handful of customers kept asking. We built a pool for one. Then a remodel for another. Word got around. Today the construction line and the service line are both staffed by W-2 crew, both supervised by Steve, both working off the same standards. Same shop on Ventura Boulevard. Same trucks. Same number.</p>
+
+<p>Quotes are written and itemized. Permits are pulled in person. The person who walks your site is on the job when the work happens. When the inspection says walk away from a deal, that is what the inspection says, even when it costs us a six-figure construction quote. Independence is the whole point.</p>';
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// PRIMARY NAV MENU SEED
+	// ─────────────────────────────────────────────────────────────────────────
+
+	/**
+	 * Create and assign "Main Navigation" to the primary menu location if none
+	 * is currently assigned. Idempotent — skips if primary already has a menu.
+	 */
+	private function seed_primary_menu(): void {
+		$locations = (array) get_theme_mod( 'nav_menu_locations', array() );
+
+		// Already has a menu assigned — skip.
+		if ( ! empty( $locations['primary'] ) && (int) $locations['primary'] > 0 ) {
+			return;
+		}
+
+		$menu_id = wp_create_nav_menu( __( 'Main Navigation', 'showtime-pools-core' ) );
+		if ( is_wp_error( $menu_id ) ) {
+			return;
+		}
+
+		// Top-level pages in display order. '' = home page (custom link).
+		$nav_items = array(
+			array( 'type' => 'custom',    'url'  => home_url( '/' ),   'title' => __( 'Home', 'showtime-pools-core' ) ),
+			array( 'type' => 'post_type', 'slug' => 'about',           'title' => __( 'About', 'showtime-pools-core' ) ),
+			array( 'type' => 'post_type', 'slug' => 'services',        'title' => __( 'Services', 'showtime-pools-core' ) ),
+			array( 'type' => 'post_type', 'slug' => 'projects',        'title' => __( 'Projects', 'showtime-pools-core' ) ),
+			array( 'type' => 'post_type', 'slug' => 'service-areas',   'title' => __( 'Service Areas', 'showtime-pools-core' ) ),
+			array( 'type' => 'post_type', 'slug' => 'blog',            'title' => __( 'Blog', 'showtime-pools-core' ) ),
+			array( 'type' => 'post_type', 'slug' => 'contact',         'title' => __( 'Contact', 'showtime-pools-core' ) ),
+		);
+
+		foreach ( $nav_items as $item ) {
+			if ( 'custom' === $item['type'] ) {
+				wp_update_nav_menu_item(
+					$menu_id,
+					0,
+					array(
+						'menu-item-type'   => 'custom',
+						'menu-item-url'    => (string) ( $item['url'] ?? home_url( '/' ) ),
+						'menu-item-title'  => (string) ( $item['title'] ?? '' ),
+						'menu-item-status' => 'publish',
+					)
+				);
+			} else {
+				$slug = (string) ( $item['slug'] ?? '' );
+				if ( '' === $slug ) { continue; }
+				$page = get_page_by_path( $slug, OBJECT, 'page' );
+				if ( ! $page instanceof \WP_Post ) { continue; }
+				wp_update_nav_menu_item(
+					$menu_id,
+					0,
+					array(
+						'menu-item-type'      => 'post_type',
+						'menu-item-object'    => 'page',
+						'menu-item-object-id' => (int) $page->ID,
+						'menu-item-title'     => (string) ( $item['title'] ?? '' ),
+						'menu-item-status'    => 'publish',
+					)
+				);
+			}
+		}
+
+		$locations['primary'] = (int) $menu_id;
+		set_theme_mod( 'nav_menu_locations', $locations );
 	}
 
 	public function register_menu(): void {
