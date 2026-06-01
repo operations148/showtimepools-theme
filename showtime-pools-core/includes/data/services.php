@@ -67,6 +67,55 @@ return array(
 	),
 
 	array(
+		'slug'              => 'pool-tile-cleaning',
+		'title'             => 'Pool Tile Cleaning',
+		'seo_h1'            => 'Pool Tile Cleaning in Los Angeles',
+		'seo_keyword'       => 'pool tile cleaning Los Angeles',
+		'seo_intro'         => 'Pool tile cleaning across Los Angeles starts at $1,000. We remove calcium, mineral scale, and waterline buildup from glass, ceramic, porcelain, pebble, and natural-stone tile using the right method per surface, with same-day diagnostics in Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills.',
+		'summary'           => 'Professional pool tile cleaning in Los Angeles. Bead blasting, salt-blasting, and chemical methods chosen per tile type. Removes calcium and mineral deposits from waterline tile without damaging the surface. Photo before-and-after report on every job.',
+		'icon'              => 'maintenance',
+		'accent_token'      => '--c-aqua-500',
+		'default_price'     => 'Starts at $1,000',
+		'default_turnaround'=> '1-2 days on-site',
+		'default_includes'  => array(
+			'On-site evaluation of tile type, scale severity, and method selection',
+			'Calcium and mineral scale removal from the full waterline tile band',
+			'Bead blasting (glass beads) for hard scale on glass, ceramic, porcelain',
+			'Salt or soda blasting for delicate stone and pebble surfaces',
+			'Surface-safe chemical treatment when blasting is not appropriate',
+			'Containment and full cleanup of blast media and runoff',
+			'Photo before-and-after report delivered the same day',
+			'Same-day priority for active weekly-service customers',
+		),
+		'default_faqs' => array(
+			array(
+				'q' => 'How much does pool tile cleaning cost in Los Angeles?',
+				'a' => 'Pool tile cleaning starts at $1,000 for a standard residential waterline band with moderate calcium buildup. Larger pools, heavy mineral scale, or delicate surfaces (pebble, natural stone) are quoted after a free on-site evaluation. Steve walks the pool, identifies the tile type and scale severity, and emails an itemized quote within 24 hours.',
+			),
+			array(
+				'q' => 'What is the difference between bead blasting and chemical cleaning?',
+				'a' => 'Bead blasting fires fine glass beads at the tile to mechanically knock off calcium scale, safe on glass and ceramic, and the beads dissolve in pool water without residue. Chemical cleaning uses muriatic-based gels that dissolve the scale, faster but harsher on grout and surrounding finishes. We pick the method by tile type — never the other way around.',
+			),
+			array(
+				'q' => 'How often should pool tile be cleaned in LA?',
+				'a' => 'Most Los Angeles pools need professional tile cleaning every 18 to 36 months depending on water hardness, fill source, and how aggressively chemistry is managed. Sherman Oaks, Encino, and Woodland Hills typically run on the shorter end because of LADWP fill-water hardness. Weekly service slows the buildup but does not eliminate it.',
+			),
+			array(
+				'q' => 'Will tile cleaning damage my pool tile or grout?',
+				'a' => 'Not when the right method is chosen for the tile type. Bead blasting is safe on glass, ceramic, and porcelain. Soda or salt blasting is used on pebble and natural stone where glass beads could pit the surface. Chemical methods are restricted to non-porous tile with intact grout. Steve identifies the tile type during the on-site evaluation before quoting.',
+			),
+			array(
+				'q' => 'Do you clean pebble, glass, and natural-stone tile?',
+				'a' => 'Yes. Pebble pools (PebbleTec, PebbleSheen) get soda blasting because glass beads can pit the rough surface. Glass mosaic and ceramic accept bead blasting. Natural stone (travertine, slate, flagstone) is handled with low-pressure soda blasting plus a surface-safe pH-neutral wash. We will tell you on-site if the tile is too damaged for cleaning and a replacement is the better call.',
+			),
+			array(
+				'q' => 'Do I need to drain the pool for tile cleaning?',
+				'a' => 'No. Pool tile cleaning is done with the pool full. We work from a vacuum platform set on the deck, blast at the waterline, and contain the media so it stays out of the deep end. Pumps stay off during the visit so the spent media does not cycle through the filter, then the pool returns to normal operation when we leave.',
+			),
+		),
+	),
+
+	array(
 		'slug'              => 'pool-remodeling-resurfacing',
 		'title'             => 'Pool Remodeling, Resurfacing & Finishes',
 		'seo_h1'            => 'Pool Remodeling & Resurfacing in Los Angeles',

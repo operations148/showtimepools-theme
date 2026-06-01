@@ -14,8 +14,13 @@ defined( 'ABSPATH' ) || exit;
 get_header();
 
 $services = class_exists( '\\Showtime\\Services' ) ? \Showtime\Services::all() : array();
-$core     = array_slice( $services, 0, 6 );
-$outdoor  = array_slice( $services, 6, 6 );
+// Core covers day-to-day services (repairs, maintenance, cleaning, equipment,
+// inspections, automation, tile cleaning). Outdoor covers larger build /
+// remodel / hardscape projects. Split scales to whatever the registry holds
+// so adding a 13th+ service does not silently fall off the hub.
+$core_count = 7;
+$core       = array_slice( $services, 0, $core_count );
+$outdoor    = array_slice( $services, $core_count );
 
 // ── Native WP fields (edit via WP Admin → Pages → Services → Update) ─────
 $pid = get_the_ID();
