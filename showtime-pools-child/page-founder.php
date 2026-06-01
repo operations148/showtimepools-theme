@@ -22,76 +22,53 @@ defined( 'ABSPATH' ) || exit;
 
 get_header();
 
-// Current page ID — used for WP native field reads.
+// ── Native WP fields (edit via WP Admin → Pages → The Founder → Update) ─────
 $page_id = (int) get_queried_object_id();
-
 $opt = function_exists( 'get_field' ) ? 'option' : false;
+$_pm = static fn( string $k ) => (string) get_post_meta( $page_id, $k, true );
 
-// --- Priority chain: ACF Pro option → WP native field → PHP fallback --------
-//
-// ACF Pro (when active) wins — it adds rich editing UI to the Page Copy tab.
-// Without ACF Pro, native WP fields serve as the edit path:
-//   - H1        → WP Admin → Pages → The Founder → Page Title
-//   - Bio text  → WP Admin → Pages → The Founder → Page Content (Gutenberg)
-//   - Portrait  → WP Admin → Pages → The Founder → Featured Image
-//   - Quote     → WP Admin → Pages → The Founder → Custom Fields panel
-// PHP strings at the bottom are the last-resort display fallback only.
+// Priority: post meta → ACF option → WP native → PHP fallback.
+$f_name    = $_pm( 'founder_name' )  ?: __( 'Steve Adams', 'showtime-pools' );
+$f_title   = $_pm( 'founder_title' ) ?: __( 'Founder & CEO', 'showtime-pools' );
+$f_eyebrow = $_pm( 'founder_eyebrow' ) ?: __( 'The Founder', 'showtime-pools' );
 
-// Name + Title (display only; not a page field)
-$f_name    = $opt ? (string) get_field( 'founder_name', $opt ) : '';
-$f_title   = $opt ? (string) get_field( 'founder_title', $opt ) : '';
-$f_name    = '' !== $f_name  ? $f_name  : __( 'Steve Adams', 'showtime-pools' );
-$f_title   = '' !== $f_title ? $f_title : __( 'Founder & CEO', 'showtime-pools' );
-
-// Eyebrow chip
-$f_eyebrow = $opt ? (string) get_field( 'founder_eyebrow', $opt ) : '';
-$f_eyebrow = '' !== $f_eyebrow ? $f_eyebrow : __( 'The Founder', 'showtime-pools' );
-
-// H1: ACF → WP page title → hardcoded default
-$f_h1 = $opt ? (string) get_field( 'founder_h1', $opt ) : '';
+// H1: post meta → WP page title → PHP fallback
+$f_h1 = $_pm( 'founder_h1' );
 if ( '' === $f_h1 && $page_id ) {
 	$wp_title = trim( get_the_title( $page_id ) );
-	// Only use the WP title if it's not the generic seeder default.
 	if ( '' !== $wp_title && __( 'The Founder', 'showtime-pools' ) !== $wp_title ) {
 		$f_h1 = $wp_title;
 	}
 }
 $f_h1 = '' !== $f_h1 ? $f_h1 : __( 'A pool company, run like a small shop.', 'showtime-pools' );
 
-// Lead (hero subheading): ACF → post excerpt → hardcoded
-$f_lead = $opt ? (string) get_field( 'founder_lead', $opt ) : '';
+// Lead: post meta → WP excerpt → PHP fallback
+$f_lead = $_pm( 'founder_lead' );
 if ( '' === $f_lead && $page_id ) {
 	$excerpt = get_the_excerpt( $page_id );
-	if ( '' !== $excerpt ) {
-		$f_lead = $excerpt;
-	}
+	if ( '' !== $excerpt ) { $f_lead = $excerpt; }
 }
 $f_lead = '' !== $f_lead ? $f_lead : __( 'Showtime Pools is owner-operated. The shop on Ventura Boulevard. The crew is W-2. The phone is a real phone, answered by a real person.', 'showtime-pools' );
 
-// Story blocks: ACF repeater → WP page content → hardcoded paragraphs
-$f_blocks     = $opt ? get_field( 'founder_story_blocks', $opt ) : null;
-$use_wp_bio   = ( ! is_array( $f_blocks ) || empty( $f_blocks ) ) && $page_id;
-$wp_bio       = '';
+// Bio: WP page content (Gutenberg editor)
+$f_blocks   = null; // ACF story blocks not used without Pro
+$use_wp_bio = (bool) $page_id;
+$wp_bio     = '';
 if ( $use_wp_bio ) {
 	$raw = get_post_field( 'post_content', $page_id );
-	if ( '' !== trim( $raw ) ) {
-		$wp_bio = apply_filters( 'the_content', $raw );
-	}
+	if ( '' !== trim( $raw ) ) { $wp_bio = apply_filters( 'the_content', $raw ); }
 }
 
-// Quote: ACF → post meta → hardcoded
-$f_quote = $opt ? (string) get_field( 'founder_quote', $opt ) : '';
-if ( '' === $f_quote && $page_id ) {
-	$meta_quote = get_post_meta( $page_id, 'founder_quote', true );
-	if ( '' !== (string) $meta_quote ) {
-		$f_quote = (string) $meta_quote;
-	}
-}
-$f_quote = '' !== $f_quote ? $f_quote : __( 'If my name is on the warranty, my crew earns it on every job.', 'showtime-pools' );
+// Quote: post meta → PHP fallback
+$f_quote = $_pm( 'founder_quote' ) ?: __( 'If my name is on the warranty, my crew earns it on every job.', 'showtime-pools' );
+$f_qattr = $_pm( 'founder_quote_attr' ) ?: $f_name . ', ' . $f_title;
 
-// Quote attribution
-$f_qattr = $opt ? (string) get_field( 'founder_quote_attribution', $opt ) : '';
-$f_qattr = '' !== $f_qattr ? $f_qattr : $f_name . ', ' . $f_title;
+// Section headings
+$founder_story_h2   = $_pm( 'founder_story_h2' )   ?: __( 'Founder, CEO, on every quote.', 'showtime-pools' );
+$founder_promises_eyebrow = $_pm( 'founder_promises_eyebrow' ) ?: __( 'What you can expect', 'showtime-pools' );
+$founder_promises_h2      = $_pm( 'founder_promises_h2' )      ?: __( 'Three promises Steve signs his name on.', 'showtime-pools' );
+$founder_contact_eyebrow  = $_pm( 'founder_contact_eyebrow' )  ?: __( 'Where to find Steve', 'showtime-pools' );
+$founder_contact_h2       = $_pm( 'founder_contact_h2' )       ?: __( 'The phone, the email, the shop.', 'showtime-pools' );
 
 // Portrait: ACF → WP Featured Image → Site Images slot → CDN fallback
 $f_portrait = $opt ? get_field( 'founder_portrait', $opt ) : null;
@@ -207,7 +184,7 @@ $person_schema = array(
 
 				<div class="about-story__copy">
 					<span class="eyebrow"><?php echo esc_html( $f_name ); ?></span>
-					<h2><?php esc_html_e( 'Founder, CEO, on every quote.', 'showtime-pools' ); ?></h2>
+					<h2><?php echo esc_html( $founder_story_h2 ); ?></h2>
 
 					<?php if ( is_array( $f_blocks ) && ! empty( $f_blocks ) ) : ?>
 						<?php foreach ( $f_blocks as $block ) :
@@ -254,8 +231,8 @@ $person_schema = array(
 		<section class="int-section founder-promises" data-reveal>
 			<div class="container">
 				<header class="int-section__head">
-					<span class="eyebrow"><?php esc_html_e( 'What you can expect', 'showtime-pools' ); ?></span>
-					<h2 class="balance"><?php esc_html_e( 'Three promises Steve signs his name on.', 'showtime-pools' ); ?></h2>
+					<span class="eyebrow"><?php echo esc_html( $founder_promises_eyebrow ); ?></span>
+					<h2 class="balance"><?php echo esc_html( $founder_promises_h2 ); ?></h2>
 				</header>
 				<div class="founder-promises__grid">
 					<?php $n = 0; foreach ( $values_strip as $v ) : $n++; ?>
@@ -273,8 +250,8 @@ $person_schema = array(
 	<section class="int-section int-section--cream" data-reveal>
 		<div class="container" style="max-width:var(--container-narrow)">
 			<header class="int-section__head">
-				<span class="eyebrow"><?php esc_html_e( 'Where to find Steve', 'showtime-pools' ); ?></span>
-				<h2 class="balance"><?php esc_html_e( 'The phone, the email, the shop.', 'showtime-pools' ); ?></h2>
+				<span class="eyebrow"><?php echo esc_html( $founder_contact_eyebrow ); ?></span>
+				<h2 class="balance"><?php echo esc_html( $founder_contact_h2 ); ?></h2>
 			</header>
 			<?php $tel = preg_replace( '/[^0-9+]/', '', $phone ); ?>
 			<ul class="founder-contact-list">

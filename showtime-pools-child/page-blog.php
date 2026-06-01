@@ -19,6 +19,23 @@ defined( 'ABSPATH' ) || exit;
 
 get_header();
 
+// ── Native WP fields (edit via WP Admin → Pages → Blog → Update) ────────────
+$pid              = get_the_ID();
+$hero_h1          = get_the_title();
+$hero_eyebrow     = (string) get_post_meta( $pid, 'hero_eyebrow',     true );
+$hero_lead        = (string) get_post_meta( $pid, 'hero_lead',        true );
+$cats_h2          = (string) get_post_meta( $pid, 'cats_h2',          true );
+$feed_h2          = (string) get_post_meta( $pid, 'feed_h2',          true );
+$sidebar_cta_title = (string) get_post_meta( $pid, 'sidebar_cta_title', true );
+$sidebar_cta_body  = (string) get_post_meta( $pid, 'sidebar_cta_body',  true );
+
+if ( '' === $hero_eyebrow )      { $hero_eyebrow      = 'Pool insights · From the crew'; }
+if ( '' === $hero_lead )         { $hero_lead         = 'Practical pool knowledge from Steve and the crew. Real water, real equipment, real LA backyards.'; }
+if ( '' === $cats_h2 )           { $cats_h2           = 'Three topics, written by people who do this every day.'; }
+if ( '' === $feed_h2 )           { $feed_h2           = 'What we are writing about now.'; }
+if ( '' === $sidebar_cta_title ) { $sidebar_cta_title = 'Ready to talk to a real human?'; }
+if ( '' === $sidebar_cta_body )  { $sidebar_cta_body  = 'Get a free quote on a repair, remodel, or weekly service.'; }
+
 // All non-Uncategorized post categories.
 $categories = get_categories(
 	array(
@@ -62,11 +79,9 @@ $category_slot_map = array(
 				<span aria-current="page"><?php esc_html_e( 'Blog', 'showtime-pools' ); ?></span>
 			</nav>
 			<div class="int-hero__inner">
-				<span class="eyebrow eyebrow--invert"><?php esc_html_e( 'Pool insights · From the crew', 'showtime-pools' ); ?></span>
-				<h1 class="int-hero__title balance"><?php esc_html_e( 'Trends, tips, and equipment guides from the team that does it every week.', 'showtime-pools' ); ?></h1>
-				<p class="int-hero__lead">
-					<?php esc_html_e( 'Practical pool knowledge from Steve and the crew. Real water, real equipment, real LA backyards.', 'showtime-pools' ); ?>
-				</p>
+				<span class="eyebrow eyebrow--invert"><?php echo esc_html( $hero_eyebrow ); ?></span>
+				<h1 class="int-hero__title balance"><?php echo esc_html( $hero_h1 ); ?></h1>
+				<p class="int-hero__lead"><?php echo esc_html( $hero_lead ); ?></p>
 			</div>
 		</div>
 	</section>
@@ -76,7 +91,7 @@ $category_slot_map = array(
 			<div class="container">
 				<header class="blog-categories__head">
 					<span class="eyebrow"><?php esc_html_e( 'Browse by topic', 'showtime-pools' ); ?></span>
-					<h2 class="balance"><?php esc_html_e( 'Three topics, written by people who do this every day.', 'showtime-pools' ); ?></h2>
+					<h2 class="balance"><?php echo esc_html( $cats_h2 ); ?></h2>
 				</header>
 				<div class="blog-categories__grid">
 					<?php foreach ( $categories as $cat ) :
@@ -119,7 +134,7 @@ $category_slot_map = array(
 				<div class="blog-feed__main">
 					<header class="blog-feed__head">
 						<span class="eyebrow"><?php esc_html_e( 'Latest articles', 'showtime-pools' ); ?></span>
-						<h2 class="balance"><?php esc_html_e( 'What we are writing about now.', 'showtime-pools' ); ?></h2>
+						<h2 class="balance"><?php echo esc_html( $feed_h2 ); ?></h2>
 					</header>
 
 					<?php if ( $q->have_posts() ) : ?>
@@ -207,8 +222,8 @@ $category_slot_map = array(
 					</section>
 
 					<section class="blog-side blog-side--cta">
-						<h3 class="blog-side__title"><?php esc_html_e( 'Ready to talk to a real human?', 'showtime-pools' ); ?></h3>
-						<p><?php esc_html_e( 'Get a free quote on a repair, remodel, or weekly service.', 'showtime-pools' ); ?></p>
+						<h3 class="blog-side__title"><?php echo esc_html( $sidebar_cta_title ); ?></h3>
+						<p><?php echo esc_html( $sidebar_cta_body ); ?></p>
 						<a class="btn btn--primary" href="<?php echo esc_url( SHOWTIME_BOOKING_URL ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Get a free quote', 'showtime-pools' ); ?></a>
 					</section>
 

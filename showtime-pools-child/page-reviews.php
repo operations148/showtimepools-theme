@@ -12,6 +12,15 @@ defined( 'ABSPATH' ) || exit;
 
 get_header();
 
+// ── Native WP fields (edit via WP Admin → Pages → Reviews → Update) ─────────
+$pid          = get_the_ID();
+$hero_h1      = get_the_title();
+$hero_eyebrow = (string) get_post_meta( $pid, 'hero_eyebrow', true );
+$hero_lead    = (string) get_post_meta( $pid, 'hero_lead',    true );
+
+if ( '' === $hero_eyebrow ) { $hero_eyebrow = '4.9★ across 184 reviews'; }
+if ( '' === $hero_lead )    { $hero_lead    = 'We import from Google Business Profile and Yelp. We do not curate, hide, or filter. The complete review history is below — including the rare 4-star and 3-star where we earned a critique.'; }
+
 $reviews = apply_filters(
 	'showtime/reviews_wall',
 	array(
@@ -45,10 +54,10 @@ $reviews = apply_filters(
 				<span aria-current="page"><?php esc_html_e( 'Reviews', 'showtime-pools' ); ?></span>
 			</nav>
 			<div class="int-hero__inner">
-				<span class="eyebrow eyebrow--invert"><?php esc_html_e( '4.9★ across 184 reviews', 'showtime-pools' ); ?></span>
-				<h1 class="int-hero__title balance"><?php esc_html_e( 'Every review. Every neighborhood. Real names.', 'showtime-pools' ); ?></h1>
+				<span class="eyebrow eyebrow--invert"><?php echo esc_html( $hero_eyebrow ); ?></span>
+				<h1 class="int-hero__title balance"><?php echo esc_html( $hero_h1 ); ?></h1>
 				<p class="int-hero__lead">
-					<?php esc_html_e( 'We import from Google Business Profile and Yelp. We do not curate, hide, or filter. The complete review history is below — including the rare 4-star and 3-star where we earned a critique.', 'showtime-pools' ); ?>
+					<?php echo esc_html( $hero_lead ); ?>
 				</p>
 			</div>
 		</div>

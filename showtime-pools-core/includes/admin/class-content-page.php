@@ -126,6 +126,8 @@ JS;
 		}
 
 		$tabs = array(
+			'home'   => __( 'Homepage', 'showtime-pools-core' ),
+			'hubs'   => __( 'Hub Pages', 'showtime-pools-core' ),
 			'about'  => __( 'About Page', 'showtime-pools-core' ),
 			'team'   => __( 'Team Members', 'showtime-pools-core' ),
 			'creds'  => __( 'Certifications', 'showtime-pools-core' ),
@@ -154,7 +156,9 @@ JS;
 
 				<?php
 				match ( $active_tab ) {
-					'team'  => $this->render_team(),
+					'home'  => $this->render_home(),
+				'hubs'  => $this->render_hubs(),
+				'team'  => $this->render_team(),
 					'creds' => $this->render_creds(),
 					default => $this->render_about(),
 				};

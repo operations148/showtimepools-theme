@@ -76,6 +76,14 @@ if ( empty( $projects ) ) {
 		)
 	);
 }
+// ── Native WP fields (edit via WP Admin → Pages → Projects → Update) ────────
+$pid          = get_the_ID();
+$hero_h1      = get_the_title();
+$hero_eyebrow = (string) get_post_meta( $pid, 'hero_eyebrow', true );
+$hero_lead    = (string) get_post_meta( $pid, 'hero_lead',    true );
+
+if ( '' === $hero_eyebrow ) { $hero_eyebrow = 'Recent work'; }
+if ( '' === $hero_lead )    { $hero_lead    = 'A full interactive map with photos, scope, and verified review per pin is rolling out. Until then, here are recent projects from across the route.'; }
 ?>
 <main id="primary" class="site-main interior-page">
 
@@ -92,11 +100,9 @@ if ( empty( $projects ) ) {
 				<span aria-current="page"><?php esc_html_e( 'Projects', 'showtime-pools' ); ?></span>
 			</nav>
 			<div class="int-hero__inner">
-				<span class="eyebrow eyebrow--invert"><?php esc_html_e( 'Recent work', 'showtime-pools' ); ?></span>
-				<h1 class="int-hero__title balance"><?php esc_html_e( 'Every pool we built. Every street we worked.', 'showtime-pools' ); ?></h1>
-				<p class="int-hero__lead">
-					<?php esc_html_e( 'A full interactive map with photos, scope, and verified review per pin is rolling out. Until then, here are recent projects from across the route.', 'showtime-pools' ); ?>
-				</p>
+				<span class="eyebrow eyebrow--invert"><?php echo esc_html( $hero_eyebrow ); ?></span>
+				<h1 class="int-hero__title balance"><?php echo esc_html( $hero_h1 ); ?></h1>
+				<p class="int-hero__lead"><?php echo esc_html( $hero_lead ); ?></p>
 				<div class="cluster">
 					<a class="btn btn--invert btn--lg" href="<?php echo esc_url( SHOWTIME_BOOKING_URL ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Start your project', 'showtime-pools' ); ?></a>
 				</div>

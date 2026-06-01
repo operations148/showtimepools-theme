@@ -54,6 +54,22 @@ $config = array(
 );
 
 $cfg     = $config[ $kind ] ?? $config['quote'];
+
+// ── Native WP overrides (edit via WP Admin → Pages → Quote/Book → Update) ───
+$pid = get_the_ID();
+$_ov = static function ( string $key, string $fallback ) use ( $pid ): string {
+	$v = (string) get_post_meta( $pid, $key, true );
+	return '' !== $v ? $v : $fallback;
+};
+$cfg['eyebrow'] = $_ov( 'iframe_eyebrow', $cfg['eyebrow'] );
+$cfg['title']   = $_ov( 'iframe_title',   $cfg['title'] );
+$cfg['lead']    = $_ov( 'iframe_lead',    $cfg['lead'] );
+foreach ( array( 0, 1, 2 ) as $si ) {
+	$n = $si + 1;
+	$cfg['steps'][ $si ]['title'] = $_ov( "iframe_step{$n}_title", $cfg['steps'][ $si ]['title'] ?? '' );
+	$cfg['steps'][ $si ]['body']  = $_ov( "iframe_step{$n}_body",  $cfg['steps'][ $si ]['body']  ?? '' );
+}
+
 $src_url = (string) get_option( $cfg['option'], '' );
 $has_url = ( '' !== $src_url );
 $hero_img = function_exists( 'showtime_image' ) ? showtime_image( $cfg['hero'], 1920 ) : '';

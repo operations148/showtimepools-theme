@@ -38,6 +38,15 @@ $tag         = (string) $area['tag'];
 $seo_h1      = (string) ( $area['seo_h1']    ?? '' );
 $seo_intro   = (string) ( $area['seo_intro'] ?? '' );
 $lead        = '' !== $seo_intro ? $seo_intro : (string) $area['lead'];
+
+// ── Native WP overrides (edit via WP Admin → Pages → [area] → Update) ───────
+$pid = get_the_ID();
+$_pm = static fn( string $k ) => (string) get_post_meta( $pid, $k, true );
+
+if ( '' !== $_pm( 'area_h1' ) )   { $seo_h1 = $_pm( 'area_h1' ); }
+if ( '' !== $_pm( 'area_lead' ) ) { $lead   = $_pm( 'area_lead' ); }
+$area_what_common = $_pm( 'area_what_common' );
+$area_what_do     = $_pm( 'area_what_do' );
 $chars       = (array)  ( $area['characteristics'] ?? array() );
 $jobs        = (array)  ( $area['common_jobs'] ?? array() );
 $streets     = (array)  ( $area['sample_streets'] ?? array() );
@@ -112,7 +121,7 @@ $schema = array(
 			<div class="area-detail__grid">
 				<div>
 					<span class="eyebrow"><?php esc_html_e( 'Local conditions', 'showtime-pools' ); ?></span>
-					<h2 class="balance"><?php /* translators: %s: neighborhood */ printf( esc_html__( 'What %s pools have in common.', 'showtime-pools' ), esc_html( $name ) ); ?></h2>
+					<h2 class="balance"><?php echo esc_html( '' !== $area_what_common ? $area_what_common : sprintf( __( 'What %s pools have in common.', 'showtime-pools' ), $name ) ); ?></h2>
 					<ul class="check-list">
 						<?php foreach ( $chars as $c ) : ?>
 							<li>
@@ -125,7 +134,7 @@ $schema = array(
 
 				<div>
 					<span class="eyebrow"><?php esc_html_e( 'Common jobs in this area', 'showtime-pools' ); ?></span>
-					<h2 class="balance"><?php esc_html_e( 'What we do here most.', 'showtime-pools' ); ?></h2>
+					<h2 class="balance"><?php echo esc_html( '' !== $area_what_do ? $area_what_do : __( 'What we do here most.', 'showtime-pools' ) ); ?></h2>
 					<ul class="check-list">
 						<?php foreach ( $jobs as $j ) : ?>
 							<li>

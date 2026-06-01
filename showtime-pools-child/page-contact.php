@@ -16,18 +16,27 @@ get_header();
 
 $services = class_exists( '\\Showtime\\Services' ) ? \Showtime\Services::all() : array();
 
-// Page Copy → Contact page. Every label is editable from WP admin.
+// ── Native WP overrides (edit via WP Admin → Pages → Contact → Update) ──────
+$pid  = get_the_ID();
+$_pm  = static fn( string $k ) => (string) get_post_meta( $pid, $k, true );
+
+// Priority: post meta → ACF option → PHP fallback.
 $opt = function_exists( 'get_field' ) ? 'option' : false;
-$c_eyebrow = $opt ? (string) get_field( 'contact_eyebrow', $opt ) : '';
-$c_title   = $opt ? (string) get_field( 'contact_title', $opt ) : '';
-$c_lead    = $opt ? (string) get_field( 'contact_lead', $opt ) : '';
-$c_ftitle  = $opt ? (string) get_field( 'contact_form_title', $opt ) : '';
+
+$c_eyebrow = $_pm( 'contact_eyebrow' ) ?: ( $opt ? (string) get_field( 'contact_eyebrow', $opt ) : '' );
+$c_title   = $_pm( 'contact_h1' )      ?: ( $opt ? (string) get_field( 'contact_title', $opt ) : '' );
+$c_lead    = $_pm( 'contact_lead' )    ?: ( $opt ? (string) get_field( 'contact_lead', $opt ) : '' );
+$c_ftitle  = $_pm( 'contact_form_title' ) ?: ( $opt ? (string) get_field( 'contact_form_title', $opt ) : '' );
 $c_fbody   = $opt ? (string) get_field( 'contact_form_body', $opt ) : '';
 
 $c_eyebrow = '' !== $c_eyebrow ? $c_eyebrow : __( 'Talk to us', 'showtime-pools' );
 $c_title   = '' !== $c_title   ? $c_title   : __( 'Talk to a real human at Showtime Pools.', 'showtime-pools' );
 $c_lead    = '' !== $c_lead    ? $c_lead    : __( 'Send us a note and Steve or a senior tech replies within one business day. Same-day for active service customers.', 'showtime-pools' );
 $c_ftitle  = '' !== $c_ftitle  ? $c_ftitle  : __( 'Tell us about your pool.', 'showtime-pools' );
+
+$contact_sidebar_h2        = $_pm( 'contact_sidebar_h2' );
+$contact_existing_customer = $_pm( 'contact_existing_customer' );
+$contact_existing_body     = $_pm( 'contact_existing_body' );
 
 // Phone + email come from Customizer (Showtime Brand panel) via filter bridge.
 $phone = (string) apply_filters( 'showtime/business/phone', '(323) 825-2099' );
@@ -163,7 +172,7 @@ $map_url   = 'https://www.google.com/maps?q=' . rawurlencode( $map_query ) . '&o
 
 				<aside class="contact-info">
 					<div class="contact-info__card">
-						<h2 class="contact-info__title"><?php esc_html_e( 'Or reach us directly', 'showtime-pools' ); ?></h2>
+						<h2 class="contact-info__title"><?php echo esc_html( '' !== $contact_sidebar_h2 ? $contact_sidebar_h2 : __( 'Or reach us directly', 'showtime-pools' ) ); ?></h2>
 						<ul class="contact-info__list" role="list">
 							<?php $tel = preg_replace( '/[^0-9+]/', '', $phone ); ?>
 							<li>
@@ -207,8 +216,8 @@ $map_url   = 'https://www.google.com/maps?q=' . rawurlencode( $map_query ) . '&o
 					</div>
 
 					<div class="contact-info__alt">
-						<p><strong><?php esc_html_e( 'Already a service customer?', 'showtime-pools' ); ?></strong></p>
-						<p><?php esc_html_e( 'Text the same number you used at sign-up — same-day priority is reserved for the route schedule.', 'showtime-pools' ); ?></p>
+						<p><strong><?php echo esc_html( '' !== $contact_existing_customer ? $contact_existing_customer : __( 'Already a service customer?', 'showtime-pools' ) ); ?></strong></p>
+						<p><?php echo esc_html( '' !== $contact_existing_body ? $contact_existing_body : __( 'Text the same number you used at sign-up — same-day priority is reserved for the route schedule.', 'showtime-pools' ) ); ?></p>
 					</div>
 				</aside>
 

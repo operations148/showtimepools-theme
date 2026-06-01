@@ -33,6 +33,17 @@ $price        = (string) $insp['price'];
 $turnaround   = (string) $insp['turnaround'];
 $duration     = (string) $insp['duration'];
 $lead         = (string) $insp['lead'];
+
+// ── Native WP overrides (edit via WP Admin → Pages → [inspection] → Update) ─
+$pid = get_the_ID();
+$_pm = static fn( string $k ) => (string) get_post_meta( $pid, $k, true );
+
+if ( '' !== $_pm( 'insp_h1' ) )   { $name = $_pm( 'insp_h1' ); }
+if ( '' !== $_pm( 'insp_lead' ) ) { $lead = $_pm( 'insp_lead' ); }
+$insp_who_h2     = $_pm( 'insp_who_h2' );
+$insp_what_h2    = $_pm( 'insp_what_h2' );
+$insp_process_h2 = $_pm( 'insp_process_h2' );
+$insp_faq_h2     = $_pm( 'insp_faq_h2' );
 $who_for      = (array)  ( $insp['who_for'] ?? array() );
 $deliverables = (array)  ( $insp['deliverables'] ?? array() );
 $process      = (array)  ( $insp['process'] ?? array() );
@@ -109,7 +120,7 @@ $faq_schema = ! empty( $faqs ) ? array(
 			<div class="prose-2col">
 				<div>
 					<span class="eyebrow"><?php esc_html_e( 'Who this is for', 'showtime-pools' ); ?></span>
-					<h2 class="balance"><?php esc_html_e( 'Right inspection, right moment.', 'showtime-pools' ); ?></h2>
+					<h2 class="balance"><?php echo esc_html( '' !== $insp_who_h2 ? $insp_who_h2 : __( 'Right inspection, right moment.', 'showtime-pools' ) ); ?></h2>
 					<ul class="check-list">
 						<?php foreach ( $who_for as $w ) : ?>
 							<li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg><span><?php echo esc_html( (string) $w ); ?></span></li>
@@ -118,7 +129,7 @@ $faq_schema = ! empty( $faqs ) ? array(
 				</div>
 				<div>
 					<span class="eyebrow"><?php esc_html_e( 'What you get', 'showtime-pools' ); ?></span>
-					<h2 class="balance"><?php esc_html_e( 'Every inspection includes the following.', 'showtime-pools' ); ?></h2>
+					<h2 class="balance"><?php echo esc_html( '' !== $insp_what_h2 ? $insp_what_h2 : __( 'Every inspection includes the following.', 'showtime-pools' ) ); ?></h2>
 					<ul class="check-list">
 						<?php foreach ( $deliverables as $d ) : ?>
 							<li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg><span><?php echo esc_html( (string) $d ); ?></span></li>
@@ -134,7 +145,7 @@ $faq_schema = ! empty( $faqs ) ? array(
 			<div class="container">
 				<header class="int-section__head">
 					<span class="eyebrow"><?php esc_html_e( 'How it works', 'showtime-pools' ); ?></span>
-					<h2 class="balance"><?php esc_html_e( 'Four steps from booking to written report.', 'showtime-pools' ); ?></h2>
+					<h2 class="balance"><?php echo esc_html( '' !== $insp_process_h2 ? $insp_process_h2 : __( 'Four steps from booking to written report.', 'showtime-pools' ) ); ?></h2>
 				</header>
 				<ol class="step-grid">
 					<?php foreach ( $process as $p ) : ?>
@@ -154,7 +165,7 @@ $faq_schema = ! empty( $faqs ) ? array(
 			<div class="container" style="max-width:var(--container-narrow)">
 				<header class="int-section__head">
 					<span class="eyebrow"><?php esc_html_e( 'FAQ', 'showtime-pools' ); ?></span>
-					<h2 class="balance"><?php esc_html_e( 'Common questions about this inspection.', 'showtime-pools' ); ?></h2>
+					<h2 class="balance"><?php echo esc_html( '' !== $insp_faq_h2 ? $insp_faq_h2 : __( 'Common questions about this inspection.', 'showtime-pools' ) ); ?></h2>
 				</header>
 				<div class="faq__list">
 					<?php foreach ( $faqs as $i => $f ) : ?>

@@ -371,3 +371,87 @@ showtimepools/
 ## Review log
 
 (append here at each checkpoint)
+
+---
+
+# PHASE 4 — Full Dynamic CMS + Schema + SEO/AEO/GEO Domination
+
+Approved plan: `C:\Users\dogom\.claude\plans\1-pleae-recommend-the-ticklish-knuth.md`.
+Goal: 100% client-editable, attribute-rich schema, content engineered to win Google rankings + AI engine citations (ChatGPT, Perplexity, Gemini AI Mode, Claude, Copilot) for Showtime Pools + LA pool-service queries.
+
+## P4.1 — Settings consolidation + NAP single source of truth
+
+- [ ] Extend `showtime-pools-core/includes/admin/class-settings-page.php` with the Business Identity tab: business name, legal name, PostalAddress (street, city, region, postal, country), telephone, SMS, email, hours per day (openingHoursSpecification), holiday hours
+- [ ] Add Social + Trust tab: GBP CID URL, Yelp, IG, FB, YT, TikTok, LinkedIn, BBB profile URL, CSLB license number, insurance carrier name, founding year, founder name + title, employee count
+- [ ] Add Search tab: GA4 ID, GSC verification meta, Bing Webmaster verification meta, default OG image picker, default aggregateRating fallback (overridden when Review CPT data exists)
+- [ ] Replace hardcoded NAP fallbacks in `showtime-pools-child/template-parts/footer/local-business-schema.php` lines 98-206
+- [ ] Replace hardcoded areaServed array in `showtime-pools-child/template-parts/service/schema.php` lines 31-37 with `\Showtime\Areas::all_names()` call
+- [ ] Replace hardcoded employee + foundingDate + foundingLocation in `showtime-pools-child/page-about.php` lines 35-39 with Settings + Site Content lookups
+- [ ] Add admin NAP-drift validator (`wp_footer` hook) that compares rendered NAP to canonical Settings, emits `wp_admin_notice` on mismatch
+- [ ] Final grep sweep: zero matches for "(323) 825-2099", "Sherman Oaks, Los Angeles", "operations@showtimepoolmechanics.com" outside settings + registry files
+- [ ] Verify on localhost: change phone in Settings, view-source on /, /services/pool-repairs-plumbing/, /service-areas/sherman-oaks/, /projects/<slug>/, all NAP + JSON-LD reflect the change
+
+## P4.2 — Review + FAQ CPTs
+
+- [ ] Create `showtime-pools-core/includes/cpt/class-review.php` (CPT `review`, fields: author_name, author_location, rating, body, source, source_url, date_received, linked_service, linked_area, linked_project, featured image)
+- [ ] Create `showtime-pools-core/includes/cpt/class-faq.php` (CPT `faq`, taxonomy `faq_scope` with terms service/area/global, meta `target_slug`)
+- [ ] Register both in `showtime-pools-core/includes/class-plugin.php`
+- [ ] Build `\Showtime\Reviews::aggregate()` returning ratingValue + reviewCount for AggregateRating schema
+- [ ] Build `\Showtime\Faqs::for_context($type, $slug)` returning matching Q/A array
+- [ ] Wire FAQ queries into home, service, area, Service x Area, project single templates
+- [ ] Replace hardcoded 4.9 / 184 AggregateRating in footer schema with `\Showtime\Reviews::aggregate()`
+- [ ] Verify: seed 5 reviews + 10 FAQs, schema validates, AggregateRating computes, frontend renders
+
+## P4.3 — Schema expansion
+
+- [ ] Per-item `Review` JSON-LD on `/reviews/<slug>/` (if singular) or in aggregated block on `/reviews/`
+- [ ] `FAQPage` schema on every area page (currently missing)
+- [ ] `Article` schema on `single.php` with author Person, publisher Organization, datePublished, dateModified, mainEntityOfPage
+- [ ] Per-team-member `Person` schema driven by Content admin Team tab, with `@id`, jobTitle, image, knowsAbout, worksFor reference, sameAs (LinkedIn)
+- [ ] `Speakable` BETA spec targeting `.answer-capsule` on home, service, area
+- [ ] Service x Area page schema graph: LocalBusiness (city-scoped) + Service + FAQPage, all `@id`-linked
+- [ ] Validate every URL on Schema.org Validator + Google Rich Results Test: 0 errors, 0 warnings
+
+## P4.4 — Content architecture (SEO + AEO + GEO)
+
+- [ ] Build `inc/related-links.php` with `showtime_related_links($context)` helper (service -> areas + service-area pages, area -> services, project -> related projects + reviews)
+- [ ] Add `[showtime_capsule]` shortcode + Gutenberg block rendering 40-60 word answer capsule with `.answer-capsule` class (no outbound links inside)
+- [ ] Add visible "Last reviewed" + "Last updated" timestamps on pillar/service/area templates, tied to `dateModified`
+- [ ] Add `wp_cron` weekly job that flags priority pages untouched for 30 days via admin notice
+- [ ] Extend `inc/imagery.php`: emit `<link rel="preload" as="image" fetchpriority="high">` for explicit LCP hero attachment; ensure all `<img>` carry width/height + lazy/decoding attrs
+- [ ] Default title/meta formula in `inc/seo.php` when per-page meta blank: `{Primary keyword} {City} | Showtime Pools` (50-60 char), answer + proof + CTA (140-160 char)
+- [ ] Verify: every priority page has capsule in first 30%, at least 2 stats with sources, at least 1 quote with `<blockquote cite>`, FAQ section, related-links block, visible freshness markers
+
+## P4.5 — Service Area expansion (6 -> 12 cities) + Service x Area matrix
+
+- [ ] Extend `showtime-pools-core/includes/data/areas.php` with 6 new entries: Bel Air, Brentwood, Pacific Palisades, Hollywood Hills, West Hollywood, Calabasas (lat/lng, zip_codes, characteristics, common_jobs, sample_streets, gradient)
+- [ ] Wire `class-page-seeder.php` to seed the 6 new area pages on plugin activation
+- [ ] Build Service x Area route via rewrite rule `/[service-slug]-in-[city-slug]/` resolving to a shared template `page-service-area.php`
+- [ ] Implement index gating: 36 strong combos (8 services x top 4 cities + 4 city pillars) index, 60 remaining get `noindex,follow`
+- [ ] Add Areas + Services admin column showing index/noindex status with promote button (sets when content meets thresholds: 500+ words, 2+ reviews, 2+ projects)
+- [ ] Each city page passes Phase 4.4 content checklist (capsule, stats, quote, FAQ, related links, freshness)
+
+## P4.6 — Technical SEO + AI crawler access
+
+- [ ] Filter `robots_txt` in `inc/seo.php` to emit AI bot allowlist (GPTBot, OAI-SearchBot, ChatGPT-User, ClaudeBot, Claude-SearchBot, PerplexityBot, Perplexity-User, Google-Extended, CCBot, bingbot) plus sitemap reference
+- [ ] Ship `llms.txt` at root: brand entity, NAP, service list, area list, links to canonical pillar pages
+- [ ] CWV: hero LCP preload, Mapbox lazy-load via IntersectionObserver, chat widget deferred to `requestIdleCallback`, all images width/height/lazy/decoding correct
+- [ ] Confirm sitemap segmentation via Rank Math (pages, services, areas, projects, reviews, posts) + IndexNow ping enabled
+- [ ] Verify PageSpeed Insights mobile + desktop on / + 1 service + 1 area: all metrics green or documented path to green
+
+## P4.7 — Off-page entity + authority deliverable
+
+- [ ] Write `docs/off-page-checklist.md`: Wikidata submission steps, LinkedIn profile complete checklist, GBP optimization checklist, Yelp/Houzz/Angi/Thumbtack/Nextdoor profiles, Reddit/YouTube authority plan, earned-media outreach list
+- [ ] Hand to Steve / VA, not code work
+
+## P4.8 — Verification (runs after each sub-phase)
+
+- [ ] `tasks/verify-P4.N.md` per sub-phase with: editing proof, image proof, Schema validator screenshots, Lighthouse mobile 90+, hardcoded sweep grep proof, GSC URL Inspection HTML proof
+- [ ] AEO sampling (30+ runs/query per Princeton ALCE standard) on ChatGPT, Perplexity, Gemini AI Mode, Claude, Copilot for the 6 anchor queries (see plan)
+
+## Execution order
+
+P4.1 -> P4.2 -> P4.3 -> P4.6 (quick win) -> P4.4 -> P4.5 -> P4.7. Verify after each.
+
+Starting P4.1 now.
+

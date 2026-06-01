@@ -54,7 +54,7 @@ $person_schema = array(
 				<span aria-current="page"><?php esc_html_e( 'About', 'showtime-pools' ); ?></span>
 			</nav>
 			<div class="int-hero__inner">
-				<span class="eyebrow eyebrow--invert"><?php esc_html_e( 'About Showtime Pools', 'showtime-pools' ); ?></span>
+				<span class="eyebrow eyebrow--invert"><?php echo esc_html( $about_hero_eyebrow ); ?></span>
 				<h1 class="int-hero__title balance"><?php echo esc_html( $about_h1 ); ?></h1>
 				<p class="int-hero__lead"><?php echo esc_html( $about_hero_lead ); ?></p>
 			</div>
@@ -63,34 +63,27 @@ $person_schema = array(
 
 	<?php
 	// Section 2 ("Who we are") + Section 3 ("What we believe") read from
-	// Site Content → Page Copy → About page tab. PHP defaults below preserve
-	// editorial voice if ACF is deactivated or fields are blank.
+	// ── Native WP fields (edit via WP Admin → Pages → About → Update) ─────────
 	$opt = function_exists( 'get_field' ) ? 'option' : false;
+	$pid = get_the_ID();
+	$_pm = static fn( string $k ) => (string) get_post_meta( $pid, $k, true );
 
-	// Priority chain: native wp_options (Showtime Pools → Site Content) → ACF → PHP fallback.
-	$_ct = class_exists( '\\Showtime\\Admin\\ContentPage' ) ? '\\Showtime\\Admin\\ContentPage' : null;
-
-	$about_h1        = $_ct ? $_ct::get( 'about_h1' ) : '';
-	$about_h1        = '' !== $about_h1 ? $about_h1 : __( 'Complete pool care, start to finish.', 'showtime-pools' );
-
-	$about_hero_lead = $_ct ? $_ct::get( 'about_lead' ) : '';
-	$about_hero_lead = '' !== $about_hero_lead ? $about_hero_lead : __( 'Showtime Pools designs, builds, and transforms pools and outdoor spaces that elevate the way you live. Based in Los Angeles, we are the trusted name for homeowners, property managers, and businesses across Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills.', 'showtime-pools' );
-
-	$about_eyebrow   = $opt ? (string) get_field( 'about_who_we_are_eyebrow', $opt ) : '';
-	$about_eyebrow   = '' !== $about_eyebrow ? $about_eyebrow : __( 'Who we are', 'showtime-pools' );
-
-	$about_title     = $_ct ? $_ct::get( 'about_wwa_title' ) : '';
-	if ( '' === $about_title ) { $about_title = $opt ? (string) get_field( 'about_who_we_are_title', $opt ) : ''; }
-	$about_title     = '' !== $about_title ? $about_title : __( 'Years of hands-on experience. Built on quality, transparency, and reliability.', 'showtime-pools' );
-
-	$about_body      = $_ct ? $_ct::get( 'about_wwa_body' ) : '';
-	if ( '' === $about_body ) { $about_body = $opt ? (string) get_field( 'about_who_we_are_body', $opt ) : ''; }
-
-	$values_title    = $_ct ? $_ct::get( 'about_values_title' ) : '';
-	if ( '' === $values_title ) { $values_title = $opt ? (string) get_field( 'about_values_intro_title', $opt ) : ''; }
-	$values_title    = '' !== $values_title ? $values_title : __( 'Five commitments. Every project, every visit.', 'showtime-pools' );
-
+	// Priority: post meta → ACF option → PHP fallback.
+	$about_h1        = $_pm( 'about_h1' )        ?: __( 'Complete pool care, start to finish.', 'showtime-pools' );
+	$about_hero_lead = $_pm( 'about_hero_lead' )  ?: __( 'Showtime Pools designs, builds, and transforms pools and outdoor spaces that elevate the way you live. Based in Los Angeles, we are the trusted name for homeowners, property managers, and businesses across Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills.', 'showtime-pools' );
+	$about_hero_eyebrow = $_pm( 'about_hero_eyebrow' ) ?: __( 'About Showtime Pools', 'showtime-pools' );
+	$about_eyebrow   = $_pm( 'about_eyebrow' )    ?: ( $opt ? (string) get_field( 'about_who_we_are_eyebrow', $opt ) : '' ) ?: __( 'Who we are', 'showtime-pools' );
+	$about_title     = $_pm( 'about_wwa_title' )  ?: ( $opt ? (string) get_field( 'about_who_we_are_title', $opt ) : '' ) ?: __( 'Years of hands-on experience. Built on quality, transparency, and reliability.', 'showtime-pools' );
+	$about_body      = $_pm( 'about_wwa_body' )   ?: ( $opt ? (string) get_field( 'about_who_we_are_body', $opt ) : '' );
+	$about_photo_caption = $_pm( 'about_photo_caption' ) ?: __( 'Sherman Oaks shop · Ventura Boulevard', 'showtime-pools' );
+	$values_title    = $_pm( 'about_values_title' ) ?: ( $opt ? (string) get_field( 'about_values_intro_title', $opt ) : '' ) ?: __( 'Five commitments. Every project, every visit.', 'showtime-pools' );
+	$values_eyebrow  = $_pm( 'about_values_eyebrow' ) ?: __( 'What we believe', 'showtime-pools' );
 	$values_intro    = $opt ? (string) get_field( 'about_values_intro_body', $opt ) : '';
+	$team_eyebrow    = $_pm( 'about_team_eyebrow' ) ?: __( 'The team', 'showtime-pools' );
+	$team_h2         = $_pm( 'about_team_h2' )      ?: __( 'Who actually shows up to your house.', 'showtime-pools' );
+	$team_lead       = $_pm( 'about_team_lead' )    ?: __( 'Four people you will meet. The same four who own your project from the first call to the final walk-through.', 'showtime-pools' );
+	$creds_eyebrow   = $_pm( 'about_creds_eyebrow' ) ?: __( 'Certifications & partnerships', 'showtime-pools' );
+	$creds_h2        = $_pm( 'about_creds_h2' )     ?: __( 'Manufacturer-certified. Trade-trained. Accountable.', 'showtime-pools' );
 	?>
 	<section class="int-section" data-reveal>
 		<div class="container">
@@ -101,7 +94,7 @@ $person_schema = array(
 							<img src="<?php echo esc_url( $about_split ); ?>" alt="" loading="lazy" decoding="async">
 						<?php endif; ?>
 					</div>
-					<figcaption><?php esc_html_e( 'Sherman Oaks shop · Ventura Boulevard', 'showtime-pools' ); ?></figcaption>
+					<figcaption><?php echo esc_html( $about_photo_caption ); ?></figcaption>
 				</aside>
 
 				<div class="about-story__copy">
@@ -122,7 +115,7 @@ $person_schema = array(
 	<section class="int-section int-section--cream" data-reveal>
 		<div class="container">
 			<header class="int-section__head">
-				<span class="eyebrow"><?php esc_html_e( 'What we believe', 'showtime-pools' ); ?></span>
+				<span class="eyebrow"><?php echo esc_html( $values_eyebrow ); ?></span>
 				<h2 class="balance"><?php echo esc_html( $values_title ); ?></h2>
 				<?php if ( '' !== $values_intro ) : ?>
 					<p class="int-section__lead"><?php echo esc_html( $values_intro ); ?></p>
@@ -162,9 +155,9 @@ $person_schema = array(
 	<section class="int-section" data-reveal>
 		<div class="container">
 			<header class="int-section__head">
-				<span class="eyebrow"><?php esc_html_e( 'The team', 'showtime-pools' ); ?></span>
-				<h2 class="balance"><?php esc_html_e( 'Who actually shows up to your house.', 'showtime-pools' ); ?></h2>
-				<p class="int-section__lead"><?php esc_html_e( 'Four people you will meet. The same four who own your project from the first call to the final walk-through.', 'showtime-pools' ); ?></p>
+				<span class="eyebrow"><?php echo esc_html( $team_eyebrow ); ?></span>
+				<h2 class="balance"><?php echo esc_html( $team_h2 ); ?></h2>
+				<p class="int-section__lead"><?php echo esc_html( $team_lead ); ?></p>
 			</header>
 			<div class="team-grid">
 				<?php
@@ -228,8 +221,8 @@ $person_schema = array(
 	<section class="int-section int-section--cream" data-reveal>
 		<div class="container">
 			<header class="int-section__head">
-				<span class="eyebrow"><?php esc_html_e( 'Certifications & partnerships', 'showtime-pools' ); ?></span>
-				<h2 class="balance"><?php esc_html_e( 'Manufacturer-certified. Trade-trained. Accountable.', 'showtime-pools' ); ?></h2>
+				<span class="eyebrow"><?php echo esc_html( $creds_eyebrow ); ?></span>
+				<h2 class="balance"><?php echo esc_html( $creds_h2 ); ?></h2>
 			</header>
 			<div class="creds-grid">
 				<?php

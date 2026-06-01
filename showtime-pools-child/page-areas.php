@@ -12,6 +12,20 @@ defined( 'ABSPATH' ) || exit;
 get_header();
 
 $areas = class_exists( '\\Showtime\\Areas' ) ? \Showtime\Areas::all() : array();
+
+// ── Native WP fields (edit via WP Admin → Pages → Service Areas → Update) ──
+$pid = get_the_ID();
+
+$hero_h1      = get_the_title();
+$hero_eyebrow = (string) get_post_meta( $pid, 'hero_eyebrow', true );
+$hero_lead    = (string) get_post_meta( $pid, 'hero_lead',    true );
+$outside_h2   = (string) get_post_meta( $pid, 'outside_h2',   true );
+$outside_body = (string) get_post_meta( $pid, 'outside_body', true );
+
+if ( '' === $hero_eyebrow ) { $hero_eyebrow = 'Where we work'; }
+if ( '' === $hero_lead )    { $hero_lead    = 'Pool service, pool cleaning, and pool repair across six West Valley and Westside neighborhoods. The same in-house tech every week — Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills. Custom construction and remodel work runs LA County-wide.'; }
+if ( '' === $outside_h2 )   { $outside_h2   = 'Outside the route?'; }
+if ( '' === $outside_body ) { $outside_body = 'New construction, full remodels, and inspections are available across LA County — Hancock Park, Pacific Palisades, Calabasas, Burbank, Glendale, Pasadena, Toluca Lake, Northridge, Granada Hills, and beyond. Weekly service is geographically restricted to keep the same-tech promise.'; }
 ?>
 <main id="primary" class="site-main interior-page">
 
@@ -28,11 +42,9 @@ $areas = class_exists( '\\Showtime\\Areas' ) ? \Showtime\Areas::all() : array();
 				<span aria-current="page"><?php esc_html_e( 'Service Areas', 'showtime-pools' ); ?></span>
 			</nav>
 			<div class="int-hero__inner">
-				<span class="eyebrow eyebrow--invert"><?php esc_html_e( 'Where we work', 'showtime-pools' ); ?></span>
-				<h1 class="int-hero__title balance"><?php esc_html_e( 'Pool service near you in Los Angeles.', 'showtime-pools' ); ?></h1>
-				<p class="int-hero__lead">
-					<?php esc_html_e( 'Pool service, pool cleaning, and pool repair across six West Valley and Westside neighborhoods. The same in-house tech every week — Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills. Custom construction and remodel work runs LA County-wide.', 'showtime-pools' ); ?>
-				</p>
+				<span class="eyebrow eyebrow--invert"><?php echo esc_html( $hero_eyebrow ); ?></span>
+				<h1 class="int-hero__title balance"><?php echo esc_html( $hero_h1 ); ?></h1>
+				<p class="int-hero__lead"><?php echo esc_html( $hero_lead ); ?></p>
 			</div>
 		</div>
 	</section>
@@ -59,10 +71,8 @@ $areas = class_exists( '\\Showtime\\Areas' ) ? \Showtime\Areas::all() : array();
 			</div>
 
 			<div class="areas-hub__outside">
-				<h2><?php esc_html_e( 'Outside the route?', 'showtime-pools' ); ?></h2>
-				<p>
-					<?php esc_html_e( 'New construction, full remodels, and inspections are available across LA County — Hancock Park, Pacific Palisades, Calabasas, Burbank, Glendale, Pasadena, Toluca Lake, Northridge, Granada Hills, and beyond. Weekly service is geographically restricted to keep the same-tech promise.', 'showtime-pools' ); ?>
-				</p>
+				<h2><?php echo esc_html( $outside_h2 ); ?></h2>
+				<p><?php echo esc_html( $outside_body ); ?></p>
 				<a class="btn btn--primary btn--lg" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php esc_html_e( 'Ask about your address', 'showtime-pools' ); ?></a>
 			</div>
 		</div>

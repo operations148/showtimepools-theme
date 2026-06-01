@@ -16,6 +16,33 @@ get_header();
 $services = class_exists( '\\Showtime\\Services' ) ? \Showtime\Services::all() : array();
 $core     = array_slice( $services, 0, 6 );
 $outdoor  = array_slice( $services, 6, 6 );
+
+// ── Native WP fields (edit via WP Admin → Pages → Services → Update) ─────
+$pid = get_the_ID();
+
+$hero_h1      = get_the_title();
+$hero_eyebrow = (string) get_post_meta( $pid, 'hero_eyebrow', true );
+$hero_lead    = (string) get_post_meta( $pid, 'hero_lead',    true );
+
+$core_eyebrow = (string) get_post_meta( $pid, 'core_eyebrow', true );
+$core_h2      = (string) get_post_meta( $pid, 'core_h2',      true );
+$core_lead    = (string) get_post_meta( $pid, 'core_lead',    true );
+
+$outdoor_eyebrow = (string) get_post_meta( $pid, 'outdoor_eyebrow', true );
+$outdoor_h2      = (string) get_post_meta( $pid, 'outdoor_h2',      true );
+$outdoor_lead    = (string) get_post_meta( $pid, 'outdoor_lead',    true );
+
+// Fallbacks — used when the meta field is empty.
+if ( '' === $hero_eyebrow ) { $hero_eyebrow = 'Twelve services, one team'; }
+if ( '' === $hero_lead )    { $hero_lead    = 'Pool repair, pool cleaning service, pool remodeling, pool installation, equipment upgrades, inspections, spa work, and outdoor living — handled by one in-house team across Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills.'; }
+
+if ( '' === $core_eyebrow ) { $core_eyebrow = 'Core services'; }
+if ( '' === $core_h2 )      { $core_h2      = 'Repairs, service, remodels, equipment, inspections, automation.'; }
+if ( '' === $core_lead )    { $core_lead    = 'The day-to-day of pool ownership. Every one of these is on the route or in the shop right now.'; }
+
+if ( '' === $outdoor_eyebrow ) { $outdoor_eyebrow = 'Outdoor living & custom'; }
+if ( '' === $outdoor_h2 )      { $outdoor_h2      = 'New construction, spas, finishes, hardscape, kitchens, fire & water features.'; }
+if ( '' === $outdoor_lead )    { $outdoor_lead    = 'The bigger projects. Same crew, same standards, with engineered structure and permitting handled in-house.'; }
 ?>
 <main id="primary" class="site-main interior-page">
 
@@ -32,11 +59,9 @@ $outdoor  = array_slice( $services, 6, 6 );
 				<span aria-current="page"><?php esc_html_e( 'Services', 'showtime-pools' ); ?></span>
 			</nav>
 			<div class="int-hero__inner">
-				<span class="eyebrow eyebrow--invert"><?php esc_html_e( 'Twelve services, one team', 'showtime-pools' ); ?></span>
-				<h1 class="int-hero__title balance"><?php esc_html_e( 'Pool services in Los Angeles.', 'showtime-pools' ); ?></h1>
-				<p class="int-hero__lead">
-					<?php esc_html_e( 'Pool repair, pool cleaning service, pool remodeling, pool installation, equipment upgrades, inspections, spa work, and outdoor living — handled by one in-house team across Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills.', 'showtime-pools' ); ?>
-				</p>
+				<span class="eyebrow eyebrow--invert"><?php echo esc_html( $hero_eyebrow ); ?></span>
+				<h1 class="int-hero__title balance"><?php echo esc_html( $hero_h1 ); ?></h1>
+				<p class="int-hero__lead"><?php echo esc_html( $hero_lead ); ?></p>
 				<div class="cluster">
 					<a class="btn btn--invert btn--lg" href="<?php echo esc_url( SHOWTIME_BOOKING_URL ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Get a Free Quote', 'showtime-pools' ); ?></a>
 					<a class="btn btn--ghost-on-dark btn--lg" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php esc_html_e( 'Book Assessment', 'showtime-pools' ); ?></a>
@@ -48,9 +73,9 @@ $outdoor  = array_slice( $services, 6, 6 );
 	<section class="int-section" data-reveal>
 		<div class="container">
 			<header class="int-section__head">
-				<span class="eyebrow"><?php esc_html_e( 'Core services', 'showtime-pools' ); ?></span>
-				<h2 class="balance"><?php esc_html_e( 'Repairs, service, remodels, equipment, inspections, automation.', 'showtime-pools' ); ?></h2>
-				<p class="int-section__lead"><?php esc_html_e( 'The day-to-day of pool ownership. Every one of these is on the route or in the shop right now.', 'showtime-pools' ); ?></p>
+				<span class="eyebrow"><?php echo esc_html( $core_eyebrow ); ?></span>
+				<h2 class="balance"><?php echo esc_html( $core_h2 ); ?></h2>
+				<p class="int-section__lead"><?php echo esc_html( $core_lead ); ?></p>
 			</header>
 
 			<div class="services-hub__grid">
@@ -79,9 +104,9 @@ $outdoor  = array_slice( $services, 6, 6 );
 	<section class="int-section int-section--cream" data-reveal>
 		<div class="container">
 			<header class="int-section__head">
-				<span class="eyebrow"><?php esc_html_e( 'Outdoor living & custom', 'showtime-pools' ); ?></span>
-				<h2 class="balance"><?php esc_html_e( 'New construction, spas, finishes, hardscape, kitchens, fire & water features.', 'showtime-pools' ); ?></h2>
-				<p class="int-section__lead"><?php esc_html_e( 'The bigger projects. Same crew, same standards, with engineered structure and permitting handled in-house.', 'showtime-pools' ); ?></p>
+				<span class="eyebrow"><?php echo esc_html( $outdoor_eyebrow ); ?></span>
+				<h2 class="balance"><?php echo esc_html( $outdoor_h2 ); ?></h2>
+				<p class="int-section__lead"><?php echo esc_html( $outdoor_lead ); ?></p>
 			</header>
 
 			<div class="services-hub__grid">
