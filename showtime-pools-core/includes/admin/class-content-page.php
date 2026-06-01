@@ -126,11 +126,12 @@ JS;
 		}
 
 		$tabs = array(
-			'home'   => __( 'Homepage', 'showtime-pools-core' ),
-			'hubs'   => __( 'Hub Pages', 'showtime-pools-core' ),
-			'about'  => __( 'About Page', 'showtime-pools-core' ),
-			'team'   => __( 'Team Members', 'showtime-pools-core' ),
-			'creds'  => __( 'Certifications', 'showtime-pools-core' ),
+			'home'    => __( 'Homepage', 'showtime-pools-core' ),
+			'hubs'    => __( 'Hub Pages', 'showtime-pools-core' ),
+			'about'   => __( 'About Page', 'showtime-pools-core' ),
+			'team'    => __( 'Team Members', 'showtime-pools-core' ),
+			'creds'   => __( 'Certifications', 'showtime-pools-core' ),
+			'reviews' => __( 'Reviews Widget', 'showtime-pools-core' ),
 		);
 		$base_url = admin_url( 'admin.php?page=' . self::PAGE_SLUG );
 		?>
@@ -156,11 +157,12 @@ JS;
 
 				<?php
 				match ( $active_tab ) {
-					'home'  => $this->render_home(),
-				'hubs'  => $this->render_hubs(),
-				'team'  => $this->render_team(),
-					'creds' => $this->render_creds(),
-					default => $this->render_about(),
+					'home'    => $this->render_home(),
+					'hubs'    => $this->render_hubs(),
+					'team'    => $this->render_team(),
+					'creds'   => $this->render_creds(),
+					'reviews' => $this->render_reviews(),
+					default   => $this->render_about(),
 				};
 				?>
 
@@ -367,10 +369,80 @@ JS;
 
 	private function process_save( string $tab ): void {
 		match ( $tab ) {
-			'team'  => $this->process_team(),
-			'creds' => $this->process_creds(),
-			default => $this->process_about(),
+			'team'    => $this->process_team(),
+			'creds'   => $this->process_creds(),
+			'reviews' => $this->process_reviews(),
+			default   => $this->process_about(),
 		};
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// REVIEWS WIDGET TAB
+	// ─────────────────────────────────────────────────────────────────────────
+
+	private function render_reviews(): void {
+		$shortcode         = (string) get_option( 'showtime_reviews_shortcode', '' );
+		$shortcode_compact = (string) get_option( 'showtime_reviews_shortcode_compact', '' );
+		$gbp_url           = (string) get_option( 'showtime_gbp_public_url', '' );
+		?>
+		<p style="color:#666;margin-bottom:1.5rem;">
+			<?php esc_html_e( 'Paste the shortcode from your Google Reviews widget plugin (default: Trustindex). Both the Reviews page and the homepage reviews section render from these settings, so the live rating and review count are never hardcoded in the theme.', 'showtime-pools-core' ); ?>
+		</p>
+
+		<div style="background:#fff;border:1px solid #ddd;border-radius:10px;padding:20px;margin-bottom:20px;">
+			<h3 style="margin-top:0;font-size:15px;"><?php esc_html_e( 'Main widget shortcode', 'showtime-pools-core' ); ?></h3>
+			<p style="color:#666;font-size:12px;margin:0 0 10px;">
+				<?php esc_html_e( 'Renders on /reviews/ and (by default) on the homepage reviews section. Leave empty to use the Trustindex default: [trustindex no-registration=google]', 'showtime-pools-core' ); ?>
+			</p>
+			<input type="text" name="ct_reviews_shortcode" value="<?php echo esc_attr( $shortcode ); ?>" class="large-text" placeholder="[trustindex no-registration=google]">
+		</div>
+
+		<div style="background:#fff;border:1px solid #ddd;border-radius:10px;padding:20px;margin-bottom:20px;">
+			<h3 style="margin-top:0;font-size:15px;"><?php esc_html_e( 'Compact variant (homepage only) — optional', 'showtime-pools-core' ); ?></h3>
+			<p style="color:#666;font-size:12px;margin:0 0 10px;">
+				<?php esc_html_e( 'Optional separate shortcode for the homepage reviews section if the plugin offers a smaller widget. Leave empty to use the main shortcode on both surfaces.', 'showtime-pools-core' ); ?>
+			</p>
+			<input type="text" name="ct_reviews_shortcode_compact" value="<?php echo esc_attr( $shortcode_compact ); ?>" class="large-text" placeholder="">
+		</div>
+
+		<div style="background:#fff;border:1px solid #ddd;border-radius:10px;padding:20px;margin-bottom:20px;">
+			<h3 style="margin-top:0;font-size:15px;"><?php esc_html_e( 'Google Business Profile URL', 'showtime-pools-core' ); ?></h3>
+			<p style="color:#666;font-size:12px;margin:0 0 10px;">
+				<?php esc_html_e( 'Public URL to your Google Business Profile listing. Used only as the "View Google reviews" CTA fallback if the widget plugin is ever inactive — never shown alongside the widget itself. If empty, the fallback uses a Google search URL.', 'showtime-pools-core' ); ?>
+			</p>
+			<input type="url" name="ct_gbp_public_url" value="<?php echo esc_attr( $gbp_url ); ?>" class="large-text" placeholder="https://g.page/r/...">
+		</div>
+		<?php
+	}
+
+	private function process_reviews(): void {
+		// Stored as standalone wp_options (no showtime_ct_ prefix) so the
+		// theme-side reviews-widget.php helper can read them directly via
+		// get_option() without depending on the plugin class.
+		if ( isset( $_POST['ct_reviews_shortcode'] ) ) {
+			$v = sanitize_text_field( wp_unslash( $_POST['ct_reviews_shortcode'] ) );
+			if ( '' === $v ) {
+				delete_option( 'showtime_reviews_shortcode' );
+			} else {
+				update_option( 'showtime_reviews_shortcode', $v, false );
+			}
+		}
+		if ( isset( $_POST['ct_reviews_shortcode_compact'] ) ) {
+			$v = sanitize_text_field( wp_unslash( $_POST['ct_reviews_shortcode_compact'] ) );
+			if ( '' === $v ) {
+				delete_option( 'showtime_reviews_shortcode_compact' );
+			} else {
+				update_option( 'showtime_reviews_shortcode_compact', $v, false );
+			}
+		}
+		if ( isset( $_POST['ct_gbp_public_url'] ) ) {
+			$v = esc_url_raw( wp_unslash( $_POST['ct_gbp_public_url'] ) );
+			if ( '' === $v ) {
+				delete_option( 'showtime_gbp_public_url' );
+			} else {
+				update_option( 'showtime_gbp_public_url', $v, false );
+			}
+		}
 	}
 
 	// ─────────────────────────────────────────────────────────────────────────

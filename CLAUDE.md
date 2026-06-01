@@ -1,7 +1,20 @@
 # CLAUDE.md
 
-Behavioral contract for Claude Code in the Voltly (STORE_NAME) Shopify theme
-project. Read this and `tasks/lessons.md` at the start of every session.
+Behavioral contract for Claude Code in the Showtime Pools WordPress project.
+Read this and `tasks/lessons.md` at the start of every session.
+
+## Deployment Model — READ BEFORE TOUCHING ANYTHING
+
+Full contract lives in `DEPLOY.md` under "Standing deployment contract". Summary:
+
+- **CODE** (PHP, CSS, JS, plugin logic, theme files) is edited LOCALLY → committed → pushed → pulled on live. Only thing that travels local → live.
+- **CONTENT** (page text, images, menus, blog posts, projects, Site Content tabs) is edited DIRECTLY in live wp-admin by Steve. Never via code. Never via DB migration.
+- **DATABASE** local → live migration is DONE. Local DB is for code testing only. Never re-import it to live.
+- The **seeder** was one-time. It has already run on live. Do not run it again unless explicitly asked.
+
+When asked to change content (text on a page, an image, a menu item, a review): **STOP and tell Steve to edit it in live wp-admin.** When asked to change code (template, feature, styling, bug): proceed locally as normal.
+
+If a task seems to require changing live content via code, **STOP and flag it.** Do not write migration scripts, do not edit the DB directly, do not run the seeder as part of routine work.
 
 ## Workflow Orchestration
 

@@ -371,18 +371,18 @@
         { "key": "field_st_pc_tab_trust", "label": "Trust & credentials", "name": "", "type": "tab", "placement": "left" },
         {
             "key": "field_st_pc_rating_val",
-            "label": "Aggregate rating value",
+            "label": "Aggregate rating value (unused — rating now lives in the live Google Reviews widget)",
             "name": "aggregate_rating_value",
             "type": "text",
-            "default_value": "4.9",
+            "default_value": "",
             "wrapper": { "width": "25" }
         },
         {
             "key": "field_st_pc_rating_count",
-            "label": "Aggregate rating count",
+            "label": "Aggregate rating count (unused — count now lives in the live Google Reviews widget)",
             "name": "aggregate_rating_count",
             "type": "text",
-            "default_value": "184",
+            "default_value": "",
             "wrapper": { "width": "25" }
         },
         {

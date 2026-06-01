@@ -53,23 +53,22 @@ $phone     = (string) apply_filters( 'showtime/business/phone', '(323) 825-2099'
 $phone_tel = preg_replace( '/[^0-9+]/', '', $phone );
 
 // Stats strip — 4-up proof markers. License/insurance numbers removed
-// site-wide per user; the 4th slot now shows the same-tech promise.
-$rating_value  = $opt ? (string) get_field( 'aggregate_rating_value', $opt ) : '';
-$rating_count  = $opt ? (string) get_field( 'aggregate_rating_count', $opt ) : '';
-$rating_value  = '' !== $rating_value ? $rating_value : '4.9';
-$rating_count  = '' !== $rating_count ? $rating_count : '184';
+// site-wide per user. The third tile is intentionally "Since 2003 ·
+// Sherman Oaks based" rather than a star rating so the trust signal
+// never goes stale and never misrepresents the live GBP data. Live
+// rating + review count are surfaced via the Google Reviews widget.
 
 $stats = apply_filters( 'showtime/home_stats_strip', array(
 	array( 'icon' => 'pool',     'num' => '1,824+',      'label' => __( 'Pools serviced',   'showtime-pools' ) ),
 	array( 'icon' => 'calendar', 'num' => $about_years,  'label' => __( 'Years on the route', 'showtime-pools' ) ),
-	array( 'icon' => 'star',     'num' => $rating_value, 'label' => sprintf( /* translators: %s review count */ __( 'Google · %s reviews', 'showtime-pools' ), $rating_count ) ),
+	array( 'icon' => 'pin',      'num' => 'Since \'03',  'label' => __( 'Sherman Oaks based', 'showtime-pools' ) ),
 	array( 'icon' => 'shield',   'num' => '100%',        'label' => __( 'Supervised · Steve on every job', 'showtime-pools' ) ),
 ) );
 
 $stat_icons = array(
 	'pool'     => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 18c2.5 0 2.5-1.5 5-1.5s2.5 1.5 5 1.5 2.5-1.5 5-1.5 2.5 1.5 5 1.5"/><path d="M2 12c2.5 0 2.5-1.5 5-1.5s2.5 1.5 5 1.5 2.5-1.5 5-1.5 2.5 1.5 5 1.5"/><path d="M2 6c2.5 0 2.5-1.5 5-1.5s2.5 1.5 5 1.5 2.5-1.5 5-1.5 2.5 1.5 5 1.5"/></svg>',
 	'calendar' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>',
-	'star'     => '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 17.3 6.16 20l1.12-6.48L2.5 8.91l6.5-.94L12 2.1l3 5.87 6.5.94-4.78 4.61L17.84 20z"/></svg>',
+	'pin'      => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-7.5 7-13a7 7 0 1 0-14 0c0 5.5 7 13 7 13Z"/><circle cx="12" cy="9" r="2.5"/></svg>',
 	'shield'   => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>',
 );
 

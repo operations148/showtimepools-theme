@@ -104,9 +104,12 @@ return array(
 		),
 
 		// ─── Reviews ───────────────────────────────────────────────────────────
+		// Reviews come from the live Google Reviews widget shortcode — see
+		// inc/reviews-widget.php. Hero copy here is neutral so it never
+		// hardcodes a rating or count that could drift from the live GBP.
 		'page-reviews.php' => array(
-			'hero_eyebrow' => '4.9★ across 184 reviews',
-			'hero_lead'    => 'We import from Google Business Profile and Yelp. We do not curate, hide, or filter. The complete review history is below — including the rare 4-star and 3-star where we earned a critique.',
+			'hero_eyebrow' => 'Live from Google',
+			'hero_lead'    => 'Live from our Google Business Profile — every review you see is published directly by the customer, with no editing on our side.',
 		),
 
 		// ─── Services Hub ──────────────────────────────────────────────────────

@@ -1,3 +1,54 @@
+# Standing deployment contract — READ FIRST
+
+This is the deployment model for Showtime Pools. Every contributor (including Claude Code) follows it. No exceptions.
+
+## CODE vs CONTENT split
+
+**CODE** — edited LOCALLY, committed, pushed to GitHub, pulled on live. This is the only thing that travels local → live.
+
+- PHP templates (`showtime-pools-child/`, `showtime-pools-core/`)
+- CSS, JS, fonts, bundled images in `assets/`
+- Plugin logic, CPTs, REST endpoints, hooks
+- ACF JSON field definitions
+- Theme/plugin configuration files
+
+**CONTENT** — edited DIRECTLY on the LIVE site via wp-admin. Steve owns this. It lives in the live database only.
+
+- Pages and their post_meta (hero text, section copy, captions)
+- Images in the Media Library
+- Reviews, menus, blog posts, project CPT entries
+- Customizer values
+- Site Content tab data (team, certifications, reviews widget config, GBP URL)
+
+**DATABASE** — the one-time local → live migration is **DONE**. Never re-import the local DB to live again. Local DB exists only for code testing.
+
+## Why this split exists
+
+Re-importing the local DB to live would:
+- Wipe Steve's content edits
+- Reintroduce old duplicates (e.g., the privacy-policy duplicates we already cleaned up)
+- Reset image URLs and break Media Library references
+- Overwrite the Reviews widget shortcode and GBP URL
+
+The seeder we built was a **one-time** tool to pre-fill empty fields on a fresh site. It has already run on live. Do not run it again unless Steve explicitly asks, and never as part of a routine deploy.
+
+## What Claude Code does, by request type
+
+| Request | Action |
+|---|---|
+| "Change this template / feature / styling / bug fix" | Edit locally → wait for Steve to push + pull |
+| "Add new text to a page / change the H1 / replace a photo" | **STOP.** Tell Steve to do it in live wp-admin. Do not edit the database, do not write a migration script. |
+| "Add a new page / menu item / blog post" | **STOP.** Tell Steve to do it in live wp-admin. |
+| "Add a new editable FIELD to the meta box" | This is a CODE change — register the new meta field in `inc/meta-fields.php` locally, push, pull. Steve fills the value via wp-admin. |
+| "Run the seeder on live" | **STOP.** Confirm explicitly with Steve. Do not run it as part of any other task. |
+| Task seems to require touching live content via code | **STOP.** Flag it to Steve. Do not proceed. |
+
+## When in doubt
+
+If a request is ambiguous (code change or content change?), ask. Routing a content change through code creates DB drift; routing a code change through wp-admin creates code drift.
+
+---
+
 # Deploying Showtime Pools to Cloudways
 
 Once the Cloudways DigitalOcean Premium 2GB instance is up and WP 6.7+ / PHP 8.2 is installed, follow these steps. This file is the only thing you need to read.

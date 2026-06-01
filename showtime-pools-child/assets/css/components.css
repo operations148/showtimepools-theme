@@ -613,6 +613,34 @@ details[open] .faq__chevron { transform: rotate(180deg); }
 	text-transform: uppercase;
 }
 
+/* ─── Google Reviews widget wrapper (Trustindex by default) ─────── */
+/* The widget plugin renders its own internal layout; we only constrain
+   the wrapper so the page reserves space (no layout shift on load) and
+   so the homepage compact variant stays smaller than the /reviews/ one. */
+.reviews-widget {
+	margin-top: var(--sp-6);
+	min-height: 320px;
+}
+.reviews-widget--compact {
+	min-height: 220px;
+}
+.reviews-widget-fallback {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--sp-3);
+	padding: var(--sp-6) var(--sp-4);
+	text-align: center;
+	background: var(--c-surface-2);
+	border: 1px solid var(--c-border);
+	border-radius: var(--r-lg);
+}
+.reviews-widget-fallback p {
+	margin: 0;
+	color: var(--c-ink-700);
+	font-size: var(--fs-lg);
+}
+
 /* ─── Featured projects + project card (sitewide) ────────────────── */
 /* Used on homepage section-05, /projects/, services-hub, area pages. */
 .featured-projects { padding: clamp(4rem, 7vw, 7rem) 0; }

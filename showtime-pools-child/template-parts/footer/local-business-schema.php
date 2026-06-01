@@ -193,14 +193,13 @@ if ( empty( $areaServed ) ) {
 }
 
 // Trust / credentials (license number deliberately omitted sitewide).
-$rating_value = $opt ? (string) get_field( 'aggregate_rating_value', $opt ) : '';
-$rating_count = $opt ? (string) get_field( 'aggregate_rating_count', $opt ) : '';
+// Aggregate rating intentionally NOT included in the schema — Google reads
+// rating data from the linked GBP listing, so hardcoding it here in JSON-LD
+// would risk search-engine misrepresentation when numbers drift from GBP.
 $employees    = $opt ? (int) get_field( 'number_of_employees', $opt ) : 0;
 $founder_name = $opt ? (string) get_field( 'founder_name', $opt ) : '';
 $founder_title= $opt ? (string) get_field( 'founder_title', $opt ) : '';
 
-$rating_value = '' !== $rating_value ? $rating_value : '4.9';
-$rating_count = '' !== $rating_count ? $rating_count : '184';
 $employees    = $employees > 0      ? $employees    : 12;
 $founder_name = '' !== $founder_name ? $founder_name : 'Steve Adams';
 $founder_title= '' !== $founder_title ? $founder_title : 'Founder & CEO';
@@ -243,13 +242,6 @@ $schema = apply_filters(
 		'areaServed'              => $areaServed,
 		'openingHoursSpecification' => $openingHoursSpec,
 		'sameAs'                  => $sameAs,
-		'aggregateRating'         => array(
-			'@type'       => 'AggregateRating',
-			'ratingValue' => $rating_value,
-			'reviewCount' => $rating_count,
-			'bestRating'  => '5',
-			'worstRating' => '1',
-		),
 		'founder'                 => array(
 			'@type'    => 'Person',
 			'@id'      => home_url( '/the-founder/#person' ),
