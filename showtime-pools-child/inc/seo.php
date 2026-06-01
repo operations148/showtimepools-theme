@@ -52,7 +52,7 @@ function showtime_seo_title(): string {
  * pages, otherwise a sane default.
  */
 function showtime_seo_description(): string {
-	$default = 'Showtime Pools is one in-house team for pool repairs, weekly service, remodels, equipment, inspections, and outdoor living across Sherman Oaks, Encino, Beverly Hills, and Los Angeles. (323) 825-2099.';
+	$default = 'Showtime Pools is one supervised crew for pool repairs, weekly service, remodels, equipment, inspections, and outdoor living across Sherman Oaks, Encino, Beverly Hills, and Los Angeles. (323) 825-2099.';
 
 	if ( is_front_page() ) {
 		return 'Stop juggling contractors. Showtime Pools handles repairs, weekly service, remodels, equipment, inspections, and outdoor living end-to-end across Los Angeles. Direct from the people who do the work.';

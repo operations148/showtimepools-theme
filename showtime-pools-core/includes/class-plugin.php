@@ -41,7 +41,13 @@ final class Plugin {
 			( new Admin\SettingsPage() )->register();
 			( new Admin\ContentPage() )->register();
 			( new Admin\PageSeeder() )->register();
+			( new Admin\ToolsPage() )->register();
 		}
+
+		// Seeder hooks (WP-CLI + admin-post) need to register on every request,
+		// not only inside is_admin() — admin-post.php fires before is_admin()
+		// resolves to true for non-page requests.
+		( new Admin\Seeder() )->register();
 
 		// Customizer is registered on EVERY request (not just admin) — its
 		// `customize_register` hook only fires inside the Customizer, but

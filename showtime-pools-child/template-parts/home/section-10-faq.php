@@ -14,7 +14,7 @@ $faqs_default = array(
 		),
 		array(
 			'q' => __( 'Do you sub out the work?', 'showtime-pools' ),
-			'a' => __( 'No. Steve owns and operates Showtime Pools and personally supervises every job. The crew is W-2, not subcontracted. The same tech services your pool every week.', 'showtime-pools' ),
+			'a' => __( 'The crew is W-2 and in-house for everything except Replaster and demo, which are handled by partner crews we work with exclusively. Steve is on-site supervising 100% of the time, whether the work is in-house or partner. The same tech services your pool every week.', 'showtime-pools' ),
 		),
 		array(
 			'q' => __( 'How long does a remodel take?', 'showtime-pools' ),
@@ -22,7 +22,7 @@ $faqs_default = array(
 		),
 		array(
 			'q' => __( 'Who actually shows up to my house?', 'showtime-pools' ),
-			'a' => __( 'The same in-house W-2 tech every visit. We do not use subcontractors. Photo report after each visit. The person who quotes the job is on-site when the work happens.', 'showtime-pools' ),
+			'a' => __( 'The same in-house W-2 tech every visit. Photo report after each visit. The person who quotes the job is on-site when the work happens — Steve supervises every job, including the exclusive partner crews we use for Replaster and demo.', 'showtime-pools' ),
 		),
 		array(
 			'q' => __( 'Do you serve outside Sherman Oaks?', 'showtime-pools' ),

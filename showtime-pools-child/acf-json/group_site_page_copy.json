@@ -36,7 +36,7 @@
             "name": "hero_lead",
             "type": "textarea",
             "rows": 3,
-            "placeholder": "Repairs, weekly service, remodels, and new equipment — handled end-to-end by one in-house crew named on the warranty.",
+            "placeholder": "Repairs, weekly service, remodels, and new equipment — handled end-to-end by one supervised crew · Steve named on the warranty.",
             "wrapper": { "width": "100" }
         },
         {

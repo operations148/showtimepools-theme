@@ -21,7 +21,7 @@ $img = function_exists( 'showtime_image' ) ? showtime_image( 'about_hero', 1200 
 					<span><?php esc_html_e( 'Sherman Oaks · since 2003', 'showtime-pools' ); ?></span>
 				</figcaption>
 				<blockquote class="about-split__pullquote" aria-hidden="true">
-					&ldquo;<?php esc_html_e( 'No subcontractors. No handoffs. The same crew, every visit.', 'showtime-pools' ); ?>&rdquo;
+					&ldquo;<?php esc_html_e( 'One supervised crew. Steve walks every site.', 'showtime-pools' ); ?>&rdquo;
 				</blockquote>
 			</figure>
 

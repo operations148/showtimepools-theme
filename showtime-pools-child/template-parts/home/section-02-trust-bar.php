@@ -33,13 +33,13 @@ $about_bullets  = $opt ? get_field( 'home_about_bullets', $opt ) : null;
 
 $about_eyebrow = '' !== $about_eyebrow ? $about_eyebrow : __( 'About Showtime Pools', 'showtime-pools' );
 $about_title   = '' !== $about_title   ? $about_title   : __( 'The pool service company Los Angeles homeowners actually call back.', 'showtime-pools' );
-$about_lead    = '' !== $about_lead    ? $about_lead    : __( 'Pool repair, pool cleaning service, pool remodeling, equipment installation, and new construction — handled end-to-end by the same in-house crew. The technician who quotes your job is on-site when the work happens.', 'showtime-pools' );
+$about_lead    = '' !== $about_lead    ? $about_lead    : __( 'Pool repair, pool cleaning service, pool remodeling, equipment installation, and new construction — handled end-to-end by the same supervised crew. The technician who quotes your job is on-site when the work happens.', 'showtime-pools' );
 $about_years   = '' !== $about_years   ? $about_years   : '23';
 $about_cta_lbl = '' !== $about_cta_lbl ? $about_cta_lbl : __( 'More about us', 'showtime-pools' );
 $about_cta_url = '' !== $about_cta_url ? $about_cta_url : home_url( '/about/' );
 
 $bullets_default = array(
-	array( 'text' => __( 'In-house pool service crew (no subs)', 'showtime-pools' ) ),
+	array( 'text' => __( 'In-house pool service crew · same tech weekly', 'showtime-pools' ) ),
 	array( 'text' => __( 'Same pool tech every weekly visit', 'showtime-pools' ) ),
 	array( 'text' => __( 'Pool repair, remodel & cleaning under one roof', 'showtime-pools' ) ),
 	array( 'text' => __( 'Pentair + Jandy authorized installation', 'showtime-pools' ) ),
@@ -63,7 +63,7 @@ $stats = apply_filters( 'showtime/home_stats_strip', array(
 	array( 'icon' => 'pool',     'num' => '1,824+',      'label' => __( 'Pools serviced',   'showtime-pools' ) ),
 	array( 'icon' => 'calendar', 'num' => $about_years,  'label' => __( 'Years on the route', 'showtime-pools' ) ),
 	array( 'icon' => 'star',     'num' => $rating_value, 'label' => sprintf( /* translators: %s review count */ __( 'Google · %s reviews', 'showtime-pools' ), $rating_count ) ),
-	array( 'icon' => 'shield',   'num' => 'Zero',        'label' => __( 'Subcontractors · same crew, every visit', 'showtime-pools' ) ),
+	array( 'icon' => 'shield',   'num' => '100%',        'label' => __( 'Supervised · Steve on every job', 'showtime-pools' ) ),
 ) );
 
 $stat_icons = array(

@@ -58,7 +58,7 @@ function showtime_seo_context() {
 			'type'    => 'home',
 			'h1'      => 'Pool Service in Los Angeles',
 			'keyword' => 'pool service near me',
-			'intro'   => 'Los Angeles pool companies near me — pool service, pool cleaning service, pool repair near me, remodeling, and new pool construction. One in-house crew. No subcontractors. Written quote inside one business day.',
+			'intro'   => 'Los Angeles pool companies near me — pool service, pool cleaning service, pool repair near me, remodeling, and new pool construction. One supervised crew. Steve on every quote. Written quote inside one business day.',
 		);
 	}
 

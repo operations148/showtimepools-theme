@@ -66,7 +66,7 @@ $reviews = apply_filters( 'showtime/home_reviews', showtime_acf_rows( 'home_revi
 		<header class="reviews__header">
 			<div>
 				<span class="eyebrow"><em>08</em> &mdash; <?php esc_html_e( 'What Customers Say', 'showtime-pools' ); ?></span>
-				<h2 class="balance"><?php esc_html_e( 'A 4.9★ on Google. 184 reviews. Zero subcontractors.', 'showtime-pools' ); ?></h2>
+				<h2 class="balance"><?php esc_html_e( 'A 4.9★ on Google. 184 reviews. One supervised crew.', 'showtime-pools' ); ?></h2>
 			</div>
 			<a class="btn btn--ghost" href="<?php echo esc_url( home_url( '/reviews/' ) ); ?>">
 				<?php esc_html_e( 'Read every review', 'showtime-pools' ); ?>

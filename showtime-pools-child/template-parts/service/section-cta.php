@@ -20,7 +20,7 @@ $title = (string) ( $ctx['title'] ?? __( 'your pool', 'showtime-pools' ) );
 				?>
 			</h2>
 			<p class="lead" style="color:rgba(255,255,255,0.85);max-width:50ch">
-				<?php esc_html_e( 'Free site visit. Same crew start to finish, no subcontractors, no surprise upcharges.', 'showtime-pools' ); ?>
+				<?php esc_html_e( 'Free site visit. Same crew start to finish · Steve on every job · no surprise upcharges.', 'showtime-pools' ); ?>
 			</p>
 			<div class="cluster">
 				<a class="btn btn--invert btn--lg" href="<?php echo esc_url( SHOWTIME_BOOKING_URL ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Get a Free Quote', 'showtime-pools' ); ?></a>

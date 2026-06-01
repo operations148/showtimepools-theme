@@ -11,8 +11,40 @@ defined( 'ABSPATH' ) || exit;
 
 get_header();
 
+// ─── Content sources (edit via WP Admin → Pages → About → Update) ─────────
+$pid = get_the_ID();
+$_pm = static fn( string $k ) => (string) get_post_meta( $pid, $k, true );
+$_ct = class_exists( '\\Showtime\\Admin\\ContentPage' ) ? '\\Showtime\\Admin\\ContentPage' : null;
+$opt = function_exists( 'get_field' ) ? 'option' : false;
+
+// Images.
 $about_hero  = function_exists( 'showtime_image' ) ? showtime_image( 'about_hero', 1600 ) : '';
 $about_split = function_exists( 'showtime_image' ) ? showtime_image( 'lifestyle_main', 1200 ) : '';
+
+// Hero text (post meta → fallback).
+$about_h1           = $_pm( 'about_h1' )           ?: __( 'Complete pool care, start to finish.', 'showtime-pools' );
+$about_hero_lead    = $_pm( 'about_hero_lead' )    ?: __( 'Showtime Pools designs, builds, and transforms pools and outdoor spaces that elevate the way you live. Based in Los Angeles, we are the trusted name for homeowners, property managers, and businesses across Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills.', 'showtime-pools' );
+$about_hero_eyebrow = $_pm( 'about_hero_eyebrow' ) ?: __( 'About Showtime Pools', 'showtime-pools' );
+
+// Who we are.
+$about_eyebrow       = $_pm( 'about_eyebrow' )       ?: ( $opt ? (string) get_field( 'about_who_we_are_eyebrow', $opt ) : '' ) ?: __( 'Who we are', 'showtime-pools' );
+$about_title         = $_pm( 'about_wwa_title' )     ?: ( $opt ? (string) get_field( 'about_who_we_are_title', $opt ) : '' ) ?: __( 'Years of hands-on experience. Built on quality, transparency, and reliability.', 'showtime-pools' );
+$about_body          = $_pm( 'about_wwa_body' )      ?: ( $opt ? (string) get_field( 'about_who_we_are_body', $opt ) : '' );
+$about_photo_caption = $_pm( 'about_photo_caption' ) ?: __( 'Sherman Oaks shop · Ventura Boulevard', 'showtime-pools' );
+
+// Values section.
+$values_title   = $_pm( 'about_values_title' )   ?: ( $opt ? (string) get_field( 'about_values_intro_title', $opt ) : '' ) ?: __( 'Five commitments. Every project, every visit.', 'showtime-pools' );
+$values_eyebrow = $_pm( 'about_values_eyebrow' ) ?: __( 'What we believe', 'showtime-pools' );
+$values_intro   = $opt ? (string) get_field( 'about_values_intro_body', $opt ) : '';
+
+// Team section.
+$team_eyebrow = $_pm( 'about_team_eyebrow' ) ?: __( 'The team', 'showtime-pools' );
+$team_h2      = $_pm( 'about_team_h2' )      ?: __( 'Who actually shows up to your house.', 'showtime-pools' );
+$team_lead    = $_pm( 'about_team_lead' )    ?: __( 'Four people you will meet. The same four who own your project from the first call to the final walk-through.', 'showtime-pools' );
+
+// Credentials section.
+$creds_eyebrow = $_pm( 'about_creds_eyebrow' ) ?: __( 'Certifications & partnerships', 'showtime-pools' );
+$creds_h2      = $_pm( 'about_creds_h2' )      ?: __( 'Manufacturer-certified. Trade-trained. Accountable.', 'showtime-pools' );
 
 $person_schema = array(
 	'@context'    => 'https://schema.org',
@@ -61,30 +93,6 @@ $person_schema = array(
 		</div>
 	</section>
 
-	<?php
-	// Section 2 ("Who we are") + Section 3 ("What we believe") read from
-	// ── Native WP fields (edit via WP Admin → Pages → About → Update) ─────────
-	$opt = function_exists( 'get_field' ) ? 'option' : false;
-	$pid = get_the_ID();
-	$_pm = static fn( string $k ) => (string) get_post_meta( $pid, $k, true );
-
-	// Priority: post meta → ACF option → PHP fallback.
-	$about_h1        = $_pm( 'about_h1' )        ?: __( 'Complete pool care, start to finish.', 'showtime-pools' );
-	$about_hero_lead = $_pm( 'about_hero_lead' )  ?: __( 'Showtime Pools designs, builds, and transforms pools and outdoor spaces that elevate the way you live. Based in Los Angeles, we are the trusted name for homeowners, property managers, and businesses across Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills.', 'showtime-pools' );
-	$about_hero_eyebrow = $_pm( 'about_hero_eyebrow' ) ?: __( 'About Showtime Pools', 'showtime-pools' );
-	$about_eyebrow   = $_pm( 'about_eyebrow' )    ?: ( $opt ? (string) get_field( 'about_who_we_are_eyebrow', $opt ) : '' ) ?: __( 'Who we are', 'showtime-pools' );
-	$about_title     = $_pm( 'about_wwa_title' )  ?: ( $opt ? (string) get_field( 'about_who_we_are_title', $opt ) : '' ) ?: __( 'Years of hands-on experience. Built on quality, transparency, and reliability.', 'showtime-pools' );
-	$about_body      = $_pm( 'about_wwa_body' )   ?: ( $opt ? (string) get_field( 'about_who_we_are_body', $opt ) : '' );
-	$about_photo_caption = $_pm( 'about_photo_caption' ) ?: __( 'Sherman Oaks shop · Ventura Boulevard', 'showtime-pools' );
-	$values_title    = $_pm( 'about_values_title' ) ?: ( $opt ? (string) get_field( 'about_values_intro_title', $opt ) : '' ) ?: __( 'Five commitments. Every project, every visit.', 'showtime-pools' );
-	$values_eyebrow  = $_pm( 'about_values_eyebrow' ) ?: __( 'What we believe', 'showtime-pools' );
-	$values_intro    = $opt ? (string) get_field( 'about_values_intro_body', $opt ) : '';
-	$team_eyebrow    = $_pm( 'about_team_eyebrow' ) ?: __( 'The team', 'showtime-pools' );
-	$team_h2         = $_pm( 'about_team_h2' )      ?: __( 'Who actually shows up to your house.', 'showtime-pools' );
-	$team_lead       = $_pm( 'about_team_lead' )    ?: __( 'Four people you will meet. The same four who own your project from the first call to the final walk-through.', 'showtime-pools' );
-	$creds_eyebrow   = $_pm( 'about_creds_eyebrow' ) ?: __( 'Certifications & partnerships', 'showtime-pools' );
-	$creds_h2        = $_pm( 'about_creds_h2' )     ?: __( 'Manufacturer-certified. Trade-trained. Accountable.', 'showtime-pools' );
-	?>
 	<section class="int-section" data-reveal>
 		<div class="container">
 			<div class="about-story">
@@ -103,7 +111,7 @@ $person_schema = array(
 					<?php if ( '' !== $about_body ) : ?>
 						<?php echo wp_kses_post( wpautop( $about_body ) ); ?>
 					<?php else : ?>
-						<p><?php esc_html_e( 'Showtime Pools has become a trusted name for homeowners, property managers, and businesses seeking long-lasting, high-performance pool systems. Repairs, weekly service, remodels, equipment, inspections, and outdoor living are all handled by one in-house team.', 'showtime-pools' ); ?></p>
+						<p><?php esc_html_e( 'Showtime Pools has become a trusted name for homeowners, property managers, and businesses seeking long-lasting, high-performance pool systems. Repairs, weekly service, remodels, equipment, inspections, and outdoor living are all handled by one supervised crew — in-house W-2 for the day-to-day, with exclusive partner crews for Replaster and demo that Steve supervises on-site.', 'showtime-pools' ); ?></p>
 						<p><?php esc_html_e( 'We do not believe in shortcuts, only results that stand the test of time. Every project is treated like it is our own backyard. That means engineered structure, honest communication, premium materials, and standing behind our work with integrity.', 'showtime-pools' ); ?></p>
 						<p><?php esc_html_e( 'When something breaks, we identify the root cause first so you do not waste money on temporary patches. When you are remodeling, we coordinate every trade so you are not chasing five contractors. When you are buying a house, we inspect the pool independently and tell you the truth.', 'showtime-pools' ); ?></p>
 					<?php endif; ?>
@@ -128,7 +136,7 @@ $person_schema = array(
 					array( 'icon' => 'sparkle', 'title' => __( 'Proven methods, modern technology', 'showtime-pools' ),         'body' => __( 'We blend tested construction methods with current automation, salt systems, and energy-efficient equipment. No experiments on your dime.', 'showtime-pools' ) ),
 					array( 'icon' => 'check',   'title' => __( 'Honest communication start to finish', 'showtime-pools' ),     'body' => __( 'Itemized written quotes. Daily updates during construction. Final walk-through with a punch list. Nothing important happens verbally.', 'showtime-pools' ) ),
 					array( 'icon' => 'shield',  'title' => __( 'Standing behind our work with integrity', 'showtime-pools' ),  'body' => __( 'Two-year workmanship warranty on construction. Five-year warranty on PebbleTec finishes. Manufacturer pass-through on every piece of equipment.', 'showtime-pools' ) ),
-					array( 'icon' => 'heart',   'title' => __( 'Dedicated to everything we do', 'showtime-pools' ),            'body' => __( 'Same crew start to finish. No subcontractors. No rotating techs. The person who quotes the job is on-site when the work happens.', 'showtime-pools' ) ),
+					array( 'icon' => 'heart',   'title' => __( 'Dedicated to everything we do', 'showtime-pools' ),            'body' => __( 'Same crew, same standards. Steve supervises every job — including the partner crews we use exclusively for Replaster and demo. The person who quotes the job is on-site when the work happens.', 'showtime-pools' ) ),
 					array( 'icon' => 'star',    'title' => __( 'No shortcuts, only lasting results', 'showtime-pools' ),       'body' => __( 'We say no to bad ideas, including our own. If a finish, a layout, or a piece of equipment will not last, we tell you up front.', 'showtime-pools' ) ),
 				);
 				$values = function_exists( 'showtime_acf_rows' )

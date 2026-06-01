@@ -137,7 +137,7 @@ $semantic     = array(
 				<div><span class="muted swatch__value">--fs-2xl / h4</span><h4>Twenty years of clear water</h4></div>
 				<div><span class="muted swatch__value">--fs-xl / h5</span><h5>Available seven days a week</h5></div>
 				<div><span class="muted swatch__value">--fs-lg / h6 (eyebrow style)</span><h6>Showtime Pools Mechanics</h6></div>
-				<div><span class="muted swatch__value">.lead</span><p class="lead">Showtime Pools has serviced LA pools for over two decades. Steve Adams personally inspects every project, every week. No subcontractors, no surprises, no skipped weeks.</p></div>
+				<div><span class="muted swatch__value">.lead</span><p class="lead">Showtime Pools has serviced LA pools for over two decades. Steve Adams personally inspects every project, every week. Steve on every job, no surprises, no skipped weeks.</p></div>
 				<div><span class="muted swatch__value">body</span><p>Default body text uses Inter at 16px with a relaxed 1.5 line-height. Long paragraphs cap at 70ch for comfortable reading. Links inherit the brand color and slide to the accent on hover, with a 1px underline at 0.18em offset.</p></div>
 				<div><span class="muted swatch__value">small</span><p><small>Small text for captions, footnotes, and disclaimers. License #ABC123. Insured + bonded.</small></p></div>
 				<div><span class="muted swatch__value">.eyebrow</span><span class="eyebrow">Limited time offer</span></div>
