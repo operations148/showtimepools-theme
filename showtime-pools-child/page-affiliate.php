@@ -216,96 +216,95 @@ $aff_icon = static function ( string $name ): string {
 	</section>
 
 
-	<section id="affiliate-apply" class="int-section affiliate-apply" data-reveal>
-		<div class="container container--narrow">
-			<header class="int-section__head">
-				<span class="eyebrow"><?php echo esc_html( $aff_form_eyebrow ); ?></span>
-				<h2 class="balance"><?php echo esc_html( $aff_form_h2 ); ?></h2>
-				<p class="int-section__lead"><?php echo esc_html( $aff_form_lead ); ?></p>
-			</header>
+	<section id="affiliate-apply" class="int-section int-section--cream affiliate-apply" data-reveal>
+		<div class="container">
+			<div class="affiliate-apply__grid">
 
-			<form class="affiliate-form" id="showtime-affiliate-form" novalidate>
-				<input type="hidden" name="loaded_at" value="<?php echo esc_attr( (string) time() ); ?>">
-				<div class="affiliate-form__hp" aria-hidden="true">
-					<label>Leave this field empty<input type="text" name="hp_url" tabindex="-1" autocomplete="off"></label>
+				<div class="affiliate-apply__form-col">
+					<header class="int-section__head int-section__head--left">
+						<span class="eyebrow"><?php echo esc_html( $aff_form_eyebrow ); ?></span>
+						<h2 class="balance"><?php echo esc_html( $aff_form_h2 ); ?></h2>
+						<p class="int-section__lead"><?php echo esc_html( $aff_form_lead ); ?></p>
+					</header>
+
+					<form class="affiliate-form" id="showtime-affiliate-form" novalidate>
+									<input type="hidden" name="loaded_at" value="<?php echo esc_attr( (string) time() ); ?>">
+									<div class="affiliate-form__hp" aria-hidden="true">
+										<label>Leave this field empty<input type="text" name="hp_url" tabindex="-1" autocomplete="off"></label>
+									</div>
+
+									<div class="form-field">
+										<label class="form-label" for="aff-name"><?php esc_html_e( 'Full Name', 'showtime-pools' ); ?> <span class="required">*</span></label>
+										<input class="form-input" type="text" id="aff-name" name="full_name" autocomplete="name" required placeholder="<?php esc_attr_e( 'Enter your full name', 'showtime-pools' ); ?>">
+										<span class="form-error" data-field="full_name" hidden></span>
+									</div>
+
+									<div class="affiliate-form__row">
+										<div class="form-field">
+											<label class="form-label" for="aff-phone"><?php esc_html_e( 'Phone', 'showtime-pools' ); ?> <span class="required">*</span></label>
+											<input class="form-input" type="tel" id="aff-phone" name="phone" autocomplete="tel" required placeholder="+1 (555) 000-0000">
+											<span class="form-error" data-field="phone" hidden></span>
+										</div>
+										<div class="form-field">
+											<label class="form-label" for="aff-email"><?php esc_html_e( 'Email', 'showtime-pools' ); ?> <span class="required">*</span></label>
+											<input class="form-input" type="email" id="aff-email" name="email" autocomplete="email" required placeholder="your@email.com">
+											<span class="form-error" data-field="email" hidden></span>
+										</div>
+									</div>
+
+									<div class="form-field">
+										<label class="form-label" for="aff-website"><?php esc_html_e( 'Website / Social Media URL', 'showtime-pools' ); ?></label>
+										<input class="form-input" type="url" id="aff-website" name="website" autocomplete="url" placeholder="https://yoursite.com or IG/FB">
+										<span class="form-error" data-field="website" hidden></span>
+									</div>
+
+									<?php if ( $aff_promote_options ) : ?>
+									<fieldset class="form-field affiliate-form__promote">
+										<legend class="form-label"><?php esc_html_e( 'How will you refer pool owners?', 'showtime-pools' ); ?> <span class="required">*</span></legend>
+										<div class="affiliate-form__checks">
+											<?php foreach ( $aff_promote_options as $opt ) : ?>
+												<label class="affiliate-form__check">
+													<input type="checkbox" name="promote[]" value="<?php echo esc_attr( $opt ); ?>">
+													<span><?php echo esc_html( $opt ); ?></span>
+												</label>
+											<?php endforeach; ?>
+										</div>
+										<span class="form-error" data-field="promote" hidden></span>
+									</fieldset>
+									<?php endif; ?>
+
+									<label class="affiliate-form__consent">
+										<input type="checkbox" name="consent" value="1" required>
+										<span><?php echo esc_html( $aff_consent_text ); ?></span>
+									</label>
+									<span class="form-error" data-field="consent" hidden></span>
+
+									<div class="cluster" style="align-items:center">
+										<button type="submit" class="btn btn--primary btn--lg" data-default-label="<?php echo esc_attr( $aff_submit_label ); ?>">
+											<?php echo esc_html( $aff_submit_label ); ?>
+										</button>
+									</div>
+
+									<div class="affiliate-form__alert" data-status="success" hidden role="status"></div>
+									<div class="affiliate-form__alert affiliate-form__alert--err" data-status="error" hidden role="alert"></div>
+								</form>
 				</div>
 
-				<div class="form-field">
-					<label class="form-label" for="aff-name"><?php esc_html_e( 'Full Name', 'showtime-pools' ); ?> <span class="required">*</span></label>
-					<input class="form-input" type="text" id="aff-name" name="full_name" autocomplete="name" required placeholder="<?php esc_attr_e( 'Enter your full name', 'showtime-pools' ); ?>">
-					<span class="form-error" data-field="full_name" hidden></span>
-				</div>
+				<?php if ( $aff_faq ) : ?>
+				<aside class="affiliate-apply__faq-col">
+					<header class="int-section__head int-section__head--left">
+						<span class="eyebrow"><?php echo esc_html( $aff_faq_eyebrow ); ?></span>
+						<h2 class="balance"><?php echo esc_html( $aff_faq_h2 ); ?></h2>
+					</header>
+					<div class="affiliate-faq">
 
-				<div class="affiliate-form__row">
-					<div class="form-field">
-						<label class="form-label" for="aff-phone"><?php esc_html_e( 'Phone', 'showtime-pools' ); ?> <span class="required">*</span></label>
-						<input class="form-input" type="tel" id="aff-phone" name="phone" autocomplete="tel" required placeholder="+1 (555) 000-0000">
-						<span class="form-error" data-field="phone" hidden></span>
 					</div>
-					<div class="form-field">
-						<label class="form-label" for="aff-email"><?php esc_html_e( 'Email', 'showtime-pools' ); ?> <span class="required">*</span></label>
-						<input class="form-input" type="email" id="aff-email" name="email" autocomplete="email" required placeholder="your@email.com">
-						<span class="form-error" data-field="email" hidden></span>
-					</div>
-				</div>
-
-				<div class="form-field">
-					<label class="form-label" for="aff-website"><?php esc_html_e( 'Website / Social Media URL', 'showtime-pools' ); ?></label>
-					<input class="form-input" type="url" id="aff-website" name="website" autocomplete="url" placeholder="https://yoursite.com or IG/FB">
-					<span class="form-error" data-field="website" hidden></span>
-				</div>
-
-				<?php if ( $aff_promote_options ) : ?>
-				<fieldset class="form-field affiliate-form__promote">
-					<legend class="form-label"><?php esc_html_e( 'How will you refer pool owners?', 'showtime-pools' ); ?> <span class="required">*</span></legend>
-					<div class="affiliate-form__checks">
-						<?php foreach ( $aff_promote_options as $opt ) : ?>
-							<label class="affiliate-form__check">
-								<input type="checkbox" name="promote[]" value="<?php echo esc_attr( $opt ); ?>">
-								<span><?php echo esc_html( $opt ); ?></span>
-							</label>
-						<?php endforeach; ?>
-					</div>
-					<span class="form-error" data-field="promote" hidden></span>
-				</fieldset>
+				</aside>
 				<?php endif; ?>
 
-				<label class="affiliate-form__consent">
-					<input type="checkbox" name="consent" value="1" required>
-					<span><?php echo esc_html( $aff_consent_text ); ?></span>
-				</label>
-				<span class="form-error" data-field="consent" hidden></span>
-
-				<div class="cluster" style="align-items:center">
-					<button type="submit" class="btn btn--primary btn--lg" data-default-label="<?php echo esc_attr( $aff_submit_label ); ?>">
-						<?php echo esc_html( $aff_submit_label ); ?>
-					</button>
-				</div>
-
-				<div class="affiliate-form__alert" data-status="success" hidden role="status"></div>
-				<div class="affiliate-form__alert affiliate-form__alert--err" data-status="error" hidden role="alert"></div>
-			</form>
-		</div>
-	</section>
-
-	<?php if ( $aff_faq ) : ?>
-	<section class="int-section int-section--cream" data-reveal>
-		<div class="container container--narrow">
-			<header class="int-section__head">
-				<span class="eyebrow"><?php echo esc_html( $aff_faq_eyebrow ); ?></span>
-				<h2 class="balance"><?php echo esc_html( $aff_faq_h2 ); ?></h2>
-			</header>
-			<div class="affiliate-faq">
-				<?php foreach ( $aff_faq as $f ) : ?>
-					<details class="affiliate-faq__item">
-						<summary class="affiliate-faq__q"><?php echo esc_html( $f['q'] ); ?></summary>
-						<div class="affiliate-faq__a"><p><?php echo esc_html( $f['a'] ); ?></p></div>
-					</details>
-				<?php endforeach; ?>
 			</div>
 		</div>
 	</section>
-	<?php endif; ?>
 
 </main>
 <?php get_footer();
