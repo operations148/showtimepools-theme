@@ -51,6 +51,7 @@ final class PageSeeder {
 			array( 'slug' => 'service-areas', 'title' => __( 'Service Areas', 'showtime-pools-core' ), 'template' => 'page-areas.php',     'meta' => array( '_showtime_section' => 'areas-hub' ) ),
 			array( 'slug' => 'pool-inspections', 'title' => __( 'Pool Inspections', 'showtime-pools-core' ), 'template' => 'page-inspections.php', 'meta' => array( '_showtime_section' => 'inspections-hub' ) ),
 			array( 'slug' => 'affiliate', 'title' => __( 'Affiliate Program', 'showtime-pools-core' ), 'template' => 'page-affiliate.php', 'meta' => array( '_showtime_section' => 'affiliate' ) ),
+			array( 'slug' => 'shop', 'title' => __( 'Shop', 'showtime-pools-core' ), 'template' => 'page-shop.php', 'meta' => array( '_showtime_section' => 'shop' ) ),
 			array( 'slug' => 'privacy-policy', 'title' => __( 'Privacy Policy', 'showtime-pools-core' ), 'template' => 'page-legal.php', 'meta' => array( '_showtime_section' => 'legal' ) ),
 			array( 'slug' => 'terms',          'title' => __( 'Terms', 'showtime-pools-core' ),          'template' => 'page-legal.php', 'meta' => array( '_showtime_section' => 'legal' ) ),
 		);
@@ -400,6 +401,7 @@ final class PageSeeder {
 			'pool-inspections' => 'page-inspections.php',
 			'contact'          => 'page-contact.php',
 			'affiliate'        => 'page-affiliate.php',
+			'shop'             => 'page-shop.php',
 		);
 
 		foreach ( $template_map as $slug => $tpl ) {
