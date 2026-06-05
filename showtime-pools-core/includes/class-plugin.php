@@ -61,6 +61,7 @@ final class Plugin {
 
 		// REST endpoints.
 		( new Rest\ContactController() )->register();
+		( new Rest\AffiliateController() )->register();
 
 		// Integrations.
 		( new Integrations\FluentForms() )->register();

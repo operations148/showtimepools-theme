@@ -1,0 +1,260 @@
+/*
+ * affiliate.css — /affiliate/ Partner Program landing page.
+ *
+ * Page-scoped. Loads after components.css + interior.css (it reuses
+ * .int-hero, .int-section, .container, .eyebrow, .btn, .form-*). Only the
+ * affiliate-specific blocks live here. Tokens only — no hardcoded colors.
+ *
+ * @package ShowtimePools
+ */
+
+/* ── Hero additions ──────────────────────────────────────────────────────── */
+.affiliate-hero__cta {
+	margin-top: var(--sp-6);
+}
+
+.affiliate-trust {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--sp-3) var(--sp-6);
+	margin: var(--sp-8) 0 0;
+	padding: 0;
+	list-style: none;
+}
+
+.affiliate-trust__item {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--sp-2);
+	font-size: var(--fs-sm);
+	font-weight: 600;
+	color: rgba(255, 255, 255, 0.92);
+}
+
+.affiliate-trust__item svg {
+	color: var(--c-aqua-300, var(--c-aqua-500));
+	flex: none;
+}
+
+/* ── Benefits grid (4-up → responsive) ───────────────────────────────────── */
+.affiliate-benefits {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: var(--sp-5);
+	margin-top: var(--sp-10);
+}
+
+.affiliate-benefit {
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-3);
+	padding: var(--sp-6);
+	background: var(--c-bg);
+	border: 1px solid var(--c-border);
+	border-radius: var(--radius-card);
+	box-shadow: var(--sh-sm);
+	transition: transform var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
+}
+
+.affiliate-benefit:hover {
+	transform: translateY(-3px);
+	box-shadow: var(--sh-md);
+}
+
+.affiliate-benefit__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 52px;
+	height: 52px;
+	border-radius: var(--r-lg);
+	background: var(--c-aqua-50);
+	color: var(--c-aqua-500);
+}
+
+.affiliate-benefit__title {
+	margin: 0;
+	font-size: var(--fs-xl);
+}
+
+.affiliate-benefit__body {
+	margin: 0;
+	color: var(--c-ink-600);
+	font-size: var(--fs-base);
+	line-height: 1.6;
+}
+
+/* ── Process (numbered 3-up) ─────────────────────────────────────────────── */
+.affiliate-process {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: var(--sp-6);
+	margin: var(--sp-10) 0 0;
+	padding: 0;
+	list-style: none;
+	counter-reset: none;
+}
+
+.affiliate-step {
+	position: relative;
+	padding: var(--sp-6);
+	background: var(--c-bg);
+	border: 1px solid var(--c-border);
+	border-radius: var(--radius-card);
+}
+
+.affiliate-step__num {
+	display: block;
+	font-size: var(--fs-4xl);
+	font-weight: 700;
+	line-height: 1;
+	color: var(--c-aqua-500);
+	opacity: 0.45;
+	margin-bottom: var(--sp-3);
+}
+
+.affiliate-step__title {
+	margin: 0 0 var(--sp-2);
+	font-size: var(--fs-2xl);
+}
+
+.affiliate-step__body {
+	margin: 0;
+	color: var(--c-ink-600);
+	line-height: 1.6;
+}
+
+/* ── FAQ (disclosure) ────────────────────────────────────────────────────── */
+.affiliate-faq {
+	margin-top: var(--sp-8);
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-3);
+}
+
+.affiliate-faq__item {
+	border: 1px solid var(--c-border);
+	border-radius: var(--r-lg);
+	background: var(--c-bg);
+	overflow: hidden;
+}
+
+.affiliate-faq__q {
+	cursor: pointer;
+	list-style: none;
+	padding: var(--sp-4) var(--sp-6);
+	font-weight: 600;
+	font-size: var(--fs-md);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: var(--sp-4);
+}
+
+.affiliate-faq__q::-webkit-details-marker { display: none; }
+
+.affiliate-faq__q::after {
+	content: "+";
+	font-size: var(--fs-xl);
+	font-weight: 400;
+	color: var(--c-aqua-500);
+	transition: transform var(--dur-base) var(--ease-out);
+	flex: none;
+}
+
+.affiliate-faq__item[open] .affiliate-faq__q::after {
+	transform: rotate(45deg);
+}
+
+.affiliate-faq__a {
+	padding: 0 var(--sp-6) var(--sp-5);
+	color: var(--c-ink-600);
+	line-height: 1.6;
+}
+
+.affiliate-faq__a p { margin: 0; }
+
+/* ── Signup form ─────────────────────────────────────────────────────────── */
+.affiliate-form {
+	margin-top: var(--sp-8);
+	padding: var(--sp-8);
+	background: var(--c-bg);
+	border: 1px solid var(--c-border);
+	border-radius: var(--radius-card);
+	box-shadow: var(--sh-md);
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-5);
+}
+
+.affiliate-form__row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: var(--sp-5);
+}
+
+/* Honeypot — hidden from humans, visible to bots. */
+.affiliate-form__hp {
+	position: absolute;
+	left: -9999px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+.affiliate-form__promote {
+	border: 0;
+	padding: 0;
+	margin: 0;
+	min-width: 0;
+}
+
+.affiliate-form__checks {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: var(--sp-2) var(--sp-4);
+	margin-top: var(--sp-2);
+}
+
+.affiliate-form__check,
+.affiliate-form__consent {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--sp-2);
+	font-size: var(--fs-base);
+	line-height: 1.5;
+	cursor: pointer;
+}
+
+.affiliate-form__check input,
+.affiliate-form__consent input {
+	margin-top: 3px;
+	flex: none;
+}
+
+.affiliate-form__alert {
+	margin: 0;
+	padding: var(--sp-4) var(--sp-5);
+	border-radius: var(--r-md);
+	font-size: var(--fs-base);
+	background: var(--c-aqua-50);
+	color: var(--c-ink);
+}
+
+.affiliate-form__alert--err {
+	background: color-mix(in oklab, var(--c-danger) 12%, white);
+	color: var(--c-danger);
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 980px) {
+	.affiliate-benefits { grid-template-columns: repeat(2, 1fr); }
+	.affiliate-process  { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+	.affiliate-benefits     { grid-template-columns: 1fr; }
+	.affiliate-form__row    { grid-template-columns: 1fr; }
+	.affiliate-form__checks { grid-template-columns: 1fr; }
+	.affiliate-form         { padding: var(--sp-6); }
+}

@@ -21,6 +21,7 @@ final class Ghl {
 	public const TYPE_FLUENTFORM  = 'fluentform';
 	public const TYPE_CHAT_LEAD   = 'chat_lead';
 	public const TYPE_NEWSLETTER  = 'newsletter';
+	public const TYPE_AFFILIATE   = 'affiliate';
 
 	/**
 	 * Forward a payload to the configured GHL webhook.
@@ -32,7 +33,14 @@ final class Ghl {
 	 * @return array{ok:bool, code?:int, reason?:string, detail?:string}
 	 */
 	public static function forward( string $type, array $data, array $context = array() ): array {
-		$url = (string) get_option( 'showtime_ghl_webhook_url', '' );
+		// Per-type webhook: a type can route to its own GHL automation
+		// (e.g. affiliate signups → partner workflow) via the option
+		// `showtime_ghl_webhook_url_{type}`. Falls back to the main webhook
+		// when the per-type option is blank, so existing flows are unaffected.
+		$url = (string) get_option( 'showtime_ghl_webhook_url_' . $type, '' );
+		if ( '' === $url ) {
+			$url = (string) get_option( 'showtime_ghl_webhook_url', '' );
+		}
 		if ( '' === $url || ! wp_http_validate_url( $url ) ) {
 			return array(
 				'ok'     => false,

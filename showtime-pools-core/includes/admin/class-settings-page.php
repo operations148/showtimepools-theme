@@ -62,7 +62,8 @@ final class SettingsPage {
 
 	public function register_settings(): void {
 		// GHL — lead forwarding.
-		register_setting( self::OPTION_GROUP, 'showtime_ghl_webhook_url',    array( 'sanitize_callback' => 'esc_url_raw',          'default' => '' ) );
+		register_setting( self::OPTION_GROUP, 'showtime_ghl_webhook_url',           array( 'sanitize_callback' => 'esc_url_raw',          'default' => '' ) );
+		register_setting( self::OPTION_GROUP, 'showtime_ghl_webhook_url_affiliate', array( 'sanitize_callback' => 'esc_url_raw',          'default' => '' ) );
 		register_setting( self::OPTION_GROUP, 'showtime_ghl_webhook_secret', array( 'sanitize_callback' => 'sanitize_text_field',  'default' => '' ) );
 		register_setting( self::OPTION_GROUP, 'showtime_ghl_quote_url',      array( 'sanitize_callback' => 'esc_url_raw' ) );
 		register_setting( self::OPTION_GROUP, 'showtime_ghl_book_url',       array( 'sanitize_callback' => 'esc_url_raw' ) );
@@ -93,6 +94,18 @@ final class SettingsPage {
 			function () {
 				$v = (string) get_option( 'showtime_ghl_webhook_url', '' );
 				printf( '<input type="url" name="showtime_ghl_webhook_url" value="%s" class="regular-text" placeholder="https://services.leadconnectorhq.com/hooks/...">', esc_attr( $v ) );
+			},
+			self::PAGE_SLUG,
+			'showtime_section_ghl'
+		);
+
+		add_settings_field(
+			'showtime_ghl_webhook_url_affiliate',
+			__( 'GHL Affiliate Webhook URL', 'showtime-pools-core' ),
+			function () {
+				$v = (string) get_option( 'showtime_ghl_webhook_url_affiliate', '' );
+				printf( '<input type="url" name="showtime_ghl_webhook_url_affiliate" value="%s" class="regular-text" placeholder="https://services.leadconnectorhq.com/hooks/...">', esc_attr( $v ) );
+				echo '<p class="description">' . esc_html__( 'Dedicated webhook for Partner Program signups (/affiliate). Leave blank to reuse the main webhook above.', 'showtime-pools-core' ) . '</p>';
 			},
 			self::PAGE_SLUG,
 			'showtime_section_ghl'

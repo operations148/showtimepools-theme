@@ -656,3 +656,123 @@ add_action( 'save_post_page', function ( int $post_id ): void {
 		}
 	}
 } );
+
+// ─────────────────────────────────────────────────────────────────────────────
+// AFFILIATE / PARTNER PROGRAM — /affiliate/
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Full editable field list for the Affiliate page. Single source so the meta
+ * box and the save handler never drift.
+ *
+ * @return array<int, string>
+ */
+function showtime_affiliate_field_keys(): array {
+	$keys = array(
+		'affiliate_hero_eyebrow', 'affiliate_h1', 'affiliate_hero_lead', 'affiliate_hero_cta',
+		'affiliate_trust1', 'affiliate_trust2', 'affiliate_trust3', 'affiliate_trust4',
+		'affiliate_benefits_eyebrow', 'affiliate_benefits_h2', 'affiliate_benefits_lead',
+		'affiliate_process_eyebrow', 'affiliate_process_h2', 'affiliate_process_lead',
+		'affiliate_faq_eyebrow', 'affiliate_faq_h2',
+		'affiliate_form_eyebrow', 'affiliate_form_h2', 'affiliate_form_lead',
+		'affiliate_promote_options', 'affiliate_submit_label', 'affiliate_consent_text',
+	);
+	foreach ( array( 1, 2, 3, 4 ) as $n ) {
+		$keys[] = "affiliate_benefit{$n}_title";
+		$keys[] = "affiliate_benefit{$n}_body";
+	}
+	foreach ( array( 1, 2, 3 ) as $n ) {
+		$keys[] = "affiliate_step{$n}_title";
+		$keys[] = "affiliate_step{$n}_body";
+	}
+	foreach ( array( 1, 2, 3, 4, 5 ) as $n ) {
+		$keys[] = "affiliate_faq{$n}_q";
+		$keys[] = "affiliate_faq{$n}_a";
+	}
+	return $keys;
+}
+
+add_action( 'add_meta_boxes', function () {
+	add_meta_box(
+		'showtime_affiliate_fields',
+		__( 'Affiliate Page — Content', 'showtime-pools' ),
+		'showtime_affiliate_meta_box',
+		'page',
+		'normal',
+		'high'
+	);
+} );
+
+function showtime_affiliate_meta_box( WP_Post $post ): void {
+	if ( get_post_meta( $post->ID, '_wp_page_template', true ) !== 'page-affiliate.php' ) {
+		echo '<p style="color:#999;font-style:italic;">' . esc_html__( 'These fields only apply to the Affiliate / Partner Program page.', 'showtime-pools' ) . '</p>';
+		return;
+	}
+	wp_nonce_field( 'showtime_affiliate_save', 'showtime_affiliate_nonce' );
+
+	$head = static function ( string $label ): void {
+		echo '<h4 style="margin:18px 0 10px;border-bottom:1px solid #ddd;padding-bottom:6px;">' . esc_html( $label ) . '</h4>';
+	};
+
+	$head( __( 'Hero', 'showtime-pools' ) );
+	showtime_meta_field( 'affiliate_hero_eyebrow', 'Eyebrow chip (small text above headline)', $post->ID );
+	showtime_meta_field( 'affiliate_h1', 'Headline (H1)', $post->ID, true );
+	showtime_meta_field( 'affiliate_hero_lead', 'Lead paragraph', $post->ID, true );
+	showtime_meta_field( 'affiliate_hero_cta', 'Hero button label', $post->ID );
+
+	$head( __( 'Trust strip (chips under the hero)', 'showtime-pools' ) );
+	foreach ( array( 1, 2, 3, 4 ) as $n ) {
+		showtime_meta_field( "affiliate_trust{$n}", sprintf( 'Chip %d', $n ), $post->ID );
+	}
+
+	$head( __( 'Benefits section', 'showtime-pools' ) );
+	showtime_meta_field( 'affiliate_benefits_eyebrow', 'Eyebrow', $post->ID );
+	showtime_meta_field( 'affiliate_benefits_h2', 'Heading (H2)', $post->ID, true );
+	showtime_meta_field( 'affiliate_benefits_lead', 'Lead paragraph', $post->ID, true );
+	foreach ( array( 1, 2, 3, 4 ) as $n ) {
+		showtime_meta_field( "affiliate_benefit{$n}_title", sprintf( 'Benefit %d — title', $n ), $post->ID );
+		showtime_meta_field( "affiliate_benefit{$n}_body", sprintf( 'Benefit %d — body', $n ), $post->ID, true );
+	}
+
+	$head( __( 'Process section', 'showtime-pools' ) );
+	showtime_meta_field( 'affiliate_process_eyebrow', 'Eyebrow', $post->ID );
+	showtime_meta_field( 'affiliate_process_h2', 'Heading (H2)', $post->ID, true );
+	showtime_meta_field( 'affiliate_process_lead', 'Lead paragraph', $post->ID, true );
+	foreach ( array( 1, 2, 3 ) as $n ) {
+		showtime_meta_field( "affiliate_step{$n}_title", sprintf( 'Step %d — title', $n ), $post->ID );
+		showtime_meta_field( "affiliate_step{$n}_body", sprintf( 'Step %d — body', $n ), $post->ID, true );
+	}
+
+	$head( __( 'FAQ (leave a Q&A blank to hide it)', 'showtime-pools' ) );
+	showtime_meta_field( 'affiliate_faq_eyebrow', 'Eyebrow', $post->ID );
+	showtime_meta_field( 'affiliate_faq_h2', 'Heading (H2)', $post->ID, true );
+	foreach ( array( 1, 2, 3, 4, 5 ) as $n ) {
+		showtime_meta_field( "affiliate_faq{$n}_q", sprintf( 'FAQ %d — question', $n ), $post->ID );
+		showtime_meta_field( "affiliate_faq{$n}_a", sprintf( 'FAQ %d — answer', $n ), $post->ID, true );
+	}
+
+	$head( __( 'Signup form', 'showtime-pools' ) );
+	showtime_meta_field( 'affiliate_form_eyebrow', 'Eyebrow', $post->ID );
+	showtime_meta_field( 'affiliate_form_h2', 'Heading (H2)', $post->ID, true );
+	showtime_meta_field( 'affiliate_form_lead', 'Lead paragraph', $post->ID, true );
+	showtime_meta_field( 'affiliate_promote_options', 'Referral-source options (one per line)', $post->ID, true );
+	showtime_meta_field( 'affiliate_submit_label', 'Submit button label', $post->ID );
+	showtime_meta_field( 'affiliate_consent_text', 'Consent checkbox text', $post->ID, true );
+}
+
+add_action( 'save_post_page', function ( int $post_id ): void {
+	if (
+		! isset( $_POST['showtime_affiliate_nonce'] ) ||
+		! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['showtime_affiliate_nonce'] ) ), 'showtime_affiliate_save' ) ||
+		( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ||
+		! current_user_can( 'edit_post', $post_id )
+	) {
+		return;
+	}
+
+	foreach ( showtime_affiliate_field_keys() as $key ) {
+		if ( isset( $_POST[ $key ] ) ) {
+			update_post_meta( $post_id, $key, sanitize_textarea_field( wp_unslash( $_POST[ $key ] ) ) );
+		}
+	}
+} );

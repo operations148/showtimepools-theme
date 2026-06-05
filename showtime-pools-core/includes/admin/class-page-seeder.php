@@ -3,8 +3,9 @@
  * Page seeder. Creates the standard page structure on demand.
  *
  * Idempotent: existing pages by slug are skipped, never duplicated.
- * Triggered manually from Showtime Pools → Tools (no auto-creation on
- * activation — that's an anti-pattern).
+ * Runs on plugin activation via run_all_idempotent() (see the activation
+ * hook in showtime-pools-core.php) and can also be re-run manually from
+ * Showtime Pools → Tools. Either path is safe — existing pages are skipped.
  *
  * Phase 1F seeds: parent /services/ + 8 service children
  * Phase 1H seeds: /contact/, /quote/, /book/
@@ -49,6 +50,7 @@ final class PageSeeder {
 			array( 'slug' => 'blog',        'title' => __( 'Blog', 'showtime-pools-core' ),         'template' => 'page-blog.php',        'meta' => array( '_showtime_section' => 'blog-hub' ) ),
 			array( 'slug' => 'service-areas', 'title' => __( 'Service Areas', 'showtime-pools-core' ), 'template' => 'page-areas.php',     'meta' => array( '_showtime_section' => 'areas-hub' ) ),
 			array( 'slug' => 'pool-inspections', 'title' => __( 'Pool Inspections', 'showtime-pools-core' ), 'template' => 'page-inspections.php', 'meta' => array( '_showtime_section' => 'inspections-hub' ) ),
+			array( 'slug' => 'affiliate', 'title' => __( 'Affiliate Program', 'showtime-pools-core' ), 'template' => 'page-affiliate.php', 'meta' => array( '_showtime_section' => 'affiliate' ) ),
 			array( 'slug' => 'privacy-policy', 'title' => __( 'Privacy Policy', 'showtime-pools-core' ), 'template' => 'page-legal.php', 'meta' => array( '_showtime_section' => 'legal' ) ),
 			array( 'slug' => 'terms',          'title' => __( 'Terms', 'showtime-pools-core' ),          'template' => 'page-legal.php', 'meta' => array( '_showtime_section' => 'legal' ) ),
 		);
@@ -392,6 +394,7 @@ final class PageSeeder {
 			'service-areas'    => 'page-areas.php',
 			'pool-inspections' => 'page-inspections.php',
 			'contact'          => 'page-contact.php',
+			'affiliate'        => 'page-affiliate.php',
 		);
 
 		foreach ( $template_map as $slug => $tpl ) {

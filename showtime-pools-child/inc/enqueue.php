@@ -66,13 +66,24 @@ add_action(
 			wp_enqueue_script( 'showtime-contact', $uri, array( 'showtime-main' ), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );
 		}
 
-		// Interior pages (about, areas, inspections, projects, reviews, legal, 404).
+		// Affiliate / Partner Program — reuses interior.css (loaded below via the
+			// interior_templates list) plus its own scoped sheet + form JS.
+			if ( is_page_template( 'page-affiliate.php' ) ) {
+				[ $uri, $ver ] = showtime_asset( 'assets/css/affiliate.css' );
+				wp_enqueue_style( 'showtime-affiliate', $uri, array( 'showtime-components', 'showtime-interior' ), $ver );
+
+				[ $uri, $ver ] = showtime_asset( 'assets/js/affiliate.js' );
+				wp_enqueue_script( 'showtime-affiliate', $uri, array( 'showtime-main' ), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );
+			}
+
+			// Interior pages (about, areas, inspections, projects, reviews, legal, 404).
 		$interior_templates = array(
 			'page-about.php', 'page-founder.php',
 			'page-areas.php', 'page-area.php',
 			'page-inspections.php', 'page-inspection.php',
 			'page-projects.php', 'page-reviews.php', 'page-legal.php',
 			'page-services-hub.php', 'page-shop.php', 'page-blog.php',
+				'page-affiliate.php',
 		);
 		$is_interior = false;
 		foreach ( $interior_templates as $tpl ) {
