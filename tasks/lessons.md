@@ -59,3 +59,17 @@ Corrections received from user. Re-read at session start. Add a new entry every 
 **Why:** `inc/enqueue.php:20` already cache-busts assets via `filemtime()`, so a junction gives instant feedback on save with zero sync overhead. ACF JSON two-way writes still work through a junction, and the Cloudways deploy story (one-shot upload of the bundle folder) is unchanged.
 
 **How to apply:** Every new local WP install for this project — first verify (`dir wp-content\themes` → look for `<JUNCTION>`); if it's a real folder, `rmdir /S /Q` the deployed copy and `mklink /J` it to the bundle. Do this before any visual debugging session. If the user reports "my edits aren't showing," check the junction first before suspecting browser cache, opcache, or asset enqueue.
+
+---
+
+## Verifying visual changes: render the way the USER's browser does, and diff against live
+
+**Context:** Built `/affiliate`. I "verified" with headless Chrome using `--ignore-certificate-errors` and opened the page over `http://`. User saw a completely unstyled page and (twice) thought I'd destroyed the menu.
+
+**Two distinct traps hit:**
+
+1. **Forced-HTTPS assets + local self-signed cert.** `functions.php:16` defines `SHOWTIME_CHILD_URI = set_url_scheme(get_stylesheet_directory_uri(), 'https')` — every asset URL is `https://localhost/...`. Over the local self-signed cert, a normal browser silently blocks all CSS/JS subrequests, so the page renders as plain HTML. My headless `--ignore-certificate-errors` masked this; the user's real browser did not. **Rule:** never validate styling with cert errors ignored and call it done. Either open the **https** URL and accept the cert once (grants the whole-origin exception so https assets load), or test in the browser the user actually uses. A cert-ignored headless shot proves markup, not that the user will see styling.
+
+2. **Nav diverged from live because a menu was auto-seeded locally.** `template-parts/header/primary-nav.php` renders a canonical hardcoded nav (mega-menus, `.primary-nav__link`, items incl. Location/Shop) **only when no WP menu exists**; if any menu is assigned it uses `wp_nav_menu` with WP-default markup (no `.primary-nav__link` → global `a{underline}` shows, wrong items). The seeder's old `seed_primary_menu()` auto-created/assigned a menu on first-run, so **local** showed the broken version while **live** (no assigned menu) showed the canonical one. Fixed by removing the auto-seed. **Rule:** when the user says a global element "looks wrong / not the original," diff the **rendered markup** local-vs-live (`curl | grep` the component) before assuming it's unchanged — class presence (e.g. `.primary-nav__link` count) pinpoints CSS-vs-markup fast. Menus are content (per DEPLOY contract); the canonical nav lives in the template, and nothing should auto-create a menu that shadows it.
+
+**How to apply:** (a) For any styling verification on this project, use the https URL or the user's browser, never cert-ignored-only. (b) When a shared/global UI element is questioned, compare local rendered HTML against the live screenshot/markup and check whether a DB menu/option is overriding a template fallback — don't just check git for file changes.
