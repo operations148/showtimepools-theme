@@ -221,8 +221,13 @@ final class PageSeeder {
 		// 8) Pre-fill founder page with default bio content if empty.
 		$this->fill_founder_content();
 
-		// 9) Auto-seed primary nav menu if none is assigned.
-		$this->seed_primary_menu();
+		// 9) Nav menu: intentionally NOT auto-seeded. The theme header
+		// (template-parts/header/primary-nav.php) renders a canonical
+		// hardcoded nav with mega-menus whenever no WP menu exists, and
+		// prefers any assigned menu otherwise. Auto-creating a menu here
+		// shadowed that canonical nav with WP's default (unstyled) markup,
+		// making local diverge from live. Leaving menus unseeded keeps a
+		// fresh install identical to the live site.
 
 		flush_rewrite_rules();
 
@@ -451,73 +456,6 @@ final class PageSeeder {
 <p>When we finally added construction, it was because the same handful of customers kept asking. We built a pool for one. Then a remodel for another. Word got around. Today the construction line and the service line are both staffed by W-2 crew, both supervised by Steve, both working off the same standards. Same shop on Ventura Boulevard. Same trucks. Same number.</p>
 
 <p>Quotes are written and itemized. Permits are pulled in person. The person who walks your site is on the job when the work happens. When the inspection says walk away from a deal, that is what the inspection says, even when it costs us a six-figure construction quote. Independence is the whole point.</p>';
-	}
-
-	// ─────────────────────────────────────────────────────────────────────────
-	// PRIMARY NAV MENU SEED
-	// ─────────────────────────────────────────────────────────────────────────
-
-	/**
-	 * Create and assign "Main Navigation" to the primary menu location if none
-	 * is currently assigned. Idempotent — skips if primary already has a menu.
-	 */
-	private function seed_primary_menu(): void {
-		$locations = (array) get_theme_mod( 'nav_menu_locations', array() );
-
-		// Already has a menu assigned — skip.
-		if ( ! empty( $locations['primary'] ) && (int) $locations['primary'] > 0 ) {
-			return;
-		}
-
-		$menu_id = wp_create_nav_menu( __( 'Main Navigation', 'showtime-pools-core' ) );
-		if ( is_wp_error( $menu_id ) ) {
-			return;
-		}
-
-		// Top-level pages in display order. '' = home page (custom link).
-		$nav_items = array(
-			array( 'type' => 'custom',    'url'  => home_url( '/' ),   'title' => __( 'Home', 'showtime-pools-core' ) ),
-			array( 'type' => 'post_type', 'slug' => 'about',           'title' => __( 'About', 'showtime-pools-core' ) ),
-			array( 'type' => 'post_type', 'slug' => 'services',        'title' => __( 'Services', 'showtime-pools-core' ) ),
-			array( 'type' => 'post_type', 'slug' => 'projects',        'title' => __( 'Projects', 'showtime-pools-core' ) ),
-			array( 'type' => 'post_type', 'slug' => 'service-areas',   'title' => __( 'Service Areas', 'showtime-pools-core' ) ),
-			array( 'type' => 'post_type', 'slug' => 'blog',            'title' => __( 'Blog', 'showtime-pools-core' ) ),
-			array( 'type' => 'post_type', 'slug' => 'contact',         'title' => __( 'Contact', 'showtime-pools-core' ) ),
-		);
-
-		foreach ( $nav_items as $item ) {
-			if ( 'custom' === $item['type'] ) {
-				wp_update_nav_menu_item(
-					$menu_id,
-					0,
-					array(
-						'menu-item-type'   => 'custom',
-						'menu-item-url'    => (string) ( $item['url'] ?? home_url( '/' ) ),
-						'menu-item-title'  => (string) ( $item['title'] ?? '' ),
-						'menu-item-status' => 'publish',
-					)
-				);
-			} else {
-				$slug = (string) ( $item['slug'] ?? '' );
-				if ( '' === $slug ) { continue; }
-				$page = get_page_by_path( $slug, OBJECT, 'page' );
-				if ( ! $page instanceof \WP_Post ) { continue; }
-				wp_update_nav_menu_item(
-					$menu_id,
-					0,
-					array(
-						'menu-item-type'      => 'post_type',
-						'menu-item-object'    => 'page',
-						'menu-item-object-id' => (int) $page->ID,
-						'menu-item-title'     => (string) ( $item['title'] ?? '' ),
-						'menu-item-status'    => 'publish',
-					)
-				);
-			}
-		}
-
-		$locations['primary'] = (int) $menu_id;
-		set_theme_mod( 'nav_menu_locations', $locations );
 	}
 
 	public function register_menu(): void {
