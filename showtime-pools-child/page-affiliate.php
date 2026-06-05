@@ -26,7 +26,7 @@ $_pm = static fn( string $k ) => (string) get_post_meta( $pid, $k, true );
 
 // Hero.
 $aff_hero_eyebrow = $_pm( 'affiliate_hero_eyebrow' ) ?: __( 'Now accepting referral partners', 'showtime-pools' );
-$aff_h1           = $_pm( 'affiliate_h1' )           ?: __( 'Refer pool owners. Earn recurring commission every month.', 'showtime-pools' );
+$aff_h1           = $_pm( 'affiliate_h1' )           ?: __( 'Refer pool owners. Earn recurring income.', 'showtime-pools' );
 $aff_hero_lead    = $_pm( 'affiliate_hero_lead' )    ?: __( 'Join the Showtime Pools Partner Program. Every homeowner, property manager, or HOA you send our way earns you commission for as long as they stay on service — no chasing, no cold-selling, no cap.', 'showtime-pools' );
 $aff_hero_cta     = $_pm( 'affiliate_hero_cta' )     ?: __( 'Become a Partner', 'showtime-pools' );
 

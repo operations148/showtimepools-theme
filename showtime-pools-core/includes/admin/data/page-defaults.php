@@ -130,7 +130,7 @@ return array(
 		// Pages → Affiliate Program. Referral-source options are one-per-line.
 		'page-affiliate.php' => array(
 			'affiliate_hero_eyebrow'     => 'Now accepting referral partners',
-			'affiliate_h1'               => 'Refer pool owners. Earn recurring commission every month.',
+			'affiliate_h1'               => 'Refer pool owners. Earn recurring income.',
 			'affiliate_hero_lead'        => 'Join the Showtime Pools Partner Program. Every homeowner, property manager, or HOA you send our way earns you commission for as long as they stay on service — no chasing, no cold-selling, no cap.',
 			'affiliate_hero_cta'         => 'Become a Partner',
 			'affiliate_trust1'           => 'Paid monthly',
