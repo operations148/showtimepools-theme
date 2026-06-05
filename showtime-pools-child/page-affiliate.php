@@ -297,7 +297,12 @@ $aff_icon = static function ( string $name ): string {
 						<h2 class="balance"><?php echo esc_html( $aff_faq_h2 ); ?></h2>
 					</header>
 					<div class="affiliate-faq">
-
+						<?php foreach ( $aff_faq as $f ) : ?>
+							<details class="affiliate-faq__item">
+								<summary class="affiliate-faq__q"><?php echo esc_html( $f['q'] ); ?></summary>
+								<div class="affiliate-faq__a"><p><?php echo esc_html( $f['a'] ); ?></p></div>
+							</details>
+						<?php endforeach; ?>
 					</div>
 				</aside>
 				<?php endif; ?>
