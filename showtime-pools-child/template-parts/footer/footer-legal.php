@@ -44,6 +44,7 @@ foreach ((array) $socials_raw as $k => $v) {
 
 		<ul class="footer-legal__links">
 			<li><a href="<?php echo esc_url(home_url('/privacy-policy/')); ?>"><?php esc_html_e('Privacy', 'showtime-pools'); ?></a></li>
+			<li><a href="<?php echo esc_url(home_url('/affiliate/')); ?>"><?php esc_html_e('Affiliate', 'showtime-pools'); ?></a></li>
 			<li><a href="<?php echo esc_url(home_url('/terms/')); ?>"><?php esc_html_e('Terms', 'showtime-pools'); ?></a></li>
 			<li><a href="<?php echo esc_url(home_url('/wp-sitemap.xml')); ?>"><?php esc_html_e('Sitemap', 'showtime-pools'); ?></a></li>
 		</ul>
