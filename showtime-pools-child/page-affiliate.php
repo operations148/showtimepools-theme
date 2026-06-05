@@ -215,26 +215,8 @@ $aff_icon = static function ( string $name ): string {
 		</div>
 	</section>
 
-	<?php if ( $aff_faq ) : ?>
-	<section class="int-section" data-reveal>
-		<div class="container container--narrow">
-			<header class="int-section__head">
-				<span class="eyebrow"><?php echo esc_html( $aff_faq_eyebrow ); ?></span>
-				<h2 class="balance"><?php echo esc_html( $aff_faq_h2 ); ?></h2>
-			</header>
-			<div class="affiliate-faq">
-				<?php foreach ( $aff_faq as $f ) : ?>
-					<details class="affiliate-faq__item">
-						<summary class="affiliate-faq__q"><?php echo esc_html( $f['q'] ); ?></summary>
-						<div class="affiliate-faq__a"><p><?php echo esc_html( $f['a'] ); ?></p></div>
-					</details>
-				<?php endforeach; ?>
-			</div>
-		</div>
-	</section>
-	<?php endif; ?>
 
-	<section id="affiliate-apply" class="int-section int-section--cream affiliate-apply" data-reveal>
+	<section id="affiliate-apply" class="int-section affiliate-apply" data-reveal>
 		<div class="container container--narrow">
 			<header class="int-section__head">
 				<span class="eyebrow"><?php echo esc_html( $aff_form_eyebrow ); ?></span>
@@ -305,6 +287,25 @@ $aff_icon = static function ( string $name ): string {
 			</form>
 		</div>
 	</section>
+
+	<?php if ( $aff_faq ) : ?>
+	<section class="int-section int-section--cream" data-reveal>
+		<div class="container container--narrow">
+			<header class="int-section__head">
+				<span class="eyebrow"><?php echo esc_html( $aff_faq_eyebrow ); ?></span>
+				<h2 class="balance"><?php echo esc_html( $aff_faq_h2 ); ?></h2>
+			</header>
+			<div class="affiliate-faq">
+				<?php foreach ( $aff_faq as $f ) : ?>
+					<details class="affiliate-faq__item">
+						<summary class="affiliate-faq__q"><?php echo esc_html( $f['q'] ); ?></summary>
+						<div class="affiliate-faq__a"><p><?php echo esc_html( $f['a'] ); ?></p></div>
+					</details>
+				<?php endforeach; ?>
+			</div>
+		</div>
+	</section>
+	<?php endif; ?>
 
 </main>
 <?php get_footer();
