@@ -248,6 +248,7 @@ final class SettingsPage {
 			),
 			'Service Heroes' => array(
 				array( 'slot' => 'service_pool-repairs-plumbing',           'label' => 'Pool Repairs & Plumbing' ),
+				array( 'slot' => 'service_pool-leak-detection',            'label' => 'Pool Leak Detection' ),
 				array( 'slot' => 'service_weekly-pool-maintenance',         'label' => 'Weekly Pool Maintenance' ),
 				array( 'slot' => 'service_pool-tile-cleaning',              'label' => 'Pool Tile Cleaning' ),
 				array( 'slot' => 'service_pool-remodeling-resurfacing',     'label' => 'Pool Remodeling & Resurfacing' ),

@@ -43,6 +43,37 @@ return array(
 	),
 
 	array(
+		'slug'              => 'pool-leak-detection',
+		'title'             => 'Pool Leak Detection',
+		'seo_h1'            => 'Pool Leak Detection in Los Angeles',
+		'seo_keyword'       => 'pool leak detection los angeles',
+		'seo_title'         => 'Pool Leak Detection in Los Angeles | Showtime',
+		'seo_meta'          => 'Losing water? Pool leak detection in LA using dye, pressure, and electronic listening, no deck demolition guesswork. Call (323) 825-2099.',
+		'seo_intro'         => 'Pool leak detection in Los Angeles starts with non-invasive testing, not digging. Showtime Pools pressure-tests plumbing lines, runs dye tests at the skimmers and returns, and uses electronic acoustic listening to pinpoint the leak, usually within one visit, across Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills.',
+		'summary'           => 'Professional pool leak detection across Los Angeles. We locate structural, plumbing, and equipment leaks with dye, pressure, and electronic methods, then give you a clear repair quote. No deck demolition guesswork.',
+		'icon'              => 'inspection',
+		'accent_token'      => '--c-aqua-500',
+		// PLACEHOLDER price - confirm exact leak-detection pricing with Steve before launch.
+		'default_price'     => 'Leak detection from $285',
+		'default_turnaround'=> 'Most leaks located in one visit',
+		'default_includes'  => array(
+			'Full water-loss assessment (evaporation vs true leak, bucket test)',
+			'Dye testing at skimmers, returns, lights, and the main drain',
+			'Pressure testing of suction and return plumbing lines',
+			'Electronic acoustic listening for underground line leaks',
+			'Structural shell and tile-line crack inspection with photos',
+			'Written findings and an itemized repair quote you can shop or hire us for',
+		),
+		'default_faqs' => array(
+			array( 'q' => 'How much does pool leak detection cost in Los Angeles?', 'a' => 'Leak detection starts at $285 for a standard residential pool and is credited toward the repair if you hire us to fix it. Larger pools, spas, and multi-leak jobs are quoted after the initial assessment. Pricing is being finalized, so confirm the current rate when you call.' ),
+			array( 'q' => 'How do you find a pool leak without draining it?', 'a' => 'The pool stays full. We combine three methods: dye testing at the skimmers, returns, lights, and main drain; pressure testing of the suction and return plumbing lines; and electronic acoustic listening that hears water escaping an underground line. Most leaks are pinpointed in a single visit.' ),
+			array( 'q' => 'Do you have to dig up my deck or pool to find the leak?', 'a' => 'No. Detection is non-invasive. We only excavate after the leak is pinpointed and you approve the repair, and we open the smallest access point needed rather than tearing up the whole deck.' ),
+			array( 'q' => 'How do I know if my pool is actually leaking?', 'a' => 'Run a bucket test: mark the water level inside a bucket and in the pool, wait 24 hours, and compare. If the pool drops noticeably more than the bucket (roughly a quarter inch a day or more), you likely have a true leak rather than evaporation.' ),
+			array( 'q' => 'Can you fix the leak the same day you find it?', 'a' => 'Often yes for fittings, returns, and equipment-pad leaks. Underground plumbing line breaks and structural shell cracks are quoted after detection and scheduled separately, usually within a few days.' ),
+			array( 'q' => 'Which Los Angeles areas do you cover for leak detection?', 'a' => 'Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills, plus greater Los Angeles and the San Fernando Valley. Sherman Oaks and Encino get same-week priority because that is our home base.' ),
+		),
+	),
+	array(
 		'slug'              => 'weekly-pool-maintenance',
 		'title'             => 'Weekly Pool Maintenance',
 		'seo_h1'            => 'Pool Cleaning Service in Los Angeles',

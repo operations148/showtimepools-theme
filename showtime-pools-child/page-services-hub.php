@@ -18,7 +18,7 @@ $services = class_exists( '\\Showtime\\Services' ) ? \Showtime\Services::all() :
 // inspections, automation, tile cleaning). Outdoor covers larger build /
 // remodel / hardscape projects. Split scales to whatever the registry holds
 // so adding a 13th+ service does not silently fall off the hub.
-$core_count = 7;
+$core_count = 8;
 $core       = array_slice( $services, 0, $core_count );
 $outdoor    = array_slice( $services, $core_count );
 
@@ -38,7 +38,7 @@ $outdoor_h2      = (string) get_post_meta( $pid, 'outdoor_h2',      true );
 $outdoor_lead    = (string) get_post_meta( $pid, 'outdoor_lead',    true );
 
 // Fallbacks — used when the meta field is empty.
-if ( '' === $hero_eyebrow ) { $hero_eyebrow = 'Twelve services, one team'; }
+if ( '' === $hero_eyebrow ) { $hero_eyebrow = 'Every pool service, one team'; }
 if ( '' === $hero_lead )    { $hero_lead    = 'Pool repair, pool cleaning service, pool remodeling, pool installation, equipment upgrades, inspections, spa work, and outdoor living — handled by one supervised crew across Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills.'; }
 
 if ( '' === $core_eyebrow ) { $core_eyebrow = 'Core services'; }

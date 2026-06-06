@@ -114,7 +114,7 @@ return array(
 
 		// ─── Services Hub ──────────────────────────────────────────────────────
 		'page-services-hub.php' => array(
-			'hero_eyebrow'    => 'Twelve services, one team',
+			'hero_eyebrow'    => 'Every pool service, one team',
 			'hero_lead'       => 'Pool repair, pool cleaning service, pool remodeling, pool installation, equipment upgrades, inspections, spa work, and outdoor living — handled by one supervised crew across Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills.',
 			'core_eyebrow'    => 'Core services',
 			'core_h2'         => 'Repairs, service, remodels, equipment, inspections, automation.',

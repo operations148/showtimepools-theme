@@ -9,6 +9,7 @@
  * Slots intentionally NOT seeded:
  *   - process_bg  (no bundled file)
  *   - project_9   (no bundled file)
+ *   - service_pool-leak-detection (no bundled file yet; upload via Site Images)
  *   - logo        (handled by Customizer → Site Identity)
  *
  * Resolved at seed time via SHOWTIME_CHILD_DIR (defined by the theme).
