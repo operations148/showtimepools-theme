@@ -14,6 +14,8 @@ return array(
 
 	array(
 		'slug'        => 'sherman-oaks',
+		'seo_title'   => 'Pool Service in Sherman Oaks, CA | Showtime Pools',
+		'seo_meta'    => 'Pool service in Sherman Oaks (91403, 91423, 91436) since 2003. Same tech weekly, repairs, remodels, equipment. Call (323) 825-2099.',
 		'name'        => 'Sherman Oaks',
 		'seo_h1'      => 'Pool Service in Sherman Oaks, Los Angeles',
 		'seo_intro'   => 'Pool service near you in Sherman Oaks, Los Angeles. One of the highest-rated pool companies near me for Sherman Oaks homeowners — Showtime Pools is headquartered on Ventura Boulevard. Weekly pool cleaning service, pool repair near me calls, remodels, and equipment upgrades across ZIP codes 91403, 91423, and 91436, seven days a week.',
@@ -41,8 +43,10 @@ return array(
 
 	array(
 		'slug'        => 'encino',
+		'seo_title'   => 'Pool Service in Encino, CA | Showtime Pools',
+		'seo_meta'    => 'Pool service in Encino since 2003. Weekly cleaning, repairs, remodels, and custom construction across 91316 and 91436. Call (323) 825-2099.',
 		'name'        => 'Encino',
-		'seo_h1'      => 'Pool Service in Encino',
+		'seo_h1'      => 'Pool Service in Encino, Los Angeles',
 		'seo_intro'   => 'Pool service near you in Encino, Los Angeles. Showtime Pools is the pool company Encino homeowners call for pool cleaning near me, pool repair, and custom pool construction across ZIP codes 91316 and 91436, five days a week.',
 		'tag'         => '5 days a week',
 		'pool_count'  => '310+',
@@ -68,6 +72,8 @@ return array(
 
 	array(
 		'slug'        => 'beverly-hills',
+		'seo_title'   => 'Pool Service in Beverly Hills, CA | Showtime Pools',
+		'seo_meta'    => 'Pool service in Beverly Hills since 2003. Discreet weekly cleaning, repairs, remodels, and custom construction. Call (323) 825-2099.',
 		'name'        => 'Beverly Hills',
 		'seo_h1'      => 'Pool Service in Beverly Hills',
 		'seo_intro'   => 'Pool service near you in Beverly Hills, Los Angeles. Showtime Pools runs discreet weekly pool cleaning service and pool maintenance near me calls behind 90210, 90211, and 90212 gates — badged vehicles, scheduled named-tech crew.',
@@ -95,6 +101,8 @@ return array(
 
 	array(
 		'slug'        => 'studio-city',
+		'seo_title'   => 'Pool Service in Studio City, CA | Showtime Pools',
+		'seo_meta'    => 'Pool service in Studio City since 2003. Weekly cleaning, repair, remodel, and equipment by one supervised crew. Call (323) 825-2099.',
 		'name'        => 'Studio City',
 		'seo_h1'      => 'Pool Service in Studio City',
 		'seo_intro'   => 'Pool service near you in Studio City, Los Angeles. Showtime Pools handles hillside pool repair near me calls, emergency pool service, and pier-supported deck work across ZIP 91604 — structural, weekly, and same-day from Coldwater to Laurel Canyon.',
@@ -122,6 +130,8 @@ return array(
 
 	array(
 		'slug'        => 'tarzana',
+		'seo_title'   => 'Pool Service in Tarzana, CA | Showtime Pools',
+		'seo_meta'    => 'Pool service in Tarzana since 2003. Weekly cleaning, repairs, remodels, and equipment upgrades. Call (323) 825-2099.',
 		'name'        => 'Tarzana',
 		'seo_h1'      => 'Pool Service in Tarzana',
 		'seo_intro'   => 'Pool service near you in Tarzana, Los Angeles. Showtime Pools specializes in pool remodeling, pool resurfacing, pool cleaning near me, and pool maintenance near me on 1970s-1990s vintage pools across 91335, 91356, and 91357.',
@@ -149,6 +159,8 @@ return array(
 
 	array(
 		'slug'        => 'woodland-hills',
+		'seo_title'   => 'Pool Service in Woodland Hills | Showtime Pools',
+		'seo_meta'    => 'Pool service in Woodland Hills since 2003. Weekly cleaning, repair, remodel, equipment, and hard-water calcium fixes. Call (323) 825-2099.',
 		'name'        => 'Woodland Hills',
 		'seo_h1'      => 'Pool Service in Woodland Hills',
 		'seo_intro'   => 'Pool service near you in Woodland Hills, Los Angeles. One of the top pool companies near me for Woodland Hills homeowners — Showtime Pools handles pool maintenance near me calls, new pool construction, and heater/salt cell work across 91364 and 91367.',

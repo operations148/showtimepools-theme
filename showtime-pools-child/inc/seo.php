@@ -19,6 +19,11 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// WordPress core emits its own <link rel="canonical"> for singular views.
+// Remove it so there is exactly one canonical: ours in the no-Rank-Math
+// fallback, or Rank Math's on production (Rank Math also removes core's).
+remove_action( 'wp_head', 'rel_canonical' );
+
 /**
  * Resolve the current canonical URL.
  */
@@ -207,50 +212,84 @@ add_action(
 	'wp_head',
 	function () {
 		$canonical = showtime_canonical_url();
-		$title     = showtime_seo_title();
-		$desc      = showtime_seo_description();
-		$image     = showtime_og_image();
 
-		echo '<link rel="canonical" href="' . esc_url( $canonical ) . '">' . "\n";
-		echo '<meta name="description" content="' . esc_attr( $desc ) . '">' . "\n";
-		echo '<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">' . "\n";
-		echo '<meta name="theme-color" content="#0A0A0A">' . "\n";
+		// Always emit — Rank Math does not output these.
+		echo '<meta name="theme-color" content="#0A0A0A">' . "
+";
+		echo '<meta name="geo.region" content="US-CA">' . "
+";
+		echo '<meta name="geo.placename" content="Sherman Oaks, Los Angeles">' . "
+";
+		echo '<meta name="geo.position" content="34.1511;-118.4490">' . "
+";
+		echo '<meta name="ICBM" content="34.1511, -118.4490">' . "
+";
+
+		// Rank Math owns canonical, description, robots, Open Graph, Twitter, and
+		// the WebSite + Breadcrumb JSON-LD on production. Emit ours only as the
+		// no-Rank-Math fallback so prod never ships duplicate tags.
+		if ( defined( 'RANK_MATH_VERSION' ) ) {
+			return;
+		}
+
+		$title = showtime_seo_title();
+		$desc  = showtime_seo_description();
+		$image = showtime_og_image();
+
+		echo '<link rel="canonical" href="' . esc_url( $canonical ) . '">' . "
+";
+		echo '<meta name="description" content="' . esc_attr( $desc ) . '">' . "
+";
+		echo '<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">' . "
+";
 
 		// Open Graph
-		echo '<meta property="og:type" content="' . ( is_singular() && ! is_front_page() ? 'article' : 'website' ) . '">' . "\n";
-		echo '<meta property="og:locale" content="en_US">' . "\n";
-		echo '<meta property="og:site_name" content="Showtime Pools">' . "\n";
-		echo '<meta property="og:title" content="' . esc_attr( $title ) . '">' . "\n";
-		echo '<meta property="og:description" content="' . esc_attr( $desc ) . '">' . "\n";
-		echo '<meta property="og:url" content="' . esc_url( $canonical ) . '">' . "\n";
-		echo '<meta property="og:image" content="' . esc_url( $image ) . '">' . "\n";
-		echo '<meta property="og:image:width" content="1200">' . "\n";
-		echo '<meta property="og:image:height" content="675">' . "\n";
+		echo '<meta property="og:type" content="' . ( is_singular() && ! is_front_page() ? 'article' : 'website' ) . '">' . "
+";
+		echo '<meta property="og:locale" content="en_US">' . "
+";
+		echo '<meta property="og:site_name" content="Showtime Pools">' . "
+";
+		echo '<meta property="og:title" content="' . esc_attr( $title ) . '">' . "
+";
+		echo '<meta property="og:description" content="' . esc_attr( $desc ) . '">' . "
+";
+		echo '<meta property="og:url" content="' . esc_url( $canonical ) . '">' . "
+";
+		echo '<meta property="og:image" content="' . esc_url( $image ) . '">' . "
+";
+		echo '<meta property="og:image:width" content="1200">' . "
+";
+		echo '<meta property="og:image:height" content="675">' . "
+";
 
 		// Twitter Card
-		echo '<meta name="twitter:card" content="summary_large_image">' . "\n";
-		echo '<meta name="twitter:title" content="' . esc_attr( $title ) . '">' . "\n";
-		echo '<meta name="twitter:description" content="' . esc_attr( $desc ) . '">' . "\n";
-		echo '<meta name="twitter:image" content="' . esc_url( $image ) . '">' . "\n";
-		echo '<meta name="twitter:site" content="@showtime_pools">' . "\n";
-
-		// Geo meta (helps local search)
-		echo '<meta name="geo.region" content="US-CA">' . "\n";
-		echo '<meta name="geo.placename" content="Sherman Oaks, Los Angeles">' . "\n";
-		echo '<meta name="geo.position" content="34.1511;-118.4490">' . "\n";
-		echo '<meta name="ICBM" content="34.1511, -118.4490">' . "\n";
+		echo '<meta name="twitter:card" content="summary_large_image">' . "
+";
+		echo '<meta name="twitter:title" content="' . esc_attr( $title ) . '">' . "
+";
+		echo '<meta name="twitter:description" content="' . esc_attr( $desc ) . '">' . "
+";
+		echo '<meta name="twitter:image" content="' . esc_url( $image ) . '">' . "
+";
+		echo '<meta name="twitter:site" content="@showtime_pools">' . "
+";
 
 		// Hreflang (en-US only for v1)
-		echo '<link rel="alternate" hreflang="en-US" href="' . esc_url( $canonical ) . '">' . "\n";
-		echo '<link rel="alternate" hreflang="x-default" href="' . esc_url( $canonical ) . '">' . "\n";
+		echo '<link rel="alternate" hreflang="en-US" href="' . esc_url( $canonical ) . '">' . "
+";
+		echo '<link rel="alternate" hreflang="x-default" href="' . esc_url( $canonical ) . '">' . "
+";
 
 		// JSON-LD: WebSite + BreadcrumbList
 		$website = showtime_website_schema();
-		echo '<script type="application/ld+json">' . wp_json_encode( $website, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
+		echo '<script type="application/ld+json">' . wp_json_encode( $website, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "
+";
 
 		$crumbs = showtime_breadcrumb_schema();
 		if ( $crumbs ) {
-			echo '<script type="application/ld+json">' . wp_json_encode( $crumbs, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
+			echo '<script type="application/ld+json">' . wp_json_encode( $crumbs, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "
+";
 		}
 	},
 	2
