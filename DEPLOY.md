@@ -165,6 +165,8 @@ showtimepools/                   <- this repo, lands at private_html/showtimepoo
 └── CLAUDE.md                    <- workflow contract for the dev agent
 ```
 
+> **`/tools` is dev-only and never deploys.** Only `showtime-pools-child/` and `showtime-pools-core/` are symlinked into `wp-content/`; the `tools/` folder (favicon generator, photo catalog, `seeder-dry-run.php`, `run-seeder.php`) stays in the repo and is excluded from the deploy bundle. Nothing in `tools/` runs on live.
+
 ## What ships via git vs. what does not
 
 **Ships via git (visual parity local↔live, automatic):**

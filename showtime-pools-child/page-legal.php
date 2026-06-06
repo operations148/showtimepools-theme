@@ -12,8 +12,12 @@ defined( 'ABSPATH' ) || exit;
 
 get_header();
 
-$slug = get_post_field( 'post_name', get_the_ID() );
+$pid  = get_the_ID();
+$_pm  = static fn( string $k ) => (string) get_post_meta( $pid, $k, true );
+$slug = get_post_field( 'post_name', $pid );
 
+// Per-slug fallback defaults. Editable overrides live in post meta
+// (WP Admin → Pages → [page] → "Legal Page Content"); these render when unset.
 $copy = array(
 	'privacy-policy' => array(
 		'eyebrow' => __( 'Last updated 2026-05-06', 'showtime-pools' ),
@@ -27,10 +31,18 @@ $copy = array(
 	),
 );
 
-$page_copy = $copy[ $slug ] ?? array(
+$d = $copy[ $slug ] ?? array(
 	'eyebrow' => '',
 	'lead'    => '',
 	'body'    => apply_filters( 'the_content', get_the_content() ),
+);
+
+// Post-meta overrides fall back to the per-slug defaults above, so the page
+// renders identically until a field is filled in wp-admin.
+$page_copy = array(
+	'eyebrow' => $_pm( 'legal_eyebrow' ) ?: $d['eyebrow'],
+	'lead'    => $_pm( 'legal_lead' )    ?: $d['lead'],
+	'body'    => $_pm( 'legal_body' )    ?: $d['body'],
 );
 ?>
 <main id="primary" class="site-main interior-page">

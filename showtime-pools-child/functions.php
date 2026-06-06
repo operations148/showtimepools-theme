@@ -12,6 +12,16 @@ define('SHOWTIME_CHILD_VERSION', '0.1.0');
 
 /** GHL booking URL — single source of truth. Replaces the old /quote/ page. */
 define('SHOWTIME_BOOKING_URL', 'https://app.showtimepoolmechanics.com/widget/booking/KkBpnBMhT5QXn8YtTsDb');
+
+/**
+ * Filterable booking URL. Templates call this instead of the raw constant so
+ * the destination can be overridden via the `showtime/booking_url` filter
+ * without editing every CTA.
+ */
+function showtime_booking_url(): string {
+	return (string) apply_filters( 'showtime/booking_url', SHOWTIME_BOOKING_URL );
+}
+
 define('SHOWTIME_CHILD_DIR', get_stylesheet_directory());
 define('SHOWTIME_CHILD_URI', set_url_scheme(get_stylesheet_directory_uri(), 'https'));
 

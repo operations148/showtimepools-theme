@@ -38,8 +38,8 @@ final class Customizer {
 		$wp_customize->add_panel(
 			'showtime_brand',
 			array(
-				'title'       => __( 'Showtime Pools — Brand', 'showtime-pools' ),
-				'description' => __( 'Phone, email, hours, tagline, social URLs. Editable here so the dev team never has to change PHP for a contact-info update.', 'showtime-pools' ),
+				'title'       => __( 'Showtime Pools — Brand', 'showtime-pools-core' ),
+				'description' => __( 'Phone, email, hours, tagline, social URLs. Editable here so the dev team never has to change PHP for a contact-info update.', 'showtime-pools-core' ),
 				'priority'    => 20,
 			)
 		);
@@ -48,7 +48,7 @@ final class Customizer {
 		$wp_customize->add_section(
 			'showtime_brand_contact',
 			array(
-				'title' => __( 'Contact', 'showtime-pools' ),
+				'title' => __( 'Contact', 'showtime-pools-core' ),
 				'panel' => 'showtime_brand',
 			)
 		);
@@ -64,8 +64,8 @@ final class Customizer {
 		$wp_customize->add_control(
 			'showtime_phone',
 			array(
-				'label'       => __( 'Phone', 'showtime-pools' ),
-				'description' => __( 'Public-facing phone, formatted: (323) 825-2099.', 'showtime-pools' ),
+				'label'       => __( 'Phone', 'showtime-pools-core' ),
+				'description' => __( 'Public-facing phone, formatted: (323) 825-2099.', 'showtime-pools-core' ),
 				'section'     => 'showtime_brand_contact',
 				'type'        => 'text',
 			)
@@ -82,8 +82,8 @@ final class Customizer {
 		$wp_customize->add_control(
 			'showtime_email',
 			array(
-				'label'       => __( 'Email', 'showtime-pools' ),
-				'description' => __( 'Verified inbox. Showed in the footer, contact page, and quote-fallback card.', 'showtime-pools' ),
+				'label'       => __( 'Email', 'showtime-pools-core' ),
+				'description' => __( 'Verified inbox. Showed in the footer, contact page, and quote-fallback card.', 'showtime-pools-core' ),
 				'section'     => 'showtime_brand_contact',
 				'type'        => 'email',
 			)
@@ -100,8 +100,8 @@ final class Customizer {
 		$wp_customize->add_control(
 			'showtime_hours_short',
 			array(
-				'label'       => __( 'Hours (short)', 'showtime-pools' ),
-				'description' => __( 'Compact label for the utility bar / fallback cards. Long hours table stays in the footer.', 'showtime-pools' ),
+				'label'       => __( 'Hours (short)', 'showtime-pools-core' ),
+				'description' => __( 'Compact label for the utility bar / fallback cards. Long hours table stays in the footer.', 'showtime-pools-core' ),
 				'section'     => 'showtime_brand_contact',
 				'type'        => 'text',
 			)
@@ -118,8 +118,8 @@ final class Customizer {
 		$wp_customize->add_control(
 			'showtime_tagline',
 			array(
-				'label'       => __( 'Footer tagline', 'showtime-pools' ),
-				'description' => __( 'Short business description shown under the wordmark in the footer.', 'showtime-pools' ),
+				'label'       => __( 'Footer tagline', 'showtime-pools-core' ),
+				'description' => __( 'Short business description shown under the wordmark in the footer.', 'showtime-pools-core' ),
 				'section'     => 'showtime_brand_contact',
 				'type'        => 'textarea',
 			)
@@ -129,9 +129,9 @@ final class Customizer {
 		$wp_customize->add_section(
 			'showtime_brand_socials',
 			array(
-				'title'       => __( 'Social URLs', 'showtime-pools' ),
+				'title'       => __( 'Social URLs', 'showtime-pools-core' ),
 				'panel'       => 'showtime_brand',
-				'description' => __( 'Leave blank to hide a network from the footer.', 'showtime-pools' ),
+				'description' => __( 'Leave blank to hide a network from the footer.', 'showtime-pools-core' ),
 			)
 		);
 

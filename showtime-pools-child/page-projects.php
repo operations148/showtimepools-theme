@@ -104,7 +104,7 @@ if ( '' === $hero_lead )    { $hero_lead    = 'A full interactive map with photo
 				<h1 class="int-hero__title balance"><?php echo esc_html( $hero_h1 ); ?></h1>
 				<p class="int-hero__lead"><?php echo esc_html( $hero_lead ); ?></p>
 				<div class="cluster">
-					<a class="btn btn--invert btn--lg" href="<?php echo esc_url( SHOWTIME_BOOKING_URL ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Start your project', 'showtime-pools' ); ?></a>
+					<a class="btn btn--invert btn--lg" href="<?php echo esc_url( showtime_booking_url() ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Start your project', 'showtime-pools' ); ?></a>
 				</div>
 			</div>
 		</div>

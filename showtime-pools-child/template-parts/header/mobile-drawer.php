@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 
 $phone     = apply_filters( 'showtime/business/phone', '(323) 825-2099' );
 $phone_tel = preg_replace( '/[^0-9+]/', '', $phone );
-$quote_url = esc_url( SHOWTIME_BOOKING_URL );
+$quote_url = esc_url( showtime_booking_url() );
 ?>
 <div
 	id="mobile-drawer"

@@ -776,3 +776,61 @@ add_action( 'save_post_page', function ( int $post_id ): void {
 		}
 	}
 } );
+
+// -----------------------------------------------------------------------------
+// LEGAL - /privacy-policy/ and /terms/
+// -----------------------------------------------------------------------------
+
+add_action( 'add_meta_boxes', function () {
+	add_meta_box(
+		'showtime_legal_fields',
+		__( 'Legal Page Content', 'showtime-pools' ),
+		'showtime_legal_meta_box',
+		'page',
+		'normal',
+		'high'
+	);
+} );
+
+function showtime_legal_meta_box( WP_Post $post ): void {
+	if ( get_post_meta( $post->ID, '_wp_page_template', true ) !== 'page-legal.php' ) {
+		echo '<p style="color:#999;font-style:italic;">' . esc_html__( 'These fields only apply to the Privacy and Terms pages.', 'showtime-pools' ) . '</p>';
+		return;
+	}
+	wp_nonce_field( 'showtime_legal_save', 'showtime_legal_nonce' );
+
+	showtime_meta_field( 'legal_eyebrow', 'Eyebrow (e.g. "Last updated ...")', $post->ID );
+	showtime_meta_field( 'legal_lead', 'Lead paragraph (under the title)', $post->ID, true );
+
+	echo '<p style="margin:14px 0 4px;font-weight:600;">' . esc_html__( 'Body (HTML allowed - headings, paragraphs, links)', 'showtime-pools' ) . '</p>';
+	echo '<p style="margin:0 0 8px;color:#666;">' . esc_html__( 'Leave blank to use the built-in default text for this page.', 'showtime-pools' ) . '</p>';
+	wp_editor(
+		(string) get_post_meta( $post->ID, 'legal_body', true ),
+		'legal_body',
+		array(
+			'textarea_name' => 'legal_body',
+			'media_buttons' => false,
+			'textarea_rows' => 18,
+		)
+	);
+}
+
+add_action( 'save_post_page', function ( int $post_id ): void {
+	if (
+		! isset( $_POST['showtime_legal_nonce'] ) ||
+		! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['showtime_legal_nonce'] ) ), 'showtime_legal_save' ) ||
+		( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ||
+		! current_user_can( 'edit_post', $post_id )
+	) {
+		return;
+	}
+	if ( isset( $_POST['legal_eyebrow'] ) ) {
+		update_post_meta( $post_id, 'legal_eyebrow', sanitize_text_field( wp_unslash( $_POST['legal_eyebrow'] ) ) );
+	}
+	if ( isset( $_POST['legal_lead'] ) ) {
+		update_post_meta( $post_id, 'legal_lead', sanitize_textarea_field( wp_unslash( $_POST['legal_lead'] ) ) );
+	}
+	if ( isset( $_POST['legal_body'] ) ) {
+		update_post_meta( $post_id, 'legal_body', wp_kses_post( wp_unslash( $_POST['legal_body'] ) ) );
+	}
+} );

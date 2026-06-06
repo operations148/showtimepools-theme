@@ -173,6 +173,20 @@ final class Seeder {
 			$by_page[ 'page-iframe.php — ' . $kind . ' (#' . $page_id . ')' ] = $page_result;
 		}
 
+		// Multi-instance: legal pages (privacy-policy / terms), keyed by slug.
+		$legal_pages = (array) ( $defaults['legal_pages'] ?? array() );
+		foreach ( $this->find_pages_by_template( 'page-legal.php' ) as $page_id ) {
+			$slug   = (string) get_post_field( 'post_name', $page_id );
+			$fields = (array) ( $legal_pages[ $slug ] ?? array() );
+			if ( empty( $fields ) ) {
+				continue;
+			}
+			$page_result = $this->write_page_meta( $page_id, $fields, $write );
+			$written    += $page_result['written'];
+			$skipped    += $page_result['skipped'];
+			$by_page[ 'page-legal.php - ' . $slug . ' (#' . $page_id . ')' ] = $page_result;
+		}
+
 		// Sitewide wp_options (Site Content → Team + Certifications tabs).
 		$options_written = 0;
 		$options_skipped = 0;

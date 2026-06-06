@@ -20,7 +20,7 @@ $cta = apply_filters(
 		'accent'    => __( 'Start with one team.', 'showtime-pools' ),
 		'lead'      => __( 'Repairs, weekly service, remodels, and new equipment, end-to-end across LA. Tell us about your pool and Steve gets back inside one business day with an itemized written quote.', 'showtime-pools' ),
 		'cta_label' => __( 'Get a Free Quote', 'showtime-pools' ),
-		'cta_url'   => SHOWTIME_BOOKING_URL,
+		'cta_url'   => showtime_booking_url(),
 		'fineprint' => __( 'Free site visit. Itemized PDF, no surprise upcharges.', 'showtime-pools' ),
 	)
 );

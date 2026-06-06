@@ -58,7 +58,7 @@ if ( '' === $why_para2 )     { $why_para2     = 'In practice this means we will 
 				<h1 class="int-hero__title balance"><?php echo esc_html( $hero_h1 ); ?></h1>
 				<p class="int-hero__lead"><?php echo esc_html( $hero_lead ); ?></p>
 				<div class="cluster">
-					<a class="btn btn--inspections btn--lg" href="<?php echo esc_url( SHOWTIME_BOOKING_URL ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Schedule an inspection', 'showtime-pools' ); ?></a>
+					<a class="btn btn--inspections btn--lg" href="<?php echo esc_url( showtime_booking_url() ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Schedule an inspection', 'showtime-pools' ); ?></a>
 					<a class="btn btn--ghost-on-dark btn--lg" href="<?php echo esc_url( home_url( '/pool-inspections/pre-purchase-inspection/' ) ); ?>"><?php esc_html_e( 'Pre-purchase details →', 'showtime-pools' ); ?></a>
 				</div>
 			</div>

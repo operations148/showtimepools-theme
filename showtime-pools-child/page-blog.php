@@ -224,7 +224,7 @@ $category_slot_map = array(
 					<section class="blog-side blog-side--cta">
 						<h3 class="blog-side__title"><?php echo esc_html( $sidebar_cta_title ); ?></h3>
 						<p><?php echo esc_html( $sidebar_cta_body ); ?></p>
-						<a class="btn btn--primary" href="<?php echo esc_url( SHOWTIME_BOOKING_URL ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Get a free quote', 'showtime-pools' ); ?></a>
+						<a class="btn btn--primary" href="<?php echo esc_url( showtime_booking_url() ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Get a free quote', 'showtime-pools' ); ?></a>
 					</section>
 
 				</aside>

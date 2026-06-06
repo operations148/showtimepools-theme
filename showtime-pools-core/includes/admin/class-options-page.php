@@ -39,8 +39,8 @@ final class OptionsPage {
 		// Parent menu — hub.
 		acf_add_options_page(
 			array(
-				'page_title'  => __( 'Site Content', 'showtime-pools' ),
-				'menu_title'  => __( 'Site Content', 'showtime-pools' ),
+				'page_title'  => __( 'Site Content', 'showtime-pools-core' ),
+				'menu_title'  => __( 'Site Content', 'showtime-pools-core' ),
 				'menu_slug'   => 'showtime-site-content',
 				'capability'  => 'manage_options',
 				'redirect'    => true, // forward to first sub-page
@@ -52,27 +52,27 @@ final class OptionsPage {
 		$subpages = array(
 			array(
 				'slug'  => 'showtime-content-images',
-				'title' => __( 'Images', 'showtime-pools' ),
+				'title' => __( 'Images', 'showtime-pools-core' ),
 			),
 			array(
 				'slug'  => 'showtime-content-page-copy',
-				'title' => __( 'Page Copy', 'showtime-pools' ),
+				'title' => __( 'Page Copy', 'showtime-pools-core' ),
 			),
 			array(
 				'slug'  => 'showtime-content-business',
-				'title' => __( 'Offices & hours', 'showtime-pools' ),
+				'title' => __( 'Offices & hours', 'showtime-pools-core' ),
 			),
 			array(
 				'slug'  => 'showtime-content-homepage',
-				'title' => __( 'Homepage sections', 'showtime-pools' ),
+				'title' => __( 'Homepage sections', 'showtime-pools-core' ),
 			),
 			array(
 				'slug'  => 'showtime-content-team',
-				'title' => __( 'Team & credentials', 'showtime-pools' ),
+				'title' => __( 'Team & credentials', 'showtime-pools-core' ),
 			),
 			array(
 				'slug'  => 'showtime-content-reviews-faq',
-				'title' => __( 'Reviews & FAQ', 'showtime-pools' ),
+				'title' => __( 'Reviews & FAQ', 'showtime-pools-core' ),
 			),
 		);
 

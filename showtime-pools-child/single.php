@@ -195,7 +195,7 @@ while ( have_posts() ) :
 						<section class="blog-side blog-side--cta">
 							<h3 class="blog-side__title"><?php esc_html_e( 'Talk to a real human.', 'showtime-pools' ); ?></h3>
 							<p><?php esc_html_e( 'Free quote in one business day from Steve or a senior tech.', 'showtime-pools' ); ?></p>
-							<a class="btn btn--primary" href="<?php echo esc_url( SHOWTIME_BOOKING_URL ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Get a free quote', 'showtime-pools' ); ?></a>
+							<a class="btn btn--primary" href="<?php echo esc_url( showtime_booking_url() ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Get a free quote', 'showtime-pools' ); ?></a>
 						</section>
 					</aside>
 				</div>
