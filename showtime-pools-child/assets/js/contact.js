@@ -64,6 +64,7 @@
 			loaded_at: parseInt(String(fd.get('loaded_at') || '0'), 10) || 0,
 			hp_url:    String(fd.get('hp_url')    || ''),
 			page_url:  window.location.href,
+			turnstile_token: String(fd.get('cf-turnstile-response') || ''),
 		};
 
 		const defaultLabel = submitBtn ? submitBtn.dataset.defaultLabel || submitBtn.textContent : '';

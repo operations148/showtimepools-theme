@@ -279,6 +279,11 @@ $aff_icon = static function ( string $name ): string {
 									</label>
 									<span class="form-error" data-field="consent" hidden></span>
 
+									<?php if ( class_exists( '\\Showtime\\Security\\Turnstile' ) && \Showtime\Security\Turnstile::is_configured() ) : ?>
+										<div class="cf-turnstile" data-sitekey="<?php echo esc_attr( \Showtime\Security\Turnstile::site_key() ); ?>"></div>
+										<span class="form-error" data-field="turnstile" hidden></span>
+									<?php endif; ?>
+
 									<div class="cluster" style="align-items:center">
 										<button type="submit" class="btn btn--primary btn--lg" data-default-label="<?php echo esc_attr( $aff_submit_label ); ?>">
 											<?php echo esc_html( $aff_submit_label ); ?>

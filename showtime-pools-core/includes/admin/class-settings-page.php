@@ -68,6 +68,24 @@ final class SettingsPage {
 		register_setting( self::OPTION_GROUP, 'showtime_ghl_quote_url',      array( 'sanitize_callback' => 'esc_url_raw' ) );
 		register_setting( self::OPTION_GROUP, 'showtime_ghl_book_url',       array( 'sanitize_callback' => 'esc_url_raw' ) );
 
+		// Cloudflare Turnstile (CAPTCHA for public forms).
+		register_setting( self::OPTION_GROUP, 'showtime_turnstile_site_key', array( 'sanitize_callback' => 'sanitize_text_field', 'default' => '' ) );
+		register_setting(
+			self::OPTION_GROUP,
+			'showtime_turnstile_secret',
+			array(
+				// Write-only: a blank submission keeps the stored secret, so the
+				// value is never echoed back into the admin DOM (L1).
+				'sanitize_callback' => static function ( $value ) {
+					$value = trim( (string) $value );
+					return '' === $value
+						? (string) get_option( 'showtime_turnstile_secret', '' )
+						: sanitize_text_field( $value );
+				},
+				'default'           => '',
+			)
+		);
+
 		// OpenAI.
 		register_setting( self::OPTION_GROUP, 'showtime_openai_api_key',       array( 'sanitize_callback' => 'sanitize_text_field' ) );
 		register_setting( self::OPTION_GROUP, 'showtime_openai_assistant_id',  array( 'sanitize_callback' => 'sanitize_text_field' ) );
@@ -145,6 +163,41 @@ final class SettingsPage {
 			},
 			self::PAGE_SLUG,
 			'showtime_section_ghl'
+		);
+
+		// ── Cloudflare Turnstile ──────────────────────────────────────────────
+		add_settings_section(
+			'showtime_section_turnstile',
+			__( 'Cloudflare Turnstile (form CAPTCHA)', 'showtime-pools-core' ),
+			function () {
+				echo '<p>' . esc_html__( 'Spam protection for the public Contact and Affiliate forms. Get keys at Cloudflare dashboard → Turnstile → Add widget. Leave both blank to disable (forms keep working).', 'showtime-pools-core' ) . '</p>';
+			},
+			self::PAGE_SLUG
+		);
+
+		add_settings_field(
+			'showtime_turnstile_site_key',
+			__( 'Turnstile Site Key', 'showtime-pools-core' ),
+			function () {
+				$v = (string) get_option( 'showtime_turnstile_site_key', '' );
+				printf( '<input type="text" name="showtime_turnstile_site_key" value="%s" class="regular-text" placeholder="0x4AAAAAAA...">', esc_attr( $v ) );
+				echo '<p class="description">' . esc_html__( 'Public key — rendered into the form widget.', 'showtime-pools-core' ) . '</p>';
+			},
+			self::PAGE_SLUG,
+			'showtime_section_turnstile'
+		);
+
+		add_settings_field(
+			'showtime_turnstile_secret',
+			__( 'Turnstile Secret Key', 'showtime-pools-core' ),
+			function () {
+				// Write-only: never echo the stored secret. Show only whether one is saved.
+				$saved = '' !== (string) get_option( 'showtime_turnstile_secret', '' );
+				echo '<input type="password" name="showtime_turnstile_secret" value="" class="regular-text" autocomplete="off" placeholder="' . esc_attr( $saved ? __( 'Saved — leave blank to keep', 'showtime-pools-core' ) : __( 'Paste secret key', 'showtime-pools-core' ) ) . '">';
+				echo '<p class="description">' . esc_html__( 'Private key. Stored write-only; leave blank to keep the current value.', 'showtime-pools-core' ) . '</p>';
+			},
+			self::PAGE_SLUG,
+			'showtime_section_turnstile'
 		);
 	}
 

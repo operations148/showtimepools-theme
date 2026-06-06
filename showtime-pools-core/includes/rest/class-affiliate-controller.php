@@ -16,6 +16,7 @@
 namespace Showtime\Rest;
 
 use Showtime\Integrations\Ghl;
+use Showtime\Security\Turnstile;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -52,6 +53,7 @@ final class AffiliateController {
 					'page_url'  => array( 'type' => 'string' ),
 					'loaded_at' => array( 'type' => 'integer' ),
 					'hp_url'    => array( 'type' => 'string' ), // honeypot
+					'turnstile_token' => array( 'type' => 'string' ),
 				),
 			)
 		);
@@ -89,8 +91,8 @@ final class AffiliateController {
 			}
 		}
 
-		// 3. Rate limit by IP.
-		$ip       = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '0.0.0.0';
+		// 3. Rate limit by IP (Cloudflare-aware — see Ghl::client_ip()).
+		$ip       = Ghl::client_ip() ?: '0.0.0.0';
 		$rate_key = 'showtime_affiliate_rate_' . md5( $ip );
 		$count    = (int) get_transient( $rate_key );
 		if ( $count >= self::RATE_MAX ) {
@@ -136,6 +138,21 @@ final class AffiliateController {
 				),
 				422
 			);
+		}
+
+		// 4b. CAPTCHA — Cloudflare Turnstile. Skipped (graceful) until keys are
+		// configured; fails closed once they are.
+		if ( Turnstile::is_configured() ) {
+			$token = sanitize_text_field( (string) ( $params['turnstile_token'] ?? '' ) );
+			if ( ! Turnstile::verify( $token, $ip ) ) {
+				return new WP_REST_Response(
+					array(
+						'ok'     => false,
+						'errors' => array( 'turnstile' => __( 'Please complete the verification and try again.', 'showtime-pools-core' ) ),
+					),
+					422
+				);
+			}
 		}
 
 		set_transient( $rate_key, $count + 1, self::RATE_TTL );

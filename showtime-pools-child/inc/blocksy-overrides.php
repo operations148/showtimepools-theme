@@ -23,8 +23,14 @@ add_filter(
 );
 
 /**
- * Disable Blocksy's auto-loaded comment template on pages that won't use it.
- * We're a service business; comments are off everywhere except the blog.
+ * Comments hardening. We're a service business with no need for blog comments
+ * (a known spam vector). Default-deny: comments are CLOSED on every post type,
+ * and only re-open for a post if something explicitly opts it back in via the
+ * `showtime/comments/enabled` filter (no DB edits, no plugin). Pingbacks and
+ * trackbacks are closed the same way to kill linkback spam at the post level.
+ *
+ * To re-enable comments on posts later:
+ *   add_filter( 'showtime/comments/enabled', '__return_true' );
  */
 add_filter(
 	'comments_open',
@@ -32,7 +38,16 @@ add_filter(
 		if ( get_post_type( $post_id ) !== 'post' ) {
 			return false;
 		}
-		return $open;
+		return (bool) apply_filters( 'showtime/comments/enabled', false, $post_id );
+	},
+	10,
+	2
+);
+
+add_filter(
+	'pings_open',
+	function ( $open, $post_id ) {
+		return (bool) apply_filters( 'showtime/comments/enabled', false, $post_id );
 	},
 	10,
 	2

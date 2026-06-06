@@ -76,6 +76,24 @@ add_action(
 				wp_enqueue_script( 'showtime-affiliate', $uri, array( 'showtime-main' ), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );
 			}
 
+			// Cloudflare Turnstile API — loaded only on form pages, and only when
+			// keys are configured (Turnstile::is_configured()). Renders the widget
+			// implicitly from the .cf-turnstile div in each form.
+			$has_form = is_page_template( 'page-affiliate.php' )
+				|| is_page_template( 'page-contact.php' )
+				|| is_page_template( 'page-shop.php' );
+			if ( $has_form
+				&& class_exists( '\\Showtime\\Security\\Turnstile' )
+				&& \Showtime\Security\Turnstile::is_configured() ) {
+				wp_enqueue_script(
+					'cf-turnstile',
+					'https://challenges.cloudflare.com/turnstile/v0/api.js',
+					array(),
+					null,
+					array( 'in_footer' => false, 'strategy' => 'async' )
+				);
+			}
+
 			// Interior pages (about, areas, inspections, projects, reviews, legal, 404).
 		$interior_templates = array(
 			'page-about.php', 'page-founder.php',

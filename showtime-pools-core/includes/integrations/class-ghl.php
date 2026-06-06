@@ -117,7 +117,7 @@ final class Ghl {
 	 * known proxy. Cloudflare adds CF-Connecting-IP; if that header is
 	 * present we trust it (Cloudflare strips client-set headers).
 	 */
-	private static function client_ip(): string {
+	public static function client_ip(): string {
 		if ( ! empty( $_SERVER['HTTP_CF_CONNECTING_IP'] ) ) {
 			return sanitize_text_field( wp_unslash( $_SERVER['HTTP_CF_CONNECTING_IP'] ) );
 		}

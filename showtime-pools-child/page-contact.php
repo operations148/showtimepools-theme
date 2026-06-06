@@ -156,6 +156,11 @@ $map_url   = 'https://www.google.com/maps?q=' . rawurlencode( $map_query ) . '&o
 							<span><?php esc_html_e( "It's OK to contact me by SMS or call about my message. Unsubscribe any time.", 'showtime-pools' ); ?></span>
 						</label>
 
+						<?php if ( class_exists( '\\Showtime\\Security\\Turnstile' ) && \Showtime\Security\Turnstile::is_configured() ) : ?>
+							<div class="cf-turnstile" data-sitekey="<?php echo esc_attr( \Showtime\Security\Turnstile::site_key() ); ?>"></div>
+							<span class="form-error" data-field="turnstile" hidden></span>
+						<?php endif; ?>
+
 						<div class="cluster" style="align-items:center">
 							<button type="submit" class="btn btn--primary btn--lg" data-default-label="<?php esc_attr_e( 'Send message', 'showtime-pools' ); ?>">
 								<?php esc_html_e( 'Send message', 'showtime-pools' ); ?>
