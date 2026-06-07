@@ -61,7 +61,7 @@ $phone_tel = preg_replace( '/[^0-9+]/', '', $phone );
 $stats = apply_filters( 'showtime/home_stats_strip', array(
 	array( 'icon' => 'pool',     'num' => '1,824+',      'label' => __( 'Pools serviced',   'showtime-pools' ) ),
 	array( 'icon' => 'calendar', 'num' => $about_years,  'label' => __( 'Years on the route', 'showtime-pools' ) ),
-	array( 'icon' => 'pin',      'num' => 'Since \'03',  'label' => __( 'Sherman Oaks based', 'showtime-pools' ) ),
+	array( 'icon' => 'pin',      'num' => '2003',        'label' => __( 'Serving Sherman Oaks', 'showtime-pools' ) ),
 	array( 'icon' => 'shield',   'num' => '100%',        'label' => __( 'Supervised · Steve on every job', 'showtime-pools' ) ),
 ) );
 
