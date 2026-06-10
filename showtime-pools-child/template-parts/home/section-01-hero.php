@@ -31,13 +31,10 @@ $cta1_url    = '' !== $pc_cta1_url ? $pc_cta1_url : showtime_booking_url();
 $cta2_label  = '' !== $pc_cta2_lbl ? $pc_cta2_lbl : __( 'See our work', 'showtime-pools' );
 $cta2_url    = '' !== $pc_cta2_url ? $pc_cta2_url : home_url( '/projects/' );
 
-if ( is_array( $pc_img ) && ! empty( $pc_img['url'] ) ) {
-	$hero_url = $pc_img['sizes']['large'] ?? $pc_img['url'];
-	$hero_sm  = $pc_img['sizes']['medium_large'] ?? $hero_url;
-} else {
-	$hero_url = function_exists( 'showtime_image' ) ? showtime_image( 'hero', 1920 ) : '';
-	$hero_sm  = function_exists( 'showtime_image' ) ? showtime_image( 'hero', 1200 ) : $hero_url;
-}
+// Resolution shared with the LCP preload hook in inc/performance.php.
+$hero_pair = function_exists( 'showtime_front_hero_urls' ) ? showtime_front_hero_urls() : array( 'desktop' => '', 'mobile' => '' );
+$hero_url  = $hero_pair['desktop'];
+$hero_sm   = $hero_pair['mobile'];
 
 $eyebrow_text = ( '' !== ( $opt ? (string) get_field( 'hero_eyebrow', $opt ) : '' ) )
 	? (string) get_field( 'hero_eyebrow', $opt )

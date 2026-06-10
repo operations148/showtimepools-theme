@@ -175,6 +175,65 @@ function showtime_image( string $slot, int $w = 1600, int $h = 0 ): string {
 }
 
 /**
+ * Front-page hero URLs, desktop + mobile pair. Single source of truth shared
+ * by the hero template (template-parts/home/section-01-hero.php) and the LCP
+ * preload hook (inc/performance.php) so the preloaded URL always matches the
+ * rendered one.
+ *
+ * @return array{desktop:string,mobile:string}
+ */
+function showtime_front_hero_urls(): array {
+	$opt    = function_exists( 'get_field' ) ? 'option' : false;
+	$pc_img = $opt ? get_field( 'hero_image', $opt ) : null;
+
+	if ( is_array( $pc_img ) && ! empty( $pc_img['url'] ) ) {
+		$desktop = (string) ( $pc_img['sizes']['large'] ?? $pc_img['url'] );
+		$mobile  = (string) ( $pc_img['sizes']['medium_large'] ?? $desktop );
+	} else {
+		$desktop = showtime_image( 'hero', 1920 );
+		$mobile  = showtime_image( 'hero', 1200 );
+	}
+
+	return array(
+		'desktop' => $desktop,
+		'mobile'  => $mobile,
+	);
+}
+
+/**
+ * Resolve the image slot for a post: explicit `_showtime_image_slot` meta,
+ * else the primary category's bundled blog photo, else the generic default.
+ */
+function showtime_post_hero_slot( int $pid ): string {
+	$slot = (string) get_post_meta( $pid, '_showtime_image_slot', true );
+	if ( '' !== $slot ) {
+		return $slot;
+	}
+	$category_slot_map = array(
+		'pool-trends'      => 'blog_trends',
+		'maintenance-tips' => 'blog_tips',
+		'equipment-guides' => 'blog_equipment',
+	);
+	$cats = get_the_category( $pid );
+	return isset( $cats[0], $category_slot_map[ $cats[0]->slug ] ) ? $category_slot_map[ $cats[0]->slug ] : 'blog_default';
+}
+
+/**
+ * Post hero URL: featured image when set, slot-based stock photo otherwise.
+ * Shared by single.php and the LCP preload hook in inc/performance.php.
+ *
+ * @param int    $pid        Post ID.
+ * @param int    $w          Slot-image width when no thumbnail exists.
+ * @param string $thumb_size Thumbnail size when one exists.
+ */
+function showtime_post_hero_url( int $pid, int $w = 1920, string $thumb_size = 'full' ): string {
+	if ( has_post_thumbnail( $pid ) ) {
+		return (string) get_the_post_thumbnail_url( $pid, $thumb_size );
+	}
+	return showtime_image( showtime_post_hero_slot( $pid ), $w );
+}
+
+/**
  * Convenience: render an `<img>` tag with sensible defaults.
  */
 function showtime_image_tag( string $slot, array $attrs = array() ): string {

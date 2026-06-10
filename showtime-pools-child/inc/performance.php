@@ -46,6 +46,38 @@ add_action(
 // Lazy-load all images by default (WP core supports it; this just ensures it).
 add_filter( 'wp_lazy_loading_enabled', '__return_true' );
 
+// Preload the LCP hero image so the fetch starts before CSS/layout. URLs come
+// from the same helpers the templates render with (inc/imagery.php), so the
+// preloaded resource always matches the displayed one. The media attributes
+// mirror the <picture> breakpoint in template-parts/home/section-01-hero.php.
+add_action(
+	'wp_head',
+	function () {
+		if ( is_front_page() && function_exists( 'showtime_front_hero_urls' ) ) {
+			$hero = showtime_front_hero_urls();
+			if ( '' !== $hero['desktop'] && $hero['desktop'] === $hero['mobile'] ) {
+				echo '<link rel="preload" as="image" href="' . esc_url( $hero['desktop'] ) . '" fetchpriority="high">' . "\n";
+				return;
+			}
+			if ( '' !== $hero['desktop'] ) {
+				echo '<link rel="preload" as="image" href="' . esc_url( $hero['desktop'] ) . '" media="(min-width:961px)" fetchpriority="high">' . "\n";
+			}
+			if ( '' !== $hero['mobile'] ) {
+				echo '<link rel="preload" as="image" href="' . esc_url( $hero['mobile'] ) . '" media="(max-width:960px)" fetchpriority="high">' . "\n";
+			}
+			return;
+		}
+
+		if ( is_singular( 'post' ) && function_exists( 'showtime_post_hero_url' ) ) {
+			$url = showtime_post_hero_url( get_queried_object_id() );
+			if ( '' !== $url ) {
+				echo '<link rel="preload" as="image" href="' . esc_url( $url ) . '" fetchpriority="high">' . "\n";
+			}
+		}
+	},
+	2
+);
+
 // Add fetchpriority=high to the LCP image when we mark one explicitly.
 // Templates set the post meta `_showtime_lcp_image_id` to flag the LCP candidate.
 add_filter(

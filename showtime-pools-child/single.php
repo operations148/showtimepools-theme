@@ -16,20 +16,21 @@ while ( have_posts() ) :
 	$cats = get_the_category( $pid );
 	$primary_cat = $cats[0] ?? null;
 
-	$category_slot_map = array(
-		'pool-trends'      => 'blog_trends',
-		'maintenance-tips' => 'blog_tips',
-		'equipment-guides' => 'blog_equipment',
-	);
-
-	$slot = (string) get_post_meta( $pid, '_showtime_image_slot', true );
-	if ( '' === $slot ) {
-		$slot = $primary_cat && isset( $category_slot_map[ $primary_cat->slug ] ) ? $category_slot_map[ $primary_cat->slug ] : 'blog_default';
-	}
-	$hero_img = has_post_thumbnail( $pid )
-		? (string) get_the_post_thumbnail_url( $pid, 'full' )
-		: ( function_exists( 'showtime_image' ) ? showtime_image( $slot, 1920 ) : '' );
+	// Resolution shared with the LCP preload hook in inc/performance.php.
+	$hero_img       = function_exists( 'showtime_post_hero_url' ) ? showtime_post_hero_url( $pid ) : '';
 	$hero_img_large = $hero_img;
+
+	// Intrinsic dimensions are only knowable for real attachments; slot-based
+	// stock URLs stay dimensionless rather than carrying made-up numbers.
+	$hero_w = 0;
+	$hero_h = 0;
+	if ( has_post_thumbnail( $pid ) ) {
+		$thumb_src = wp_get_attachment_image_src( get_post_thumbnail_id( $pid ), 'full' );
+		if ( $thumb_src && ! empty( $thumb_src[1] ) && ! empty( $thumb_src[2] ) ) {
+			$hero_w = (int) $thumb_src[1];
+			$hero_h = (int) $thumb_src[2];
+		}
+	}
 
 	// Article JSON-LD.
 	$opt = function_exists( 'get_field' ) ? 'option' : false;
@@ -76,15 +77,8 @@ while ( have_posts() ) :
 		);
 		while ( $r->have_posts() ) {
 			$r->the_post();
-			$rpid = get_the_ID();
-			$r_slot = (string) get_post_meta( $rpid, '_showtime_image_slot', true );
-			if ( '' === $r_slot ) {
-				$r_cats = get_the_category( $rpid );
-				$r_slot = isset( $r_cats[0] ) && isset( $category_slot_map[ $r_cats[0]->slug ] ) ? $category_slot_map[ $r_cats[0]->slug ] : 'blog_default';
-			}
-			$r_img = has_post_thumbnail( $rpid )
-				? (string) get_the_post_thumbnail_url( $rpid, 'large' )
-				: ( function_exists( 'showtime_image' ) ? showtime_image( $r_slot, 800 ) : '' );
+			$rpid  = get_the_ID();
+			$r_img = function_exists( 'showtime_post_hero_url' ) ? showtime_post_hero_url( $rpid, 800, 'large' ) : '';
 			$related[] = array(
 				'title'  => get_the_title(),
 				'href'   => get_permalink(),
@@ -133,7 +127,7 @@ while ( have_posts() ) :
 
 		<header class="post-hero">
 			<?php if ( $hero_img ) : ?>
-				<img class="post-hero__photo" src="<?php echo esc_url( $hero_img_large ); ?>" alt="" loading="eager" fetchpriority="high" decoding="async">
+				<img class="post-hero__photo" src="<?php echo esc_url( $hero_img_large ); ?>" alt=""<?php echo $hero_w && $hero_h ? ' width="' . (int) $hero_w . '" height="' . (int) $hero_h . '"' : ''; ?> loading="eager" fetchpriority="high" decoding="async">
 			<?php endif; ?>
 			<div class="post-hero__overlay" aria-hidden="true"></div>
 			<div class="container">
