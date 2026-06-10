@@ -194,18 +194,3 @@ add_filter(
 	20
 );
 
-/**
- * Registry keyword as a lightweight <meta name="keywords"> hint. Most engines
- * ignore it; some AI crawlers parse it as a relevance signal.
- */
-add_action(
-	'wp_head',
-	function () {
-		$ctx = showtime_seo_context();
-		if ( ! $ctx || empty( $ctx['keyword'] ) ) {
-			return;
-		}
-		echo '<meta name="keywords" content="' . esc_attr( $ctx['keyword'] ) . ', Showtime Pools, Los Angeles">' . "\n";
-	},
-	5
-);
