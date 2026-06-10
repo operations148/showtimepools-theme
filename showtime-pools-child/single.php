@@ -50,6 +50,7 @@ while ( have_posts() ) :
 		'dateModified'     => get_the_modified_date( 'c', $pid ),
 		'author'           => array(
 			'@type' => 'Person',
+			'@id'   => home_url( '/the-founder/#person' ),
 			'name'  => $author_name,
 			'url'   => home_url( '/the-founder/' ),
 		),
@@ -152,12 +153,19 @@ while ( have_posts() ) :
 					<h1 class="post-hero__title balance"><?php the_title(); ?></h1>
 					<p class="post-hero__meta">
 						<time datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>"><?php echo esc_html( get_the_date() ); ?></time>
+						<?php if ( get_the_modified_date( 'Y-m-d' ) !== get_the_date( 'Y-m-d' ) ) : ?>
+							<span aria-hidden="true"> · </span>
+							<span class="post-hero__updated">
+								<?php esc_html_e( 'Updated', 'showtime-pools' ); ?>
+								<time datetime="<?php echo esc_attr( get_the_modified_date( 'c' ) ); ?>"><?php echo esc_html( get_the_modified_date() ); ?></time>
+							</span>
+						<?php endif; ?>
 						<span aria-hidden="true"> · </span>
 						<?php
 						printf(
-							/* translators: %s author name */
+							/* translators: %s linked author name */
 							esc_html__( 'By %s', 'showtime-pools' ),
-							esc_html( $author_name )
+							'<a class="post-hero__author" href="' . esc_url( home_url( '/the-founder/' ) ) . '">' . esc_html( $author_name ) . '</a>'
 						);
 						?>
 					</p>

@@ -310,6 +310,7 @@
 	gap: var(--sp-3);
 }
 .post-hero__meta time { color: rgba(255,255,255,.72); }
+.post-hero__meta a { color: inherit; }
 
 .post-body {
 	padding: clamp(3rem, 5vw, 5rem) 0 clamp(4rem, 7vw, 7rem);
