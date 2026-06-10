@@ -462,10 +462,16 @@ Starting P4.1 now.
 
 Theme owns the server-rendered head. Live runs Search Atlas OTTO (client-side JS); Rank Math never installed on live, so all RANK_MATH checks are dead code.
 
-- [ ] T1.1 `feat(blog)`: byline links to /the-founder/, visible Updated date (suppressed on day-one posts), Article author -> Person @id /the-founder/#person, dateModified always emitted. Files: single.php, assets/css/blog.css
-- [ ] T1.2 `perf(hero)`: preload LCP hero (front page desktop/mobile pair + single post), width/height only on real attachment thumbnails, no crop changes. Files: inc/imagery.php (helpers), inc/performance.php (preload hook), single.php, template-parts/home/section-01-hero.php (helper swap only)
-- [ ] T1.3 `feat(nav)`: footer Service Areas column from \Showtime\Areas registry + grid CSS, nav + drawer Location -> /service-areas/. Files: footer-main.php, footer.css, primary-nav.php, mobile-drawer.php
-- [ ] T1.4 `perf(fonts)`: self-host DM Sans variable woff2 in assets/fonts/, fonts.css @font-face, preload latin normal, remove Google Fonts + both preconnects, keep Unsplash preconnect. Files: enqueue.php, assets/css/fonts.css, assets/fonts/*
-- [ ] T1.5 `fix(seo)`: delete meta keywords output. File: inc/seo-defaults.php
-- [ ] T1.6 `refactor(seo)`: remove all Rank Math conditionals/hooks (seo.php gate, seo-defaults.php filters + helper, class-plugin.php sitemap filter), verify core wp-sitemap.xml includes project CPT, sweep DEPLOY.md
-- [ ] Review section after all commits
+- [x] T1.1 `feat(blog)`: byline links to /the-founder/, visible Updated date (suppressed on day-one posts), Article author -> Person @id /the-founder/#person, dateModified always emitted. Files: single.php, assets/css/blog.css
+- [x] T1.2 `perf(hero)`: preload LCP hero (front page desktop/mobile pair + single post), width/height only on real attachment thumbnails, no crop changes. Files: inc/imagery.php (helpers), inc/performance.php (preload hook), single.php, template-parts/home/section-01-hero.php (helper swap only)
+- [x] T1.3 `feat(nav)`: footer Service Areas column from \Showtime\Areas registry + grid CSS, nav + drawer Location -> /service-areas/. Files: footer-main.php, footer.css, primary-nav.php, mobile-drawer.php
+- [x] T1.4 `perf(fonts)`: self-host DM Sans variable woff2 in assets/fonts/, fonts.css @font-face, preload latin normal, remove Google Fonts + both preconnects, keep Unsplash preconnect. Files: enqueue.php, assets/css/fonts.css, assets/fonts/*
+- [x] T1.5 `fix(seo)`: delete meta keywords output. File: inc/seo-defaults.php
+- [x] T1.6 `refactor(seo)`: remove all Rank Math conditionals/hooks (seo.php gate, seo-defaults.php filters + helper, class-plugin.php sitemap filter), verify core wp-sitemap.xml includes project CPT, sweep DEPLOY.md
+- [x] Review section below
+
+### SEO-T1 review (2026-06-11)
+
+Commits bd95488, a2468f1, 81b6e28, d38cfe5, 77fbcc2, 1e4594d. All verified on localhost: post page shows linked byline + dates with Article author @id /the-founder/#person; hero preloads emit on front page (deduped when desktop/mobile URLs match) and single posts; footer renders 6 registry-driven area links + hub link, nav/drawer point at /service-areas/; DM Sans self-hosted (4 variable woff2, latin + latin-ext), zero fonts.googleapis/gstatic requests; meta keywords gone; zero rank_math references left in code; core /wp-sitemap.xml includes wp-sitemap-posts-project-1.xml.
+
+Open items for live (not code): GSC sitemap URL needs manual verification (Rank Math sitemap_index.xml never existed on live; submit /wp-sitemap.xml or Search Atlas's sitemap, whichever is canonical). If a WP nav menu is assigned on live, the menu overrides the fallback nav, so Steve must repoint the Location menu item in wp-admin. Core sitemap also exposes wp-sitemap-users-1.xml (author enumeration); consider disabling the users provider in a future security pass.
