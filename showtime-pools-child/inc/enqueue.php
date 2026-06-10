@@ -29,10 +29,11 @@ add_action(
 		// through tokens.css → base.css → components.css. Astra acts as
 		// the activation host only.
 
-		// Tokens must load before any component CSS. Header/footer CSS depend
-		// on tokens + components and are sitewide, so load them globally.
+		// Fonts first (self-hosted @font-face), then tokens before any
+		// component CSS. Header/footer CSS depend on tokens + components
+		// and are sitewide, so load them globally.
 		$first_handle = '';
-		foreach ( array( 'tokens', 'base', 'utilities', 'components', 'blocks', 'header', 'footer' ) as $sheet ) {
+		foreach ( array( 'fonts', 'tokens', 'base', 'utilities', 'components', 'blocks', 'header', 'footer' ) as $sheet ) {
 			[ $uri, $ver ] = showtime_asset( "assets/css/{$sheet}.css" );
 			$deps = $first_handle ? array( $first_handle ) : array();
 			wp_enqueue_style( "showtime-{$sheet}", $uri, $deps, $ver );
@@ -157,17 +158,16 @@ add_action(
 	}
 );
 
-// Google Fonts: DM Sans (display + body, 400/500/700) — matches the Brikly
-// reference exactly. Single family keeps requests minimal. On Cloudways the
-// Local Google Fonts plugin will fetch and self-host these for perf; in local
-// preview we ship them via the Google CDN with display=swap.
+// DM Sans is self-hosted (assets/fonts/ + assets/css/fonts.css), so no
+// Google Fonts requests remain. Preload the latin normal variable file,
+// the one every first paint needs; font preloads require crossorigin
+// even on same-origin requests. Unsplash preconnect stays for imagery.
 add_action(
 	'wp_head',
 	function () {
-		echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
-		echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
+		[ $font_uri ] = showtime_asset( 'assets/fonts/dm-sans-latin.woff2' );
+		echo '<link rel="preload" as="font" type="font/woff2" href="' . esc_url( $font_uri ) . '" crossorigin>' . "\n";
 		echo '<link rel="preconnect" href="https://images.unsplash.com" crossorigin>' . "\n";
-		echo '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&display=swap">' . "\n";
 	},
 	1
 );
