@@ -2,8 +2,11 @@
 /**
  * SEO + schema injector. Sitewide.
  *
+ * The theme is the single owner of the server-rendered head. Search Atlas
+ * OTTO layers its edits client-side via JS and is not depended on here.
+ *
  * Injects into wp_head:
- *   - Canonical URL (Rank Math will override on production; this is a baseline).
+ *   - Canonical URL.
  *   - Robots meta (index/follow + max-* directives + noimageindex off).
  *   - Open Graph + Twitter Card.
  *   - Theme color + viewport.
@@ -20,8 +23,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // WordPress core emits its own <link rel="canonical"> for singular views.
-// Remove it so there is exactly one canonical: ours in the no-Rank-Math
-// fallback, or Rank Math's on production (Rank Math also removes core's).
+// Remove it so there is exactly one canonical: ours.
 remove_action( 'wp_head', 'rel_canonical' );
 
 /**
@@ -213,7 +215,7 @@ add_action(
 	function () {
 		$canonical = showtime_canonical_url();
 
-		// Always emit — Rank Math does not output these.
+		// Theme color + geo signals, always emitted.
 		echo '<meta name="theme-color" content="#0A0A0A">' . "
 ";
 		echo '<meta name="geo.region" content="US-CA">' . "
@@ -225,13 +227,11 @@ add_action(
 		echo '<meta name="ICBM" content="34.1511, -118.4490">' . "
 ";
 
-		// Rank Math owns canonical, description, robots, Open Graph, Twitter, and
-		// the WebSite + Breadcrumb JSON-LD on production. Emit ours only as the
-		// no-Rank-Math fallback so prod never ships duplicate tags.
-		if ( defined( 'RANK_MATH_VERSION' ) ) {
-			return;
-		}
-
+		// The theme owns the server-rendered head: canonical, description,
+		// robots, Open Graph, Twitter, hreflang, WebSite + Breadcrumb JSON-LD.
+		// Search Atlas OTTO applies its edits client-side via JS, so this
+		// output is what crawlers that skip JS (GPTBot, ClaudeBot,
+		// PerplexityBot) actually read.
 		$title = showtime_seo_title();
 		$desc  = showtime_seo_description();
 		$image = showtime_og_image();

@@ -67,17 +67,9 @@ final class Plugin {
 		( new Integrations\FluentForms() )->register();
 
 		// CPTs (Phase C — Project CPT for /projects/ + future Mapbox).
+		// The CPT registers `public => true`, so WP core's /wp-sitemap.xml
+		// includes it automatically; no sitemap filter needed.
 		( new Cpt\Project() )->register();
-
-		// Rank Math sitemap — ensure the project CPT is always included.
-		// Without this, Rank Math omits non-standard CPTs from sitemap_index.xml.
-		add_filter(
-			'rank_math/sitemap/include_post_types',
-			function ( array $post_types ): array {
-				$post_types['project'] = 'project';
-				return $post_types;
-			}
-		);
 
 		$this->registered = true;
 	}

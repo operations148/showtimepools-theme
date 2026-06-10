@@ -104,7 +104,7 @@ WP admin → Plugins → Add New, install and activate (in this order):
 | --- | --- | --- |
 | Advanced Custom Fields Pro | upload .zip | Yes |
 | FluentForms Pro | upload .zip | Yes |
-| Rank Math Pro | upload .zip | Yes |
+| Search Atlas (OTTO) | upload .zip from the Search Atlas dashboard | Yes |
 | WP Rocket | upload .zip | Yes |
 | ShortPixel Image Optimizer | wp.org repo | Account API key |
 | UpdraftPlus Premium | upload .zip | Yes |

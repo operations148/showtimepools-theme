@@ -28,6 +28,6 @@ See **`DEPLOY.md`** — the only document you need. It covers parent theme + plu
 
 - WordPress 6.7+, PHP 8.2+
 - Child theme + custom plugin (no page builders — native Gutenberg + Blocksy Pro blocks only)
-- ACF Pro, FluentForms Pro, Rank Math Pro, WP Rocket, Wordfence, UpdraftPlus, ShortPixel
+- ACF Pro, FluentForms Pro, Search Atlas (OTTO), WP Rocket, Wordfence, UpdraftPlus, ShortPixel
 - Mapbox GL JS v3, custom OpenAI Assistants API integration
 - Hosting: Cloudways DigitalOcean Premium 2GB

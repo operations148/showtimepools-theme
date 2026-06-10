@@ -1,11 +1,9 @@
 <?php
 /**
- * SEO defaults — Rank Math filters for title + description on registry-driven
- * pages (services, areas, home, about, contact). Also a no-Rank-Math fallback
- * via pre_get_document_title so local/staging titles match production.
- *
- * Precedence: a manual Rank Math title/description typed on a specific page
- * ALWAYS wins. We only supply the DEFAULT when the admin left it blank.
+ * SEO defaults: registry-driven <title> + meta description for services,
+ * areas, home, about, contact. The theme owns the server-rendered head
+ * everywhere (local and production); Search Atlas OTTO layers its edits
+ * client-side and is not depended on here.
  *
  * Sources, in order: hand-crafted registry `seo_title` / `seo_meta`, then the
  * keyword `seo_h1` / `seo_intro`, then a sane fallback.
@@ -130,60 +128,11 @@ function showtime_seo_resolved_desc( array $ctx ): string {
 }
 
 /**
- * True when the page has a manual Rank Math title/description so we never
- * override what Steve typed in the Rank Math meta box.
- *
- * @param string $key 'rank_math_title' or 'rank_math_description'.
- */
-function showtime_has_rank_math_override( string $key ): bool {
-	$id = get_queried_object_id();
-	return $id > 0 && '' !== (string) get_post_meta( $id, $key, true );
-}
-
-// Rank Math title default.
-add_filter(
-	'rank_math/frontend/title',
-	function ( $title ) {
-		if ( showtime_has_rank_math_override( 'rank_math_title' ) ) {
-			return $title; // Admin override wins.
-		}
-		$ctx = showtime_seo_context();
-		if ( ! $ctx ) {
-			return $title;
-		}
-		$resolved = showtime_seo_resolved_title( $ctx );
-		return '' !== $resolved ? $resolved : $title;
-	},
-	5
-);
-
-// Rank Math description default.
-add_filter(
-	'rank_math/frontend/description',
-	function ( $desc ) {
-		if ( showtime_has_rank_math_override( 'rank_math_description' ) ) {
-			return $desc; // Admin override wins.
-		}
-		$ctx = showtime_seo_context();
-		if ( ! $ctx ) {
-			return $desc;
-		}
-		$resolved = showtime_seo_resolved_desc( $ctx );
-		return '' !== $resolved ? $resolved : $desc;
-	},
-	5
-);
-
-/**
- * No-Rank-Math fallback: drive the <title> through the same logic so local and
- * staging match production. When Rank Math is active it owns the title.
+ * Drive the <title> from the registry on every environment.
  */
 add_filter(
 	'pre_get_document_title',
 	function ( $title ) {
-		if ( defined( 'RANK_MATH_VERSION' ) ) {
-			return $title;
-		}
 		$ctx = showtime_seo_context();
 		if ( ! $ctx ) {
 			return $title;

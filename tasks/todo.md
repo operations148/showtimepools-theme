@@ -220,7 +220,7 @@ showtimepools/
 - [ ] CHECKPOINT 3 → full content + IA review
 
 ## Phase 3 — Pre-launch QA + LIVE (CHECKPOINT 4)
-- [ ] Schema validation (Schema.org + Rank Math)
+- [ ] Schema validation (Schema.org validator + Google Rich Results Test)
 - [ ] Core Web Vitals audit (target ≥90 mobile, ≥98 desktop)
 - [ ] Sitemap submission GSC + Bing
 - [ ] OTTO pixel install
@@ -436,7 +436,7 @@ Goal: 100% client-editable, attribute-rich schema, content engineered to win Goo
 - [ ] Filter `robots_txt` in `inc/seo.php` to emit AI bot allowlist (GPTBot, OAI-SearchBot, ChatGPT-User, ClaudeBot, Claude-SearchBot, PerplexityBot, Perplexity-User, Google-Extended, CCBot, bingbot) plus sitemap reference
 - [ ] Ship `llms.txt` at root: brand entity, NAP, service list, area list, links to canonical pillar pages
 - [ ] CWV: hero LCP preload, Mapbox lazy-load via IntersectionObserver, chat widget deferred to `requestIdleCallback`, all images width/height/lazy/decoding correct
-- [ ] Confirm sitemap segmentation via Rank Math (pages, services, areas, projects, reviews, posts) + IndexNow ping enabled
+- [ ] Confirm the live sitemap source (core /wp-sitemap.xml or Search Atlas) covers pages, services, areas, projects, posts, and that the URL submitted in GSC matches what actually resolves
 - [ ] Verify PageSpeed Insights mobile + desktop on / + 1 service + 1 area: all metrics green or documented path to green
 
 ## P4.7 — Off-page entity + authority deliverable
@@ -455,3 +455,17 @@ P4.1 -> P4.2 -> P4.3 -> P4.6 (quick win) -> P4.4 -> P4.5 -> P4.7. Verify after e
 
 Starting P4.1 now.
 
+
+---
+
+## Phase SEO-T1 — Technical SEO implementation (audit items 1-6, confirmed 2026-06-11)
+
+Theme owns the server-rendered head. Live runs Search Atlas OTTO (client-side JS); Rank Math never installed on live, so all RANK_MATH checks are dead code.
+
+- [ ] T1.1 `feat(blog)`: byline links to /the-founder/, visible Updated date (suppressed on day-one posts), Article author -> Person @id /the-founder/#person, dateModified always emitted. Files: single.php, assets/css/blog.css
+- [ ] T1.2 `perf(hero)`: preload LCP hero (front page desktop/mobile pair + single post), width/height only on real attachment thumbnails, no crop changes. Files: inc/imagery.php (helpers), inc/performance.php (preload hook), single.php, template-parts/home/section-01-hero.php (helper swap only)
+- [ ] T1.3 `feat(nav)`: footer Service Areas column from \Showtime\Areas registry + grid CSS, nav + drawer Location -> /service-areas/. Files: footer-main.php, footer.css, primary-nav.php, mobile-drawer.php
+- [ ] T1.4 `perf(fonts)`: self-host DM Sans variable woff2 in assets/fonts/, fonts.css @font-face, preload latin normal, remove Google Fonts + both preconnects, keep Unsplash preconnect. Files: enqueue.php, assets/css/fonts.css, assets/fonts/*
+- [ ] T1.5 `fix(seo)`: delete meta keywords output. File: inc/seo-defaults.php
+- [ ] T1.6 `refactor(seo)`: remove all Rank Math conditionals/hooks (seo.php gate, seo-defaults.php filters + helper, class-plugin.php sitemap filter), verify core wp-sitemap.xml includes project CPT, sweep DEPLOY.md
+- [ ] Review section after all commits
