@@ -58,6 +58,9 @@ $socials = apply_filters(
 $services = class_exists( '\\Showtime\\Services' ) ? \Showtime\Services::all() : array();
 $services_top6 = array_slice( $services, 0, 6 );
 $services_rest = array_slice( $services, 6, 6 );
+
+// Area pages from the registry so new neighborhoods appear automatically.
+$footer_areas = class_exists( '\\Showtime\\Areas' ) ? \Showtime\Areas::all() : array();
 ?>
 <div class="footer-main">
 	<div class="container">
@@ -103,6 +106,19 @@ $services_rest = array_slice( $services, 6, 6 );
 					<?php endforeach; ?>
 				</ul>
 			</div>
+
+			<?php if ( ! empty( $footer_areas ) ) : ?>
+				<div class="footer-main__col">
+					<h3 class="footer-main__title"><?php esc_html_e( 'Service Areas', 'showtime-pools' ); ?></h3>
+					<ul class="footer-main__list">
+						<?php foreach ( $footer_areas as $fa ) : ?>
+							<?php if ( empty( $fa['slug'] ) || empty( $fa['name'] ) ) { continue; } ?>
+							<li><a href="<?php echo esc_url( home_url( '/service-areas/' . $fa['slug'] . '/' ) ); ?>"><?php echo esc_html( (string) $fa['name'] ); ?></a></li>
+						<?php endforeach; ?>
+						<li><a href="<?php echo esc_url( home_url( '/service-areas/' ) ); ?>"><?php esc_html_e( 'All service areas', 'showtime-pools' ); ?></a></li>
+					</ul>
+				</div>
+			<?php endif; ?>
 
 			<div class="footer-main__col">
 				<h3 class="footer-main__title"><?php esc_html_e( 'Offices', 'showtime-pools' ); ?></h3>

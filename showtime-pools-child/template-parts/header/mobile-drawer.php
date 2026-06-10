@@ -71,7 +71,7 @@ $quote_url = esc_url( showtime_booking_url() );
 					</li>
 					<li><a href="<?php echo esc_url( home_url( '/services/' ) ); ?>"><?php esc_html_e( 'Services', 'showtime-pools' ); ?></a></li>
 					<li><a href="<?php echo esc_url( home_url( '/projects/' ) ); ?>"><?php esc_html_e( 'Projects', 'showtime-pools' ); ?></a></li>
-					<li><a href="https://area.showtimepools.com/" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Location', 'showtime-pools' ); ?></a></li>
+					<li><a href="<?php echo esc_url( home_url( '/service-areas/' ) ); ?>"><?php esc_html_e( 'Service Areas', 'showtime-pools' ); ?></a></li>
 					<li><a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php esc_html_e( 'Contact', 'showtime-pools' ); ?></a></li>
 					<li><a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>"><?php esc_html_e( 'Shop', 'showtime-pools' ); ?></a></li>
 				</ul>
