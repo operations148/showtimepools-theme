@@ -159,7 +159,7 @@ while ( have_posts() ) :
 						printf(
 							/* translators: %s linked author name */
 							esc_html__( 'By %s', 'showtime-pools' ),
-							'<a class="post-hero__author" href="' . esc_url( home_url( '/the-founder/' ) ) . '">' . esc_html( $author_name ) . '</a>'
+							'<a class="post-hero__author" href="' . esc_url( home_url( '/the-founder/' ) ) . '" rel="author">' . esc_html( $author_name ) . '</a>'
 						);
 						?>
 					</p>
