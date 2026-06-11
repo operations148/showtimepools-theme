@@ -54,15 +54,21 @@ function showtime_seo_title(): string {
 }
 
 /**
- * Resolve per-page meta description. Pulls from post excerpt if present,
- * otherwise from the registry summary for service / area / inspection
- * pages, otherwise a sane default.
+ * Resolve per-page meta description. The hand-crafted registry seo_meta
+ * wins everywhere it exists (services, areas, home, about, contact, via
+ * showtime_seo_context()). Then post excerpt, registry summary for
+ * service / area / inspection pages, trimmed content, a sane default.
  */
 function showtime_seo_description(): string {
 	$default = 'Showtime Pools is one supervised crew for pool repairs, weekly service, remodels, equipment, inspections, and outdoor living across Sherman Oaks, Encino, Beverly Hills, and Los Angeles. (323) 825-2099.';
 
-	if ( is_front_page() ) {
-		return 'Stop juggling contractors. Showtime Pools handles repairs, weekly service, remodels, equipment, inspections, and outdoor living end-to-end across Los Angeles. Direct from the people who do the work.';
+	// Copy written for the SERP beats anything derived from page content.
+	$ctx = function_exists( 'showtime_seo_context' ) ? showtime_seo_context() : null;
+	if ( $ctx ) {
+		$resolved = showtime_seo_resolved_desc( $ctx );
+		if ( '' !== $resolved ) {
+			return $resolved;
+		}
 	}
 
 	if ( is_singular() ) {
