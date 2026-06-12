@@ -22,7 +22,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$home_id = home_url( '/#localbusiness' );
+$home_id = home_url( '/#organization' );
 $opt     = function_exists( 'get_field' ) ? 'option' : false;
 
 // ---------------------------------------------------------------------------
@@ -95,14 +95,17 @@ $days_to_schema = static function ( string $day ): array {
 // Sourced values — all editable.
 // ---------------------------------------------------------------------------
 
-$biz_name        = (string) apply_filters( 'showtime/business/name',      get_bloginfo( 'name' ) ?: 'Showtime Pools' );
+// Brand name is hardcoded, never blogname: the schema name must match GBP
+// NAP exactly even when the WP site title carries an environment or
+// sub-brand suffix. Override via the filter if the brand ever changes.
+$biz_name        = (string) apply_filters( 'showtime/business/name',      'Showtime Pools' );
 $biz_phone       = (string) apply_filters( 'showtime/business/phone',     '(323) 825-2099' );
 $biz_email       = (string) apply_filters( 'showtime/business/email',     'operations@showtimepoolmechanics.com' );
 $biz_description = (string) apply_filters( 'showtime/business/tagline',
 	'Stop juggling contractors. One team handles pool repairs, weekly service, remodels, equipment installation, inspections, and outdoor living across Los Angeles.'
 );
 
-$tel_e164 = '+1-' . trim( preg_replace( '/[^0-9]/', '-', preg_replace( '/^\+1/', '', $biz_phone ) ), '-' );
+$tel_e164 = '+1' . preg_replace( '/[^0-9]/', '', preg_replace( '/^\+1/', '', $biz_phone ) );
 
 $socials_raw = apply_filters( 'showtime/business/socials', array() );
 $sameAs = array();
@@ -118,6 +121,7 @@ if ( empty( $sameAs ) ) {
 		'https://linkedin.com/in/showtimepoolssocal/',
 		'https://tiktok.com/@showtimepools',
 		'https://youtube.com/channel/UC3Dw1LtPvuX1JSGT7_KLntw',
+		'https://www.yelp.com/biz/showtime-pools-reseda',
 	);
 }
 
@@ -221,7 +225,7 @@ $schema = apply_filters(
 	'showtime/schema/local_business',
 	array(
 		'@context'        => 'https://schema.org',
-		'@type'           => array( 'LocalBusiness', 'PoolCleaningService', 'GeneralContractor' ),
+		'@type'           => array( 'HomeAndConstructionBusiness', 'GeneralContractor' ),
 		'@id'             => $home_id,
 		'name'            => $biz_name,
 		'alternateName'   => 'Showtime Pool Service',

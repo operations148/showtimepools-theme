@@ -59,7 +59,7 @@ $schema = array(
 	'@type'       => 'Service',
 	'@id'         => trailingslashit( get_permalink() ) . '#area-service',
 	'name'        => sprintf( /* translators: %s: neighborhood */ __( 'Pool service in %s', 'showtime-pools' ), $name ),
-	'provider'    => array( '@id' => home_url( '/#localbusiness' ) ),
+	'provider'    => array( '@id' => home_url( '/#organization' ) ),
 	'areaServed'  => array(
 		'@type' => 'Place',
 		'name'  => $name . ', Los Angeles, CA',

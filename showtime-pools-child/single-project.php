@@ -74,8 +74,8 @@ while ( have_posts() ) :
 		'image'           => $hero_img,
 		'datePublished'   => get_the_date( 'c', $pid ),
 		'dateModified'    => get_the_modified_date( 'c', $pid ),
-		'creator'         => array( '@id' => home_url( '/#localbusiness' ) ),
-		'publisher'       => array( '@id' => home_url( '/#localbusiness' ) ),
+		'creator'         => array( '@id' => home_url( '/#organization' ) ),
+		'publisher'       => array( '@id' => home_url( '/#organization' ) ),
 		'locationCreated' => array(
 			'@type' => 'Place',
 			'name'  => '' !== $neighborhood ? $neighborhood . ', Los Angeles' : 'Los Angeles',

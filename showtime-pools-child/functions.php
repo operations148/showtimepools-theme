@@ -23,7 +23,7 @@ function showtime_booking_url(): string {
 }
 
 define('SHOWTIME_CHILD_DIR', get_stylesheet_directory());
-define('SHOWTIME_CHILD_URI', set_url_scheme(get_stylesheet_directory_uri(), 'https'));
+define('SHOWTIME_CHILD_URI', get_stylesheet_directory_uri());
 
 require_once SHOWTIME_CHILD_DIR . '/inc/theme-setup.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/enqueue.php';

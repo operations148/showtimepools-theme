@@ -56,7 +56,7 @@ while ( have_posts() ) :
 			'url'   => home_url( '/the-founder/' ),
 		),
 		'publisher'        => array(
-			'@id' => home_url( '/#localbusiness' ),
+			'@id' => home_url( '/#organization' ),
 		),
 		'articleSection'   => $primary_cat ? $primary_cat->name : 'Pool Insights',
 		'keywords'         => wp_get_post_tags( $pid, array( 'fields' => 'names' ) ),

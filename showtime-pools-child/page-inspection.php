@@ -59,7 +59,7 @@ $service_schema = array(
 	'name'        => $name,
 	'description' => $lead,
 	'serviceType' => 'Pool Inspection',
-	'provider'    => array( '@id' => home_url( '/#localbusiness' ) ),
+	'provider'    => array( '@id' => home_url( '/#organization' ) ),
 	'offers'      => array(
 		'@type'         => 'Offer',
 		'description'   => $price,

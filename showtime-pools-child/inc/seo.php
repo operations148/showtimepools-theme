@@ -183,7 +183,7 @@ function showtime_website_schema(): array {
 		'name'            => 'Showtime Pools',
 		'description'     => 'Pool repairs, weekly service, remodels, equipment, inspections, and outdoor living in Los Angeles.',
 		'inLanguage'      => 'en-US',
-		'publisher'       => array( '@id' => home_url( '/#localbusiness' ) ),
+		'publisher'       => array( '@id' => home_url( '/#organization' ) ),
 		'potentialAction' => array(
 			'@type'       => 'SearchAction',
 			'target'      => array(
@@ -329,7 +329,7 @@ add_action(
 					'name'        => (string) $svc['title'],
 					'description' => (string) ( $svc['summary'] ?? '' ),
 					'url'         => home_url( '/services/' . $slug . '/' ),
-					'provider'    => array( '@id' => home_url( '/#localbusiness' ) ),
+					'provider'    => array( '@id' => home_url( '/#organization' ) ),
 				),
 			);
 		}

@@ -125,7 +125,7 @@ $person_schema = array(
 	'jobTitle'    => $f_title,
 	'worksFor'    => array(
 		'@type' => 'Organization',
-		'@id'   => home_url( '/#localbusiness' ),
+		'@id'   => home_url( '/#organization' ),
 		'name'  => get_bloginfo( 'name' ),
 	),
 	'description' => wp_strip_all_tags( $f_lead ),

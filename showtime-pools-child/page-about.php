@@ -69,7 +69,7 @@ $person_schema = array(
 		array( '@type' => 'Person', 'name' => 'Felipe A',     'jobTitle' => 'Pool Service Technician' ),
 		array( '@type' => 'Person', 'name' => 'George C',     'jobTitle' => 'Senior Cleaner' ),
 	),
-	'parentOrganization' => array( '@id' => home_url( '/#localbusiness' ) ),
+	'parentOrganization' => array( '@id' => home_url( '/#organization' ) ),
 );
 ?>
 <main id="primary" class="site-main interior-page">

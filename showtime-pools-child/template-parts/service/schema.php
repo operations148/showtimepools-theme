@@ -26,7 +26,7 @@ $service_schema = array(
 	'name'          => $title,
 	'description'   => $summary,
 	'serviceType'   => $title,
-	'provider'      => array( '@id' => home_url( '/#localbusiness' ) ),
+	'provider'      => array( '@id' => home_url( '/#organization' ) ),
 	'areaServed'    => array(
 		array( '@type' => 'City', 'name' => 'Sherman Oaks' ),
 		array( '@type' => 'City', 'name' => 'Encino' ),
