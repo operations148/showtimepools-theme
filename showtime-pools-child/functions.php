@@ -34,6 +34,7 @@ require_once SHOWTIME_CHILD_DIR . '/inc/imagery.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/acf-readers.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/seo.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/seo-defaults.php';
+require_once SHOWTIME_CHILD_DIR . '/inc/crawl.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/site-icon.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/meta-fields.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/reviews-widget.php';
