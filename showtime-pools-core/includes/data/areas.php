@@ -1,9 +1,13 @@
 <?php
 /**
- * Service-area registry — 6 neighborhoods, single source of truth.
+ * Service-area registry — 8 neighborhoods, single source of truth.
  *
- * Drives the homepage area grid, the /service-areas/ hub, the 6 area landing
+ * Drives the homepage area grid, the /service-areas/ hub, the area landing
  * pages, the LocalBusiness `areaServed` schema, and footer cross-links.
+ *
+ * NOTE: each area also needs a WP page (slug = area slug, parent =
+ * /service-areas/, template = page-area.php, meta _showtime_area_slug).
+ * The registry alone does not create the route.
  *
  * @package ShowtimePoolsCore
  */
@@ -184,6 +188,64 @@ return array(
 			'New gunite construction in newer hillside developments',
 		),
 		'sample_streets' => array( 'Ventura Blvd', 'Topanga Canyon Blvd', 'Mulholland Dr', 'Avenida Oriente', 'De Soto Ave' ),
+	),
+
+	array(
+		'slug'        => 'west-hollywood',
+		'seo_title'   => 'Pool Service in West Hollywood, CA | Showtime Pools',
+		'seo_meta'    => 'Pool service in West Hollywood (90046, 90048, 90069). Weekly cleaning, leak detection, repairs, and remodels. Call (323) 825-2099.',
+		'name'        => 'West Hollywood',
+		'seo_h1'      => 'Pool Service in West Hollywood',
+		'seo_intro'   => 'Pool service in West Hollywood, from the Sunset Strip hills down to the Melrose flats. Showtime Pools handles weekly cleaning, leak detection, repairs, and remodels across 90046, 90048, and 90069, with the same named technician on every visit and a photo report before the truck leaves.',
+		'tag'         => 'Now booking weekly routes',
+		'pool_count'  => '120+',
+		'gradient'    => 'linear-gradient(135deg,#23303B 0%,#7FA8BD 100%)',
+		'lat'         => 34.0900,
+		'lng'         => -118.3617,
+		'zip_codes'   => array( '90046', '90048', '90069' ),
+		'lead'        => 'West Hollywood pools run small and work hard: courtyard plunges, hillside spas, and mid-century rectangles on tight lots. Access, discretion, and tight scheduling matter more here than anywhere else we service.',
+		'characteristics' => array(
+			'Compact pools and plunge pools on tight lots — small volumes shift chemistry fast',
+			'Hillside properties above Sunset with long plumbing runs to remote equipment',
+			'Mature ficus and palm canopy — heavy debris load and faster filter clogging',
+			'1920s-1960s housing stock — original underground plumbing prone to slow leaks',
+		),
+		'common_jobs' => array(
+			'Leak detection on older underground plumbing lines',
+			'Weekly service routes for compact and courtyard pools',
+			'Heater and salt cell swaps on space-constrained equipment pads',
+			'Plaster-to-pebble refinishes on mid-century rectangles',
+		),
+		'related_services' => array( 'weekly-pool-maintenance', 'pool-leak-detection' ),
+	),
+
+	array(
+		'slug'        => 'bel-air',
+		'seo_title'   => 'Pool Service in Bel Air, CA | Showtime Pools',
+		'seo_meta'    => 'Estate pool service in Bel Air (90077). Weekly care, remodels, automation, and equipment for large hillside pools. Call (323) 825-2099.',
+		'name'        => 'Bel Air',
+		'seo_h1'      => 'Pool Service in Bel Air',
+		'seo_intro'   => 'Pool service in Bel Air for estate properties off Stone Canyon and Bellagio Road. Showtime Pools maintains, remodels, and re-equips large hillside pools across 90077: infinity edges, attached spas, and full automation, serviced by a badged W-2 crew with gate protocols handled.',
+		'tag'         => 'Estate service · now booking',
+		'pool_count'  => '90+',
+		'gradient'    => 'linear-gradient(135deg,#101820 0%,#6E8F77 100%)',
+		'lat'         => 34.0944,
+		'lng'         => -118.4590,
+		'zip_codes'   => array( '90077' ),
+		'lead'        => 'Bel Air pools are estate-scale: long plumbing runs, vanishing edges, multiple bodies of water, and equipment rooms instead of pads. The work rewards engineering discipline and a crew that documents everything.',
+		'characteristics' => array(
+			'Estate-scale pools with attached spas and multiple water features',
+			'Hillside builds — vanishing edges, catch basins, and long hydraulic runs',
+			'Dedicated equipment rooms with multi-pump systems and full automation',
+			'Heavy canyon landscaping — debris management drives filtration schedules',
+		),
+		'common_jobs' => array(
+			'Estate remodels: finish, tile, coping, and deck coordinated in one scope',
+			'IntelliCenter and Crestron-integrated automation builds',
+			'Vanishing-edge and catch-basin diagnostics',
+			'Multi-pump equipment room consolidations to variable-speed systems',
+		),
+		'related_services' => array( 'pool-remodeling-resurfacing', 'smart-pool-automation' ),
 	),
 
 );

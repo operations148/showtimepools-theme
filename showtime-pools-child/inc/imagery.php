@@ -118,6 +118,8 @@ function showtime_image( string $slot, int $w = 1600, int $h = 0 ): string {
 		'area_studio-city'    => '1564013799919-ab600027ffc6', // palm + sunset by pool (hillside feel)
 		'area_tarzana'        => '1567113463300-102a7eb3cb26', // pool corner + tile
 		'area_woodland-hills' => '1576013551627-0cc20b96c2a7', // pool surface + light
+		'area_west-hollywood' => '1572331165267-854da2b10ccc', // compact courtyard pool at dusk
+		'area_bel-air'        => '1613490493576-7fde63acd811', // estate villa pool, hillside
 
 		// Backdrops + accents
 		'inspections_bg'   => '1565609890717-4b39e8b7cf9c',    // equipment

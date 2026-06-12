@@ -1,6 +1,7 @@
 <?php
 /**
- * Service areas — 6-neighborhood grid pulled from the Areas registry.
+ * Service areas — neighborhood grid pulled from the Areas registry.
+ * Card count follows the registry; the heading states it dynamically.
  *
  * @package ShowtimePools
  */
@@ -14,7 +15,15 @@ $areas = class_exists( '\\Showtime\\Areas' ) ? \Showtime\Areas::all() : array();
 		<header class="service-areas__header">
 			<div>
 				<span class="eyebrow"><em>09</em> &mdash; <?php esc_html_e( 'Where We Work', 'showtime-pools' ); ?></span>
-				<h2 class="balance"><?php esc_html_e( 'Six neighborhoods on the route. Pick yours.', 'showtime-pools' ); ?></h2>
+				<h2 class="balance">
+					<?php
+					printf(
+						/* translators: %s: number of service areas */
+						esc_html__( '%s neighborhoods on the route. Pick yours.', 'showtime-pools' ),
+						esc_html( number_format_i18n( count( $areas ) ) )
+					);
+					?>
+				</h2>
 			</div>
 			<a class="btn btn--ghost" href="<?php echo esc_url( home_url( '/service-areas/' ) ); ?>">
 				<?php esc_html_e( 'All areas', 'showtime-pools' ); ?>
