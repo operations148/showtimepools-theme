@@ -69,7 +69,10 @@ function showtime_seo_context() {
 		);
 	}
 
-	// About + Contact (slug-driven, not in a registry).
+	// Slug-driven pages that live outside the service/area registries: hubs,
+	// about, contact, and utility pages. Without an entry here they fall
+	// back to WP's "{Page} - {blogname}" pattern, which double-brands the
+	// SERP whenever the blogname carries an environment or sub-brand suffix.
 	$slug = (string) get_post_field( 'post_name', $id );
 	$static = array(
 		'about' => array(
@@ -79,6 +82,50 @@ function showtime_seo_context() {
 		'contact' => array(
 			'title' => 'Contact Showtime Pools | Sherman Oaks Pool Company',
 			'meta'  => 'Contact Showtime Pools in Sherman Oaks. Repairs, weekly service, remodels, and inspections across LA. Steve replies within a business day. (323) 825-2099.',
+		),
+		'services' => array(
+			'title' => 'Pool Services in Los Angeles | Showtime Pools',
+			'meta'  => 'Every pool service under one roof: repairs, weekly cleaning, remodeling, equipment, inspections, and outdoor living across LA. Call (323) 825-2099.',
+		),
+		'service-areas' => array(
+			'title' => 'Pool Service Areas in Los Angeles | Showtime Pools',
+			'meta'  => 'Showtime Pools serves Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills from our Ventura Blvd. headquarters. (323) 825-2099.',
+		),
+		'blog' => array(
+			'title' => 'Pool Care Tips & Guides | Showtime Pools Blog',
+			'meta'  => 'Practical pool care advice from the crew that does the work: maintenance checklists, equipment comparisons, and remodeling trends for LA homeowners.',
+		),
+		'projects' => array(
+			'title' => 'Our Pool Projects in Los Angeles | Showtime Pools',
+			'meta'  => 'Browse completed pool remodels, new builds, and equipment overhauls across Sherman Oaks, Encino, Beverly Hills, and the Valley. See the work up close.',
+		),
+		'pool-inspections' => array(
+			'title' => 'Independent Pool Inspections in LA | Showtime Pools',
+			'meta'  => 'Pre-purchase, seasonal, and equipment-diagnostic pool inspections across Los Angeles. Written report in 24 to 48 hours. Call (323) 825-2099.',
+		),
+		'the-founder' => array(
+			'title' => 'Steve Adams, Founder & CEO | Showtime Pools',
+			'meta'  => 'Meet Steve Adams, the owner-operator behind Showtime Pools. On every quote, walks every site, pulls every permit personally. Call (323) 825-2099.',
+		),
+		'reviews' => array(
+			'title' => 'Showtime Pools Reviews | LA Pool Company',
+			'meta'  => 'What Los Angeles homeowners say about Showtime Pools: repairs, weekly service, remodels, and inspections. Read verified customer reviews.',
+		),
+		'quote' => array(
+			'title' => 'Get a Free Pool Service Quote | Showtime Pools',
+			'meta'  => 'Free itemized pool service quote in one business day. Repairs, weekly cleaning, remodels, and equipment across Los Angeles. Call (323) 825-2099.',
+		),
+		'book' => array(
+			'title' => 'Book a Pool Inspection | Showtime Pools',
+			'meta'  => 'Book an independent pool inspection in Los Angeles. 60 to 90 minutes on-site, written report inside 24 to 48 hours. Call (323) 825-2099.',
+		),
+		'shop' => array(
+			'title' => 'Pool Equipment & Supplies | Showtime Pools',
+			'meta'  => 'Shop pool equipment and supplies from Showtime Pools: pumps, heaters, salt systems, and automation from Pentair and Jandy. LA-local support.',
+		),
+		'affiliate' => array(
+			'title' => 'Partner Program | Showtime Pools',
+			'meta'  => 'Refer pool work in Los Angeles and earn. The Showtime Pools partner program for realtors, inspectors, and trades. Apply in two minutes.',
 		),
 	);
 	if ( isset( $static[ $slug ] ) ) {
