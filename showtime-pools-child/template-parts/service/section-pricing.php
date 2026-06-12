@@ -48,7 +48,7 @@ $tel   = preg_replace( '/[^0-9+]/', '', $phone );
 			</p>
 
 			<div class="cluster">
-				<a class="btn btn--primary btn--lg" href="<?php echo esc_url( showtime_booking_url() ); ?>" target="_blank" rel="noopener noreferrer">
+				<a class="btn btn--primary btn--lg" href="<?php echo esc_url( showtime_booking_url() ); ?>">
 					<?php esc_html_e( 'Get my quote', 'showtime-pools' ); ?>
 				</a>
 				<a class="btn btn--link" href="<?php echo esc_url( 'tel:' . $tel ); ?>">

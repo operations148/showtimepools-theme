@@ -377,13 +377,13 @@ a.contact-info__value:hover { color: var(--c-link); }
 .iframe-frame__iframe {
 	display: block;
 	width: 100%;
-	min-height: 720px;
+	min-height: 900px;
 	border: 0;
 	background: var(--c-bg);
 }
 
 @media (max-width: 600px) {
-	.iframe-frame__iframe { min-height: 560px; }
+	.iframe-frame__iframe { min-height: 760px; }
 }
 
 .iframe-frame__alt {

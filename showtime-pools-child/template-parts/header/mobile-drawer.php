@@ -81,7 +81,7 @@ $quote_url = esc_url( showtime_booking_url() );
 		</nav>
 
 		<div class="mobile-drawer__foot">
-			<a class="mobile-drawer__cta-quote" href="<?php echo $quote_url; ?>" target="_blank" rel="noopener noreferrer">
+			<a class="mobile-drawer__cta-quote" href="<?php echo $quote_url; ?>">
 				<span><?php esc_html_e( 'Book an Appointment', 'showtime-pools' ); ?></span>
 				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 5l7 7-7 7"/></svg>
 			</a>

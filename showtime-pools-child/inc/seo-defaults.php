@@ -116,8 +116,8 @@ function showtime_seo_context() {
 			'meta'  => 'Free itemized pool service quote in one business day. Repairs, weekly cleaning, remodels, and equipment across Los Angeles. Call (323) 825-2099.',
 		),
 		'book' => array(
-			'title' => 'Book a Pool Inspection | Showtime Pools',
-			'meta'  => 'Book an independent pool inspection in Los Angeles. 60 to 90 minutes on-site, written report inside 24 to 48 hours. Call (323) 825-2099.',
+			'title' => 'Book an Appointment | Showtime Pools',
+			'meta'  => 'Book a pool service appointment in Los Angeles: repairs, weekly service, remodel quotes, and inspections. Pick a time online or call (323) 825-2099.',
 		),
 		'shop' => array(
 			'title' => 'Pool Equipment & Supplies | Showtime Pools',

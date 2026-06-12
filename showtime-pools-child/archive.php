@@ -144,7 +144,7 @@ $archive_hero_img = function_exists( 'showtime_image' ) ? showtime_image( $slot,
 					<section class="blog-side blog-side--cta">
 						<h3 class="blog-side__title"><?php esc_html_e( 'Need help with a pool?', 'showtime-pools' ); ?></h3>
 						<p><?php esc_html_e( 'Steve or a senior tech replies within one business day.', 'showtime-pools' ); ?></p>
-						<a class="btn btn--primary" href="<?php echo esc_url( showtime_booking_url() ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Book an Appointment', 'showtime-pools' ); ?></a>
+						<a class="btn btn--primary" href="<?php echo esc_url( showtime_booking_url() ); ?>"><?php esc_html_e( 'Book an Appointment', 'showtime-pools' ); ?></a>
 					</section>
 				</aside>
 			</div>

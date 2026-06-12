@@ -62,6 +62,18 @@ add_action(
 			wp_enqueue_style( 'showtime-contact', $uri, array( 'showtime-components' ), $ver );
 		}
 
+		// GHL resize helper for the embedded booking/quote widgets. Sizes the
+		// iframe to its content so the calendar never scrolls inside a box.
+		if ( is_page_template( 'page-iframe.php' ) ) {
+			wp_enqueue_script(
+				'ghl-form-embed',
+				'https://link.msgsndr.com/js/form_embed.js',
+				array(),
+				null,
+				array( 'in_footer' => true, 'strategy' => 'defer' )
+			);
+		}
+
 		if ( is_page_template( 'page-contact.php' ) || is_page_template( 'page-shop.php' ) ) {
 			[ $uri, $ver ] = showtime_asset( 'assets/js/contact.js' );
 			wp_enqueue_script( 'showtime-contact', $uri, array( 'showtime-main' ), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );

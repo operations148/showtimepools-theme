@@ -10,6 +10,6 @@ defined( 'ABSPATH' ) || exit;
 $cta_url   = apply_filters( 'showtime/header_cta_url', showtime_booking_url() );
 $cta_label = apply_filters( 'showtime/header_cta_label', __( 'Book an Appointment', 'showtime-pools' ) );
 ?>
-<a class="btn btn--secondary site-header__cta" href="<?php echo esc_url( $cta_url ); ?>" target="_blank" rel="noopener noreferrer">
+<a class="btn btn--secondary site-header__cta" href="<?php echo esc_url( $cta_url ); ?>">
 	<?php echo esc_html( $cta_label ); ?>
 </a>

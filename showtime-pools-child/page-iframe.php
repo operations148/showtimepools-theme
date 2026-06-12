@@ -41,14 +41,14 @@ $config = array(
 	),
 	'book' => array(
 		'option'  => 'showtime_ghl_book_url',
-		'eyebrow' => __( 'Book an inspection', 'showtime-pools' ),
+		'eyebrow' => __( 'Book an appointment', 'showtime-pools' ),
 		'title'   => __( 'Pick a time that works.', 'showtime-pools' ),
-		'lead'    => __( 'Inspections are 60 to 90 minutes on-site. You get a written report and recommended next steps within 24 hours.', 'showtime-pools' ),
+		'lead'    => __( 'Repairs, weekly service, remodel quotes, or inspections: choose a time on the calendar and Steve confirms the appointment the same business day.', 'showtime-pools' ),
 		'hero'    => 'inspections_bg',
 		'steps'   => array(
-			array( 'n' => '01', 'title' => __( 'Choose inspection type', 'showtime-pools' ),  'body' => __( 'Pre-purchase, seasonal, or equipment-only. We will help you pick on the call if you are not sure.', 'showtime-pools' ) ),
-			array( 'n' => '02', 'title' => __( 'Lock a time on the calendar', 'showtime-pools' ),'body' => __( 'Most inspections happen within 3 business days. Same-day available for active escrow timelines.', 'showtime-pools' ) ),
-			array( 'n' => '03', 'title' => __( 'Written report within 24 hours', 'showtime-pools' ),'body' => __( 'Photos, code references, and a remaining-life estimate per major component. Lender and insurer ready.', 'showtime-pools' ) ),
+			array( 'n' => '01', 'title' => __( 'Tell us what you need', 'showtime-pools' ),  'body' => __( 'A repair visit, weekly service, a remodel quote, or an inspection. Pick the appointment type that fits, we will confirm the details.', 'showtime-pools' ) ),
+			array( 'n' => '02', 'title' => __( 'Lock a time on the calendar', 'showtime-pools' ),'body' => __( 'Most appointments happen within 3 business days. Same-day slots available for urgent repairs and active escrow timelines.', 'showtime-pools' ) ),
+			array( 'n' => '03', 'title' => __( 'We show up prepared', 'showtime-pools' ),'body' => __( 'Confirmation and reminder included, and the right tech arrives with your notes in hand. Written follow-up after every visit.', 'showtime-pools' ) ),
 		),
 	),
 );
@@ -71,6 +71,12 @@ foreach ( array( 0, 1, 2 ) as $si ) {
 }
 
 $src_url = (string) get_option( $cfg['option'], '' );
+if ( '' === $src_url && 'book' === $kind && defined( 'SHOWTIME_BOOKING_URL' ) ) {
+	// On-domain booking: /book/ hosts the bundled GHL booking widget by
+	// default so every CTA lands here without an admin-entered URL. The
+	// showtime_ghl_book_url option still overrides when set.
+	$src_url = SHOWTIME_BOOKING_URL;
+}
 $has_url = ( '' !== $src_url );
 $hero_img = function_exists( 'showtime_image' ) ? showtime_image( $cfg['hero'], 1920 ) : '';
 ?>
