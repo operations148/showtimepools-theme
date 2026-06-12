@@ -46,22 +46,16 @@ $team_lead    = $_pm( 'about_team_lead' )    ?: __( 'Four people you will meet. 
 $creds_eyebrow = $_pm( 'about_creds_eyebrow' ) ?: __( 'Certifications & partnerships', 'showtime-pools' );
 $creds_h2      = $_pm( 'about_creds_h2' )      ?: __( 'Manufacturer-certified. Trade-trained. Accountable.', 'showtime-pools' );
 
+// Additive facts about the ONE canonical business entity. Reusing the
+// sitewide @id makes JSON-LD parsers merge this with the footer node
+// instead of seeing a second, competing organization.
 $person_schema = array(
 	'@context'    => 'https://schema.org',
-	'@type'       => 'Organization',
-	'@id'         => home_url( '/about/#org' ),
-	'name'        => 'Showtime Pools',
-	'url'         => home_url( '/' ),
+	'@id'         => home_url( '/#organization' ),
 	'foundingDate'=> '2003',
 	'foundingLocation' => array(
 		'@type' => 'Place',
 		'name'  => 'Sherman Oaks, Los Angeles, California',
-	),
-	'founder'     => array(
-		'@type'    => 'Person',
-		'@id'      => home_url( '/the-founder/#person' ),
-		'name'     => 'Steve Adams',
-		'jobTitle' => 'Founder & CEO',
 	),
 	'employee'    => array(
 		array( '@type' => 'Person', 'name' => 'Steve Adams',  'jobTitle' => 'Founder & CEO' ),
@@ -69,7 +63,6 @@ $person_schema = array(
 		array( '@type' => 'Person', 'name' => 'Felipe A',     'jobTitle' => 'Pool Service Technician' ),
 		array( '@type' => 'Person', 'name' => 'George C',     'jobTitle' => 'Senior Cleaner' ),
 	),
-	'parentOrganization' => array( '@id' => home_url( '/#organization' ) ),
 );
 ?>
 <main id="primary" class="site-main interior-page">
