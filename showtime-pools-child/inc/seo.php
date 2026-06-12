@@ -125,6 +125,11 @@ function showtime_og_image(): string {
 function showtime_breadcrumb_schema(): ?array {
 	if ( is_front_page() || is_404() ) { return null; }
 
+	// single.php and single-project.php emit their own richer trails
+	// (Home > Blog > Category > Post); emitting this generic one too would
+	// duplicate the BreadcrumbList node on those URLs.
+	if ( is_singular( array( 'post', 'project' ) ) ) { return null; }
+
 	$items = array();
 	$pos   = 1;
 

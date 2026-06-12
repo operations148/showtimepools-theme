@@ -39,7 +39,7 @@ while ( have_posts() ) :
 
 	$article_schema = array(
 		'@context'         => 'https://schema.org',
-		'@type'            => 'Article',
+		'@type'            => 'BlogPosting',
 		'mainEntityOfPage' => array(
 			'@type' => 'WebPage',
 			'@id'   => get_permalink( $pid ),
