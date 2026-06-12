@@ -475,3 +475,25 @@ Theme owns the server-rendered head. Live runs Search Atlas OTTO (client-side JS
 Commits bd95488, a2468f1, 81b6e28, d38cfe5, 77fbcc2, 1e4594d. All verified on localhost: post page shows linked byline + dates with Article author @id /the-founder/#person; hero preloads emit on front page (deduped when desktop/mobile URLs match) and single posts; footer renders 6 registry-driven area links + hub link, nav/drawer point at /service-areas/; DM Sans self-hosted (4 variable woff2, latin + latin-ext), zero fonts.googleapis/gstatic requests; meta keywords gone; zero rank_math references left in code; core /wp-sitemap.xml includes wp-sitemap-posts-project-1.xml.
 
 Open items for live (not code): GSC sitemap URL needs manual verification (Rank Math sitemap_index.xml never existed on live; submit /wp-sitemap.xml or Search Atlas's sitemap, whichever is canonical). If a WP nav menu is assigned on live, the menu overrides the fallback nav, so Steve must repoint the Location menu item in wp-admin. Core sitemap also exposes wp-sitemap-users-1.xml (author enumeration); consider disabling the users provider in a future security pass.
+
+---
+
+## Phase SEO-T2 — Schema spec compliance + crawl hardening (2026-06-12)
+
+Bugs 1a/1b (homepage canonical -> blog post, double-brand title) proven NOT theme-side: 12-page local audit shows one self-referencing canonical, one description, single-brand title everywhere. Source is OTTO's rewriting layer on live; fix is dashboard config (below), theme hardened so nothing feeds it bad defaults.
+
+- [x] fix(schema): entity types [HomeAndConstructionBusiness, GeneralContractor] (invalid PoolCleaningService removed), @id #organization across 10 files, name hardcoded "Showtime Pools" (never blogname), phone E.164 +13238252099, Yelp in sameAs, natural URL scheme
+- [x] fix(schema): BlogPosting on posts, BreadcrumbList deduped on post/project singles
+- [x] fix(schema): about-page org facts merged into canonical @id node
+- [x] feat(seo): hand-written titles+metas for 11 hub/utility pages (kills "{Page} - {blogname}" double-brand path)
+- [x] feat(seo): inc/crawl.php with AI-bot robots allowlist; users sitemap and uncategorized term removed
+- [x] Verification: 12/12 pages PASS (canon=1, desc=1, jsonld parse clean, crumbs<=1, brand<=1); zero #localbusiness refs left
+
+### Live checklist (before/with next deploy, in order)
+1. SearchAtlas dashboard: disable OTTO title/meta-description/canonical rewriting modules (theme owns the head). This IS the fix for the homepage canonical and double-brand title.
+2. Live wp-admin: Settings -> General -> if Site Title is "Showtime Pools Mechanics", change to "Showtime Pools" (schema no longer reads it, but wp_title fallbacks and emails do).
+3. Live wp-admin: delete /lander, /privacy-policy-2, /terms-2, Sample Page, Hello World (Steve, content side).
+4. After deploy: verify https://showtimepools.com/robots.txt shows the AI-bot groups; view-source homepage: canonical = homepage, title single brand.
+5. GSC: confirm submitted sitemap is the URL that actually resolves; then run the index request list (in session deliverable).
+
+Local-only artifacts: robots.txt 404s on localhost (subdirectory install, WP at /wp/); works on live root install, verified via direct filter execution instead.
