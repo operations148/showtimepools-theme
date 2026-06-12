@@ -156,6 +156,35 @@ $schema = array(
 					</ul>
 				</aside>
 			<?php endif; ?>
+
+			<?php
+			// Registry-gated service cross-links. Only renders for areas
+			// whose registry entry lists related_services, so areas without
+			// the key keep their existing markup untouched.
+			$related_service_slugs = (array) ( $area['related_services'] ?? array() );
+			$related_service_links = array();
+			if ( ! empty( $related_service_slugs ) && class_exists( '\\Showtime\\Services' ) ) {
+				foreach ( $related_service_slugs as $rs_slug ) {
+					$rs = \Showtime\Services::get( (string) $rs_slug );
+					if ( $rs ) {
+						$related_service_links[] = array(
+							'title' => (string) $rs['title'],
+							'href'  => home_url( '/services/' . $rs['slug'] . '/' ),
+						);
+					}
+				}
+			}
+			?>
+			<?php if ( ! empty( $related_service_links ) ) : ?>
+				<aside class="area-detail__streets">
+					<span class="eyebrow"><?php printf( /* translators: %s: neighborhood */ esc_html__( 'Most-requested services in %s', 'showtime-pools' ), esc_html( $name ) ); ?></span>
+					<ul class="tag-list">
+						<?php foreach ( $related_service_links as $rsl ) : ?>
+							<li><a class="tag" href="<?php echo esc_url( $rsl['href'] ); ?>"><?php echo esc_html( $rsl['title'] ); ?> →</a></li>
+						<?php endforeach; ?>
+					</ul>
+				</aside>
+			<?php endif; ?>
 		</div>
 	</section>
 
