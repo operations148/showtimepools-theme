@@ -98,7 +98,7 @@ $schema = array(
 				<span aria-current="page"><?php echo esc_html( $name ); ?></span>
 			</nav>
 			<div class="area-hero__inner">
-				<span class="area-hero__pill"><?php echo esc_html( $pool_count ); ?> <?php esc_html_e( 'pools', 'showtime-pools' ); ?> · <?php echo esc_html( $tag ); ?></span>
+				<span class="area-hero__pill"><?php if ( '' !== $pool_count ) { echo esc_html( $pool_count ) . ' ' . esc_html__( 'pools', 'showtime-pools' ) . ' · '; } echo esc_html( $tag ); ?></span>
 				<h1 class="area-hero__title balance">
 					<?php if ( '' !== $seo_h1 ) {
 						echo esc_html( $seo_h1 );

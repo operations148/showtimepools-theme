@@ -198,7 +198,9 @@ return array(
 		'seo_h1'      => 'Pool Service in West Hollywood',
 		'seo_intro'   => 'Pool service in West Hollywood, from the Sunset Strip hills down to the Melrose flats. Showtime Pools handles weekly cleaning, leak detection, repairs, and remodels across 90046, 90048, and 90069, with the same named technician on every visit and a photo report before the truck leaves.',
 		'tag'         => 'Now booking weekly routes',
-		'pool_count'  => '120+',
+		// Intentionally empty until Steve confirms a real serviced-pool count;
+		// templates skip the count pill when this is blank.
+		'pool_count'  => '',
 		'gradient'    => 'linear-gradient(135deg,#23303B 0%,#7FA8BD 100%)',
 		'lat'         => 34.0900,
 		'lng'         => -118.3617,
@@ -227,7 +229,9 @@ return array(
 		'seo_h1'      => 'Pool Service in Bel Air',
 		'seo_intro'   => 'Pool service in Bel Air for estate properties off Stone Canyon and Bellagio Road. Showtime Pools maintains, remodels, and re-equips large hillside pools across 90077: infinity edges, attached spas, and full automation, serviced by a badged W-2 crew with gate protocols handled.',
 		'tag'         => 'Estate service · now booking',
-		'pool_count'  => '90+',
+		// Intentionally empty until Steve confirms a real serviced-pool count;
+		// templates skip the count pill when this is blank.
+		'pool_count'  => '',
 		'gradient'    => 'linear-gradient(135deg,#101820 0%,#6E8F77 100%)',
 		'lat'         => 34.0944,
 		'lng'         => -118.4590,

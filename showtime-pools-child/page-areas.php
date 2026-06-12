@@ -62,7 +62,10 @@ if ( '' === $outside_body ) { $outside_body = 'New construction, full remodels, 
 						<?php endif; ?>
 						<div class="area-card__overlay" aria-hidden="true"></div>
 						<div class="area-card__content">
-							<span class="area-card__pill"><?php echo esc_html( (string) $area['pool_count'] ); ?> <?php esc_html_e( 'pools', 'showtime-pools' ); ?></span>
+							<?php $hub_count = (string) ( $area['pool_count'] ?? '' ); ?>
+							<?php if ( '' !== $hub_count ) : ?>
+								<span class="area-card__pill"><?php echo esc_html( $hub_count ); ?> <?php esc_html_e( 'pools', 'showtime-pools' ); ?></span>
+							<?php endif; ?>
 							<h3 class="area-card__title"><?php echo esc_html( (string) $area['name'] ); ?></h3>
 							<p class="area-card__sub"><?php echo esc_html( (string) $area['tag'] ); ?></p>
 						</div>
