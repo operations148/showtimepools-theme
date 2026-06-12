@@ -72,7 +72,7 @@ $quote_url = esc_url( showtime_booking_url() );
 					<li><a href="<?php echo esc_url( home_url( '/services/' ) ); ?>"><?php esc_html_e( 'Services', 'showtime-pools' ); ?></a></li>
 					<li><a href="<?php echo esc_url( home_url( '/projects/' ) ); ?>"><?php esc_html_e( 'Projects', 'showtime-pools' ); ?></a></li>
 					<li><a href="<?php echo esc_url( home_url( '/service-areas/' ) ); ?>"><?php esc_html_e( 'Service Areas', 'showtime-pools' ); ?></a></li>
-					<li><a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php esc_html_e( 'Contact', 'showtime-pools' ); ?></a></li>
+					<li><a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php esc_html_e( 'Get Quote', 'showtime-pools' ); ?></a></li>
 					<li><a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>"><?php esc_html_e( 'Shop', 'showtime-pools' ); ?></a></li>
 				</ul>
 				<?php
@@ -82,7 +82,7 @@ $quote_url = esc_url( showtime_booking_url() );
 
 		<div class="mobile-drawer__foot">
 			<a class="mobile-drawer__cta-quote" href="<?php echo $quote_url; ?>" target="_blank" rel="noopener noreferrer">
-				<span><?php esc_html_e( 'Get a Free Quote', 'showtime-pools' ); ?></span>
+				<span><?php esc_html_e( 'Book an Appointment', 'showtime-pools' ); ?></span>
 				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 5l7 7-7 7"/></svg>
 			</a>
 

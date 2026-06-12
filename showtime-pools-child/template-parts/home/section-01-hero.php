@@ -26,7 +26,7 @@ $pc_img      = $opt ? get_field( 'hero_image', $opt ) : null;
 $hero_title  = '' !== $pc_title  ? $pc_title  : __( 'Pool service in Los Angeles.', 'showtime-pools' );
 $hero_accent = '' !== $pc_accent ? $pc_accent : __( 'Repairs, cleaning, remodels, equipment.', 'showtime-pools' );
 $hero_lead   = '' !== $pc_lead   ? $pc_lead   : __( 'Expert pool repair, cleaning, remodeling, and equipment installation for Los Angeles homes.', 'showtime-pools' );
-$cta1_label  = '' !== $pc_cta1_lbl ? $pc_cta1_lbl : __( 'Get a Free Quote', 'showtime-pools' );
+$cta1_label  = '' !== $pc_cta1_lbl ? $pc_cta1_lbl : __( 'Book an Appointment', 'showtime-pools' );
 $cta1_url    = '' !== $pc_cta1_url ? $pc_cta1_url : showtime_booking_url();
 $cta2_label  = '' !== $pc_cta2_lbl ? $pc_cta2_lbl : __( 'See our work', 'showtime-pools' );
 $cta2_url    = '' !== $pc_cta2_url ? $pc_cta2_url : home_url( '/projects/' );

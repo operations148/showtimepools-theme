@@ -109,7 +109,7 @@ $schema = array(
 				</h1>
 				<p class="area-hero__lead"><?php echo esc_html( $lead ); ?></p>
 				<div class="cluster">
-					<a class="btn btn--invert btn--lg" href="<?php echo esc_url( showtime_booking_url() ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Get a quote', 'showtime-pools' ); ?></a>
+					<a class="btn btn--invert btn--lg" href="<?php echo esc_url( showtime_booking_url() ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Book an Appointment', 'showtime-pools' ); ?></a>
 					<a class="btn btn--ghost-on-dark btn--lg" href="<?php echo esc_url( home_url( '/services/weekly-pool-maintenance/' ) ); ?>"><?php esc_html_e( 'Weekly service →', 'showtime-pools' ); ?></a>
 				</div>
 			</div>

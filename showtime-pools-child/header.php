@@ -45,7 +45,7 @@ defined( 'ABSPATH' ) || exit;
 				</a>
 
 				<a class="btn site-header__cta" href="<?php echo esc_url( showtime_booking_url() ); ?>" target="_blank" rel="noopener noreferrer">
-					<?php esc_html_e( 'Get a Free Quote', 'showtime-pools' ); ?>
+					<?php esc_html_e( 'Book an Appointment', 'showtime-pools' ); ?>
 				</a>
 
 				<button

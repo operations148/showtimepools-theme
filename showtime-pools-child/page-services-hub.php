@@ -68,7 +68,7 @@ if ( '' === $outdoor_lead )    { $outdoor_lead    = 'The bigger projects. Same c
 				<h1 class="int-hero__title balance"><?php echo esc_html( $hero_h1 ); ?></h1>
 				<p class="int-hero__lead"><?php echo esc_html( $hero_lead ); ?></p>
 				<div class="cluster">
-					<a class="btn btn--invert btn--lg" href="<?php echo esc_url( showtime_booking_url() ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Get a Free Quote', 'showtime-pools' ); ?></a>
+					<a class="btn btn--invert btn--lg" href="<?php echo esc_url( showtime_booking_url() ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Book an Appointment', 'showtime-pools' ); ?></a>
 					<a class="btn btn--ghost-on-dark btn--lg" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php esc_html_e( 'Book Assessment', 'showtime-pools' ); ?></a>
 				</div>
 			</div>

@@ -75,7 +75,7 @@ $services = class_exists( '\\Showtime\\Services' ) ? \Showtime\Services::all() :
 			</li>
 
 			<li class="primary-nav__item">
-				<a class="primary-nav__link" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php esc_html_e( 'Contact', 'showtime-pools' ); ?></a>
+				<a class="primary-nav__link" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php esc_html_e( 'Get Quote', 'showtime-pools' ); ?></a>
 			</li>
 
 			<li class="primary-nav__item">

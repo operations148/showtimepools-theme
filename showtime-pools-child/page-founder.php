@@ -269,7 +269,7 @@ $person_schema = array(
 			</ul>
 
 			<div class="cluster" style="margin-top:var(--sp-7)">
-				<a class="btn btn--primary btn--lg" href="<?php echo esc_url( showtime_booking_url() ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Get a free quote', 'showtime-pools' ); ?></a>
+				<a class="btn btn--primary btn--lg" href="<?php echo esc_url( showtime_booking_url() ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Book an Appointment', 'showtime-pools' ); ?></a>
 				<a class="btn btn--ghost btn--lg" href="tel:<?php echo esc_attr( $tel ); ?>"><?php esc_html_e( 'Call Steve direct', 'showtime-pools' ); ?> · <?php echo esc_html( $phone ); ?></a>
 			</div>
 		</div>
