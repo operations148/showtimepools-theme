@@ -78,7 +78,7 @@ if ( '' === $outside_body ) { $outside_body = 'New construction, full remodels, 
 				<p><?php echo esc_html( $outside_body ); ?></p>
 				<div class="cluster cluster--center">
 					<a class="btn btn--primary btn--lg" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php esc_html_e( 'Ask about your address', 'showtime-pools' ); ?></a>
-					<a class="btn btn--ghost btn--lg" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php esc_html_e( 'More areas', 'showtime-pools' ); ?></a>
+					<a class="btn btn--ghost btn--lg" href="https://area.showtimepools.com/" target="_blank" rel="noopener"><?php esc_html_e( 'More areas', 'showtime-pools' ); ?></a>
 				</div>
 			</div>
 		</div>
