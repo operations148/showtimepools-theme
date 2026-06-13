@@ -364,31 +364,24 @@ a.contact-info__value:hover { color: var(--c-link); }
 .contact-info__alt p:last-child { margin: 0; }
 
 /* ─── Iframe page ───────────────────────────────────────────────── */
+/* No decorative wrapper: the GHL widget renders its own white card, so the
+   theme only centres it and caps the width. form_embed.js sets the exact
+   iframe height (see the id wiring in page-iframe.php), so there is no
+   hardcoded min-height and therefore no trailing white space. */
 .iframe-frame__wrap {
-	max-width: 920px;
+	max-width: 860px;
 	margin: 0 auto;
-	background: var(--c-surface-2);
-	border: 1px solid var(--c-border);
-	border-radius: var(--r-2xl);
-	overflow: hidden;
-	box-shadow: var(--sh-md);
 }
 
 .iframe-frame__iframe {
 	display: block;
 	width: 100%;
-	min-height: 900px;
 	border: 0;
-	background: var(--c-bg);
-}
-
-@media (max-width: 600px) {
-	.iframe-frame__iframe { min-height: 760px; }
 }
 
 .iframe-frame__alt {
-	max-width: 920px;
-	margin: var(--sp-4) auto 0;
+	max-width: 860px;
+	margin: var(--sp-3) auto 0;
 	color: var(--c-text-muted);
 	font-size: var(--fs-sm);
 	text-align: center;

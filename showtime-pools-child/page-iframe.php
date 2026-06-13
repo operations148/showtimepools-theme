@@ -78,6 +78,15 @@ if ( '' === $src_url && 'book' === $kind && defined( 'SHOWTIME_BOOKING_URL' ) ) 
 	$src_url = SHOWTIME_BOOKING_URL;
 }
 $has_url = ( '' !== $src_url );
+
+// GHL's form_embed.js auto-sizes the iframe whose id matches the widget, so
+// the embed renders at its exact content height with no trailing whitespace.
+// Booking calendars use "{id}_booking"; forms/surveys use the bare id.
+$embed_id = '';
+if ( $has_url && preg_match( '#/widget/(booking|form|survey)/([A-Za-z0-9]+)#', $src_url, $mm ) ) {
+	$embed_id = $mm[2] . ( 'booking' === $mm[1] ? '_booking' : '' );
+}
+
 $hero_img = function_exists( 'showtime_image' ) ? showtime_image( $cfg['hero'], 1920 ) : '';
 ?>
 <main id="primary" class="site-main iframe-page">
@@ -106,8 +115,9 @@ $hero_img = function_exists( 'showtime_image' ) ? showtime_image( $cfg['hero'], 
 				<div class="iframe-frame__wrap">
 					<iframe
 						src="<?php echo esc_url( $src_url ); ?>"
+						<?php if ( '' !== $embed_id ) : ?>id="<?php echo esc_attr( $embed_id ); ?>"<?php endif; ?>
 						class="iframe-frame__iframe"
-						loading="lazy"
+						scrolling="no"
 						referrerpolicy="no-referrer-when-downgrade"
 						title="<?php echo esc_attr( get_the_title() ); ?>"
 					></iframe>
