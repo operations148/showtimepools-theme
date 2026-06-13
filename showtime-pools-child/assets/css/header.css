@@ -140,12 +140,11 @@
 	position: relative;
 }
 
-/* Active-page underline indicator */
-.primary-nav__item.current-menu-item > .primary-nav__link::after,
-.primary-nav__item.current-menu-parent > .primary-nav__link::after,
-.primary-nav__item.current_page_item > .primary-nav__link::after,
-.primary-nav__item.current_page_parent > .primary-nav__link::after,
-.primary-nav__item.is-active > .primary-nav__link::after {
+/* Underline indicator shared by hover and active so the two states rhyme:
+   the bar is always present but collapsed (scaleX 0). Hover/focus preview it
+   by growing it from the left; the active page commits to it (scaleX 1).
+   Hovering the active item keeps it at full width — no flicker. */
+.primary-nav__link::after {
 	content: '';
 	position: absolute;
 	left: var(--sp-3);
@@ -154,12 +153,28 @@
 	height: 2px;
 	background: var(--c-aqua-700);
 	border-radius: var(--r-full);
+	transform: scaleX(0);
+	transform-origin: left center;
+	transition: transform var(--dur-fast) var(--ease-out);
+}
+.primary-nav__link:hover::after,
+.primary-nav__item:focus-within > .primary-nav__link::after,
+.primary-nav__item.current-menu-item > .primary-nav__link::after,
+.primary-nav__item.current-menu-parent > .primary-nav__link::after,
+.primary-nav__item.current_page_item > .primary-nav__link::after,
+.primary-nav__item.current_page_parent > .primary-nav__link::after,
+.primary-nav__item.is-active > .primary-nav__link::after {
+	transform: scaleX(1);
 }
 
 .primary-nav__link:hover,
 .primary-nav__item:focus-within > .primary-nav__link,
 .primary-nav__item.is-active > .primary-nav__link {
 	color: var(--c-aqua-700);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.primary-nav__link::after { transition: none; }
 }
 
 /* Mega menu — hover-bridge is provided by .primary-nav__mega::before
@@ -533,6 +548,11 @@ body:has(.js-mobile-toggle[aria-expanded="true"]) .mobile-drawer__shell {
    "the only chromatic accent, used sparingly"). WordPress emits
    .current-menu-item / .current_page_item / .current-menu-parent /
    .current_page_parent on the <li>. */
+/* Text colour: hover/focus preview the aqua, the active page commits to it. */
+.mobile-drawer__list > li > a:hover,
+.mobile-drawer__list > li > a:focus-visible,
+.mobile-drawer__list > li > .mobile-drawer__sub > summary:hover,
+.mobile-drawer__list > li > .mobile-drawer__sub > summary:focus-visible,
 .mobile-drawer__list > li.current-menu-item > a,
 .mobile-drawer__list > li.current-menu-parent > a,
 .mobile-drawer__list > li.current_page_item > a,
@@ -544,6 +564,29 @@ body:has(.js-mobile-toggle[aria-expanded="true"]) .mobile-drawer__shell {
 .mobile-drawer__list > li.is-active > .mobile-drawer__sub > summary {
 	color: var(--c-aqua-300);
 }
+/* Left accent bar — the mobile twin of the desktop underline. Always present
+   but collapsed (scaleY 0); hover/focus grow it, the active page commits to
+   it. Same shared-mechanism rhyme between hover and active. */
+.mobile-drawer__list > li > a::before,
+.mobile-drawer__list > li > .mobile-drawer__sub > summary::before {
+	content: '';
+	position: absolute;
+	left: calc(var(--gutter) - var(--sp-4));
+	top: 50%;
+	width: 4px;
+	height: 1.6em;
+	background: var(--c-aqua-400);
+	border-radius: var(--r-full);
+	transform: translateY(-50%) scaleY(0);
+	transform-origin: center;
+	opacity: 0;
+	transition: transform var(--dur-fast) var(--ease-out),
+	            opacity var(--dur-fast) var(--ease-out);
+}
+.mobile-drawer__list > li > a:hover::before,
+.mobile-drawer__list > li > a:focus-visible::before,
+.mobile-drawer__list > li > .mobile-drawer__sub > summary:hover::before,
+.mobile-drawer__list > li > .mobile-drawer__sub > summary:focus-visible::before,
 .mobile-drawer__list > li.current-menu-item > a::before,
 .mobile-drawer__list > li.current-menu-parent > a::before,
 .mobile-drawer__list > li.current_page_item > a::before,
@@ -553,15 +596,12 @@ body:has(.js-mobile-toggle[aria-expanded="true"]) .mobile-drawer__shell {
 .mobile-drawer__list > li.current-menu-parent > .mobile-drawer__sub > summary::before,
 .mobile-drawer__list > li.current_page_parent > .mobile-drawer__sub > summary::before,
 .mobile-drawer__list > li.is-active > .mobile-drawer__sub > summary::before {
-	content: '';
-	position: absolute;
-	left: calc(var(--gutter) - var(--sp-4));
-	top: 50%;
-	width: 4px;
-	height: 1.6em;
-	background: var(--c-aqua-400);
-	border-radius: var(--r-full);
-	transform: translateY(-50%);
+	transform: translateY(-50%) scaleY(1);
+	opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+	.mobile-drawer__list > li > a::before,
+	.mobile-drawer__list > li > .mobile-drawer__sub > summary::before { transition: none; }
 }
 
 /* Sub-menu chevron */
