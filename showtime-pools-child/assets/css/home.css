@@ -892,6 +892,9 @@
 .area-card {
 	position: relative;
 	overflow: hidden;
+	/* Fixed 16:10 box so every card is identical regardless of the source
+	   image's aspect ratio; min-height floors it on very narrow columns. */
+	aspect-ratio: 16 / 10;
 	min-height: 220px;
 	border-radius: var(--r-lg);
 	background: var(--_area-grad);
@@ -908,6 +911,9 @@
 	position: absolute; inset: 0;
 	width: 100%; height: 100%;
 	object-fit: cover;
+	/* Centre the crop so portrait or odd-sized uploads can't shift focus
+	   or distort the card. */
+	object-position: center;
 	z-index: 0;
 	transition: transform 700ms var(--ease-out);
 }
