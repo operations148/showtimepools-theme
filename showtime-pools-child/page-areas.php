@@ -76,7 +76,10 @@ if ( '' === $outside_body ) { $outside_body = 'New construction, full remodels, 
 			<div class="areas-hub__outside">
 				<h2><?php echo esc_html( $outside_h2 ); ?></h2>
 				<p><?php echo esc_html( $outside_body ); ?></p>
-				<a class="btn btn--primary btn--lg" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php esc_html_e( 'Ask about your address', 'showtime-pools' ); ?></a>
+				<div class="cluster cluster--center">
+					<a class="btn btn--primary btn--lg" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php esc_html_e( 'Ask about your address', 'showtime-pools' ); ?></a>
+					<a class="btn btn--ghost btn--lg" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php esc_html_e( 'More areas', 'showtime-pools' ); ?></a>
+				</div>
 			</div>
 		</div>
 	</section>
