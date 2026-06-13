@@ -889,72 +889,9 @@
 @media (max-width: 900px) { .service-areas__grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 540px) { .service-areas__grid { grid-template-columns: 1fr; } }
 
-.area-card {
-	position: relative;
-	overflow: hidden;
-	/* Fixed 16:10 box so every card is identical regardless of the source
-	   image's aspect ratio; min-height floors it on very narrow columns. */
-	aspect-ratio: 16 / 10;
-	min-height: 220px;
-	border-radius: var(--r-lg);
-	background: var(--_area-grad);
-	color: #fff;
-	text-decoration: none;
-	padding: var(--sp-6);
-	display: flex; flex-direction: column;
-	justify-content: flex-end;
-	transition: transform var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
-}
-.area-card:hover { transform: translateY(-3px); box-shadow: var(--sh-lg); }
-
-.area-card__img {
-	position: absolute; inset: 0;
-	width: 100%; height: 100%;
-	object-fit: cover;
-	/* Centre the crop so portrait or odd-sized uploads can't shift focus
-	   or distort the card. */
-	object-position: center;
-	z-index: 0;
-	transition: transform 700ms var(--ease-out);
-}
-.area-card:hover .area-card__img { transform: scale(1.06); }
-.area-card__overlay {
-	position: absolute; inset: 0;
-	background: linear-gradient(165deg, rgba(15,23,36,0.05) 0%, rgba(15,23,36,0.55) 60%, rgba(15,23,36,0.85) 100%);
-	z-index: 1;
-}
-.area-card__bg { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: screen; z-index: 1; }
-.area-card__bg svg { position: absolute; width: 130%; height: 70%; left: -10%; top: 35%; }
-
-.area-card__content { position: relative; z-index: 2; }
-
-.area-card__pill {
-	display: inline-block;
-	background: rgba(255,255,255,0.18);
-	backdrop-filter: blur(10px);
-	padding: 4px var(--sp-3);
-	border-radius: var(--r-full);
-	font-size: var(--fs-xs);
-	font-weight: var(--fw-semibold);
-	letter-spacing: var(--ls-wide);
-	text-transform: uppercase;
-	margin-bottom: var(--sp-3);
-}
-.area-card__title {
-	font-family: var(--ff-display);
-	font-size: var(--fs-2xl);
-	font-weight: var(--fw-extra);
-	line-height: var(--lh-tight);
-	letter-spacing: -0.02em;
-	margin: 0 0 4px;
-	color: #fff;
-}
-.area-card__sub {
-	margin: 0;
-	color: rgba(255,255,255,0.85);
-	font-size: var(--fs-sm);
-	line-height: var(--lh-snug);
-}
+/* .area-card component styles moved to components.css so they load on every
+   template that renders the card (homepage section + /service-areas/ hub),
+   not just the front page. */
 
 .service-areas__outside {
 	margin-top: var(--sp-10);

@@ -184,7 +184,7 @@
 @media (max-width: 900px) { .areas-hub__grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 540px) { .areas-hub__grid { grid-template-columns: 1fr; } }
 
-.area-card--lg { min-height: 260px; }
+.area-card--lg { height: 260px; }
 
 .areas-hub__outside {
 	margin-top: var(--sp-12);

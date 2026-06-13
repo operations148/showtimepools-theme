@@ -208,6 +208,78 @@
 	}
 }
 
+/* ── Area card (reusable) ─────────────────────────────────────────────
+   Sitewide so the homepage section AND the /service-areas/ hub both get
+   the fixed-ratio image box. A fixed aspect-ratio on the card plus an
+   absolutely-positioned object-fit:cover image guarantees all cards are
+   identical height regardless of the source photo's aspect ratio. */
+.area-card {
+	position: relative;
+	overflow: hidden;
+	/* Height is fixed by min-height; width comes from the grid column. Do NOT
+	   add aspect-ratio here: with a definite min-height it makes the browser
+	   derive WIDTH from height, overflowing the grid column and overlapping
+	   neighbouring cards. The absolutely-positioned object-fit:cover image
+	   below crops every photo to this fixed box, portrait or landscape. */
+	height: 240px;
+	min-height: 0;
+	border-radius: var(--r-lg);
+	background: var(--_area-grad);
+	color: #fff;
+	text-decoration: none;
+	padding: var(--sp-6);
+	display: flex; flex-direction: column;
+	justify-content: flex-end;
+	transition: transform var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
+}
+.area-card:hover { transform: translateY(-3px); box-shadow: var(--sh-lg); }
+
+.area-card__img {
+	position: absolute; inset: 0;
+	width: 100%; height: 100%;
+	object-fit: cover;
+	object-position: center;
+	z-index: 0;
+}
+.area-card:hover .area-card__img { transform: scale(1.06); }
+.area-card__overlay {
+	position: absolute; inset: 0;
+	background: linear-gradient(165deg, rgba(15,23,36,0.05) 0%, rgba(15,23,36,0.55) 60%, rgba(15,23,36,0.85) 100%);
+	z-index: 1;
+}
+.area-card__bg { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: screen; z-index: 1; }
+.area-card__bg svg { position: absolute; width: 130%; height: 70%; left: -10%; top: 35%; }
+
+.area-card__content { position: relative; z-index: 2; }
+
+.area-card__pill {
+	display: inline-block;
+	background: rgba(255,255,255,0.18);
+	backdrop-filter: blur(10px);
+	padding: 4px var(--sp-3);
+	border-radius: var(--r-full);
+	font-size: var(--fs-xs);
+	font-weight: var(--fw-semibold);
+	letter-spacing: var(--ls-wide);
+	text-transform: uppercase;
+	margin-bottom: var(--sp-3);
+}
+.area-card__title {
+	font-family: var(--ff-display);
+	font-size: var(--fs-2xl);
+	font-weight: var(--fw-extra);
+	line-height: var(--lh-tight);
+	letter-spacing: -0.02em;
+	margin: 0 0 4px;
+	color: #fff;
+}
+.area-card__sub {
+	margin: 0;
+	color: rgba(255,255,255,0.85);
+	font-size: var(--fs-sm);
+	line-height: var(--lh-snug);
+}
+
 /* Phase J — sitewide noise overlay. Fixed-position behind content above
    the background, kills the "flat plastic" feel without measurable
    weight. Inline SVG noise filter, no extra HTTP request. */
