@@ -36,12 +36,17 @@ $services = class_exists( '\\Showtime\\Services' ) ? \Showtime\Services::all() :
 		);
 		?>
 	<?php else : ?>
+		<?php
+		$active = function_exists( 'showtime_nav_active_section' ) ? showtime_nav_active_section() : '';
+		$nav_cls = static fn( string $section, string $base = 'primary-nav__item' ): string =>
+			$base . ( $section === $active ? ' is-active' : '' );
+		?>
 		<ul class="primary-nav__list">
-			<li class="primary-nav__item">
+			<li class="<?php echo esc_attr( $nav_cls( 'home' ) ); ?>">
 				<a class="primary-nav__link" href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'showtime-pools' ); ?></a>
 			</li>
 
-			<li class="primary-nav__item primary-nav__item--has-mega">
+			<li class="<?php echo esc_attr( $nav_cls( 'about', 'primary-nav__item primary-nav__item--has-mega' ) ); ?>">
 				<a class="primary-nav__link" href="<?php echo esc_url( home_url( '/about/' ) ); ?>"><?php esc_html_e( 'About', 'showtime-pools' ); ?></a>
 				<div class="primary-nav__mega primary-nav__mega--narrow" role="menu">
 					<div class="primary-nav__mega-grid primary-nav__mega-grid--single">
@@ -52,7 +57,7 @@ $services = class_exists( '\\Showtime\\Services' ) ? \Showtime\Services::all() :
 				</div>
 			</li>
 
-			<li class="primary-nav__item primary-nav__item--has-mega">
+			<li class="<?php echo esc_attr( $nav_cls( 'services', 'primary-nav__item primary-nav__item--has-mega' ) ); ?>">
 				<a class="primary-nav__link" href="<?php echo esc_url( home_url( '/services/' ) ); ?>"><?php esc_html_e( 'Services', 'showtime-pools' ); ?></a>
 				<div class="primary-nav__mega" role="menu">
 					<div class="primary-nav__mega-grid primary-nav__mega-grid--3">
@@ -66,19 +71,19 @@ $services = class_exists( '\\Showtime\\Services' ) ? \Showtime\Services::all() :
 				</div>
 			</li>
 
-			<li class="primary-nav__item">
+			<li class="<?php echo esc_attr( $nav_cls( 'projects' ) ); ?>">
 				<a class="primary-nav__link" href="<?php echo esc_url( home_url( '/projects/' ) ); ?>"><?php esc_html_e( 'Projects', 'showtime-pools' ); ?></a>
 			</li>
 
-			<li class="primary-nav__item">
+			<li class="<?php echo esc_attr( $nav_cls( 'service-areas' ) ); ?>">
 				<a class="primary-nav__link" href="<?php echo esc_url( home_url( '/service-areas/' ) ); ?>"><?php esc_html_e( 'Service Areas', 'showtime-pools' ); ?></a>
 			</li>
 
-			<li class="primary-nav__item">
+			<li class="<?php echo esc_attr( $nav_cls( 'contact' ) ); ?>">
 				<a class="primary-nav__link" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php esc_html_e( 'Get Quote', 'showtime-pools' ); ?></a>
 			</li>
 
-			<li class="primary-nav__item">
+			<li class="<?php echo esc_attr( $nav_cls( 'shop' ) ); ?>">
 				<a class="primary-nav__link" href="<?php echo esc_url( home_url( '/shop/' ) ); ?>"><?php esc_html_e( 'Shop', 'showtime-pools' ); ?></a>
 			</li>
 		</ul>

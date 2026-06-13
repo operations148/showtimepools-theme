@@ -537,18 +537,22 @@ body:has(.js-mobile-toggle[aria-expanded="true"]) .mobile-drawer__shell {
 .mobile-drawer__list > li.current-menu-parent > a,
 .mobile-drawer__list > li.current_page_item > a,
 .mobile-drawer__list > li.current_page_parent > a,
+.mobile-drawer__list > li.is-active > a,
 .mobile-drawer__list > li.current-menu-item > .mobile-drawer__sub > summary,
 .mobile-drawer__list > li.current-menu-parent > .mobile-drawer__sub > summary,
-.mobile-drawer__list > li.current_page_parent > .mobile-drawer__sub > summary {
+.mobile-drawer__list > li.current_page_parent > .mobile-drawer__sub > summary,
+.mobile-drawer__list > li.is-active > .mobile-drawer__sub > summary {
 	color: var(--c-aqua-300);
 }
 .mobile-drawer__list > li.current-menu-item > a::before,
 .mobile-drawer__list > li.current-menu-parent > a::before,
 .mobile-drawer__list > li.current_page_item > a::before,
 .mobile-drawer__list > li.current_page_parent > a::before,
+.mobile-drawer__list > li.is-active > a::before,
 .mobile-drawer__list > li.current-menu-item > .mobile-drawer__sub > summary::before,
 .mobile-drawer__list > li.current-menu-parent > .mobile-drawer__sub > summary::before,
-.mobile-drawer__list > li.current_page_parent > .mobile-drawer__sub > summary::before {
+.mobile-drawer__list > li.current_page_parent > .mobile-drawer__sub > summary::before,
+.mobile-drawer__list > li.is-active > .mobile-drawer__sub > summary::before {
 	content: '';
 	position: absolute;
 	left: calc(var(--gutter) - var(--sp-4));

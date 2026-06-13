@@ -22,6 +22,43 @@ function showtime_booking_url(): string {
 	return (string) apply_filters( 'showtime/booking_url', home_url( '/book/' ) );
 }
 
+/**
+ * Resolve which top-level nav item should be active for the current request.
+ *
+ * Returns one of: 'home', 'about', 'services', 'projects', 'service-areas',
+ * 'contact', 'shop', or '' (none). Children map to their parent section by
+ * page ancestry, so /services/* highlights Services, /service-areas/*
+ * highlights Service Areas, project singles highlight Projects, and blog
+ * content highlights About (the Blog link lives in the About menu). Used by
+ * the fallback primary nav and mobile drawer; WordPress menus keep their own
+ * current-menu-* classes.
+ */
+function showtime_nav_active_section(): string {
+	if ( is_front_page() ) {
+		return 'home';
+	}
+	if ( is_singular( 'project' ) || is_post_type_archive( 'project' ) ) {
+		return 'projects';
+	}
+	if ( is_singular( 'post' ) || is_home() || is_category() || is_tag() || is_author() || is_date() ) {
+		return 'about';
+	}
+	if ( is_page() ) {
+		$id    = get_queried_object_id();
+		$chain = array( (string) get_post_field( 'post_name', $id ) );
+		foreach ( get_post_ancestors( $id ) as $ancestor ) {
+			$chain[] = (string) get_post_field( 'post_name', $ancestor );
+		}
+		if ( in_array( 'services', $chain, true ) )                                  { return 'services'; }
+		if ( in_array( 'service-areas', $chain, true ) )                             { return 'service-areas'; }
+		if ( in_array( 'projects', $chain, true ) )                                  { return 'projects'; }
+		if ( array_intersect( array( 'about', 'the-founder', 'blog' ), $chain ) )    { return 'about'; }
+		if ( array_intersect( array( 'contact', 'quote', 'book' ), $chain ) )        { return 'contact'; }
+		if ( in_array( 'shop', $chain, true ) )                                      { return 'shop'; }
+	}
+	return '';
+}
+
 define('SHOWTIME_CHILD_DIR', get_stylesheet_directory());
 define('SHOWTIME_CHILD_URI', get_stylesheet_directory_uri());
 

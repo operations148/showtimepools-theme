@@ -55,8 +55,13 @@ $quote_url = esc_url( showtime_booking_url() );
 			} else {
 				?>
 				<ul class="mobile-drawer__list">
-					<li><a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'showtime-pools' ); ?></a></li>
-					<li class="mobile-drawer__has-sub menu-item-has-children">
+					<?php
+					$active = function_exists( 'showtime_nav_active_section' ) ? showtime_nav_active_section() : '';
+					$li_cls = static fn( string $section, string $base = '' ): string =>
+						trim( $base . ( $section === $active ? ' is-active' : '' ) );
+					?>
+						<li class="<?php echo esc_attr( $li_cls( 'home' ) ); ?>"><a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'showtime-pools' ); ?></a></li>
+					<li class="<?php echo esc_attr( $li_cls( 'about', 'mobile-drawer__has-sub menu-item-has-children' ) ); ?>">
 						<details class="mobile-drawer__sub">
 							<summary>
 								<span><?php esc_html_e( 'About', 'showtime-pools' ); ?></span>
@@ -69,11 +74,11 @@ $quote_url = esc_url( showtime_booking_url() );
 							</ul>
 						</details>
 					</li>
-					<li><a href="<?php echo esc_url( home_url( '/services/' ) ); ?>"><?php esc_html_e( 'Services', 'showtime-pools' ); ?></a></li>
-					<li><a href="<?php echo esc_url( home_url( '/projects/' ) ); ?>"><?php esc_html_e( 'Projects', 'showtime-pools' ); ?></a></li>
-					<li><a href="<?php echo esc_url( home_url( '/service-areas/' ) ); ?>"><?php esc_html_e( 'Service Areas', 'showtime-pools' ); ?></a></li>
-					<li><a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php esc_html_e( 'Get Quote', 'showtime-pools' ); ?></a></li>
-					<li><a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>"><?php esc_html_e( 'Shop', 'showtime-pools' ); ?></a></li>
+					<li class="<?php echo esc_attr( $li_cls( 'services' ) ); ?>"><a href="<?php echo esc_url( home_url( '/services/' ) ); ?>"><?php esc_html_e( 'Services', 'showtime-pools' ); ?></a></li>
+					<li class="<?php echo esc_attr( $li_cls( 'projects' ) ); ?>"><a href="<?php echo esc_url( home_url( '/projects/' ) ); ?>"><?php esc_html_e( 'Projects', 'showtime-pools' ); ?></a></li>
+					<li class="<?php echo esc_attr( $li_cls( 'service-areas' ) ); ?>"><a href="<?php echo esc_url( home_url( '/service-areas/' ) ); ?>"><?php esc_html_e( 'Service Areas', 'showtime-pools' ); ?></a></li>
+					<li class="<?php echo esc_attr( $li_cls( 'contact' ) ); ?>"><a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php esc_html_e( 'Get Quote', 'showtime-pools' ); ?></a></li>
+					<li class="<?php echo esc_attr( $li_cls( 'shop' ) ); ?>"><a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>"><?php esc_html_e( 'Shop', 'showtime-pools' ); ?></a></li>
 				</ul>
 				<?php
 			}
