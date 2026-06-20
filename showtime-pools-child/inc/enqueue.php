@@ -50,6 +50,11 @@ add_action(
 			[ $uri, $ver ] = showtime_asset( 'assets/js/home.js' );
 			wp_enqueue_script( 'showtime-home', $uri, array(), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );
 
+			// Reusable carousel controller (services slider). Deferred; inert
+			// until interaction. Native scroll-snap works without it.
+			[ $uri, $ver ] = showtime_asset( 'assets/js/carousel.js' );
+			wp_enqueue_script( 'showtime-carousel', $uri, array(), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );
+
 		}
 
 		if ( is_page_template( 'page-service.php' ) ) {

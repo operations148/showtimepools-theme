@@ -26,7 +26,8 @@ $services = class_exists( '\\Showtime\\Services' ) ? \Showtime\Services::all() :
 			</p>
 		</header>
 
-		<div class="services-grid" data-stagger>
+		<div class="svc-carousel" data-carousel>
+			<div class="svc-carousel__track" data-carousel-track role="group" aria-roledescription="carousel" aria-label="<?php esc_attr_e( 'Services', 'showtime-pools' ); ?>">
 			<?php
 			$i = 1;
 			foreach ( $services as $svc ) :
@@ -46,6 +47,16 @@ $services = class_exists( '\\Showtime\\Services' ) ? \Showtime\Services::all() :
 					</span>
 				</a>
 			<?php $i++; endforeach; ?>
+			</div>
+
+			<div class="svc-carousel__nav">
+				<button type="button" class="svc-carousel__btn" data-carousel-prev aria-label="<?php esc_attr_e( 'Previous services', 'showtime-pools' ); ?>">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 19l-7-7 7-7"/></svg>
+				</button>
+				<button type="button" class="svc-carousel__btn" data-carousel-next aria-label="<?php esc_attr_e( 'Next services', 'showtime-pools' ); ?>">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+				</button>
+			</div>
 		</div>
 
 		<a class="btn btn--ghost btn--lg btn--pill services-index__all" href="<?php echo esc_url( home_url( '/services/' ) ); ?>">

@@ -592,6 +592,62 @@
 @media (max-width: 1000px) { .services-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 600px)  { .services-grid { grid-template-columns: 1fr; } }
 
+/* ── Services carousel ─────────────────────────────────────────────────────
+   Native horizontal scroll-snap track (swipe/trackpad work without JS);
+   assets/js/carousel.js adds the prev/next buttons + end-state disabling.
+   3 cards on desktop, 2 on tablet, ~1.1 on phones. */
+.svc-carousel { position: relative; }
+
+.svc-carousel__track {
+	display: flex;
+	gap: clamp(1rem, 2vw, 1.5rem);
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
+	scroll-behavior: smooth;
+	-webkit-overflow-scrolling: touch;
+	scrollbar-width: none;
+	/* room so card hover-lift + focus ring aren't clipped by overflow */
+	padding: 4px 4px 12px;
+	margin: 0 -4px;
+}
+.svc-carousel__track::-webkit-scrollbar { display: none; }
+
+.svc-carousel__track > .svc-tile {
+	scroll-snap-align: start;
+	flex: 0 0 calc((100% - 2 * clamp(1rem, 2vw, 1.5rem)) / 3);
+	min-width: 0;
+}
+@media (max-width: 1000px) {
+	.svc-carousel__track > .svc-tile { flex-basis: calc((100% - clamp(1rem, 2vw, 1.5rem)) / 2); }
+}
+@media (max-width: 600px) {
+	.svc-carousel__track > .svc-tile { flex-basis: 86%; }
+}
+
+.svc-carousel__nav {
+	display: flex;
+	gap: var(--sp-3);
+	justify-content: flex-end;
+	margin-top: var(--sp-4);
+}
+.svc-carousel.is-static .svc-carousel__nav { display: none; }
+
+.svc-carousel__btn {
+	width: 46px;
+	height: 46px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid var(--c-border);
+	border-radius: var(--r-full);
+	background: var(--c-bg-pure);
+	color: var(--c-ink);
+	cursor: pointer;
+	transition: background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+}
+.svc-carousel__btn:hover:not(:disabled) { background: var(--c-surface); border-color: var(--c-border-strong); }
+.svc-carousel__btn:disabled { opacity: 0.4; cursor: default; }
+
 /* Tile — flat surface, hairline border, slight shadow on hover */
 .svc-tile {
 	display: flex;
