@@ -40,11 +40,26 @@ $eyebrow_text = ( '' !== ( $opt ? (string) get_field( 'hero_eyebrow', $opt ) : '
 	? (string) get_field( 'hero_eyebrow', $opt )
 	: __( 'YOUR POOL, OUR PRIORITY', 'showtime-pools' );
 ?>
+<?php
+// Optional background video (Site Content → Homepage → Hero video URL). The
+// poster is the hero_poster slot, which defaults to the hero still, so the LCP
+// preload in inc/performance.php stays valid. Mobile shows the poster image
+// only (CSS hides the video < 961px) so no video bytes load on phones.
+$hero_video = (string) get_option( 'showtime_hero_video_url', '' );
+$hero_poster = function_exists( 'showtime_image' ) ? showtime_image( 'hero_poster', 1920 ) : $hero_url;
+?>
 <section class="home-hero home-hero--immersive" data-reveal>
-	<picture class="home-hero__bgphoto">
-		<source media="(min-width:961px)" srcset="<?php echo esc_url( $hero_url ); ?>">
-		<img src="<?php echo esc_url( $hero_sm ); ?>" alt="<?php echo esc_attr( $pc_alt ); ?>" fetchpriority="high" decoding="async">
-	</picture>
+	<?php if ( '' !== $hero_video ) : ?>
+		<video class="home-hero__bgvideo" autoplay muted loop playsinline preload="none" poster="<?php echo esc_url( $hero_poster ); ?>">
+			<source src="<?php echo esc_url( $hero_video ); ?>" type="video/mp4">
+		</video>
+		<img class="home-hero__bgphoto home-hero__bgphoto--poster" src="<?php echo esc_url( $hero_poster ); ?>" alt="<?php echo esc_attr( $pc_alt ); ?>" fetchpriority="high" decoding="async">
+	<?php else : ?>
+		<picture class="home-hero__bgphoto">
+			<source media="(min-width:961px)" srcset="<?php echo esc_url( $hero_url ); ?>">
+			<img src="<?php echo esc_url( $hero_sm ); ?>" alt="<?php echo esc_attr( $pc_alt ); ?>" fetchpriority="high" decoding="async">
+		</picture>
+	<?php endif; ?>
 	<div class="home-hero__veil" aria-hidden="true"></div>
 
 	<div class="container">

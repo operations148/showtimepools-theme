@@ -221,6 +221,14 @@ JS;
 	private function render_home(): void {
 		?>
 		<div style="background:#fff;border:1px solid #ddd;border-radius:10px;padding:20px;margin-bottom:20px;">
+			<h3 style="margin-top:0;font-size:15px;"><?php esc_html_e( 'Homepage hero video', 'showtime-pools-core' ); ?></h3>
+			<p style="color:#666;font-size:12px;margin:0 0 10px;">
+				<?php esc_html_e( 'Paste the URL of a background video (MP4/WebM) for the homepage hero. Upload it under Media first, then copy its file URL here. Leave empty to keep the hero photo. Set the still frame under Site Images → "Homepage hero video poster"; on mobile the poster shows instead of the video.', 'showtime-pools-core' ); ?>
+			</p>
+			<?php $this->text_field( 'ct_hero_video_url', __( 'Hero video URL', 'showtime-pools-core' ), (string) get_option( 'showtime_hero_video_url', '' ) ); ?>
+		</div>
+
+		<div style="background:#fff;border:1px solid #ddd;border-radius:10px;padding:20px;margin-bottom:20px;">
 			<h3 style="margin-top:0;font-size:15px;"><?php esc_html_e( 'Contact form attribution (UTM → GHL)', 'showtime-pools-core' ); ?></h3>
 			<p style="color:#666;font-size:12px;margin:0 0 14px;">
 				<?php esc_html_e( 'Default UTM values sent with every native Contact-page form submission so n8n can attribute the source. If a visitor lands on /contact/ with real ?utm_… parameters in the URL, those override these defaults for that submission.', 'showtime-pools-core' ); ?>
@@ -254,6 +262,14 @@ JS;
 	}
 
 	private function process_home(): void {
+		// Hero video URL (standalone option; theme reads it directly).
+		$video = isset( $_POST['ct_hero_video_url'] ) ? esc_url_raw( wp_unslash( $_POST['ct_hero_video_url'] ) ) : '';
+		if ( '' === $video ) {
+			delete_option( 'showtime_hero_video_url' );
+		} else {
+			update_option( 'showtime_hero_video_url', $video, false );
+		}
+
 		foreach ( array_keys( self::utm_defaults() ) as $key ) {
 			$posted = isset( $_POST[ 'ct_' . $key ] )
 				? sanitize_text_field( wp_unslash( $_POST[ 'ct_' . $key ] ) )

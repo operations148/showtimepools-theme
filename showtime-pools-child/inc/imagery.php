@@ -90,6 +90,7 @@ function showtime_image( string $slot, int $w = 1600, int $h = 0 ): string {
 
 		// Hero + lifestyle
 		'hero'             => '1572331165267-854da2b10ccc', // modern infinity pool aerial
+		'hero_poster'      => '1572331165267-854da2b10ccc', // defaults to the hero still until a poster is uploaded
 		'lifestyle_main'   => '1582610116397-edb318620f90', // luxury backyard pool
 		'lifestyle_1'      => '1571902943202-507ec2618e8f', // pool tile + water
 		'lifestyle_2'      => '1576013551627-0cc20b96c2a7', // pool surface
@@ -137,7 +138,7 @@ function showtime_image( string $slot, int $w = 1600, int $h = 0 ): string {
 	// user drop authentic shots (founder portrait, neighborhood hero,
 	// project photos) without touching WP admin OR PHP. Drop the file,
 	// hard-refresh, done.
-	$local_slots = array( 'founder', 'about_hero', 'hero', 'lifestyle_main', 'lifestyle_1', 'lifestyle_2', 'lifestyle_3', 'lifestyle_4', 'inspections_bg' );
+	$local_slots = array( 'founder', 'about_hero', 'hero', 'hero_poster', 'lifestyle_main', 'lifestyle_1', 'lifestyle_2', 'lifestyle_3', 'lifestyle_4', 'inspections_bg' );
 	// Allow every area_*, project_*, service_*, blog_*, team_* slot too.
 	if ( str_starts_with( $slot, 'area_' )
 		|| str_starts_with( $slot, 'project_' )

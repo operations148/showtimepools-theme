@@ -234,6 +234,7 @@ final class SettingsPage {
 		return array(
 			'Heroes & Backgrounds' => array(
 				array( 'slot' => 'hero',           'label' => 'Homepage hero photo' ),
+				array( 'slot' => 'hero_poster',    'label' => 'Homepage hero video poster (still shown on mobile + while the video loads)' ),
 				array( 'slot' => 'about_hero',     'label' => 'About page background' ),
 				array( 'slot' => 'founder',        'label' => 'Founder portrait (Steve)' ),
 				array( 'slot' => 'inspections_bg', 'label' => 'Inspections callout background' ),
