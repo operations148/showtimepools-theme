@@ -103,3 +103,31 @@ Corrections received from user. Re-read at session start. Add a new entry every 
 - **Edit gotcha:** the Edit tool kept failing to match leading tabs in PHP arrays; match on a unique inner substring (or the whole line without leading whitespace) instead of reproducing tab indentation.
 
 **How to apply:** Use the PHP-bootstrap harness as the default verification path for backend/logic; use Chrome+sharp for any visual/computed proof; never assert a perf "improvement" you can't measure locally (XAMPP lacks WP Rocket/Cloudflare) — flag it for the production stack instead.
+
+---
+
+## L-007 — `showtime_image()` serves the FULL attachment original (LCP trap)
+
+**Date:** 2026-06-20
+
+**Context:** Live mobile LCP was 5.9s. The hero (and every Site-Images-set image) shipped the full-res upload.
+
+**Pattern:** `inc/imagery.php` `showtime_image($slot,$w)` Priority-0 returns
+`wp_get_attachment_url((int)$native)` for an uploaded attachment — the **full original**. The `$w` arg is
+honoured **only** by the Unsplash/Picsum fallback. So a multi-MP upload is shipped into a small box (and the
+hero shipped a 1200×1600 portrait as the LCP image, no `srcset`).
+
+**Rule:** For attachment-backed images, serve a width-appropriate **generated size**, not the original, and
+give the LCP hero a real `srcset`/`sizes` + an aligned `imagesrcset` preload (helper
+`showtime_front_hero_image()`, the registered landscape crops in `theme-setup.php`:
+`showtime-card`/`showtime-card-2x`/`showtime-hero`). When auto-picking a size, **only downsize when the
+original is > ~1.5× the display width** — seed/small originals are portrait + heavily compressed, so a
+landscape intermediate crop can be *larger in bytes* than the original (picking "smallest size ≥ width"
+blindly regresses them). Build srcset descriptors from each crop's **actual** generated width and dedupe
+identical files (small originals cap several sizes to one file).
+
+**How to apply:** Before optimising image bytes, check whether the slot resolves to an attachment full
+original (`showtime_image('slot',W)` returning the un-suffixed filename). Prove with the byte table
+(`wc -c` on the uploads dir). WebP/AVIF for uploads is **server-side** (Cloudflare Polish / Imagify), not the
+theme — the theme only sends `auto=format` for Unsplash. Flag CSS-delivery/critical-CSS to WP Rocket; never
+hand-roll critical CSS (hero FOUC risk).

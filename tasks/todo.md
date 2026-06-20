@@ -531,3 +531,49 @@ Backup branch: `backup/seo-t3-pre`. Local-only, not pushed. `/book/` untouched.
 3. Upload the JLo hero video (Site Content → Homepage → Hero video URL) + Hero video poster (Site Images).
 4. Form `tH1eoDpRA4hMEb04GgzX` is NOT placed — tell me which page/section and I'll embed it.
 5. (Optional) Enable WP Rocket "Optimize CSS delivery" for critical-CSS in prod.
+
+---
+
+# T4 — LCP performance pass (2026-06-20)
+
+Live mobile before: Perf 77, **LCP 5.9s (red)**; FCP 1.4s, TBT 70ms, CLS 0, SI 3.6s.
+LCP element = homepage hero image. Local-only, not pushed.
+
+## Root cause
+`showtime_image('hero', W)` returned `wp_get_attachment_url()` — the **full original** — for an
+uploaded attachment (the `W` arg only applied to the Unsplash fallback). The hero shipped the full
+1200×1600 portrait (~297 KB) with **no srcset**, cropped to a landscape banner. On live the upload
+is larger, so the served LCP image is bigger still. This is also the bulk of "image delivery, 853 KiB".
+
+## Theme commits (done)
+- **C1 — Hero responsive image + preload** (`inc/imagery.php`, `template-parts/home/section-01-hero.php`,
+  `inc/performance.php`). `showtime_front_hero_image()` builds `src`+`srcset`+`sizes=100vw` from the
+  registered landscape crops (showtime-card 720 / showtime-card-2x 1440 / showtime-hero 1920), using each
+  crop's actual width and deduping identical files; caps the served image at ≤1920×1080 instead of the
+  unbounded original. Hero `<img srcset sizes width height fetchpriority=high>`. Preload switched to
+  `imagesrcset/imagesizes` so mobile preloads the right small crop. **Proven:** standard-DPR mobile now
+  picks the 720w crop (**100 KB vs 297 KB full, −66%**); the unbounded original is now capped (the live win).
+- **C2 — Right-size attachment images sitewide** (`inc/imagery.php`). `showtime_attachment_sized_url()`:
+  when an upload is >1.5× the display width, serve the smallest generated size ≥ width; else keep the
+  original (no regression on small uploads). Verified: 1200px orig @400 → 720w (96 KB vs 320 KB full).
+  Activates on live's large uploads → the non-hero share of the 853 KiB. (Below-fold/lazy → helps the
+  audit + bandwidth, not LCP directly.)
+- **C3 — Defer footer.css** (`inc/enqueue.php`). media=print + onload swap (+`<noscript>`); footer is
+  always below the fold → zero hero FOUC. blocks.css kept blocking (block content can be above the fold).
+
+## Server-side / WP-Rocket / GTM — apply on the droplet after deploy (NO theme code)
+1. **Render-blocking CSS (−1,170 ms):** WP Rocket → File Optimization → **Optimize CSS delivery** (critical
+   CSS + async rest; no hero FOUC because used CSS is inlined). Also Minify/Combine CSS+JS. This is the fix.
+2. **WebP/AVIF on uploads (compounds C1):** Cloudflare **Polish** (WebP/AVIF) or Imagify/EWWW → the 100 KB
+   hero crop → ~40–60 KB.
+3. **Cache lifetimes:** add the nginx/Apache `Cache-Control: public, immutable` + `expires 1y` blocks for
+   css/js/images/fonts (in the plan file). Enable **Brotli** (Cloudflare auto; nginx `ngx_brotli`).
+4. **Unused JS (91 KiB):** theme JS already all `defer`/footer (`main, header, home, carousel, popup,
+   contact, blog`; GHL defer; Turnstile async) — nothing to change. **GTM is third-party** → WP Rocket
+   **"Delay JavaScript Execution"** + prune unused GTM tags.
+
+## Expected LCP
+- Hero mobile bytes: **297 KB → ~100 KB** (right-sized crop), **~40–60 KB** with edge WebP; on live the
+  absolute saving is larger (capped vs the multi-hundred-KB/MB original) + the correct candidate is preloaded.
+- With WP Rocket CSS delivery (−~1,170 ms) + edge cache/Brotli: **LCP ≈ 5.9 s → ~2.5–3.5 s** (exact figure
+  depends on server TTFB + CDN; theme commits are the precondition, the server flags close the rest).
