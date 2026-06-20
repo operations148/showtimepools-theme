@@ -20,6 +20,23 @@
 	const okAlert   = form.querySelector('[data-status="success"]');
 	const errAlert  = form.querySelector('[data-status="error"]');
 
+	// UTM attribution: start from the CMS-default hidden fields, then let any
+	// real ?utm_* in the visitor's URL override them. Synced back onto the
+	// hidden inputs so a no-JS fallback (native POST) would still carry defaults.
+	const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'];
+	function collectUtm() {
+		const params = new URLSearchParams(window.location.search);
+		const utm = {};
+		UTM_KEYS.forEach((key) => {
+			const input = form.querySelector(`[data-utm="${key}"]`);
+			const fromUrl = params.get(key);
+			const value = (fromUrl != null && fromUrl !== '') ? fromUrl : (input ? input.value : '');
+			if (input && fromUrl != null && fromUrl !== '') input.value = fromUrl;
+			if (value) utm[key] = value;
+		});
+		return utm;
+	}
+
 	function clearErrors() {
 		form.querySelectorAll('.form-error').forEach(el => {
 			el.hidden = true;
@@ -65,6 +82,7 @@
 			hp_url:    String(fd.get('hp_url')    || ''),
 			page_url:  window.location.href,
 			turnstile_token: String(fd.get('cf-turnstile-response') || ''),
+			utm:       collectUtm(),
 		};
 
 		const defaultLabel = submitBtn ? submitBtn.dataset.defaultLabel || submitBtn.textContent : '';

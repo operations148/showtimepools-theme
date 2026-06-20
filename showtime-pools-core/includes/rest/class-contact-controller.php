@@ -53,6 +53,7 @@ final class ContactController {
 					'loaded_at' => array( 'type' => 'integer' ),
 					'hp_url'    => array( 'type' => 'string' ), // honeypot
 					'turnstile_token' => array( 'type' => 'string' ),
+					'utm'       => array( 'type' => 'object' ), // attribution → GHL context
 				),
 			)
 		);
@@ -145,6 +146,19 @@ final class ContactController {
 
 		set_transient( $rate_key, $count + 1, self::RATE_TTL );
 
+		// UTM attribution → GHL context. Sourced from the form's CMS-default
+		// hidden fields, overridden client-side by any real ?utm_… in the URL.
+		$utm_in  = isset( $params['utm'] ) && is_array( $params['utm'] ) ? $params['utm'] : array();
+		$context = array(
+			'page_url' => esc_url_raw( (string) ( $params['page_url'] ?? '' ) ),
+			'referrer' => isset( $_SERVER['HTTP_REFERER'] ) ? esc_url_raw( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) : '',
+		);
+		foreach ( array( 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content' ) as $utm_key ) {
+			if ( ! empty( $utm_in[ $utm_key ] ) ) {
+				$context[ $utm_key ] = sanitize_text_field( (string) $utm_in[ $utm_key ] );
+			}
+		}
+
 		// 5. Forward to GHL.
 		$result = Ghl::forward(
 			Ghl::TYPE_CONTACT,
@@ -156,10 +170,7 @@ final class ContactController {
 				'message' => $message,
 				'consent' => $consent,
 			),
-			array(
-				'page_url' => esc_url_raw( (string) ( $params['page_url'] ?? '' ) ),
-				'referrer' => isset( $_SERVER['HTTP_REFERER'] ) ? esc_url_raw( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) : '',
-			)
+			$context
 		);
 
 		// We never expose webhook errors to the visitor — they get a friendly

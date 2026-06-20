@@ -199,6 +199,73 @@ JS;
 	}
 
 	// ─────────────────────────────────────────────────────────────────────────
+	// HOMEPAGE TAB
+	//
+	// Sitewide homepage settings that are not page copy: form attribution
+	// (UTM) defaults today; hero video URL + popup toggle are appended here by
+	// later commits. UTM values save as standalone wp_options (no showtime_ct_
+	// prefix) so the theme reads them directly via get_option() — same pattern
+	// as the Reviews tab — without coupling templates to this admin class.
+	// ─────────────────────────────────────────────────────────────────────────
+
+	/** UTM attribution defaults for the native /contact/ form. key => default. */
+	private static function utm_defaults(): array {
+		return array(
+			'utm_source'   => 'website',
+			'utm_medium'   => 'organic',
+			'utm_campaign' => 'site_form',
+			'utm_content'  => 'contact_form',
+		);
+	}
+
+	private function render_home(): void {
+		?>
+		<div style="background:#fff;border:1px solid #ddd;border-radius:10px;padding:20px;margin-bottom:20px;">
+			<h3 style="margin-top:0;font-size:15px;"><?php esc_html_e( 'Contact form attribution (UTM → GHL)', 'showtime-pools-core' ); ?></h3>
+			<p style="color:#666;font-size:12px;margin:0 0 14px;">
+				<?php esc_html_e( 'Default UTM values sent with every native Contact-page form submission so n8n can attribute the source. If a visitor lands on /contact/ with real ?utm_… parameters in the URL, those override these defaults for that submission.', 'showtime-pools-core' ); ?>
+			</p>
+			<?php
+			$labels = array(
+				'utm_source'   => __( 'utm_source', 'showtime-pools-core' ),
+				'utm_medium'   => __( 'utm_medium', 'showtime-pools-core' ),
+				'utm_campaign' => __( 'utm_campaign', 'showtime-pools-core' ),
+				'utm_content'  => __( 'utm_content', 'showtime-pools-core' ),
+			);
+			foreach ( self::utm_defaults() as $key => $default ) {
+				$val = (string) get_option( 'showtime_' . $key, $default );
+				$this->text_field( 'ct_' . $key, $labels[ $key ], $val );
+			}
+			?>
+		</div>
+		<?php
+	}
+
+	private function process_home(): void {
+		foreach ( array_keys( self::utm_defaults() ) as $key ) {
+			$posted = isset( $_POST[ 'ct_' . $key ] )
+				? sanitize_text_field( wp_unslash( $_POST[ 'ct_' . $key ] ) )
+				: '';
+			if ( '' === $posted ) {
+				delete_option( 'showtime_' . $key );
+			} else {
+				update_option( 'showtime_' . $key, $posted, false );
+			}
+		}
+	}
+
+	/**
+	 * Hub Pages tab. No sitewide settings here yet — hub intros are edited per
+	 * page (Pages → hub → Update). Rendered as a neutral note so the tab never
+	 * fatals on an unimplemented renderer.
+	 */
+	private function render_hubs(): void {
+		echo '<div style="background:#fff;border:1px solid #ddd;border-radius:10px;padding:20px;">';
+		echo '<p style="color:#666;margin:0;">' . esc_html__( 'Hub page headings and intros are edited directly on each hub page (Pages → the hub page → Update). There are no sitewide settings on this tab.', 'showtime-pools-core' ) . '</p>';
+		echo '</div>';
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
 	// TEAM TAB
 	// ─────────────────────────────────────────────────────────────────────────
 
@@ -369,6 +436,8 @@ JS;
 
 	private function process_save( string $tab ): void {
 		match ( $tab ) {
+			'home'    => $this->process_home(),
+			'hubs'    => null, // No editable settings on this tab yet.
 			'team'    => $this->process_team(),
 			'creds'   => $this->process_creds(),
 			'reviews' => $this->process_reviews(),

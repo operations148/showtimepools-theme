@@ -115,6 +115,22 @@ $map_url   = 'https://www.google.com/maps?q=' . rawurlencode( $map_query ) . '&o
 							<label>Leave this field empty<input type="text" name="hp_url" tabindex="-1" autocomplete="off"></label>
 						</div>
 
+						<?php
+						// UTM attribution defaults (Showtime Pools → Site Content → Homepage).
+						// contact.js overrides any of these from real ?utm_… in the visitor's
+						// URL before submit; the REST controller forwards them to GHL → n8n.
+						$utm_fields = array(
+							'utm_source'   => 'website',
+							'utm_medium'   => 'organic',
+							'utm_campaign' => 'site_form',
+							'utm_content'  => 'contact_form',
+						);
+						foreach ( $utm_fields as $utm_key => $utm_default ) :
+							$utm_val = (string) get_option( 'showtime_' . $utm_key, $utm_default );
+							?>
+							<input type="hidden" name="<?php echo esc_attr( $utm_key ); ?>" value="<?php echo esc_attr( $utm_val ); ?>" data-utm="<?php echo esc_attr( $utm_key ); ?>">
+						<?php endforeach; ?>
+
 						<div class="contact-form__row">
 							<div class="form-field">
 								<label class="form-label" for="cf-name"><?php esc_html_e( 'Name', 'showtime-pools' ); ?> <span class="required">*</span></label>
