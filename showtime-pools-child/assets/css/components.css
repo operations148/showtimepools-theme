@@ -692,10 +692,19 @@ details[open] .faq__chevron { transform: rotate(180deg); }
 .reviews-widget {
 	margin-top: var(--sp-6);
 	min-height: 320px;
+	/* Centre + cap width so the live Trustindex carousel (its ~3-card slider
+	   layout is set in the Trustindex dashboard, not in code) reads as an
+	   intentional row on wide screens instead of stretching edge-to-edge.
+	   min-height reserves space so the widget loading in causes no CLS. */
+	max-width: 1120px;
+	margin-inline: auto;
 }
 .reviews-widget--compact {
 	min-height: 220px;
 }
+/* Trustindex injects its own slider markup; keep it from forcing a horizontal
+   page scrollbar on narrow viewports. */
+.reviews-widget :where(.ti-widget, [class*="trustindex"]) { max-width: 100%; }
 .reviews-widget-fallback {
 	display: flex;
 	flex-direction: column;
