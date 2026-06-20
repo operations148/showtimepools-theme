@@ -28,7 +28,7 @@ if ( '' === $hero_lead )    { $hero_lead    = 'Live from our Google Business Pro
 	<?php $reviews_hero = function_exists( 'showtime_image' ) ? showtime_image( 'lifestyle_2', 1920 ) : ''; ?>
 	<section class="int-hero int-hero--brand int-hero--photo" data-reveal>
 		<?php if ( $reviews_hero ) : ?>
-			<img class="int-hero__photo" src="<?php echo esc_url( $reviews_hero ); ?>" alt="" loading="eager" fetchpriority="high" decoding="async">
+			<img class="int-hero__photo" src="<?php echo esc_url( $reviews_hero ); ?>" <?php echo showtime_hero_srcset_attr( 'lifestyle_2' ); ?> alt="" loading="eager" fetchpriority="high" decoding="async">
 		<?php endif; ?>
 		<div class="int-hero__pattern" aria-hidden="true"></div>
 		<div class="container">

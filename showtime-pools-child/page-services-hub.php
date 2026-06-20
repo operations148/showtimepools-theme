@@ -54,7 +54,7 @@ if ( '' === $outdoor_lead )    { $outdoor_lead    = 'The bigger projects. Same c
 	<?php $services_hero = function_exists( 'showtime_image' ) ? showtime_image( 'project_1', 1920 ) : ''; ?>
 	<section class="int-hero int-hero--brand int-hero--photo" data-reveal>
 		<?php if ( $services_hero ) : ?>
-			<img class="int-hero__photo" src="<?php echo esc_url( $services_hero ); ?>" alt="" loading="eager" fetchpriority="high" decoding="async">
+			<img class="int-hero__photo" src="<?php echo esc_url( $services_hero ); ?>" <?php echo showtime_hero_srcset_attr( 'project_1' ); ?> alt="" loading="eager" fetchpriority="high" decoding="async">
 		<?php endif; ?>
 		<div class="int-hero__pattern" aria-hidden="true"></div>
 		<div class="container">

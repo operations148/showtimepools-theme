@@ -39,7 +39,7 @@ if ( '' === $why_para2 )     { $why_para2     = 'In practice this means we will 
 	<?php $insp_hero = function_exists( 'showtime_image' ) ? showtime_image( 'inspections_bg', 1920 ) : ''; ?>
 	<section class="int-hero int-hero--mechanics int-hero--photo" data-reveal>
 		<?php if ( $insp_hero ) : ?>
-			<img class="int-hero__photo" src="<?php echo esc_url( $insp_hero ); ?>" alt="" loading="eager" fetchpriority="high" decoding="async">
+			<img class="int-hero__photo" src="<?php echo esc_url( $insp_hero ); ?>" <?php echo showtime_hero_srcset_attr( 'inspections_bg' ); ?> alt="" loading="eager" fetchpriority="high" decoding="async">
 		<?php endif; ?>
 		<div class="int-hero__pattern" aria-hidden="true"></div>
 		<div class="container">

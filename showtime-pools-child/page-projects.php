@@ -90,7 +90,7 @@ if ( '' === $hero_lead )    { $hero_lead    = 'A full interactive map with photo
 	<?php $projects_hero = function_exists( 'showtime_image' ) ? showtime_image( 'lifestyle_main', 1920 ) : ''; ?>
 	<section class="int-hero int-hero--brand int-hero--photo" data-reveal>
 		<?php if ( $projects_hero ) : ?>
-			<img class="int-hero__photo" src="<?php echo esc_url( $projects_hero ); ?>" alt="" loading="eager" fetchpriority="high" decoding="async">
+			<img class="int-hero__photo" src="<?php echo esc_url( $projects_hero ); ?>" <?php echo showtime_hero_srcset_attr( 'lifestyle_main' ); ?> alt="" loading="eager" fetchpriority="high" decoding="async">
 		<?php endif; ?>
 		<div class="int-hero__pattern" aria-hidden="true"></div>
 		<div class="container">

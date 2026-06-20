@@ -32,7 +32,7 @@ if ( '' === $outside_body ) { $outside_body = 'New construction, full remodels, 
 	<?php $areas_hero = function_exists( 'showtime_image' ) ? showtime_image( 'lifestyle_4', 1920 ) : ''; ?>
 	<section class="int-hero int-hero--brand int-hero--photo" data-reveal>
 		<?php if ( $areas_hero ) : ?>
-			<img class="int-hero__photo" src="<?php echo esc_url( $areas_hero ); ?>" alt="" loading="eager" fetchpriority="high" decoding="async">
+			<img class="int-hero__photo" src="<?php echo esc_url( $areas_hero ); ?>" <?php echo showtime_hero_srcset_attr( 'lifestyle_4' ); ?> alt="" loading="eager" fetchpriority="high" decoding="async">
 		<?php endif; ?>
 		<div class="int-hero__pattern" aria-hidden="true"></div>
 		<div class="container">

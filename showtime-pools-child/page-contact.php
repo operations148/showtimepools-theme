@@ -79,7 +79,7 @@ $map_url   = 'https://www.google.com/maps?q=' . rawurlencode( $map_query ) . '&o
 	<?php $contact_hero_img = function_exists( 'showtime_image' ) ? showtime_image( 'lifestyle_3', 1920 ) : ''; ?>
 	<section class="contact-hero section section--brand contact-hero--photo" data-reveal>
 		<?php if ( $contact_hero_img ) : ?>
-			<img class="contact-hero__photo" src="<?php echo esc_url( $contact_hero_img ); ?>" alt="" loading="eager" fetchpriority="high" decoding="async">
+			<img class="contact-hero__photo" src="<?php echo esc_url( $contact_hero_img ); ?>" <?php echo showtime_hero_srcset_attr( 'lifestyle_3' ); ?> alt="" loading="eager" fetchpriority="high" decoding="async">
 		<?php endif; ?>
 		<div class="contact-hero__pattern" aria-hidden="true"></div>
 		<div class="container">

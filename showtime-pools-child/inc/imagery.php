@@ -327,6 +327,51 @@ function showtime_front_hero_image(): array {
 }
 
 /**
+ * Responsive srcset+sizes attribute string for a full-bleed landing-page hero
+ * <img>. Drops in next to the existing src. Returns '' when the slot isn't an
+ * uploaded attachment with at least two landscape crops (e.g. the Unsplash
+ * fallback), so the markup degrades to the single src unchanged. Same landscape
+ * crops + dedupe as showtime_front_hero_image(), generalised to any slot so the
+ * interior/SEO landing-page heroes get the same right-sized mobile image.
+ *
+ * @return string e.g. `srcset="… 720w, … 1440w" sizes="100vw"` or ''.
+ */
+function showtime_hero_srcset_attr( string $slot ): string {
+	$key    = str_replace( '-', '_', $slot );
+	$id     = 0;
+	$native = get_option( 'showtime_img_' . $key, '' );
+	if ( is_numeric( $native ) ) {
+		$id = (int) $native;
+	} elseif ( function_exists( 'get_field' ) ) {
+		$acf = get_field( 'img_' . $key, 'option' );
+		if ( is_array( $acf ) && ! empty( $acf['ID'] ) ) {
+			$id = (int) $acf['ID'];
+		} elseif ( is_numeric( $acf ) ) {
+			$id = (int) $acf;
+		}
+	}
+	if ( $id < 1 || ! wp_attachment_is_image( $id ) ) {
+		return '';
+	}
+
+	$srcset = array();
+	$seen   = array();
+	foreach ( array( 'showtime-card', 'showtime-card-2x', 'showtime-hero' ) as $size ) {
+		$info = wp_get_attachment_image_src( $id, $size );
+		if ( empty( $info[0] ) || (int) $info[1] < 1 || isset( $seen[ $info[0] ] ) ) {
+			continue;
+		}
+		$seen[ $info[0] ]         = true;
+		$srcset[ (int) $info[1] ] = $info[0] . ' ' . (int) $info[1] . 'w';
+	}
+	if ( count( $srcset ) < 2 ) {
+		return ''; // single (or no) crop → no responsive benefit, leave src as-is.
+	}
+	ksort( $srcset );
+	return 'srcset="' . esc_attr( implode( ', ', $srcset ) ) . '" sizes="100vw"';
+}
+
+/**
  * Resolve the image slot for a post: explicit `_showtime_image_slot` meta,
  * else the primary category's bundled blog photo, else the generic default.
  */

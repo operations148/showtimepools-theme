@@ -69,7 +69,7 @@ $category_slot_map = array(
 
 	<section class="int-hero int-hero--brand int-hero--photo" data-reveal>
 		<?php if ( $blog_hero_img ) : ?>
-			<img class="int-hero__photo" src="<?php echo esc_url( $blog_hero_img ); ?>" alt="" loading="eager" fetchpriority="high" decoding="async">
+			<img class="int-hero__photo" src="<?php echo esc_url( $blog_hero_img ); ?>" <?php echo showtime_hero_srcset_attr( 'blog_default' ); ?> alt="" loading="eager" fetchpriority="high" decoding="async">
 		<?php endif; ?>
 		<div class="int-hero__pattern" aria-hidden="true"></div>
 		<div class="container">
