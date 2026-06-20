@@ -31,10 +31,12 @@ $cta1_url    = '' !== $pc_cta1_url ? $pc_cta1_url : showtime_booking_url();
 $cta2_label  = '' !== $pc_cta2_lbl ? $pc_cta2_lbl : __( 'See our work', 'showtime-pools' );
 $cta2_url    = '' !== $pc_cta2_url ? $pc_cta2_url : home_url( '/projects/' );
 
-// Resolution shared with the LCP preload hook in inc/performance.php.
-$hero_pair = function_exists( 'showtime_front_hero_urls' ) ? showtime_front_hero_urls() : array( 'desktop' => '', 'mobile' => '' );
-$hero_url  = $hero_pair['desktop'];
-$hero_sm   = $hero_pair['mobile'];
+// Responsive hero image (src + srcset + sizes), shared with the LCP preload in
+// inc/performance.php so the preloaded candidate matches what paints.
+$hero_img = function_exists( 'showtime_front_hero_image' )
+	? showtime_front_hero_image()
+	: array( 'src' => '', 'srcset' => '', 'sizes' => '100vw', 'width' => 1920, 'height' => 1080 );
+$hero_url = $hero_img['src'];
 
 $eyebrow_text = ( '' !== ( $opt ? (string) get_field( 'hero_eyebrow', $opt ) : '' ) )
 	? (string) get_field( 'hero_eyebrow', $opt )
@@ -56,8 +58,11 @@ $hero_poster = function_exists( 'showtime_image' ) ? showtime_image( 'hero_poste
 		<img class="home-hero__bgphoto home-hero__bgphoto--poster" src="<?php echo esc_url( $hero_poster ); ?>" alt="<?php echo esc_attr( $pc_alt ); ?>" fetchpriority="high" decoding="async">
 	<?php else : ?>
 		<picture class="home-hero__bgphoto">
-			<source media="(min-width:961px)" srcset="<?php echo esc_url( $hero_url ); ?>">
-			<img src="<?php echo esc_url( $hero_sm ); ?>" alt="<?php echo esc_attr( $pc_alt ); ?>" fetchpriority="high" decoding="async">
+			<img
+				src="<?php echo esc_url( $hero_img['src'] ); ?>"
+				<?php if ( '' !== $hero_img['srcset'] ) : ?>srcset="<?php echo esc_attr( $hero_img['srcset'] ); ?>" sizes="<?php echo esc_attr( $hero_img['sizes'] ); ?>"<?php endif; ?>
+				width="<?php echo (int) $hero_img['width']; ?>" height="<?php echo (int) $hero_img['height']; ?>"
+				alt="<?php echo esc_attr( $pc_alt ); ?>" fetchpriority="high" decoding="async">
 		</picture>
 	<?php endif; ?>
 	<div class="home-hero__veil" aria-hidden="true"></div>

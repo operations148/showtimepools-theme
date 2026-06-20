@@ -205,6 +205,83 @@ function showtime_front_hero_urls(): array {
 }
 
 /**
+ * Front-page hero as a responsive image: src + srcset + sizes. Single source of
+ * truth for the hero template AND the LCP preload, so the preloaded candidate
+ * always matches what the browser paints.
+ *
+ * The plain showtime_image('hero') path returns the FULL original for an
+ * uploaded attachment (its $w arg only applies to the Unsplash fallback), which
+ * shipped a 1200×1600 portrait to mobile as the LCP image. Here we serve the
+ * registered landscape crops (showtime-card 720, showtime-card-2x 1440,
+ * showtime-hero 1920) as a srcset so mobile downloads ~720w, not the original.
+ *
+ * @return array{src:string,srcset:string,sizes:string,width:int,height:int}
+ */
+function showtime_front_hero_image(): array {
+	$sizes = '100vw';
+
+	// Resolve an attachment ID from the native Site Images option or ACF.
+	$id     = 0;
+	$native = get_option( 'showtime_img_hero', '' );
+	if ( is_numeric( $native ) ) {
+		$id = (int) $native;
+	} elseif ( function_exists( 'get_field' ) ) {
+		$acf = get_field( 'hero_image', 'option' );
+		if ( is_array( $acf ) && ! empty( $acf['ID'] ) ) {
+			$id = (int) $acf['ID'];
+		} elseif ( is_numeric( $acf ) ) {
+			$id = (int) $acf;
+		}
+	}
+
+	if ( $id > 0 && wp_attachment_is_image( $id ) ) {
+		// Build the srcset from each landscape crop's ACTUAL generated width and
+		// dedupe identical files — small originals cap multiple sizes to the same
+		// file, so we never advertise a 1200px file as "1920w".
+		$srcset = array();
+		$seen   = array();
+		foreach ( array( 'showtime-card', 'showtime-card-2x', 'showtime-hero' ) as $size ) {
+			$info = wp_get_attachment_image_src( $id, $size ); // [url, width, height, is_intermediate]
+			if ( empty( $info[0] ) || (int) $info[1] < 1 || isset( $seen[ $info[0] ] ) ) {
+				continue;
+			}
+			$seen[ $info[0] ]      = true;
+			$srcset[ (int) $info[1] ] = $info[0] . ' ' . (int) $info[1] . 'w';
+		}
+		ksort( $srcset );
+
+		$src_info = wp_get_attachment_image_src( $id, 'showtime-hero' );
+		$src      = ! empty( $src_info[0] ) ? $src_info[0] : ( wp_get_attachment_image_url( $id, 'large' ) ?: wp_get_attachment_url( $id ) );
+
+		return array(
+			'src'    => (string) $src,
+			'srcset' => implode( ', ', $srcset ),
+			'sizes'  => $sizes,
+			'width'  => 1920,
+			'height' => 1080,
+		);
+	}
+
+	// Non-attachment: Unsplash builds a distinct URL per width (auto=format →
+	// WebP/AVIF); a bundled local file / plain string ignores width, so the
+	// three resolve identically → emit a single src with no srcset.
+	$w720  = showtime_image( 'hero', 720 );
+	$w1280 = showtime_image( 'hero', 1280 );
+	$w1920 = showtime_image( 'hero', 1920 );
+	$srcset = ( $w720 !== $w1920 )
+		? array( $w720 . ' 720w', $w1280 . ' 1280w', $w1920 . ' 1920w' )
+		: array();
+
+	return array(
+		'src'    => (string) $w1920,
+		'srcset' => implode( ', ', $srcset ),
+		'sizes'  => $sizes,
+		'width'  => 1920,
+		'height' => 1080,
+	);
+}
+
+/**
  * Resolve the image slot for a post: explicit `_showtime_image_slot` meta,
  * else the primary category's bundled blog photo, else the generic default.
  */

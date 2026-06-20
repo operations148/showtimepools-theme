@@ -53,17 +53,18 @@ add_filter( 'wp_lazy_loading_enabled', '__return_true' );
 add_action(
 	'wp_head',
 	function () {
-		if ( is_front_page() && function_exists( 'showtime_front_hero_urls' ) ) {
-			$hero = showtime_front_hero_urls();
-			if ( '' !== $hero['desktop'] && $hero['desktop'] === $hero['mobile'] ) {
-				echo '<link rel="preload" as="image" href="' . esc_url( $hero['desktop'] ) . '" fetchpriority="high">' . "\n";
-				return;
-			}
-			if ( '' !== $hero['desktop'] ) {
-				echo '<link rel="preload" as="image" href="' . esc_url( $hero['desktop'] ) . '" media="(min-width:961px)" fetchpriority="high">' . "\n";
-			}
-			if ( '' !== $hero['mobile'] ) {
-				echo '<link rel="preload" as="image" href="' . esc_url( $hero['mobile'] ) . '" media="(max-width:960px)" fetchpriority="high">' . "\n";
+		if ( is_front_page() && function_exists( 'showtime_front_hero_image' ) ) {
+			// With a hero video the LCP is the small poster, not a single large
+			// image — skip the image preload so we don't fetch the wrong asset.
+			if ( '' === (string) get_option( 'showtime_hero_video_url', '' ) ) {
+				$h = showtime_front_hero_image();
+				if ( '' !== $h['srcset'] ) {
+					// Preload the exact responsive candidate the <img> will pick,
+					// so mobile preloads the ~720w crop, not the full original.
+					echo '<link rel="preload" as="image" imagesrcset="' . esc_attr( $h['srcset'] ) . '" imagesizes="' . esc_attr( $h['sizes'] ) . '" fetchpriority="high">' . "\n";
+				} elseif ( '' !== $h['src'] ) {
+					echo '<link rel="preload" as="image" href="' . esc_url( $h['src'] ) . '" fetchpriority="high">' . "\n";
+				}
 			}
 			return;
 		}
