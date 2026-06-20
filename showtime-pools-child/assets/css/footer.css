@@ -139,6 +139,30 @@
 	margin-left: 2px;
 }
 
+/* Footer logo emblem above the wordmark (CMS: Site Images → Footer logo). */
+.footer-main__logo {
+	display: block;
+	width: 60px;
+	height: 60px;
+	object-fit: contain;
+	margin-bottom: var(--sp-3);
+}
+
+/* Main-office (Sherman Oaks) map in the offices column — lazy iframe. */
+.footer-main__map {
+	margin-top: var(--sp-5);
+	border-radius: var(--r-md);
+	overflow: hidden;
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	line-height: 0;
+}
+.footer-main__map iframe {
+	display: block;
+	width: 100%;
+	height: 160px;
+	border: 0;
+}
+
 .footer-main__tagline {
 	color: rgba(255, 255, 255, 0.7);
 	max-width: 32ch;

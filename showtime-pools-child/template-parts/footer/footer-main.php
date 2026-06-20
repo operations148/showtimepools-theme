@@ -61,12 +61,37 @@ $services_rest = array_slice( $services, 6, 6 );
 
 // Area pages from the registry so new neighborhoods appear automatically.
 $footer_areas = class_exists( '\\Showtime\\Areas' ) ? \Showtime\Areas::all() : array();
+
+// Footer logo: CMS override (Site Images → Footer logo) else the bundled logo
+// file. Same resolution order as the header branding so the two stay in sync.
+$footer_logo = '';
+$flo = get_option( 'showtime_img_footer_logo', '' );
+if ( '' !== (string) $flo ) {
+	$footer_logo = is_numeric( $flo ) ? (string) wp_get_attachment_url( (int) $flo ) : (string) $flo;
+}
+if ( '' === $footer_logo ) {
+	foreach ( array( 'svg', 'webp', 'png' ) as $ext ) {
+		if ( file_exists( SHOWTIME_CHILD_DIR . "/assets/img/logo.{$ext}" ) ) {
+			$footer_logo = SHOWTIME_CHILD_URI . "/assets/img/logo.{$ext}";
+			break;
+		}
+	}
+}
+
+// Main-office map (Sherman Oaks) — exact NAP reused from the first office row,
+// never retyped. Same embed pattern as the contact page; lazy-loaded.
+$main_office    = $offices[0] ?? array();
+$footer_map_q   = trim( (string) ( $main_office['street'] ?? '' ) . ' ' . (string) ( $main_office['city'] ?? '' ) );
+$footer_map_url = '' !== $footer_map_q ? 'https://www.google.com/maps?q=' . rawurlencode( $footer_map_q ) . '&output=embed' : '';
 ?>
 <div class="footer-main">
 	<div class="container">
 		<div class="footer-main__top">
 			<div class="footer-main__brand">
 				<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="site-branding site-branding--footer" rel="home" aria-label="<?php esc_attr_e( 'Showtime Pools — home', 'showtime-pools' ); ?>">
+					<?php if ( '' !== $footer_logo ) : ?>
+						<img class="footer-main__logo" src="<?php echo esc_url( $footer_logo ); ?>" alt="<?php esc_attr_e( 'Showtime Pools', 'showtime-pools' ); ?>" width="60" height="60" loading="lazy" decoding="async">
+					<?php endif; ?>
 					<span class="footer-main__wordmark">Showtime<em>Pools</em></span>
 				</a>
 				<p class="footer-main__tagline">
@@ -138,6 +163,16 @@ $footer_areas = class_exists( '\\Showtime\\Areas' ) ? \Showtime\Areas::all() : a
 						<div><dt><?php echo esc_html( $day ); ?></dt><dd><?php echo esc_html( $time ); ?></dd></div>
 					<?php endforeach; ?>
 				</dl>
+
+					<?php if ( '' !== $footer_map_url ) : ?>
+						<div class="footer-main__map">
+							<iframe
+								loading="lazy"
+								referrerpolicy="no-referrer-when-downgrade"
+								title="<?php echo esc_attr( sprintf( __( '%s location map', 'showtime-pools' ), (string) ( $main_office['label'] ?? 'Showtime Pools' ) ) ); ?>"
+								src="<?php echo esc_url( $footer_map_url ); ?>"></iframe>
+						</div>
+					<?php endif; ?>
 			</div>
 		</div>
 	</div>

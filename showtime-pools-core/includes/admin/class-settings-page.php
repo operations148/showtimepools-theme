@@ -232,6 +232,9 @@ final class SettingsPage {
 	 */
 	private function get_image_slots(): array {
 		return array(
+			'Branding' => array(
+				array( 'slot' => 'footer_logo',    'label' => 'Footer logo (defaults to the bundled Showtime Pools logo)' ),
+			),
 			'Heroes & Backgrounds' => array(
 				array( 'slot' => 'hero',           'label' => 'Homepage hero photo' ),
 				array( 'slot' => 'hero_poster',    'label' => 'Homepage hero video poster (still shown on mobile + while the video loads)' ),
