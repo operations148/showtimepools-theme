@@ -49,6 +49,48 @@ function showtime_picsum_url( string $seed, int $w = 1600, int $h = 900 ): strin
  * @param int    $w    Width in CSS pixels.
  * @param int    $h    Height (0 = let Unsplash decide proportionally).
  */
+/**
+ * Resolve a width-appropriate URL for an uploaded attachment: the smallest
+ * generated size whose width is >= the requested width, else the full original.
+ * Keeps display-sized images on the page instead of multi-MB originals.
+ */
+function showtime_attachment_sized_url( int $id, int $w ): string {
+	if ( $id < 1 ) {
+		return '';
+	}
+	$full = (string) wp_get_attachment_url( $id );
+	$meta = wp_get_attachment_metadata( $id );
+	$orig_w = (int) ( $meta['width'] ?? 0 );
+
+	// Only downsize when the original is meaningfully larger than the display
+	// width (the live case: a multi-MP upload shown in a small box). For a
+	// small original we keep it, so we never swap in a higher-quality
+	// intermediate crop that's actually larger in bytes than the original.
+	if ( $orig_w < 1 || $orig_w <= (int) round( $w * 1.5 ) ) {
+		return $full;
+	}
+
+	if ( ! empty( $meta['sizes'] ) && is_array( $meta['sizes'] ) ) {
+		$best_name = '';
+		$best_w    = PHP_INT_MAX;
+		foreach ( $meta['sizes'] as $size_name => $info ) {
+			$iw = (int) ( $info['width'] ?? 0 );
+			if ( $iw >= $w && $iw < $best_w ) {
+				$best_w    = $iw;
+				$best_name = (string) $size_name;
+			}
+		}
+		if ( '' !== $best_name ) {
+			$url = wp_get_attachment_image_url( $id, $best_name );
+			if ( $url ) {
+				return (string) $url;
+			}
+		}
+	}
+	// No generated size large enough → full original.
+	return $full;
+}
+
 function showtime_image( string $slot, int $w = 1600, int $h = 0 ): string {
 
 	// ── Priority 0: Native WP option (no ACF Pro required) ───────────────────
@@ -58,8 +100,11 @@ function showtime_image( string $slot, int $w = 1600, int $h = 0 ): string {
 	$opt_key = 'showtime_img_' . str_replace( '-', '_', $slot );
 	$native  = get_option( $opt_key, '' );
 	if ( '' !== (string) $native ) {
+		// For an uploaded attachment, serve a width-appropriate generated size
+		// instead of the full original — the original is often far larger than
+		// the display size (a key share of PageSpeed's "image delivery" savings).
 		$native_url = is_numeric( $native )
-			? wp_get_attachment_url( (int) $native )
+			? showtime_attachment_sized_url( (int) $native, $w )
 			: (string) $native;
 		if ( $native_url ) {
 			return (string) apply_filters( 'showtime/image/' . $slot, $native_url, $slot, $w, $h );
