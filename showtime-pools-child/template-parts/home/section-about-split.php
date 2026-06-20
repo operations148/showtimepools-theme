@@ -7,7 +7,9 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$img = function_exists( 'showtime_image' ) ? showtime_image( 'about_hero', 1200 ) : '';
+// Homepage About section photo. Its own slot (Site Images → "Homepage About
+// section photo") so it is independent from the /about/ page background.
+$img = function_exists( 'showtime_image' ) ? showtime_image( 'about_split', 1200 ) : '';
 ?>
 <section class="about-split" data-reveal>
 	<div class="container">

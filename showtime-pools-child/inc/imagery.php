@@ -125,6 +125,7 @@ function showtime_image( string $slot, int $w = 1600, int $h = 0 ): string {
 		// Backdrops + accents
 		'inspections_bg'   => '1565609890717-4b39e8b7cf9c',    // equipment
 		'about_hero'       => '1581094271901-8022df4466f9',    // tools / craftsmanship
+			'about_split'      => '1613977257363-707ba9348227',    // homepage About section (modern villa + pool); independent of about_hero
 		'process_bg'       => '1576013551627-0cc20b96c2a7',    // pool surface
 
 		// Founder portrait — defaults to a craftsman-on-jobsite shot. Drop
@@ -138,7 +139,7 @@ function showtime_image( string $slot, int $w = 1600, int $h = 0 ): string {
 	// user drop authentic shots (founder portrait, neighborhood hero,
 	// project photos) without touching WP admin OR PHP. Drop the file,
 	// hard-refresh, done.
-	$local_slots = array( 'founder', 'about_hero', 'hero', 'hero_poster', 'lifestyle_main', 'lifestyle_1', 'lifestyle_2', 'lifestyle_3', 'lifestyle_4', 'inspections_bg' );
+	$local_slots = array( 'founder', 'about_hero', 'about_split', 'hero', 'hero_poster', 'lifestyle_main', 'lifestyle_1', 'lifestyle_2', 'lifestyle_3', 'lifestyle_4', 'inspections_bg' );
 	// Allow every area_*, project_*, service_*, blog_*, team_* slot too.
 	if ( str_starts_with( $slot, 'area_' )
 		|| str_starts_with( $slot, 'project_' )
