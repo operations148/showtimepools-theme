@@ -188,3 +188,32 @@ add_action(
 	},
 	1
 );
+
+// Make footer.css non-render-blocking: it styles only the (below-the-fold)
+// footer, so loading it as media="print" and swapping to "all" on load removes
+// one render-blocking request with no above-the-fold FOUC risk. A <noscript>
+// fallback keeps it working without JS. blocks.css is intentionally NOT deferred
+// here — Gutenberg block content can be above the fold on content pages.
+// (In production, WP Rocket "Optimize CSS delivery" supersedes this for all CSS.)
+add_filter(
+	'style_loader_tag',
+	function ( $tag, $handle ) {
+		if ( is_admin() || 'showtime-footer' !== $handle ) {
+			return $tag;
+		}
+		$noscript = '<noscript>' . $tag . '</noscript>';
+		$deferred = preg_replace(
+			'/media=([\'"])all\1/',
+			'media="print" onload="this.media=\'all\';this.onload=null"',
+			$tag,
+			1,
+			$count
+		);
+		if ( ! $count ) {
+			$deferred = str_replace( ' />', ' media="print" onload="this.media=\'all\';this.onload=null" />', $tag );
+		}
+		return $deferred . $noscript;
+	},
+	10,
+	2
+);
