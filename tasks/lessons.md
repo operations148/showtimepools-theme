@@ -73,3 +73,33 @@ Corrections received from user. Re-read at session start. Add a new entry every 
 2. **Nav diverged from live because a menu was auto-seeded locally.** `template-parts/header/primary-nav.php` renders a canonical hardcoded nav (mega-menus, `.primary-nav__link`, items incl. Location/Shop) **only when no WP menu exists**; if any menu is assigned it uses `wp_nav_menu` with WP-default markup (no `.primary-nav__link` → global `a{underline}` shows, wrong items). The seeder's old `seed_primary_menu()` auto-created/assigned a menu on first-run, so **local** showed the broken version while **live** (no assigned menu) showed the canonical one. Fixed by removing the auto-seed. **Rule:** when the user says a global element "looks wrong / not the original," diff the **rendered markup** local-vs-live (`curl | grep` the component) before assuming it's unchanged — class presence (e.g. `.primary-nav__link` count) pinpoints CSS-vs-markup fast. Menus are content (per DEPLOY contract); the canonical nav lives in the template, and nothing should auto-create a menu that shadows it.
 
 **How to apply:** (a) For any styling verification on this project, use the https URL or the user's browser, never cert-ignored-only. (b) When a shared/global UI element is questioned, compare local rendered HTML against the live screenshot/markup and check whether a DB menu/option is overriding a template fallback — don't just check git for file changes.
+
+---
+
+## L-005 — Image swaps are CONTENT; a new slot renders code defaults, an existing slot is content-overridden
+
+**Date:** 2026-06-20
+
+**Context:** Asked to "replace the reused Sherman Oaks / Studio City lifestyle photos with unique images" (B4) and "dedupe the About image" (B2).
+
+**Pattern:** Every image resolves through `inc/imagery.php` priority chain: native option `showtime_img_{slot}` → ACF → bundled `assets/img/{slot}.*` → Unsplash. On both local (live-migrated DB) and live, the seeder populated Media Library uploads (`seed_*.jpg`) for the existing slots, so those slots are **content-overridden** — changing the bundled file or Unsplash fallback in code is invisible there. A **new** slot (e.g. `about_split`) has no override, so it renders the code default immediately and is provable locally.
+
+**Rule:** "Swap image X" on an existing slot is a CONTENT task (Steve uploads in Site Images) — deliver the independent CMS field + a precise flag, don't fabricate a code change that won't render. To make an image change actually take effect in code, introduce a NEW slot (register it in `imagery.php`, `class-settings-page.php` `get_image_slots()`, and `data/image-slots.php`) and point the template at it; it then shows the code default until the owner uploads.
+
+**How to apply:** Before "changing an image," resolve the slot on the live-migrated DB (`php -r 'require "wp-load.php"; echo showtime_image("slot",800);'`). If it returns a Media Library URL, it's content-overridden → flag for Steve. If it returns a bundled/Unsplash URL, a code default change will show. Verify distinctness with `md5sum` on bundled files before claiming reuse exists in code.
+
+---
+
+## L-006 — Local verification toolkit (no Apache routing assumptions)
+
+**Date:** 2026-06-20
+
+**Context:** `http://localhost/showtimepools/wp/` 404'd; the real front-end is `home = http://localhost/showtimepools/` (siteurl is `/wp`, home is `/`).
+
+**Rules / toolkit for this project:**
+- **Don't guess the URL.** Read it: `cd wp && php -r 'require "wp-load.php"; echo get_option("home");'`. Pages hang off `home`, not `siteurl`.
+- **Boot WP headless** for logic checks without Apache: `php -r 'require "C:/xampp/htdocs/showtimepools/wp/wp-load.php"; ...'` — use to resolve image slots, confirm a class/method exists (caught a latent fatal: Site Content's Homepage/Hub tabs called undefined `render_home()`/`render_hubs()`), and to set+curl+unset an option to prove both branches of a template.
+- **Screenshots:** no Playwright, but Chrome + `sharp-cli` are installed. `"/c/Program Files/Google/Chrome/Application/chrome.exe" --headless --disable-gpu --hide-scrollbars --window-size=1440,H --virtual-time-budget=4500 --screenshot=OUT URL`, then crop a section band with `node_modules/.bin/sharp -i IN -o OUT extract <top> <left> <width> <height>`. `/tmp` maps to `%LOCALAPPDATA%\Temp` — save screenshots under a Windows path the Read tool can open.
+- **Edit gotcha:** the Edit tool kept failing to match leading tabs in PHP arrays; match on a unique inner substring (or the whole line without leading whitespace) instead of reproducing tab indentation.
+
+**How to apply:** Use the PHP-bootstrap harness as the default verification path for backend/logic; use Chrome+sharp for any visual/computed proof; never assert a perf "improvement" you can't measure locally (XAMPP lacks WP Rocket/Cloudflare) — flag it for the production stack instead.

@@ -497,3 +497,37 @@ Bugs 1a/1b (homepage canonical -> blog post, double-brand title) proven NOT them
 5. GSC: confirm submitted sitemap is the URL that actually resolves; then run the index request list (in session deliverable).
 
 Local-only artifacts: robots.txt 404s on localhost (subdirectory install, WP at /wp/); works on live root install, verified via direct filter execution instead.
+
+---
+
+# T3 — Forms+UTM, Homepage Redesign, Performance (2026-06-20)
+
+Backup branch: `backup/seo-t3-pre`. Local-only, not pushed. `/book/` untouched.
+
+## Done (one concern per commit)
+- **A2 — Contact UTM → GHL.** CMS-editable UTM defaults (Site Content → Homepage), `contact.js` overrides from real `?utm_*`, REST controller forwards `context.utm_*` to GHL. Also fixed a latent fatal: Site Content Homepage/Hub tabs called undefined `render_home()`/`render_hubs()`.
+- **A3 — Sitewide popup.** GHL form `pZm1…` in an accessible modal (focus trap, ESC, 7-day localStorage), exit-intent desktop / 30s mobile, GHL iframe injected only on open (no LCP cost), excluded on contact/quote/book. CMS enable toggle. Popup UTM `utm_medium=popup&utm_content=weekly_maintenance`.
+- **B1 — Hero video scaffold.** CMS `hero_video_url` + `hero_poster` (Site Images). `<video>` only when a URL is set, else the existing `<picture>` unchanged; mobile = poster only. No video hardcoded.
+- **B2 — about_split slot.** Homepage About image now its own slot, independent of the /about/ hero, distinct pool placeholder. Site Images → "Homepage About section photo".
+- **B3 — Services carousel.** Dependency-free accessible `[data-carousel]` (3 visible, arrows+swipe+keyboard, scroll-snap), reusable `assets/js/carousel.js`. Verified 3-up via screenshot.
+- **B5 — Reviews container.** Centered + width-capped the live Trustindex widget (carousel layout itself is a Trustindex dashboard setting). No review text hardcoded.
+- **B7 — Footer logo + map.** CMS `footer_logo` (Site Images → Branding) + lazy Google Map of the Sherman Oaks office, exact NAP reused from `offices[0]`.
+- **C2 — CLS.** Explicit width/height on below-fold homepage images (containers already reserved space → CLS already ~0; this is the Lighthouse best-practice pass).
+
+## Resolved without code (verified + flagged)
+- **B4 — Lifestyle dedup.** lifestyle_1/lifestyle_4 are already independent CMS fields with distinct bundled + fallback images (md5-verified). The reuse is live Media Library content (same photo on multiple slots) → Steve swaps in Site Images. Also noted: bundled `lifestyle_2.jpg` == `about_hero.jpg` (also content-overridden on live).
+- **B6 — Where We Work.** Screenshot confirms 8 areas already render as a clean 3-col grid, last row (West Hollywood, Bel Air) left-aligned, uniform heights — exactly the locked spec. No change (no fake 9th area).
+- **C2 critical-CSS.** SKIPPED per the zero-FOUC condition: WP Rocket "Optimize CSS delivery" handles it in prod, async CSS risks FOUC, not measurable on local XAMPP.
+
+## C3 — Expected Core Web Vitals (new code) + what's server-side
+- **LCP:** unchanged/slightly better. Hero still preloaded `fetchpriority=high`; hero video is `preload=none` + poster so it never competes. Popup/carousel JS deferred and inert at paint; GHL iframe lazy.
+- **CLS:** ~0 and hardened. All below-fold images sit in fixed-height/`aspect-ratio` containers; explicit width/height added. Popup/carousel inject nothing above the fold.
+- **INP:** negligible impact — carousel/popup are event-bound, no work on load; popup adds one passive `mouseout`/timer.
+- **Stays OTTO / server-side (post-deploy, not code):** SearchAtlas OTTO head rewrites; WP Rocket CSS-delivery/critical-CSS, JS delay, cache; Cloudflare/Cloudways edge cache, Brotli, HTTP/2, image CDN/AVIF. Enable WP Rocket "Optimize CSS delivery" rather than inlining critical CSS in the theme.
+
+## Flags for Steve (content-side, post-deploy)
+1. Trustindex dashboard → set widget layout to carousel (~3 visible).
+2. Upload unique pool photos: Site Images → Lifestyle 1 (Sherman Oaks), Lifestyle 4 (Studio City), Homepage About section photo.
+3. Upload the JLo hero video (Site Content → Homepage → Hero video URL) + Hero video poster (Site Images).
+4. Form `tH1eoDpRA4hMEb04GgzX` is NOT placed — tell me which page/section and I'll embed it.
+5. (Optional) Enable WP Rocket "Optimize CSS delivery" for critical-CSS in prod.
