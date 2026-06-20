@@ -238,6 +238,18 @@ JS;
 			}
 			?>
 		</div>
+
+		<div style="background:#fff;border:1px solid #ddd;border-radius:10px;padding:20px;margin-bottom:20px;">
+			<h3 style="margin-top:0;font-size:15px;"><?php esc_html_e( 'Weekly-maintenance popup', 'showtime-pools-core' ); ?></h3>
+			<p style="color:#666;font-size:12px;margin:0 0 14px;">
+				<?php esc_html_e( 'A sitewide popup with the Weekly-Maintenance GHL form (exit-intent on desktop, after 30s on mobile). It is suppressed for 7 days after a visitor dismisses it, and never shows on the Contact, Quote, or Book pages.', 'showtime-pools-core' ); ?>
+			</p>
+			<?php $popup_on = '0' !== (string) get_option( 'showtime_popup_enabled', '1' ); ?>
+			<label style="display:flex;align-items:center;gap:8px;font-weight:600;">
+				<input type="checkbox" name="ct_popup_enabled" value="1" <?php checked( $popup_on ); ?>>
+				<span><?php esc_html_e( 'Show the weekly-maintenance popup', 'showtime-pools-core' ); ?></span>
+			</label>
+		</div>
 		<?php
 	}
 
@@ -251,6 +263,13 @@ JS;
 			} else {
 				update_option( 'showtime_' . $key, $posted, false );
 			}
+		}
+
+		// Popup toggle — default ON, so store '0' only when explicitly disabled.
+		if ( isset( $_POST['ct_popup_enabled'] ) ) {
+			delete_option( 'showtime_popup_enabled' );
+		} else {
+			update_option( 'showtime_popup_enabled', '0', false );
 		}
 	}
 

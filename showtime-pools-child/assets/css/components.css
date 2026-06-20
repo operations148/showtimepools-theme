@@ -924,3 +924,72 @@ main > [data-reveal]:first-child,
 main > section:first-child[data-reveal] { opacity: 1; transform: none; transition: none; }
 
 /* prefers-reduced-motion guard intentionally omitted — decorative marketing animations. */
+
+/* ── Weekly-maintenance popup (sitewide) ──────────────────────────────────
+   Markup printed in wp_footer by inc/popup.php; the GHL iframe is injected by
+   assets/js/popup.js on first open. Hidden until JS toggles [hidden] off. */
+.stp-popup {
+	position: fixed;
+	inset: 0;
+	z-index: var(--z-modal);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: var(--sp-4);
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity var(--dur-base) var(--ease-out), visibility var(--dur-base) var(--ease-out);
+}
+.stp-popup[hidden] { display: none; }
+.stp-popup.is-open { opacity: 1; visibility: visible; }
+
+.stp-popup__backdrop {
+	position: absolute;
+	inset: 0;
+	background: rgba(15, 23, 36, 0.6);
+	cursor: pointer;
+}
+
+.stp-popup__dialog {
+	position: relative;
+	z-index: 1;
+	width: 100%;
+	max-width: 460px;
+	max-height: 92vh;
+	overflow: auto;
+	background: var(--c-bg-pure);
+	border-radius: var(--r-lg);
+	box-shadow: var(--sh-xl);
+	padding: var(--sp-6) var(--sp-5) var(--sp-5);
+	transform: translateY(14px) scale(0.985);
+	transition: transform var(--dur-base) var(--ease-out);
+}
+.stp-popup.is-open .stp-popup__dialog { transform: none; }
+
+.stp-popup__close {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	width: 38px;
+	height: 38px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border: 0;
+	border-radius: var(--r-full);
+	background: rgba(15, 23, 36, 0.06);
+	color: var(--c-ink);
+	cursor: pointer;
+	transition: background var(--dur-fast) var(--ease-out);
+}
+.stp-popup__close:hover { background: rgba(15, 23, 36, 0.12); }
+
+.stp-popup__embed { min-height: 460px; }
+.stp-popup__embed iframe { display: block; width: 100%; min-height: 460px; border: 0; }
+
+body.stp-popup-lock { overflow: hidden; }
+
+@media (prefers-reduced-motion: reduce) {
+	.stp-popup,
+	.stp-popup__dialog { transition: none; }
+}
