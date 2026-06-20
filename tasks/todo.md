@@ -560,6 +560,12 @@ is larger, so the served LCP image is bigger still. This is also the bulk of "im
   audit + bandwidth, not LCP directly.)
 - **C3 — Defer footer.css** (`inc/enqueue.php`). media=print + onload swap (+`<noscript>`); footer is
   always below the fold → zero hero FOUC. blocks.css kept blocking (block content can be above the fold).
+- **C4 — Responsive srcset on all landing-page heroes** (`inc/imagery.php` + 11 page templates). Same
+  single-full-image bug applied to every SEO landing-page hero (the LCP element on those pages). New
+  `showtime_hero_srcset_attr($slot)` injects srcset (landscape crops) + sizes=100vw into the hero `<img>`
+  of: contact, area, areas hub, services hub, projects, about, founder, inspections, reviews, blog, shop.
+  `/book` + `/quote` (page-iframe.php) untouched (locked). Remaining (optional): single.php /
+  single-project.php heroes (featured-image path) could get the same treatment later.
 
 ## Server-side / WP-Rocket / GTM — apply on the droplet after deploy (NO theme code)
 1. **Render-blocking CSS (−1,170 ms):** WP Rocket → File Optimization → **Optimize CSS delivery** (critical
