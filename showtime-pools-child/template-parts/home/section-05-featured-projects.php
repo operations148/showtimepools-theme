@@ -115,7 +115,7 @@ if ( empty( $projects ) ) {
 				<a class="proj-card" href="<?php echo esc_url( $p['href'] ); ?>">
 					<div class="proj-card__media" style="background:<?php echo esc_attr( $p['gradient'] ?? 'linear-gradient(135deg,#1F2F3A,#5C8A9E)' ); ?>">
 						<?php if ( ! empty( $p['image'] ) ) : ?>
-							<img class="proj-card__media-img" src="<?php echo esc_url( $p['image'] ); ?>" alt="" loading="lazy" decoding="async">
+							<img class="proj-card__media-img" src="<?php echo esc_url( $p['image'] ); ?>" alt="" loading="lazy" decoding="async" width="1024" height="768">
 						<?php endif; ?>
 						<?php if ( ! empty( $p['neighborhood'] ) ) : ?>
 							<span class="proj-card__neighborhood"><?php echo esc_html( $p['neighborhood'] ); ?></span>

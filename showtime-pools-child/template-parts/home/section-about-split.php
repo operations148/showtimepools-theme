@@ -17,7 +17,7 @@ $img = function_exists( 'showtime_image' ) ? showtime_image( 'about_split', 1200
 
 			<figure class="about-split__media">
 				<?php if ( $img ) : ?>
-					<img src="<?php echo esc_url( $img ); ?>" alt="" loading="lazy" decoding="async">
+					<img src="<?php echo esc_url( $img ); ?>" alt="" loading="lazy" decoding="async" width="1000" height="1200">
 				<?php endif; ?>
 				<figcaption class="about-split__caption">
 					<span><?php esc_html_e( 'Sherman Oaks · since 2003', 'showtime-pools' ); ?></span>

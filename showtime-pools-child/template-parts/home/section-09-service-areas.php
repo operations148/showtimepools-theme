@@ -38,7 +38,7 @@ $areas = class_exists( '\\Showtime\\Areas' ) ? \Showtime\Areas::all() : array();
 			?>
 				<a class="area-card" href="<?php echo esc_url( home_url( '/service-areas/' . $slug . '/' ) ); ?>" style="--_area-grad: <?php echo esc_attr( $area['gradient'] ?? 'linear-gradient(135deg,#1F2F3A,#5C8A9E)' ); ?>">
 					<?php if ( $img_url ) : ?>
-						<img class="area-card__img" src="<?php echo esc_url( $img_url ); ?>" alt="" loading="lazy" decoding="async">
+						<img class="area-card__img" src="<?php echo esc_url( $img_url ); ?>" alt="" loading="lazy" decoding="async" width="800" height="600">
 					<?php endif; ?>
 					<div class="area-card__overlay" aria-hidden="true"></div>
 					<div class="area-card__content">
