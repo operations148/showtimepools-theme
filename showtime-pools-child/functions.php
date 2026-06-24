@@ -76,3 +76,4 @@ require_once SHOWTIME_CHILD_DIR . '/inc/site-icon.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/meta-fields.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/reviews-widget.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/popup.php';
+require_once SHOWTIME_CHILD_DIR . '/inc/consent.php';
