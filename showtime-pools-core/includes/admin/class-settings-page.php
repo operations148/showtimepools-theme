@@ -199,6 +199,144 @@ final class SettingsPage {
 			self::PAGE_SLUG,
 			'showtime_section_turnstile'
 		);
+
+		$this->register_consent_settings();
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// TRACKING & CONSENT TAB SECTION
+	// ─────────────────────────────────────────────────────────────────────────
+
+	/**
+	 * GTM container + cookie-consent banner config. Stored in wp_options so the
+	 * theme (inc/consent.php) renders Consent Mode + the banner with zero code
+	 * changes. Pixels themselves NEVER live here — they live in GTM.
+	 */
+	private function register_consent_settings(): void {
+		// Checkbox sanitizer: coerce to '1'/'0'. A hidden '0' field paired with
+		// each checkbox guarantees the key always posts, so unchecking sticks.
+		$checkbox = static fn( $v ): string => '1' === (string) $v ? '1' : '0';
+
+		// Banner message allows a single inline link to the privacy policy.
+		$message_kses = static fn( $v ): string => wp_kses(
+			(string) $v,
+			array(
+				'a'      => array( 'href' => array(), 'target' => array(), 'rel' => array() ),
+				'strong' => array(),
+				'em'     => array(),
+				'br'     => array(),
+			)
+		);
+
+		register_setting( self::OPTION_GROUP, 'showtime_gtm_id',              array( 'sanitize_callback' => 'sanitize_text_field', 'default' => '' ) );
+		register_setting( self::OPTION_GROUP, 'showtime_gtm_inject',          array( 'sanitize_callback' => $checkbox,             'default' => '0' ) );
+		register_setting( self::OPTION_GROUP, 'showtime_consent_enabled',     array( 'sanitize_callback' => $checkbox,             'default' => '1' ) );
+		register_setting( self::OPTION_GROUP, 'showtime_consent_heading',     array( 'sanitize_callback' => 'sanitize_text_field', 'default' => '' ) );
+		register_setting( self::OPTION_GROUP, 'showtime_consent_message',     array( 'sanitize_callback' => $message_kses,         'default' => '' ) );
+		register_setting( self::OPTION_GROUP, 'showtime_consent_accept_label', array( 'sanitize_callback' => 'sanitize_text_field', 'default' => '' ) );
+		register_setting( self::OPTION_GROUP, 'showtime_consent_reject_label', array( 'sanitize_callback' => 'sanitize_text_field', 'default' => '' ) );
+		register_setting( self::OPTION_GROUP, 'showtime_consent_prefs_label', array( 'sanitize_callback' => 'sanitize_text_field', 'default' => '' ) );
+		register_setting( self::OPTION_GROUP, 'showtime_consent_policy_url',  array( 'sanitize_callback' => 'esc_url_raw',          'default' => '' ) );
+
+		add_settings_section(
+			'showtime_section_consent',
+			__( 'Tracking & Consent', 'showtime-pools-core' ),
+			function () {
+				echo '<p>' . esc_html__( 'Google Tag Manager + cookie-consent banner. Tracking pixels (Meta, TikTok, Google Ads) live inside GTM — never paste a Pixel ID here. The banner gates analytics/marketing tags via Google Consent Mode v2 (denied until the visitor accepts).', 'showtime-pools-core' ) . '</p>';
+			},
+			self::PAGE_SLUG
+		);
+
+		// ── GTM container ─────────────────────────────────────────────────────
+		add_settings_field(
+			'showtime_gtm_id',
+			__( 'GTM Container ID', 'showtime-pools-core' ),
+			function () {
+				$v = (string) get_option( 'showtime_gtm_id', '' );
+				printf( '<input type="text" name="showtime_gtm_id" value="%s" class="regular-text" placeholder="GTM-XXXXXXX">', esc_attr( $v ) );
+				echo '<p class="description">' . esc_html__( 'Your Google Tag Manager container ID. Used for the Consent Mode default and, optionally, to inject the container (below).', 'showtime-pools-core' ) . '</p>';
+			},
+			self::PAGE_SLUG,
+			'showtime_section_consent'
+		);
+
+		add_settings_field(
+			'showtime_gtm_inject',
+			__( 'Inject GTM from theme', 'showtime-pools-core' ),
+			function () {
+				$on = '1' === (string) get_option( 'showtime_gtm_inject', '0' );
+				echo '<input type="hidden" name="showtime_gtm_inject" value="0">';
+				printf( '<label><input type="checkbox" name="showtime_gtm_inject" value="1" %s> %s</label>', checked( $on, true, false ), esc_html__( 'Print the GTM container from the theme', 'showtime-pools-core' ) );
+				echo '<p class="description">' . esc_html__( 'Leave OFF if GTM is already added by a plugin or header code (avoids a double container). Turn ON only if you want the theme to own GTM so script order is guaranteed. Either way, Consent Mode still applies.', 'showtime-pools-core' ) . '</p>';
+			},
+			self::PAGE_SLUG,
+			'showtime_section_consent'
+		);
+
+		// ── Consent banner ────────────────────────────────────────────────────
+		add_settings_field(
+			'showtime_consent_enabled',
+			__( 'Show consent banner', 'showtime-pools-core' ),
+			function () {
+				$on = '1' === (string) get_option( 'showtime_consent_enabled', '1' );
+				echo '<input type="hidden" name="showtime_consent_enabled" value="0">';
+				printf( '<label><input type="checkbox" name="showtime_consent_enabled" value="1" %s> %s</label>', checked( $on, true, false ), esc_html__( 'Display the cookie-consent banner to visitors', 'showtime-pools-core' ) );
+			},
+			self::PAGE_SLUG,
+			'showtime_section_consent'
+		);
+
+		add_settings_field(
+			'showtime_consent_heading',
+			__( 'Banner heading', 'showtime-pools-core' ),
+			function () {
+				$v = (string) get_option( 'showtime_consent_heading', '' );
+				printf( '<input type="text" name="showtime_consent_heading" value="%s" class="regular-text" placeholder="%s">', esc_attr( $v ), esc_attr__( 'We value your privacy', 'showtime-pools-core' ) );
+			},
+			self::PAGE_SLUG,
+			'showtime_section_consent'
+		);
+
+		add_settings_field(
+			'showtime_consent_message',
+			__( 'Banner message', 'showtime-pools-core' ),
+			function () {
+				$v = (string) get_option( 'showtime_consent_message', '' );
+				printf( '<textarea name="showtime_consent_message" class="large-text" rows="3" placeholder="%s">%s</textarea>', esc_attr__( 'We use cookies to improve your experience and for marketing. Choose which to allow.', 'showtime-pools-core' ), esc_textarea( $v ) );
+				echo '<p class="description">' . esc_html__( 'A single link is allowed, e.g. <a href="/legal/">Privacy Policy</a>.', 'showtime-pools-core' ) . '</p>';
+			},
+			self::PAGE_SLUG,
+			'showtime_section_consent'
+		);
+
+		add_settings_field(
+			'showtime_consent_labels',
+			__( 'Button labels', 'showtime-pools-core' ),
+			function () {
+				$accept = (string) get_option( 'showtime_consent_accept_label', '' );
+				$reject = (string) get_option( 'showtime_consent_reject_label', '' );
+				$prefs  = (string) get_option( 'showtime_consent_prefs_label', '' );
+				printf( '<p><label>%s<br><input type="text" name="showtime_consent_accept_label" value="%s" class="regular-text" placeholder="%s"></label></p>', esc_html__( 'Accept button', 'showtime-pools-core' ), esc_attr( $accept ), esc_attr__( 'Accept all', 'showtime-pools-core' ) );
+				printf( '<p><label>%s<br><input type="text" name="showtime_consent_reject_label" value="%s" class="regular-text" placeholder="%s"></label></p>', esc_html__( 'Reject button', 'showtime-pools-core' ), esc_attr( $reject ), esc_attr__( 'Reject non-essential', 'showtime-pools-core' ) );
+				printf( '<p><label>%s<br><input type="text" name="showtime_consent_prefs_label" value="%s" class="regular-text" placeholder="%s"></label></p>', esc_html__( 'Preferences button', 'showtime-pools-core' ), esc_attr( $prefs ), esc_attr__( 'Preferences', 'showtime-pools-core' ) );
+			},
+			self::PAGE_SLUG,
+			'showtime_section_consent'
+		);
+
+		add_settings_field(
+			'showtime_consent_policy_url',
+			__( 'Privacy policy link', 'showtime-pools-core' ),
+			function () {
+				$v           = (string) get_option( 'showtime_consent_policy_url', '' );
+				$fallback    = function_exists( 'get_privacy_policy_url' ) ? get_privacy_policy_url() : '';
+				$placeholder = $fallback ? $fallback : home_url( '/legal/' );
+				printf( '<input type="url" name="showtime_consent_policy_url" value="%s" class="regular-text" placeholder="%s">', esc_attr( $v ), esc_attr( $placeholder ) );
+				echo '<p class="description">' . esc_html__( 'Where the banner link points. Leave blank to use the WordPress Privacy Policy page (Settings → Privacy), falling back to /legal/.', 'showtime-pools-core' ) . '</p>';
+			},
+			self::PAGE_SLUG,
+			'showtime_section_consent'
+		);
 	}
 
 	public function render(): void {
