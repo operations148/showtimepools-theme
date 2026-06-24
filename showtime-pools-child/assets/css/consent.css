@@ -1,0 +1,171 @@
+/*
+ * Cookie consent banner. Fixed to the bottom of the viewport so it never
+ * pushes the hero or affects LCP. Hidden until consent.js reveals it.
+ * Pulls only design tokens (tokens.css) — no raw hex/px beyond layout.
+ */
+
+.stp-consent[hidden] { display: none; }
+
+.stp-consent {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: var(--z-toast);
+	background: var(--c-bg-pure);
+	border-top: 1px solid var(--c-border-strong);
+	box-shadow: var(--sh-lg);
+	padding: var(--sp-4) var(--gutter);
+	/* Keep clear of iOS home indicator. */
+	padding-bottom: max(var(--sp-4), env(safe-area-inset-bottom));
+	transform: translateY(100%);
+	transition: transform var(--dur-base) var(--ease-out);
+}
+
+.stp-consent.is-visible {
+	transform: translateY(0);
+}
+
+.stp-consent__inner {
+	max-width: var(--container-max);
+	margin: 0 auto;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--sp-4) var(--sp-8);
+}
+
+.stp-consent__body {
+	flex: 1 1 22rem;
+	min-width: 0;
+}
+
+.stp-consent__title {
+	margin: 0 0 var(--sp-1);
+	font-family: var(--ff-display);
+	font-size: var(--fs-lg);
+	font-weight: var(--fw-semibold);
+	line-height: var(--lh-snug);
+	color: var(--c-text);
+}
+
+.stp-consent__text {
+	margin: 0;
+	font-size: var(--fs-sm);
+	line-height: var(--lh-base);
+	color: var(--c-text-muted);
+}
+
+.stp-consent__text a,
+.stp-consent__policy {
+	color: var(--c-link);
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.stp-consent__text a:hover,
+.stp-consent__policy:hover { color: var(--c-link-hover); }
+
+.stp-consent__actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--sp-2);
+}
+
+.stp-consent__btn {
+	appearance: none;
+	cursor: pointer;
+	font-family: var(--ff-body);
+	font-size: var(--fs-sm);
+	font-weight: var(--fw-semibold);
+	line-height: 1;
+	padding: var(--sp-3) var(--sp-5);
+	border-radius: var(--radius-pill);
+	border: 1px solid transparent;
+	transition: background var(--dur-fast) var(--ease-out),
+		color var(--dur-fast) var(--ease-out),
+		border-color var(--dur-fast) var(--ease-out);
+}
+
+.stp-consent__btn--primary {
+	background: var(--c-aqua-500);
+	color: var(--c-text-invert);
+}
+
+.stp-consent__btn--primary:hover { background: var(--c-aqua-600); }
+
+.stp-consent__btn--ghost {
+	background: transparent;
+	color: var(--c-text);
+	border-color: var(--c-border-strong);
+}
+
+.stp-consent__btn--ghost:hover {
+	background: var(--c-aqua-50);
+	border-color: var(--c-aqua-200);
+}
+
+.stp-consent__btn:focus-visible,
+.stp-consent__cat-label input:focus-visible {
+	outline: none;
+	box-shadow: var(--sh-ring);
+}
+
+/* ── Preferences panel ─────────────────────────────────────────────────── */
+.stp-consent__prefs[hidden] { display: none; }
+
+.stp-consent__prefs {
+	max-width: var(--container-max);
+	margin: var(--sp-4) auto 0;
+	padding-top: var(--sp-4);
+	border-top: 1px solid var(--c-border);
+}
+
+.stp-consent__cats {
+	list-style: none;
+	margin: 0 0 var(--sp-4);
+	padding: 0;
+	display: grid;
+	gap: var(--sp-3);
+}
+
+@media (min-width: 720px) {
+	.stp-consent__cats { grid-template-columns: repeat(3, 1fr); }
+}
+
+.stp-consent__cat-label {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--sp-3);
+	padding: var(--sp-3);
+	border: 1px solid var(--c-border);
+	border-radius: var(--r-md);
+	cursor: pointer;
+}
+
+.stp-consent__cat-label input { margin-top: 2px; flex: 0 0 auto; }
+
+.stp-consent__cat-label strong {
+	display: block;
+	font-size: var(--fs-sm);
+	color: var(--c-text);
+}
+
+.stp-consent__cat-label small {
+	display: block;
+	margin-top: 2px;
+	font-size: var(--fs-xs);
+	color: var(--c-text-muted);
+	line-height: var(--lh-base);
+}
+
+.stp-consent__prefs-actions {
+	display: flex;
+	justify-content: flex-end;
+}
+
+@media (max-width: 560px) {
+	.stp-consent__actions { width: 100%; }
+	.stp-consent__btn { flex: 1 1 auto; text-align: center; }
+}

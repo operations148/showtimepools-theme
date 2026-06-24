@@ -119,3 +119,46 @@ add_action(
 		);
 	}
 );
+
+/**
+ * Banner assets (deferred) — only when the banner is enabled.
+ */
+add_action(
+	'wp_enqueue_scripts',
+	function () {
+		$cfg = showtime_consent_config();
+		if ( is_admin() || ! $cfg['enabled'] ) {
+			return;
+		}
+
+		[ $uri, $ver ] = showtime_asset( 'assets/css/consent.css' );
+		wp_enqueue_style( 'showtime-consent', $uri, array( 'showtime-tokens' ), $ver );
+
+		[ $uri, $ver ] = showtime_asset( 'assets/js/consent.js' );
+		wp_enqueue_script( 'showtime-consent', $uri, array(), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );
+
+		wp_localize_script(
+			'showtime-consent',
+			'ShowtimeConsent',
+			array(
+				'cookie'  => 'stp_consent',
+				'days'    => 180,
+				'version' => 1,
+			)
+		);
+	}
+);
+
+/**
+ * Render the banner markup in the footer (hidden until consent.js reveals it).
+ */
+add_action(
+	'wp_footer',
+	function () {
+		$cfg = showtime_consent_config();
+		if ( is_admin() || ! $cfg['enabled'] ) {
+			return;
+		}
+		get_template_part( 'template-parts/global/consent-banner' );
+	}
+);
