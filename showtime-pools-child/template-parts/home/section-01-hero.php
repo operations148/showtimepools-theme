@@ -55,14 +55,14 @@ $hero_poster = function_exists( 'showtime_image' ) ? showtime_image( 'hero_poste
 		<video class="home-hero__bgvideo" autoplay muted loop playsinline preload="none" poster="<?php echo esc_url( $hero_poster ); ?>">
 			<source src="<?php echo esc_url( $hero_video ); ?>" type="video/mp4">
 		</video>
-		<img class="home-hero__bgphoto home-hero__bgphoto--poster" src="<?php echo esc_url( $hero_poster ); ?>" alt="<?php echo esc_attr( $pc_alt ); ?>" fetchpriority="high" decoding="async">
+		<img class="home-hero__bgphoto home-hero__bgphoto--poster" src="<?php echo esc_url( $hero_poster ); ?>" alt="<?php echo esc_attr( $pc_alt ); ?>" loading="eager" fetchpriority="high" decoding="async">
 	<?php else : ?>
 		<picture class="home-hero__bgphoto">
 			<img
 				src="<?php echo esc_url( $hero_img['src'] ); ?>"
 				<?php if ( '' !== $hero_img['srcset'] ) : ?>srcset="<?php echo esc_attr( $hero_img['srcset'] ); ?>" sizes="<?php echo esc_attr( $hero_img['sizes'] ); ?>"<?php endif; ?>
 				width="<?php echo (int) $hero_img['width']; ?>" height="<?php echo (int) $hero_img['height']; ?>"
-				alt="<?php echo esc_attr( $pc_alt ); ?>" fetchpriority="high" decoding="async">
+				alt="<?php echo esc_attr( $pc_alt ); ?>" loading="eager" fetchpriority="high" decoding="async">
 		</picture>
 	<?php endif; ?>
 	<div class="home-hero__veil" aria-hidden="true"></div>
