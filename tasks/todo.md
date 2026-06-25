@@ -30,6 +30,13 @@ One concern per commit. Prove each with local screenshots.
 - [ ] Hero already eager + fetchpriority + preload. No un-deployed regression. NO_LCP+FCP+TBT = PSI lab-load failure signature (transient/live-side).
 - [ ] Defensive: explicit `loading="eager"` on hero img + poster. Verify.
 
+### Review (done 2026-06-25)
+- FIX 1 — c45959a. /contact/ now embeds GHL tH1 (UTM website/organic/contact_form), native form retired, REST route dormant. Design preserved (verified screenshot). CMS field `showtime_ghl_contact_url`. Homepage quote section removed (decision c): files + admin settings deleted.
+- FIX 2 — e7578c1. Popup dialog 460→600px desktop, 90vh, embed/iframe min-height 600px. Mobile centered with equal 16px margins (measured vw=478 left=16 right=462, no overflow). Focus trap/ESC untouched.
+- FIX 3 — NO CODE. Honest call: theme can't reliably force 3-up carousel+arrows over Trustindex async markup; Steve switches the Trustindex dashboard layout.
+- FIX 4 — 8c42423. Hero img + poster now explicit loading=eager (was browser-default eager). Preload + fetchpriority confirmed in rendered HTML; zero lazy on hero. No un-deployed commit causes NO_LCP. Live error = lab-load failure signature (transient or live-side: hero attachment 404 / 3rd-party script timeout).
+- Backup: backup/four-fixes-pre-20260625. NOT pushed.
+
 ---
 
 **Deliverable structure:**
