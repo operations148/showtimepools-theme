@@ -1910,3 +1910,83 @@ main > section:first-child[data-reveal] {
 @media (prefers-reduced-motion: reduce) {
 	.home-about__photo--bot { transform: none !important; }
 }
+
+/* ─── Homepage quick-quote form (after Reviews) ──────────────────────────
+   Deliberately a LIGHT form section, not another dark CTA slab like the
+   footer band. Cool sky-blue paper surface, white form card. */
+.home-quote {
+	padding: var(--section-py) 0;
+	background: var(--c-paper);
+	border-top: 1px solid var(--c-border);
+}
+
+.home-quote__inner {
+	display: grid;
+	gap: clamp(1.75rem, 4vw, 3.5rem);
+	align-items: center;
+}
+
+@media (min-width: 880px) {
+	.home-quote__inner { grid-template-columns: 0.85fr 1.15fr; }
+}
+
+.home-quote__title {
+	margin: var(--sp-2) 0 var(--sp-3);
+	font-family: var(--ff-display);
+	font-size: var(--fs-4xl);
+	font-weight: var(--fw-bold);
+	line-height: var(--lh-tight);
+	letter-spacing: var(--ls-tight);
+	color: var(--c-ink);
+}
+
+.home-quote__lead {
+	margin: 0;
+	max-width: 38ch;
+	font-size: var(--fs-lg);
+	line-height: var(--lh-relaxed);
+	color: var(--c-text-muted);
+}
+
+.home-quote__form {
+	background: var(--c-bg-pure);
+	border: 1px solid var(--c-border);
+	border-radius: var(--radius-card);
+	box-shadow: var(--sh-lg);
+	padding: var(--sp-3);
+}
+
+.home-quote__embed {
+	position: relative;
+	min-height: 560px;
+	border-radius: var(--r-lg);
+	overflow: hidden;
+}
+
+.home-quote__embed iframe { display: block; }
+
+.home-quote__placeholder {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--c-aqua-50);
+}
+
+.home-quote__embed.is-loaded .home-quote__placeholder { display: none; }
+
+.home-quote__spinner {
+	width: 32px;
+	height: 32px;
+	border-radius: var(--r-full);
+	border: 3px solid var(--c-aqua-200);
+	border-top-color: var(--c-aqua-500);
+	animation: stp-quote-spin 0.8s linear infinite;
+}
+
+@keyframes stp-quote-spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+	.home-quote__spinner { animation: none; }
+}
