@@ -67,9 +67,9 @@ add_action(
 			wp_enqueue_style( 'showtime-contact', $uri, array( 'showtime-components' ), $ver );
 		}
 
-		// GHL resize helper for the embedded booking/quote widgets. Sizes the
-		// iframe to its content so the calendar never scrolls inside a box.
-		if ( is_page_template( 'page-iframe.php' ) ) {
+		// GHL resize helper for the embedded booking/quote/contact widgets. Sizes
+		// the iframe to its content so the calendar/form never scrolls inside a box.
+		if ( is_page_template( 'page-iframe.php' ) || is_page_template( 'page-contact.php' ) ) {
 			wp_enqueue_script(
 				'ghl-form-embed',
 				'https://link.msgsndr.com/js/form_embed.js',
@@ -79,7 +79,8 @@ add_action(
 			);
 		}
 
-		if ( is_page_template( 'page-contact.php' ) || is_page_template( 'page-shop.php' ) ) {
+		// /contact/ now embeds the GHL form (no native form JS). /shop/ still uses it.
+		if ( is_page_template( 'page-shop.php' ) ) {
 			[ $uri, $ver ] = showtime_asset( 'assets/js/contact.js' );
 			wp_enqueue_script( 'showtime-contact', $uri, array( 'showtime-main' ), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );
 		}
@@ -98,7 +99,6 @@ add_action(
 			// keys are configured (Turnstile::is_configured()). Renders the widget
 			// implicitly from the .cf-turnstile div in each form.
 			$has_form = is_page_template( 'page-affiliate.php' )
-				|| is_page_template( 'page-contact.php' )
 				|| is_page_template( 'page-shop.php' );
 			if ( $has_form
 				&& class_exists( '\\Showtime\\Security\\Turnstile' )

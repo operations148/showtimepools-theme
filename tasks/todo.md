@@ -3,6 +3,35 @@
 Live build plan for showtimepools.com. Tracks every phase, every deliverable, every checkpoint.
 
 **Working directory:** `C:\xampp\htdocs\showtimepools\showtimepools\`
+
+---
+
+# ACTIVE — Four Fixes (2026-06-25)
+
+Backup branch: `backup/four-fixes-pre-20260625` (from clean main). No push.
+One concern per commit. Prove each with local screenshots.
+
+## FIX 1 — /contact/ → GHL form tH1eoDpRA4hMEb04GgzX (native form broken in prod)
+- [ ] Add CMS field `showtime_ghl_contact_url` to GHL Forms settings (class-settings-page.php), default = new const `SHOWTIME_CONTACT_FORM_URL` (tH1).
+- [ ] page-contact.php: replace `<form class="contact-form">…</form>` (112-191) with clean GHL iframe embed (mirror page-iframe.php `iframe-frame__wrap`, id = bare form id for form_embed.js auto-size). No double-card.
+- [ ] Append UTM (website / organic / contact_form) to embed URL so n8n still sees source.
+- [ ] Enqueue form_embed.js on page-contact.php; stop enqueuing contact.js on /contact/ (keep /shop/).
+- [ ] Leave ContactController REST handler dormant (registered, unused). Keep contact.css.
+- [ ] Verify render + submit. DECISION asked re: homepage duplicate.
+
+## FIX 2 — popup modal too small
+- [ ] components.css `.stp-popup__dialog`: max-width 460→600px desktop, max-height 90vh, full-ish mobile, keep overflow:auto.
+- [ ] Bump `.stp-popup__embed` + iframe min-height. Accessibility (focus trap/ESC) unchanged. Verify fit.
+
+## FIX 3 — reviews 9 cards, no carousel (Trustindex)
+- [ ] Honest assessment delivered; dashboard layout setting is the clean way. No hardcoded reviews. DECISION asked.
+
+## FIX 4 — NO_LCP diagnosis (old live code; error new)
+- [ ] Hero already eager + fetchpriority + preload. No un-deployed regression. NO_LCP+FCP+TBT = PSI lab-load failure signature (transient/live-side).
+- [ ] Defensive: explicit `loading="eager"` on hero img + poster. Verify.
+
+---
+
 **Deliverable structure:**
 ```
 showtimepools/

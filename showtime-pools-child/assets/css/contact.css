@@ -393,6 +393,29 @@ a.contact-info__value:hover { color: var(--c-link); }
 	text-align: left;
 }
 
+/* ─── Contact GHL form embed ─────────────────────────────────────────────
+   Sits in the left form column, replacing the old native form. Transparent
+   with no card/border so the page styling shows around it (the GHL form's own
+   background/fields are controlled in the GHL form builder). form_embed.js
+   sets the exact iframe height; the min-height keeps it usable before/without
+   the resize script. */
+.contact-embed {
+	background: transparent;
+	border: 0;
+}
+.contact-embed__iframe {
+	display: block;
+	width: 100%;
+	min-height: 640px;
+	border: 0;
+	background: transparent;
+}
+.contact-embed__alt {
+	margin: var(--sp-3) 0 0;
+	color: var(--c-text-muted);
+	font-size: var(--fs-sm);
+}
+
 @media (max-width: 600px) {
 	.contact-hero__title,
 	.iframe-hero__title { font-size: var(--fs-4xl); }

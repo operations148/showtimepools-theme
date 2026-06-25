@@ -73,6 +73,31 @@ if ( is_array( $hours_rows ) && ! empty( $hours_rows ) ) {
 $map_office = $offices[0] ?? $offices_default[0];
 $map_query = trim( ( (string) ( $map_office['street'] ?? '' ) ) . ' ' . ( (string) ( $map_office['city'] ?? '' ) ) );
 $map_url   = 'https://www.google.com/maps?q=' . rawurlencode( $map_query ) . '&output=embed';
+
+// ── GHL contact form (replaces the broken native form) ──────────────────────
+// URL is a CMS field (Showtime → Settings → "GHL Contact Form URL"); falls back
+// to the bundled default. UTM is appended so n8n still attributes the source.
+// Filterable so the URL/UTM can change in one place.
+$contact_form_base = trim( (string) get_option( 'showtime_ghl_contact_url', '' ) );
+if ( '' === $contact_form_base && defined( 'SHOWTIME_CONTACT_FORM_URL' ) ) {
+	$contact_form_base = SHOWTIME_CONTACT_FORM_URL;
+}
+$contact_form_url = (string) apply_filters(
+	'showtime/contact/form_url',
+	add_query_arg(
+		array(
+			'utm_source'  => (string) get_option( 'showtime_utm_source', 'website' ),
+			'utm_medium'  => (string) get_option( 'showtime_utm_medium', 'organic' ),
+			'utm_content' => 'contact_form',
+		),
+		$contact_form_base
+	)
+);
+// form_embed.js auto-sizes the iframe whose id matches the bare form id.
+$contact_embed_id = '';
+if ( preg_match( '#/widget/form/([A-Za-z0-9]+)#', $contact_form_url, $cm ) ) {
+	$contact_embed_id = $cm[1];
+}
 ?>
 <main id="primary" class="site-main contact-page">
 
@@ -109,86 +134,29 @@ $map_url   = 'https://www.google.com/maps?q=' . rawurlencode( $map_query ) . '&o
 						<?php endif; ?>
 					</header>
 
-					<form class="contact-form" id="showtime-contact-form" novalidate>
-						<input type="hidden" name="loaded_at" value="<?php echo esc_attr( (string) time() ); ?>">
-						<div class="contact-form__hp" aria-hidden="true">
-							<label>Leave this field empty<input type="text" name="hp_url" tabindex="-1" autocomplete="off"></label>
-						</div>
-
-						<?php
-						// UTM attribution defaults (Showtime Pools → Site Content → Homepage).
-						// contact.js overrides any of these from real ?utm_… in the visitor's
-						// URL before submit; the REST controller forwards them to GHL → n8n.
-						$utm_fields = array(
-							'utm_source'   => 'website',
-							'utm_medium'   => 'organic',
-							'utm_campaign' => 'site_form',
-							'utm_content'  => 'contact_form',
-						);
-						foreach ( $utm_fields as $utm_key => $utm_default ) :
-							$utm_val = (string) get_option( 'showtime_' . $utm_key, $utm_default );
+					<?php // GHL form embed — replaces the broken native form. Transparent,
+					      // no card, fills the form column; internal styling is owned by the
+					      // GHL form builder. form_embed.js (enqueued for this template) sizes
+					      // the iframe to its content. ?>
+					<div class="contact-embed">
+						<iframe
+							src="<?php echo esc_url( $contact_form_url ); ?>"
+							<?php if ( '' !== $contact_embed_id ) : ?>id="<?php echo esc_attr( $contact_embed_id ); ?>"<?php endif; ?>
+							class="contact-embed__iframe"
+							scrolling="no"
+							referrerpolicy="no-referrer-when-downgrade"
+							title="<?php esc_attr_e( 'Contact Showtime Pools', 'showtime-pools' ); ?>"
+						></iframe>
+						<p class="contact-embed__alt">
+							<?php
+							/* translators: %s: anchor link */
+							printf(
+								esc_html__( 'Form not loading? %s.', 'showtime-pools' ),
+								'<a href="' . esc_url( $contact_form_url ) . '" target="_blank" rel="noopener">' . esc_html__( 'Open it in a new tab', 'showtime-pools' ) . '</a>'
+							);
 							?>
-							<input type="hidden" name="<?php echo esc_attr( $utm_key ); ?>" value="<?php echo esc_attr( $utm_val ); ?>" data-utm="<?php echo esc_attr( $utm_key ); ?>">
-						<?php endforeach; ?>
-
-						<div class="contact-form__row">
-							<div class="form-field">
-								<label class="form-label" for="cf-name"><?php esc_html_e( 'Name', 'showtime-pools' ); ?> <span class="required">*</span></label>
-								<input class="form-input" type="text" id="cf-name" name="name" autocomplete="name" required>
-								<span class="form-error" data-field="name" hidden></span>
-							</div>
-							<div class="form-field">
-								<label class="form-label" for="cf-phone"><?php esc_html_e( 'Phone', 'showtime-pools' ); ?> <span class="required">*</span></label>
-								<input class="form-input" type="tel" id="cf-phone" name="phone" autocomplete="tel" required>
-								<span class="form-error" data-field="phone" hidden></span>
-							</div>
-						</div>
-
-						<div class="form-field">
-							<label class="form-label" for="cf-email"><?php esc_html_e( 'Email', 'showtime-pools' ); ?> <span class="required">*</span></label>
-							<input class="form-input" type="email" id="cf-email" name="email" autocomplete="email" required>
-							<span class="form-error" data-field="email" hidden></span>
-						</div>
-
-						<div class="form-field">
-							<label class="form-label" for="cf-service"><?php esc_html_e( "What's this about?", 'showtime-pools' ); ?></label>
-							<select class="form-select" id="cf-service" name="service">
-								<option value=""><?php esc_html_e( 'Choose a service (optional)', 'showtime-pools' ); ?></option>
-								<?php foreach ( $services as $svc ) : ?>
-									<option value="<?php echo esc_attr( (string) $svc['slug'] ); ?>"><?php echo esc_html( (string) $svc['title'] ); ?></option>
-								<?php endforeach; ?>
-								<option value="other"><?php esc_html_e( 'Something else', 'showtime-pools' ); ?></option>
-							</select>
-						</div>
-
-						<div class="form-field">
-							<label class="form-label" for="cf-message"><?php esc_html_e( 'Message', 'showtime-pools' ); ?> <span class="required">*</span></label>
-							<textarea class="form-textarea" id="cf-message" name="message" rows="5" required minlength="10" placeholder="<?php esc_attr_e( 'Pool size, what you need, anything that helps us prep before we call back…', 'showtime-pools' ); ?>"></textarea>
-							<span class="form-error" data-field="message" hidden></span>
-						</div>
-
-						<label class="contact-form__consent">
-							<input type="checkbox" name="consent" value="1" checked>
-							<span><?php esc_html_e( "It's OK to contact me by SMS or call about my message. Unsubscribe any time.", 'showtime-pools' ); ?></span>
-						</label>
-
-						<?php if ( class_exists( '\\Showtime\\Security\\Turnstile' ) && \Showtime\Security\Turnstile::is_configured() ) : ?>
-							<div class="cf-turnstile" data-sitekey="<?php echo esc_attr( \Showtime\Security\Turnstile::site_key() ); ?>"></div>
-							<span class="form-error" data-field="turnstile" hidden></span>
-						<?php endif; ?>
-
-						<div class="cluster" style="align-items:center">
-							<button type="submit" class="btn btn--primary btn--lg" data-default-label="<?php esc_attr_e( 'Send message', 'showtime-pools' ); ?>">
-								<?php esc_html_e( 'Send message', 'showtime-pools' ); ?>
-							</button>
-							<span class="contact-form__hint">
-								<?php esc_html_e( 'Reply within 1 business day.', 'showtime-pools' ); ?>
-							</span>
-						</div>
-
-						<div class="contact-form__alert" data-status="success" hidden role="status"></div>
-						<div class="contact-form__alert contact-form__alert--err" data-status="error" hidden role="alert"></div>
-					</form>
+						</p>
+					</div>
 				</div>
 
 				<aside class="contact-info">

@@ -13,6 +13,10 @@ define('SHOWTIME_CHILD_VERSION', '0.1.0');
 /** GHL booking widget URL — embedded on /book/ (page-iframe.php). */
 define('SHOWTIME_BOOKING_URL', 'https://app.showtimepoolmechanics.com/widget/booking/KkBpnBMhT5QXn8YtTsDb');
 
+/** GHL contact form URL — embedded on /contact/ (page-contact.php). Default
+ *  used when the "GHL Contact Form URL" CMS field is left blank. */
+define('SHOWTIME_CONTACT_FORM_URL', 'https://app.showtimepoolmechanics.com/widget/form/tH1eoDpRA4hMEb04GgzX');
+
 /**
  * Filterable booking destination for every CTA. Points at the on-domain
  * /book/ page, which hosts the GHL widget above, so visitors book without
@@ -77,4 +81,3 @@ require_once SHOWTIME_CHILD_DIR . '/inc/meta-fields.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/reviews-widget.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/popup.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/consent.php';
-require_once SHOWTIME_CHILD_DIR . '/inc/quote-form.php';
