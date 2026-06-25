@@ -977,6 +977,7 @@ main > section:first-child[data-reveal] { opacity: 1; transform: none; transitio
 
 .stp-popup__close {
 	position: absolute;
+	z-index: 1; /* keep the close button above the GHL form iframe */
 	top: 10px;
 	right: 10px;
 	width: 38px;
