@@ -963,8 +963,8 @@ main > section:first-child[data-reveal] { opacity: 1; transform: none; transitio
 	position: relative;
 	z-index: 1;
 	width: 100%;
-	max-width: 460px;
-	max-height: 92vh;
+	max-width: 600px;       /* roomy on desktop so the GHL form isn't cramped */
+	max-height: 90vh;       /* nearly full height; internal scroll only if needed */
 	overflow: auto;
 	background: var(--c-bg-pure);
 	border-radius: var(--r-lg);
@@ -993,8 +993,8 @@ main > section:first-child[data-reveal] { opacity: 1; transform: none; transitio
 }
 .stp-popup__close:hover { background: rgba(15, 23, 36, 0.12); }
 
-.stp-popup__embed { min-height: 460px; }
-.stp-popup__embed iframe { display: block; width: 100%; min-height: 460px; border: 0; }
+.stp-popup__embed { min-height: 600px; }
+.stp-popup__embed iframe { display: block; width: 100%; min-height: 600px; border: 0; }
 
 body.stp-popup-lock { overflow: hidden; }
 
