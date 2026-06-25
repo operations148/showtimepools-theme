@@ -201,6 +201,99 @@ final class SettingsPage {
 		);
 
 		$this->register_consent_settings();
+		$this->register_quote_settings();
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// HOMEPAGE QUOTE FORM SECTION
+	// ─────────────────────────────────────────────────────────────────────────
+
+	/**
+	 * Homepage quick-quote form band (rendered after Reviews). Embed URL, copy,
+	 * toggle and UTM defaults all live in wp_options so Steve can swap the GHL
+	 * form or reword the section without a code change.
+	 */
+	private function register_quote_settings(): void {
+		$checkbox = static fn( $v ): string => '1' === (string) $v ? '1' : '0';
+
+		register_setting( self::OPTION_GROUP, 'showtime_quote_enabled',     array( 'sanitize_callback' => $checkbox,             'default' => '1' ) );
+		register_setting( self::OPTION_GROUP, 'showtime_quote_form_url',    array( 'sanitize_callback' => 'esc_url_raw',          'default' => '' ) );
+		register_setting( self::OPTION_GROUP, 'showtime_quote_heading',     array( 'sanitize_callback' => 'sanitize_text_field', 'default' => '' ) );
+		register_setting( self::OPTION_GROUP, 'showtime_quote_subtext',     array( 'sanitize_callback' => 'sanitize_textarea_field', 'default' => '' ) );
+		register_setting( self::OPTION_GROUP, 'showtime_quote_utm_source',  array( 'sanitize_callback' => 'sanitize_text_field', 'default' => '' ) );
+		register_setting( self::OPTION_GROUP, 'showtime_quote_utm_medium',  array( 'sanitize_callback' => 'sanitize_text_field', 'default' => '' ) );
+		register_setting( self::OPTION_GROUP, 'showtime_quote_utm_content', array( 'sanitize_callback' => 'sanitize_text_field', 'default' => '' ) );
+
+		add_settings_section(
+			'showtime_section_quote',
+			__( 'Homepage Quote Form', 'showtime-pools-core' ),
+			function () {
+				echo '<p>' . esc_html__( 'A short "get a fast quote" form embedded on the homepage just after the Reviews section. Separate from the full Contact page. Leave the embed URL blank or untick "Show" to hide it.', 'showtime-pools-core' ) . '</p>';
+			},
+			self::PAGE_SLUG
+		);
+
+		add_settings_field(
+			'showtime_quote_enabled',
+			__( 'Show quote form', 'showtime-pools-core' ),
+			function () {
+				$on = '1' === (string) get_option( 'showtime_quote_enabled', '1' );
+				echo '<input type="hidden" name="showtime_quote_enabled" value="0">';
+				printf( '<label><input type="checkbox" name="showtime_quote_enabled" value="1" %s> %s</label>', checked( $on, true, false ), esc_html__( 'Display the quick-quote section on the homepage', 'showtime-pools-core' ) );
+			},
+			self::PAGE_SLUG,
+			'showtime_section_quote'
+		);
+
+		add_settings_field(
+			'showtime_quote_form_url',
+			__( 'GHL form embed URL', 'showtime-pools-core' ),
+			function () {
+				$v = (string) get_option( 'showtime_quote_form_url', '' );
+				printf( '<input type="url" name="showtime_quote_form_url" value="%s" class="regular-text" placeholder="https://app.showtimepoolmechanics.com/widget/form/...">', esc_attr( $v ) );
+				echo '<p class="description">' . esc_html__( 'The GHL form to embed. Swap this anytime to change the form — no code change. Leave blank to use the built-in default form.', 'showtime-pools-core' ) . '</p>';
+			},
+			self::PAGE_SLUG,
+			'showtime_section_quote'
+		);
+
+		add_settings_field(
+			'showtime_quote_heading',
+			__( 'Section heading', 'showtime-pools-core' ),
+			function () {
+				$v = (string) get_option( 'showtime_quote_heading', '' );
+				printf( '<input type="text" name="showtime_quote_heading" value="%s" class="regular-text" placeholder="%s">', esc_attr( $v ), esc_attr__( 'Get a fast pool quote', 'showtime-pools-core' ) );
+			},
+			self::PAGE_SLUG,
+			'showtime_section_quote'
+		);
+
+		add_settings_field(
+			'showtime_quote_subtext',
+			__( 'Section subtext', 'showtime-pools-core' ),
+			function () {
+				$v = (string) get_option( 'showtime_quote_subtext', '' );
+				printf( '<textarea name="showtime_quote_subtext" class="large-text" rows="2" placeholder="%s">%s</textarea>', esc_attr__( 'Tell us about your pool and Steve sends an itemized written quote within one business day.', 'showtime-pools-core' ), esc_textarea( $v ) );
+			},
+			self::PAGE_SLUG,
+			'showtime_section_quote'
+		);
+
+		add_settings_field(
+			'showtime_quote_utm',
+			__( 'UTM tags', 'showtime-pools-core' ),
+			function () {
+				$source  = (string) get_option( 'showtime_quote_utm_source', '' );
+				$medium  = (string) get_option( 'showtime_quote_utm_medium', '' );
+				$content = (string) get_option( 'showtime_quote_utm_content', '' );
+				printf( '<p><label>%s<br><input type="text" name="showtime_quote_utm_source" value="%s" class="regular-text" placeholder="website"></label></p>', esc_html__( 'utm_source', 'showtime-pools-core' ), esc_attr( $source ) );
+				printf( '<p><label>%s<br><input type="text" name="showtime_quote_utm_medium" value="%s" class="regular-text" placeholder="organic"></label></p>', esc_html__( 'utm_medium', 'showtime-pools-core' ), esc_attr( $medium ) );
+				printf( '<p><label>%s<br><input type="text" name="showtime_quote_utm_content" value="%s" class="regular-text" placeholder="homepage_quote_form"></label></p>', esc_html__( 'utm_content', 'showtime-pools-core' ), esc_attr( $content ) );
+				echo '<p class="description">' . esc_html__( 'Appended to the embed URL so automations (n8n) can tell this form apart from the contact form and the booking calendar. Defaults: website / organic / homepage_quote_form.', 'showtime-pools-core' ) . '</p>';
+			},
+			self::PAGE_SLUG,
+			'showtime_section_quote'
+		);
 	}
 
 	// ─────────────────────────────────────────────────────────────────────────
