@@ -77,12 +77,6 @@ if ( '' === $footer_logo ) {
 		}
 	}
 }
-
-// Main-office map (Sherman Oaks) — exact NAP reused from the first office row,
-// never retyped. Same embed pattern as the contact page; lazy-loaded.
-$main_office    = $offices[0] ?? array();
-$footer_map_q   = trim( (string) ( $main_office['street'] ?? '' ) . ' ' . (string) ( $main_office['city'] ?? '' ) );
-$footer_map_url = '' !== $footer_map_q ? 'https://www.google.com/maps?q=' . rawurlencode( $footer_map_q ) . '&output=embed' : '';
 ?>
 <div class="footer-main">
 	<div class="container">
@@ -163,16 +157,6 @@ $footer_map_url = '' !== $footer_map_q ? 'https://www.google.com/maps?q=' . rawu
 						<div><dt><?php echo esc_html( $day ); ?></dt><dd><?php echo esc_html( $time ); ?></dd></div>
 					<?php endforeach; ?>
 				</dl>
-
-					<?php if ( '' !== $footer_map_url ) : ?>
-						<div class="footer-main__map">
-							<iframe
-								loading="lazy"
-								referrerpolicy="no-referrer-when-downgrade"
-								title="<?php echo esc_attr( sprintf( __( '%s location map', 'showtime-pools' ), (string) ( $main_office['label'] ?? 'Showtime Pools' ) ) ); ?>"
-								src="<?php echo esc_url( $footer_map_url ); ?>"></iframe>
-						</div>
-					<?php endif; ?>
 			</div>
 		</div>
 	</div>

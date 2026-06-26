@@ -27,6 +27,7 @@ $sections = apply_filters(
 		'08-reviews',
 		'09-service-areas',
 		'10-faq',
+		'map',
 	)
 );
 
