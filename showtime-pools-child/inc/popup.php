@@ -17,7 +17,12 @@ defined( 'ABSPATH' ) || exit;
  * one place without editing the template part.
  */
 function showtime_popup_form_url(): string {
-	$base = 'https://app.showtimepoolmechanics.com/widget/form/pZm1SEhLB9YMX21EvIV5';
+	// URL is a CMS field (Showtime → Settings → "GHL Popup Form URL"); falls back
+	// to the bundled default form so the popup always has a form to show.
+	$base = trim( (string) get_option( 'showtime_popup_form_url', '' ) );
+	if ( '' === $base ) {
+		$base = 'https://app.showtimepoolmechanics.com/widget/form/pZm1SEhLB9YMX21EvIV5';
+	}
 	$url  = add_query_arg(
 		array(
 			'utm_source'  => 'website',

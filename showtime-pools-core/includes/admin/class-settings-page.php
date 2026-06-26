@@ -68,6 +68,7 @@ final class SettingsPage {
 		register_setting( self::OPTION_GROUP, 'showtime_ghl_quote_url',      array( 'sanitize_callback' => 'esc_url_raw' ) );
 		register_setting( self::OPTION_GROUP, 'showtime_ghl_book_url',       array( 'sanitize_callback' => 'esc_url_raw' ) );
 		register_setting( self::OPTION_GROUP, 'showtime_ghl_contact_url',    array( 'sanitize_callback' => 'esc_url_raw' ) );
+		register_setting( self::OPTION_GROUP, 'showtime_popup_form_url',     array( 'sanitize_callback' => 'esc_url_raw' ) );
 
 		// Cloudflare Turnstile (CAPTCHA for public forms).
 		register_setting( self::OPTION_GROUP, 'showtime_turnstile_site_key', array( 'sanitize_callback' => 'sanitize_text_field', 'default' => '' ) );
@@ -173,6 +174,18 @@ final class SettingsPage {
 				$v = (string) get_option( 'showtime_ghl_contact_url', '' );
 				printf( '<input type="url" name="showtime_ghl_contact_url" value="%s" class="regular-text" placeholder="https://app.showtimepoolmechanics.com/widget/form/...">', esc_attr( $v ) );
 				echo '<p class="description">' . esc_html__( 'Embedded into the /contact/ page form area. Leave blank to use the bundled default form. UTM (website / organic / contact_form) is appended automatically.', 'showtime-pools-core' ) . '</p>';
+			},
+			self::PAGE_SLUG,
+			'showtime_section_ghl'
+		);
+
+		add_settings_field(
+			'showtime_popup_form_url',
+			__( 'GHL Popup Form URL', 'showtime-pools-core' ),
+			function () {
+				$v = (string) get_option( 'showtime_popup_form_url', '' );
+				printf( '<input type="url" name="showtime_popup_form_url" value="%s" class="regular-text" placeholder="https://app.showtimepoolmechanics.com/widget/form/...">', esc_attr( $v ) );
+				echo '<p class="description">' . esc_html__( 'Embedded into the sitewide "Weekly Maintenance" popup. Leave blank to use the bundled default form. UTM (website / popup / weekly_maintenance) is appended automatically.', 'showtime-pools-core' ) . '</p>';
 			},
 			self::PAGE_SLUG,
 			'showtime_section_ghl'
