@@ -9,6 +9,10 @@
 defined( 'ABSPATH' ) || exit;
 
 $areas = class_exists( '\\Showtime\\Areas' ) ? \Showtime\Areas::all() : array();
+// Homepage shows the six established-route neighborhoods (first six in the
+// registry, each with a real pool count) for a clean 3x2 grid. The full set
+// lives on the /service-areas/ hub.
+$areas = array_slice( $areas, 0, 6 );
 ?>
 <section class="service-areas" data-reveal>
 	<div class="container">
