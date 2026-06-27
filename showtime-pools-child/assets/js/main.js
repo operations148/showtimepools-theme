@@ -198,6 +198,52 @@
 			// No IO support or reduced motion — show everything immediately.
 			allTargets.forEach((el) => el.classList.add('is-revealed'));
 		}
+
+		// ── Lazy third-party review widgets (Trustindex) ───────────────
+		// The Trustindex embed loads 30+ JS files via its loader script and
+		// always sits below the fold. reviews-widget.php parks the exact
+		// shortcode markup inside an inert <template>; here we inject it and
+		// re-execute its <script> tags only when the section nears the
+		// viewport, so it costs nothing at initial paint. Same defer-until-
+		// needed approach as the popup iframe — the live pull is unchanged.
+		const lazyReviews = document.querySelectorAll('[data-trustindex-lazy]');
+		if (lazyReviews.length) {
+			const mountReviews = (container) => {
+				if (container.dataset.mounted) return;
+				const tpl = container.querySelector('template[data-trustindex-markup]');
+				if (!tpl) return;
+				container.dataset.mounted = '1';
+				const holder = document.createElement('div');
+				holder.className = 'reviews-widget__mount';
+				holder.innerHTML = tpl.innerHTML; // inert: innerHTML never runs scripts
+				tpl.remove();
+				container.appendChild(holder);
+				// innerHTML-parsed scripts don't execute — recreate each so the
+				// loader (and any inline init) actually runs. Covers src + inline.
+				holder.querySelectorAll('script').forEach((old) => {
+					const s = document.createElement('script');
+					Array.prototype.forEach.call(old.attributes, (a) => s.setAttribute(a.name, a.value));
+					if (old.textContent) s.textContent = old.textContent;
+					old.parentNode.replaceChild(s, old);
+				});
+			};
+
+			if ('IntersectionObserver' in window) {
+				const rio = new IntersectionObserver(
+					(entries, obs) => {
+						entries.forEach((e) => {
+							if (!e.isIntersecting) return;
+							mountReviews(e.target);
+							obs.unobserve(e.target);
+						});
+					},
+					{ rootMargin: '300px 0px' } // begin loading just before it's seen
+				);
+				lazyReviews.forEach((el) => rio.observe(el));
+			} else {
+				lazyReviews.forEach(mountReviews); // no IO — mount immediately
+			}
+		}
 	});
 
 	// Expose a tiny namespace for page-scoped scripts to hang helpers on.

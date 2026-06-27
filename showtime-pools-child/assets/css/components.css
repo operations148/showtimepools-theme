@@ -702,6 +702,10 @@ details[open] .faq__chevron { transform: rotate(180deg); }
 .reviews-widget--compact {
 	min-height: 220px;
 }
+/* Lazy placeholder + mount fill the reserved height so the widget appears in
+   place (no layout shift) when it scrolls into view and mounts. */
+.reviews-widget__lazy,
+.reviews-widget__mount { display: block; min-height: inherit; }
 /* Trustindex injects its own slider markup; keep it from forcing a horizontal
    page scrollbar on narrow viewports. */
 .reviews-widget :where(.ti-widget, [class*="trustindex"]) { max-width: 100%; }

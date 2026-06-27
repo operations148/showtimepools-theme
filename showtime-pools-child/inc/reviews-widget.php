@@ -53,7 +53,18 @@ if ( ! function_exists( 'showtime_render_reviews_widget' ) ) {
 		}
 
 		if ( '' !== $rendered ) {
-			return $rendered;
+			// Lazy-mount the third-party widget. Trustindex's embed pulls
+			// 30+ JS files via its loader <script>; it sits below the fold,
+			// so we keep that markup inert inside a <template> and let
+			// assets/js/main.js inject it (re-executing its scripts) only
+			// when the reviews section scrolls into view — same defer-until-
+			// needed pattern as the popup/quote iframes. The markup is the
+			// exact shortcode output, so the live review pull is unchanged,
+			// just delayed. No-IntersectionObserver browsers mount on load.
+			return sprintf(
+				'<div class="reviews-widget__lazy" data-trustindex-lazy><template data-trustindex-markup>%s</template></div>',
+				$rendered
+			);
 		}
 
 		// Fallback CTA — never silence, never fakes.
