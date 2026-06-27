@@ -139,19 +139,19 @@ $about_img_bot = function_exists( 'showtime_image' ) ? showtime_image( 'service_
 
 <section class="home-stats" data-reveal>
 	<div class="container">
-		<dl class="home-stats__grid" data-stagger>
+		<div class="home-stats__grid" data-stagger>
 			<?php foreach ( $stats as $s ) :
 				$icon_key = (string) ( $s['icon'] ?? '' );
 				$icon_svg = $stat_icons[ $icon_key ] ?? $stat_icons['star'];
 			?>
 				<div class="home-stats__cell">
 					<span class="home-stats__badge" aria-hidden="true"><?php echo $icon_svg; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — static SVG ?></span>
-					<div class="home-stats__text">
+					<dl class="home-stats__text">
 						<dt class="home-stats__num" data-count="<?php echo esc_attr( (string) ( $s['num'] ?? '' ) ); ?>"><?php echo esc_html( (string) ( $s['num'] ?? '' ) ); ?></dt>
 						<dd class="home-stats__label"><?php echo esc_html( (string) ( $s['label'] ?? '' ) ); ?></dd>
-					</div>
+					</dl>
 				</div>
 			<?php endforeach; ?>
-		</dl>
+		</div>
 	</div>
 </section>
