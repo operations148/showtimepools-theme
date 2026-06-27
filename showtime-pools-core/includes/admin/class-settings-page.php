@@ -485,6 +485,15 @@ final class SettingsPage {
 
 		wp_enqueue_media();
 
+		// Dedicated, dependency-only handle so the inline picker JS actually
+		// prints. wp_enqueue_media() does NOT enqueue the legacy `media-upload`
+		// handle, so attaching the inline script there silently dropped it
+		// (buttons never bound, no console error). Depending on `jquery` +
+		// `media-editor` guarantees both jQuery and wp.media are loaded first.
+		$handle = 'stp-images-picker';
+		wp_register_script( $handle, false, array( 'jquery', 'media-editor' ), '1.0.0', true );
+		wp_enqueue_script( $handle );
+
 		// Inline JS: WP media picker wired to each slot row.
 		$js = <<<'JS'
 (function($){
@@ -519,7 +528,7 @@ final class SettingsPage {
     });
 }(jQuery));
 JS;
-		wp_add_inline_script( 'media-upload', $js );
+		wp_add_inline_script( $handle, $js );
 	}
 
 	/**
