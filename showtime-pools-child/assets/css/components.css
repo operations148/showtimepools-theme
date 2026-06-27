@@ -934,7 +934,7 @@ details[open] .faq__chevron { transform: rotate(180deg); }
 [data-stagger].is-revealed > * { opacity: 1; transform: none; }
 
 main > [data-reveal]:first-child,
-main > section:first-child[data-reveal] { opacity: 1; transform: none; transition: none; }
+main > section:first-child[data-reveal] { opacity: 1; transform: none; transition: none; animation: none; }
 
 /* prefers-reduced-motion guard intentionally omitted — decorative marketing animations. */
 

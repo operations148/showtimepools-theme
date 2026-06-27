@@ -1344,12 +1344,18 @@
 	transform: none;
 }
 
-/* Above-the-fold hero — always visible from t=0, no animation flash. */
+/* Above-the-fold hero — fully static from t=0 so the LCP element paints in
+   its final state immediately and is cleanly detectable. We neutralise the
+   [data-reveal] transition AND the decorative `stp-hero-settle` keyframe
+   animation (scale 1.07→1 + opacity 0.85→1) that .home-hero--immersive sets:
+   animating the transform/opacity of the LCP element delays/destabilises the
+   largest paint in the lab. This guard outspecifies .home-hero--immersive. */
 main > [data-reveal]:first-child,
 main > section:first-child[data-reveal] {
 	opacity: 1;
 	transform: none;
 	transition: none;
+	animation: none;
 }
 
 /* prefers-reduced-motion guard intentionally omitted — animations are subtle
