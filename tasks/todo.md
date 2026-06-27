@@ -491,6 +491,56 @@ P4.1 -> P4.2 -> P4.3 -> P4.6 (quick win) -> P4.4 -> P4.5 -> P4.7. Verify after e
 
 Starting P4.1 now.
 
+---
+
+# T5 — A11y / AEO fixes from live PageSpeed audit (2026-06-27)
+
+Backup branch: `backup/pre-a11y-aeo-20260627` (at HEAD fcc1e75). No push. One concern per commit.
+
+## FIX 1 — ARIA menu roles (Accessibility 89, role=menu missing required children)
+- [ ] `template-parts/header/primary-nav.php`: remove `role="menu"` from the two
+      `.primary-nav__mega` divs (option a — site nav is not an app-style ARIA menu
+      widget; plain nav/ul/li/a is correct + screen-reader friendly). Children have
+      no `role="menuitem"`, which is what trips the axe rule.
+- [ ] Mobile drawer already plain ul/li/a + `<details>`, no role="menu" → no change.
+- [ ] Verify: 0 role="menu"/role="menuitem" in rendered HTML; mega still opens on
+      hover AND keyboard (CSS `:focus-within`, unaffected by role removal).
+
+## FIX 2 — definition-list structure (dl must contain ordered dt/dd)
+- [ ] `template-parts/home/section-02-trust-bar.php`: `.home-stats__cell` divs (children
+      of `<dl>`) contain a `<span>` badge + nested `<div class="home-stats__text">`
+      wrapping dt/dd — axe wants each dl-group div to contain only ordered dt/dd.
+- [ ] Make `dt`/`dd` direct children of the group div; move badge + text-stack layout
+      to CSS so visuals stay identical. Keep `data-count` on `.home-stats__num`.
+- [ ] Verify: each dl child div = dt then dd; counter intact; screenshot unchanged.
+
+## FIX 3 — llms.txt at site root
+- [ ] `inc/crawl.php`: serve Markdown `llms.txt` via `parse_request` hook keyed on raw
+      REQUEST_URI basename (works subdir-local + root-live; not dependent on WP's robots
+      rewrite, which 404s locally per SEO-T2 note line 535).
+- [ ] Content: H1 "Showtime Pools", description (LA pool service/repair/cleaning/
+      remodeling), key pages (Services + enumerated services, Service Areas, Contact,
+      Book), canonical domain via home_url().
+- [ ] Verify: `curl /showtimepools/llms.txt` → 200, `text/markdown`, has H1.
+
+### T5 review (done 2026-06-27)
+- FIX 1 — 1026689. Removed `role="menu"` from both `.primary-nav__mega` divs
+  (option a). Rendered HTML now: 0 `role="menu"`, 0 `role="menuitem"`, 17 mega-items
+  intact. Hover + keyboard reveal preserved (CSS `:focus-within`, role-independent;
+  children are focusable `<a>`). Mobile drawer already plain ul/li/a — no change.
+- FIX 2 — b1df486. Each stat is now its own valid single-pair `<dl>` (`.home-stats__text`
+  holding `<dt>`number + `<dd>`label as direct children); outer `.home-stats__grid` is a
+  plain `<div>`; decorative badge stays a sibling outside the dl; UA margin reset on the
+  new dl. Rendered: 4 dls each dt-then-dd, badges + `data-count` + `data-stagger` intact.
+  Screenshot confirms the 4-up strip is pixel-identical.
+- FIX 3 — 55822c2. `llms.txt` served from `inc/crawl.php` via `parse_request` keyed on
+  REQUEST_URI basename (works subdir-local + root-live; verifiable locally unlike robots.txt).
+  `curl /llms.txt` → 200 `text/markdown`, single H1, 14 services + 9 areas from registries,
+  company + contact/booking, canonical via `home_url()`. Normal pages + 404s unaffected.
+- Backup: `backup/pre-a11y-aeo-20260627`. NOT pushed.
+- Live note: links in llms.txt render as `home_url()` → become `https://showtimepools.com/...`
+  on live. After deploy, confirm `https://showtimepools.com/llms.txt` returns 200 text/markdown.
+
 
 ---
 
