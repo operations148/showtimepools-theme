@@ -48,7 +48,7 @@ $services = class_exists( '\\Showtime\\Services' ) ? \Showtime\Services::all() :
 
 			<li class="<?php echo esc_attr( $nav_cls( 'about', 'primary-nav__item primary-nav__item--has-mega' ) ); ?>">
 				<a class="primary-nav__link" href="<?php echo esc_url( home_url( '/about/' ) ); ?>"><?php esc_html_e( 'About', 'showtime-pools' ); ?></a>
-				<div class="primary-nav__mega primary-nav__mega--narrow" role="menu">
+				<div class="primary-nav__mega primary-nav__mega--narrow">
 					<div class="primary-nav__mega-grid primary-nav__mega-grid--single">
 						<a class="primary-nav__mega-item" href="<?php echo esc_url( home_url( '/about/' ) ); ?>"><span><?php esc_html_e( 'About Us', 'showtime-pools' ); ?></span><small><?php esc_html_e( 'Who we are, what we do', 'showtime-pools' ); ?></small></a>
 						<a class="primary-nav__mega-item" href="<?php echo esc_url( home_url( '/the-founder/' ) ); ?>"><span><?php esc_html_e( 'The Founder', 'showtime-pools' ); ?></span><small><?php esc_html_e( "Steve Adams' story", 'showtime-pools' ); ?></small></a>
@@ -59,7 +59,7 @@ $services = class_exists( '\\Showtime\\Services' ) ? \Showtime\Services::all() :
 
 			<li class="<?php echo esc_attr( $nav_cls( 'services', 'primary-nav__item primary-nav__item--has-mega' ) ); ?>">
 				<a class="primary-nav__link" href="<?php echo esc_url( home_url( '/services/' ) ); ?>"><?php esc_html_e( 'Services', 'showtime-pools' ); ?></a>
-				<div class="primary-nav__mega" role="menu">
+				<div class="primary-nav__mega">
 					<div class="primary-nav__mega-grid primary-nav__mega-grid--3">
 						<?php foreach ( $services as $svc ) : ?>
 							<a class="primary-nav__mega-item" href="<?php echo esc_url( home_url( '/services/' . $svc['slug'] . '/' ) ); ?>">
