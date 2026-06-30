@@ -56,7 +56,7 @@ add_action(
 		if ( is_front_page() && function_exists( 'showtime_front_hero_image' ) ) {
 			// With a hero video the LCP is the small poster, not a single large
 			// image — skip the image preload so we don't fetch the wrong asset.
-			if ( '' === (string) get_option( 'showtime_hero_video_url', '' ) ) {
+			if ( '' === (string) get_option( 'showtime_hero_video_url', SHOWTIME_CHILD_URI . '/assets/img/Showtimehero.mp4' ) ) {
 				$h = showtime_front_hero_image();
 				if ( '' !== $h['srcset'] ) {
 					// Preload the exact responsive candidate the <img> will pick,

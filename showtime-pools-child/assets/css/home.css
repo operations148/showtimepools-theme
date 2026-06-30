@@ -1473,6 +1473,7 @@ main > section:first-child[data-reveal] {
 	height: 100%;
 	object-fit: cover;
 	display: block;
+	opacity: 0.4;
 }
 .home-hero--immersive .home-hero__bgphoto--poster {
 	position: absolute;

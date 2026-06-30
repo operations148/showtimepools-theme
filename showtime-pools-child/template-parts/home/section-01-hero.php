@@ -47,7 +47,7 @@ $eyebrow_text = ( '' !== ( $opt ? (string) get_field( 'hero_eyebrow', $opt ) : '
 // poster is the hero_poster slot, which defaults to the hero still, so the LCP
 // preload in inc/performance.php stays valid. Mobile shows the poster image
 // only (CSS hides the video < 961px) so no video bytes load on phones.
-$hero_video = (string) get_option( 'showtime_hero_video_url', '' );
+$hero_video = (string) get_option( 'showtime_hero_video_url', SHOWTIME_CHILD_URI . '/assets/img/Showtimehero.mp4' );
 $hero_poster = function_exists( 'showtime_image' ) ? showtime_image( 'hero_poster', 1920 ) : $hero_url;
 ?>
 <section class="home-hero home-hero--immersive" data-reveal>
