@@ -54,9 +54,13 @@ add_action(
 	'wp_head',
 	function () {
 		if ( is_front_page() && function_exists( 'showtime_front_hero_image' ) ) {
-			// With a hero video the LCP is the small poster, not a single large
-			// image — skip the image preload so we don't fetch the wrong asset.
-			if ( '' === (string) get_option( 'showtime_hero_video_url', SHOWTIME_CHILD_URI . '/assets/img/Showtimehero.mp4' ) ) {
+			// The hero video is currently hardcoded on (see section-01-hero.php),
+			// so the LCP is the small poster, not the responsive hero image —
+			// skip the image preload so we don't fetch the wrong asset. Restore
+			// the get_option() check below when the video is wired back to the
+			// Hero video URL setting.
+			$hero_video_on = true;
+			if ( ! $hero_video_on ) {
 				$h = showtime_front_hero_image();
 				if ( '' !== $h['srcset'] ) {
 					// Preload the exact responsive candidate the <img> will pick,
