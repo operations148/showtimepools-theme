@@ -43,17 +43,15 @@ $eyebrow_text = ( '' !== ( $opt ? (string) get_field( 'hero_eyebrow', $opt ) : '
 	: __( 'YOUR POOL, OUR PRIORITY', 'showtime-pools' );
 ?>
 <?php
-// Background video. TEMPORARILY HARDCODED to the bundled asset while we
-// iterate on the hero design. NOTE: get_option() with a default only returns
-// the default when the option row is ABSENT — the Hero video URL settings
-// field saves an empty string, so the default never fired. Once design is
-// final, wire this back to the option:
-//   $hero_video = (string) get_option( 'showtime_hero_video_url', '' );
-//   if ( '' === $hero_video ) { $hero_video = SHOWTIME_CHILD_URI . '/assets/img/Showtimehero.mp4'; }
-// The poster is the hero_poster slot, which defaults to the hero still, so the
-// LCP preload in inc/performance.php stays valid. Mobile shows the poster image
-// only (CSS hides the video < 961px) so no video bytes load on phones.
-$hero_video = SHOWTIME_CHILD_URI . '/assets/img/Showtimehero.mp4';
+// Background video. In code-first edit mode the bundled asset always plays; in
+// WordPress mode it reads the Hero video URL setting (empty = no video, hero
+// falls back to the still image). The poster is the hero_poster slot, which
+// defaults to the hero still, so the LCP preload in inc/performance.php stays
+// valid. Mobile shows the poster image only (CSS hides the video < 961px) so
+// no video bytes load on phones.
+$hero_video = ( defined( 'SHOWTIME_CODE_FIRST' ) && SHOWTIME_CODE_FIRST )
+	? SHOWTIME_CHILD_URI . '/assets/img/Showtimehero.mp4'
+	: (string) get_option( 'showtime_hero_video_url', '' );
 $hero_poster = function_exists( 'showtime_image' ) ? showtime_image( 'hero_poster', 1920 ) : $hero_url;
 ?>
 <section class="home-hero home-hero--immersive" data-reveal>

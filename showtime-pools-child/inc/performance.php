@@ -54,12 +54,13 @@ add_action(
 	'wp_head',
 	function () {
 		if ( is_front_page() && function_exists( 'showtime_front_hero_image' ) ) {
-			// The hero video is currently hardcoded on (see section-01-hero.php),
-			// so the LCP is the small poster, not the responsive hero image —
-			// skip the image preload so we don't fetch the wrong asset. Restore
-			// the get_option() check below when the video is wired back to the
-			// Hero video URL setting.
-			$hero_video_on = true;
+			// When a hero video plays, the LCP is the small poster, not the
+			// responsive hero image — skip the image preload so we don't fetch the
+			// wrong asset. Code-first mode always plays the bundled video; in
+			// WordPress mode the video is on only when the setting is filled.
+			$hero_video_on = ( defined( 'SHOWTIME_CODE_FIRST' ) && SHOWTIME_CODE_FIRST )
+				? true
+				: ( '' !== (string) get_option( 'showtime_hero_video_url', '' ) );
 			if ( ! $hero_video_on ) {
 				$h = showtime_front_hero_image();
 				if ( '' !== $h['srcset'] ) {

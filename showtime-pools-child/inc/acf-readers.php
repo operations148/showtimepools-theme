@@ -23,6 +23,10 @@ defined( 'ABSPATH' ) || exit;
  * @return array
  */
 function showtime_acf_rows( string $field_name, array $default, string $scope = 'option' ): array {
+	// Code-first edit mode: render the PHP default, ignore the CMS value.
+	if ( defined( 'SHOWTIME_CODE_FIRST' ) && SHOWTIME_CODE_FIRST ) {
+		return $default;
+	}
 	if ( ! function_exists( 'get_field' ) ) {
 		return $default;
 	}
@@ -38,6 +42,10 @@ function showtime_acf_rows( string $field_name, array $default, string $scope = 
  * falling back to a default value when empty.
  */
 function showtime_acf_text( string $field_name, string $default = '', string $scope = 'option' ): string {
+	// Code-first edit mode: render the PHP default, ignore the CMS value.
+	if ( defined( 'SHOWTIME_CODE_FIRST' ) && SHOWTIME_CODE_FIRST ) {
+		return $default;
+	}
 	if ( ! function_exists( 'get_field' ) ) {
 		return $default;
 	}
@@ -59,6 +67,13 @@ function showtime_acf_text( string $field_name, string $default = '', string $sc
  * @param string $acf_key   Optional ACF field name to try as Priority 1.
  */
 function showtime_ct( string $ct_key, string $default = '', string $acf_key = '' ): string {
+	// Code-first edit mode: render the PHP default, ignore the native + ACF
+	// CMS values (the global acf/load_value filter does not cover the native
+	// showtime_ct_* wp_options, so this short-circuit is required here).
+	if ( defined( 'SHOWTIME_CODE_FIRST' ) && SHOWTIME_CODE_FIRST ) {
+		return $default;
+	}
+
 	// Priority 0: native wp_options.
 	if ( class_exists( '\\Showtime\\Admin\\ContentPage' ) ) {
 		$native = \Showtime\Admin\ContentPage::get( $ct_key );

@@ -93,37 +93,43 @@ function showtime_attachment_sized_url( int $id, int $w ): string {
 
 function showtime_image( string $slot, int $w = 1600, int $h = 0 ): string {
 
-	// ── Priority 0: Native WP option (no ACF Pro required) ───────────────────
-	// WP Admin → Showtime Pools → Site Images → upload any photo.
-	// Saves as attachment ID (int) or URL (string) in wp_options.
-	// Always available, even without ACF Pro on the server.
-	$opt_key = 'showtime_img_' . str_replace( '-', '_', $slot );
-	$native  = get_option( $opt_key, '' );
-	if ( '' !== (string) $native ) {
-		// For an uploaded attachment, serve a width-appropriate generated size
-		// instead of the full original — the original is often far larger than
-		// the display size (a key share of PageSpeed's "image delivery" savings).
-		$native_url = is_numeric( $native )
-			? showtime_attachment_sized_url( (int) $native, $w )
-			: (string) $native;
-		if ( $native_url ) {
-			return (string) apply_filters( 'showtime/image/' . $slot, $native_url, $slot, $w, $h );
-		}
-	}
+	// Code-first edit mode skips the DB-backed overrides below so images resolve
+	// from the bundled assets/img file or the Unsplash slot map (i.e. the code).
+	$code_first = defined( 'SHOWTIME_CODE_FIRST' ) && SHOWTIME_CODE_FIRST;
 
-	// ── Priority 1: ACF Options override ─────────────────────────────────────
-	// WP Admin → Site Content → Images → upload any image to override the
-	// bundled/Unsplash fallback. Field name = "img_" + slot with hyphens → underscores.
-	// This is the single entry-point for all dynamic image management.
-	if ( function_exists( 'get_field' ) ) {
-		$field_key = 'img_' . str_replace( '-', '_', $slot );
-		$acf_img   = get_field( $field_key, 'option' );
-		if ( ! empty( $acf_img ) ) {
-			$acf_url = is_array( $acf_img )
-				? (string) ( $acf_img['sizes']['large'] ?? $acf_img['sizes']['medium_large'] ?? $acf_img['url'] ?? '' )
-				: (string) $acf_img;
-			if ( '' !== $acf_url ) {
-				return (string) apply_filters( 'showtime/image/' . $slot, $acf_url, $slot, $w, $h );
+	if ( ! $code_first ) {
+		// ── Priority 0: Native WP option (no ACF Pro required) ───────────────────
+		// WP Admin → Showtime Pools → Site Images → upload any photo.
+		// Saves as attachment ID (int) or URL (string) in wp_options.
+		// Always available, even without ACF Pro on the server.
+		$opt_key = 'showtime_img_' . str_replace( '-', '_', $slot );
+		$native  = get_option( $opt_key, '' );
+		if ( '' !== (string) $native ) {
+			// For an uploaded attachment, serve a width-appropriate generated size
+			// instead of the full original — the original is often far larger than
+			// the display size (a key share of PageSpeed's "image delivery" savings).
+			$native_url = is_numeric( $native )
+				? showtime_attachment_sized_url( (int) $native, $w )
+				: (string) $native;
+			if ( $native_url ) {
+				return (string) apply_filters( 'showtime/image/' . $slot, $native_url, $slot, $w, $h );
+			}
+		}
+
+		// ── Priority 1: ACF Options override ─────────────────────────────────────
+		// WP Admin → Site Content → Images → upload any image to override the
+		// bundled/Unsplash fallback. Field name = "img_" + slot with hyphens → underscores.
+		// This is the single entry-point for all dynamic image management.
+		if ( function_exists( 'get_field' ) ) {
+			$field_key = 'img_' . str_replace( '-', '_', $slot );
+			$acf_img   = get_field( $field_key, 'option' );
+			if ( ! empty( $acf_img ) ) {
+				$acf_url = is_array( $acf_img )
+					? (string) ( $acf_img['sizes']['large'] ?? $acf_img['sizes']['medium_large'] ?? $acf_img['url'] ?? '' )
+					: (string) $acf_img;
+				if ( '' !== $acf_url ) {
+					return (string) apply_filters( 'showtime/image/' . $slot, $acf_url, $slot, $w, $h );
+				}
 			}
 		}
 	}
@@ -232,8 +238,9 @@ function showtime_image( string $slot, int $w = 1600, int $h = 0 ): string {
  * @return array{desktop:string,mobile:string}
  */
 function showtime_front_hero_urls(): array {
-	$opt    = function_exists( 'get_field' ) ? 'option' : false;
-	$pc_img = $opt ? get_field( 'hero_image', $opt ) : null;
+	$code_first = defined( 'SHOWTIME_CODE_FIRST' ) && SHOWTIME_CODE_FIRST;
+	$opt        = ( ! $code_first && function_exists( 'get_field' ) ) ? 'option' : false;
+	$pc_img     = $opt ? get_field( 'hero_image', $opt ) : null;
 
 	if ( is_array( $pc_img ) && ! empty( $pc_img['url'] ) ) {
 		$desktop = (string) ( $pc_img['sizes']['large'] ?? $pc_img['url'] );
@@ -266,16 +273,20 @@ function showtime_front_hero_image(): array {
 	$sizes = '100vw';
 
 	// Resolve an attachment ID from the native Site Images option or ACF.
-	$id     = 0;
-	$native = get_option( 'showtime_img_hero', '' );
-	if ( is_numeric( $native ) ) {
-		$id = (int) $native;
-	} elseif ( function_exists( 'get_field' ) ) {
-		$acf = get_field( 'hero_image', 'option' );
-		if ( is_array( $acf ) && ! empty( $acf['ID'] ) ) {
-			$id = (int) $acf['ID'];
-		} elseif ( is_numeric( $acf ) ) {
-			$id = (int) $acf;
+	// Code-first edit mode skips this so the hero resolves from the bundled
+	// assets/img/hero file or the Unsplash slot map (the non-attachment path).
+	$id = 0;
+	if ( ! ( defined( 'SHOWTIME_CODE_FIRST' ) && SHOWTIME_CODE_FIRST ) ) {
+		$native = get_option( 'showtime_img_hero', '' );
+		if ( is_numeric( $native ) ) {
+			$id = (int) $native;
+		} elseif ( function_exists( 'get_field' ) ) {
+			$acf = get_field( 'hero_image', 'option' );
+			if ( is_array( $acf ) && ! empty( $acf['ID'] ) ) {
+				$id = (int) $acf['ID'];
+			} elseif ( is_numeric( $acf ) ) {
+				$id = (int) $acf;
+			}
 		}
 	}
 
@@ -337,6 +348,13 @@ function showtime_front_hero_image(): array {
  * @return string e.g. `srcset="… 720w, … 1440w" sizes="100vw"` or ''.
  */
 function showtime_hero_srcset_attr( string $slot ): string {
+	// Code-first edit mode has no uploaded attachment to build a srcset from, so
+	// the markup degrades to the single bundled/Unsplash src (same as the
+	// non-attachment fallback below).
+	if ( defined( 'SHOWTIME_CODE_FIRST' ) && SHOWTIME_CODE_FIRST ) {
+		return '';
+	}
+
 	$key    = str_replace( '-', '_', $slot );
 	$id     = 0;
 	$native = get_option( 'showtime_img_' . $key, '' );

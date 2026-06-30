@@ -64,10 +64,13 @@ $footer_areas = class_exists( '\\Showtime\\Areas' ) ? \Showtime\Areas::all() : a
 
 // Footer logo: CMS override (Site Images → Footer logo) else the bundled logo
 // file. Same resolution order as the header branding so the two stay in sync.
+// Code-first edit mode skips the CMS override and uses the bundled logo.
 $footer_logo = '';
-$flo = get_option( 'showtime_img_footer_logo', '' );
-if ( '' !== (string) $flo ) {
-	$footer_logo = is_numeric( $flo ) ? (string) wp_get_attachment_url( (int) $flo ) : (string) $flo;
+if ( ! ( defined( 'SHOWTIME_CODE_FIRST' ) && SHOWTIME_CODE_FIRST ) ) {
+	$flo = get_option( 'showtime_img_footer_logo', '' );
+	if ( '' !== (string) $flo ) {
+		$footer_logo = is_numeric( $flo ) ? (string) wp_get_attachment_url( (int) $flo ) : (string) $flo;
+	}
 }
 if ( '' === $footer_logo ) {
 	foreach ( array( 'svg', 'webp', 'png' ) as $ext ) {

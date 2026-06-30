@@ -10,6 +10,22 @@ defined('ABSPATH') || exit;
 
 define('SHOWTIME_CHILD_VERSION', '0.1.0');
 
+/**
+ * Code-first edit mode. When true, display content + images render from the
+ * theme code (template PHP defaults, bundled assets/img files, Unsplash slot
+ * map) instead of the WordPress database (ACF option fields + Site Images /
+ * Site Content wp_options). Lets us design by editing code and see it live.
+ *
+ * Set to false to "plug back into WordPress" — all ACF/option content and
+ * CMS-uploaded images return with no other changes. Config (booking/form URLs,
+ * consent, popup, reviews shortcodes, UTM) is read via get_option() and is
+ * never affected by this switch. Per-post CPT content (individual project /
+ * service detail pages) is also untouched — it has no code source.
+ */
+if ( ! defined( 'SHOWTIME_CODE_FIRST' ) ) {
+	define( 'SHOWTIME_CODE_FIRST', true );
+}
+
 /** GHL booking widget URL — embedded on /book/ (page-iframe.php). */
 define('SHOWTIME_BOOKING_URL', 'https://app.showtimepoolmechanics.com/widget/booking/KkBpnBMhT5QXn8YtTsDb');
 
@@ -66,6 +82,7 @@ function showtime_nav_active_section(): string {
 define('SHOWTIME_CHILD_DIR', get_stylesheet_directory());
 define('SHOWTIME_CHILD_URI', get_stylesheet_directory_uri());
 
+require_once SHOWTIME_CHILD_DIR . '/inc/code-first.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/theme-setup.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/enqueue.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/blocksy-overrides.php';
