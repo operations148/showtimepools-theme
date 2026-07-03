@@ -236,6 +236,16 @@ $schema = apply_filters(
 		'image'           => $image_url,
 		'telephone'       => $tel_e164,
 		'email'           => $biz_email,
+		'contactPoint'    => array(
+			array(
+				'@type'             => 'ContactPoint',
+				'telephone'         => $tel_e164,
+				'email'             => $biz_email,
+				'contactType'       => 'customer service',
+				'areaServed'        => 'US-CA',
+				'availableLanguage' => array( 'English' ),
+			),
+		),
 		'priceRange'      => '$$-$$$',
 		'address'         => $main_address,
 		'geo'             => array(
@@ -275,7 +285,7 @@ foreach ( array_slice( $offices, 1 ) as $office ) {
 		'@type'     => 'LocalBusiness',
 		'@id'       => home_url( '/#branch-' . $slug_for( $label ) ),
 		'branchOf'  => array( '@id' => $home_id ),
-		'name'      => $biz_name . ' — ' . $label,
+		'name'      => $biz_name . ', ' . $label,
 		'telephone' => $tel_e164,
 		'address'   => array(
 			'@type'           => 'PostalAddress',

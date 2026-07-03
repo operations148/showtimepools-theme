@@ -89,10 +89,13 @@ $phone = (string) apply_filters( 'showtime/business/phone', '(323) 825-2099' );
 $email = (string) apply_filters( 'showtime/business/email', 'operations@showtimepoolmechanics.com' );
 
 // Offices + socials from same sources as footer + contact page.
-$offices = function_exists( 'showtime_acf_rows' ) ? showtime_acf_rows( 'offices', array(
+$offices_default = array(
 	array( 'label' => 'Sherman Oaks (Main)', 'street' => '15301 Ventura Blvd.', 'city' => 'Sherman Oaks, CA 91403' ),
-) ) : array();
-$shop = $offices[0] ?? array( 'street' => '15301 Ventura Blvd.', 'city' => 'Sherman Oaks, CA 91403' );
+	array( 'label' => 'Century City',        'street' => '1925 Century Park East, Suite 1700', 'city' => 'Los Angeles, CA 90067' ),
+);
+$offices = function_exists( 'showtime_acf_rows' ) ? showtime_acf_rows( 'offices', $offices_default ) : $offices_default;
+$offices = apply_filters( 'showtime/business/offices', $offices );
+$shop = $offices[0] ?? $offices_default[0];
 
 $socials = (array) apply_filters( 'showtime/business/socials', array() );
 $linkedin = '';
@@ -248,29 +251,55 @@ $person_schema = array(
 	<?php endif; ?>
 
 	<section class="int-section int-section--cream" data-reveal>
-		<div class="container" style="max-width:var(--container-narrow)">
+		<div class="container">
 			<header class="int-section__head">
 				<span class="eyebrow"><?php echo esc_html( $founder_contact_eyebrow ); ?></span>
 				<h2 class="balance"><?php echo esc_html( $founder_contact_h2 ); ?></h2>
 			</header>
-			<?php $tel = preg_replace( '/[^0-9+]/', '', $phone ); ?>
-			<ul class="founder-contact-list">
-				<li><strong><?php esc_html_e( 'Phone', 'showtime-pools' ); ?>:</strong> <a href="tel:<?php echo esc_attr( $tel ); ?>"><?php echo esc_html( $phone ); ?></a></li>
-				<?php if ( '' !== $email ) : ?>
-					<li><strong><?php esc_html_e( 'Email', 'showtime-pools' ); ?>:</strong> <a href="mailto:<?php echo esc_attr( $email ); ?>"><?php echo esc_html( $email ); ?></a></li>
-				<?php endif; ?>
-				<li>
-					<strong><?php esc_html_e( 'Sherman Oaks shop', 'showtime-pools' ); ?>:</strong>
-					<?php echo esc_html( (string) ( $shop['street'] ?? '' ) . ', ' . (string) ( $shop['city'] ?? '' ) ); ?>
-				</li>
-				<?php if ( '' !== $linkedin ) : ?>
-					<li><strong><?php esc_html_e( 'LinkedIn', 'showtime-pools' ); ?>:</strong> <a href="<?php echo esc_url( $linkedin ); ?>" target="_blank" rel="noopener">@showtimepoolssocal</a></li>
-				<?php endif; ?>
-			</ul>
+			<?php
+			$tel      = preg_replace( '/[^0-9+]/', '', $phone );
+			$map_q    = trim( (string) ( $shop['street'] ?? '' ) . ' ' . (string) ( $shop['city'] ?? '' ) );
+			$map_url  = '' !== $map_q ? 'https://www.google.com/maps?q=' . rawurlencode( $map_q ) . '&output=embed' : '';
+			?>
+			<div class="founder-contact__grid">
+				<div class="founder-contact__info">
+					<ul class="founder-contact-list">
+						<li><strong><?php esc_html_e( 'Phone', 'showtime-pools' ); ?>:</strong> <a href="tel:<?php echo esc_attr( $tel ); ?>"><?php echo esc_html( $phone ); ?></a></li>
+						<?php if ( '' !== $email ) : ?>
+							<li><strong><?php esc_html_e( 'Email', 'showtime-pools' ); ?>:</strong> <a href="mailto:<?php echo esc_attr( $email ); ?>"><?php echo esc_html( $email ); ?></a></li>
+						<?php endif; ?>
+						<?php foreach ( $offices as $o ) :
+							$o_label  = (string) ( $o['label']  ?? '' );
+							$o_street = (string) ( $o['street'] ?? '' );
+							$o_city   = (string) ( $o['city']   ?? '' );
+							if ( '' === $o_street && '' === $o_city ) { continue; }
+						?>
+							<li>
+								<strong><?php echo esc_html( '' !== $o_label ? $o_label : __( 'Shop', 'showtime-pools' ) ); ?>:</strong>
+								<?php echo esc_html( trim( $o_street . ', ' . $o_city, ', ' ) ); ?>
+							</li>
+						<?php endforeach; ?>
+						<?php if ( '' !== $linkedin ) : ?>
+							<li><strong><?php esc_html_e( 'LinkedIn', 'showtime-pools' ); ?>:</strong> <a href="<?php echo esc_url( $linkedin ); ?>" target="_blank" rel="noopener">@showtimepoolssocal</a></li>
+						<?php endif; ?>
+					</ul>
 
-			<div class="cluster" style="margin-top:var(--sp-7)">
-				<a class="btn btn--primary btn--lg" href="<?php echo esc_url( showtime_booking_url() ); ?>"><?php esc_html_e( 'Book an Appointment', 'showtime-pools' ); ?></a>
-				<a class="btn btn--ghost btn--lg" href="tel:<?php echo esc_attr( $tel ); ?>"><?php esc_html_e( 'Call Steve direct', 'showtime-pools' ); ?> · <?php echo esc_html( $phone ); ?></a>
+					<div class="cluster" style="margin-top:var(--sp-7)">
+						<a class="btn btn--primary btn--lg" href="<?php echo esc_url( showtime_booking_url() ); ?>"><?php esc_html_e( 'Book an Appointment', 'showtime-pools' ); ?></a>
+						<a class="btn btn--ghost btn--lg" href="tel:<?php echo esc_attr( $tel ); ?>"><?php esc_html_e( 'Call Steve direct', 'showtime-pools' ); ?> · <?php echo esc_html( $phone ); ?></a>
+					</div>
+				</div>
+
+				<?php if ( '' !== $map_url ) : ?>
+					<div class="founder-contact__map">
+						<iframe
+							loading="lazy"
+							referrerpolicy="no-referrer-when-downgrade"
+							allowfullscreen
+							title="<?php echo esc_attr( sprintf( __( '%s location map', 'showtime-pools' ), '' !== ( $shop['label'] ?? '' ) ? $shop['label'] : 'Showtime Pools' ) ); ?>"
+							src="<?php echo esc_url( $map_url ); ?>"></iframe>
+					</div>
+				<?php endif; ?>
 			</div>
 		</div>
 	</section>

@@ -12,7 +12,7 @@ $steps_default = array(
 	array(
 		'n'     => '01',
 		'title' => __( 'Request Your Free Assessment', 'showtime-pools' ),
-		'body'  => __( 'Takes 30 seconds. Tell us what you need and your address so we can route you correctly. Phone, form, or text — all routes hit Steve\'s desk.', 'showtime-pools' ),
+		'body'  => __( 'Takes 30 seconds. Tell us what you need and your address so we can route you correctly. Phone, form, or text: all routes hit Steve\'s desk.', 'showtime-pools' ),
 	),
 	array(
 		'n'     => '02',

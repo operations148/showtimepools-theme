@@ -43,7 +43,7 @@ $img = function_exists( 'showtime_image' ) ? showtime_image( 'about_split', 1200
 					<?php esc_html_e( 'Showtime Pools designs, builds, and transforms pools and outdoor spaces that elevate the way you live. Based in Los Angeles, we specialize in custom construction, remodeling, equipment upgrades, repairs, and luxury outdoor living.', 'showtime-pools' ); ?>
 				</p>
 				<p class="about-split__body">
-					<?php esc_html_e( 'Twenty-three years of hands-on craft. A reputation built on quality, transparency, and reliability — every project treated like our own backyard. No shortcuts. Only results that stand the test of time.', 'showtime-pools' ); ?>
+					<?php esc_html_e( 'Twenty-three years of hands-on craft. A reputation built on quality, transparency, and reliability: every project treated like our own backyard. No shortcuts. Only results that stand the test of time.', 'showtime-pools' ); ?>
 				</p>
 
 				<div class="about-split__sig" aria-hidden="true">

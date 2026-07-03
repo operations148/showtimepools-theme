@@ -49,10 +49,13 @@ add_filter(
 );
 
 /**
- * Serve /llms.txt — the llms.txt standard (https://llmstxt.org/) Markdown
- * file that helps AI engines (ChatGPT, Perplexity, Claude, Gemini, Copilot)
- * understand the site entity and find the canonical pages. Supports the
- * AEO/GEO goals.
+ * Serve /llms.txt and /llms-full.txt — the llms.txt standard
+ * (https://llmstxt.org/) Markdown files that help AI engines (ChatGPT,
+ * Perplexity, Claude, Gemini, Copilot) understand the site entity and find
+ * the canonical pages. llms.txt is a curated index (links + one-line
+ * summaries); llms-full.txt is the full-text companion (complete per-service
+ * and per-area content) for single-request ingestion. Supports the AEO/GEO
+ * goals.
  *
  * We answer the request directly off the raw REQUEST_URI basename rather than
  * via a rewrite/query-var, for two reasons:
@@ -71,9 +74,11 @@ add_filter(
 add_action(
 	'parse_request',
 	function () {
-		$uri = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- compared as a path basename only, never stored or echoed.
+		$uri  = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- compared as a path basename only, never stored or echoed.
 		$path = (string) wp_parse_url( (string) $uri, PHP_URL_PATH );
-		if ( 'llms.txt' !== basename( untrailingslashit( $path ) ) ) {
+		$base = basename( untrailingslashit( $path ) );
+
+		if ( 'llms.txt' !== $base && 'llms-full.txt' !== $base ) {
 			return;
 		}
 
@@ -84,7 +89,8 @@ add_action(
 			header( 'Cache-Control: max-age=86400' );
 		}
 
-		echo showtime_llms_txt_body(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- builder returns pre-escaped plain-text Markdown.
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- builders return pre-escaped plain-text Markdown.
+		echo 'llms-full.txt' === $base ? showtime_llms_full_txt_body() : showtime_llms_txt_body();
 		exit;
 	},
 	0
@@ -162,7 +168,140 @@ function showtime_llms_txt_body(): string {
 	$lines[] = '- Email: ' . $email;
 	$lines[] = '';
 
+	$lines[] = 'Full-text version (per-service and per-area detail): ' . home_url( '/llms-full.txt' );
+	$lines[] = '';
 	$lines[] = 'Canonical site: ' . $base;
+	$lines[] = '';
+
+	return implode( "\n", $lines );
+}
+
+/**
+ * Build the llms-full.txt Markdown body — the full-text companion to
+ * llms.txt. Where llms.txt is a curated index of links + one-line summaries,
+ * this concatenates the actual per-service and per-area content (intro,
+ * price, turnaround, what's included, FAQs, local characteristics) so an AI
+ * system can ingest the substance in one request instead of crawling every
+ * page. Sourced from the same live registries as llms.txt, so it never
+ * drifts from the site.
+ *
+ * @return string Markdown beginning with a single H1, per the llms.txt spec.
+ */
+function showtime_llms_full_txt_body(): string {
+	$phone = (string) apply_filters( 'showtime/business/phone', '(323) 825-2099' );
+	$email = (string) apply_filters( 'showtime/business/email', 'operations@showtimepoolmechanics.com' );
+
+	$lines   = array();
+	$lines[] = '# Showtime Pools — Full Content';
+	$lines[] = '';
+	$lines[] = '> Full-text companion to /llms.txt. One supervised crew for pool repairs, weekly '
+		. 'service, remodels, equipment, inspections, and outdoor living across Los Angeles and the '
+		. 'San Fernando Valley. Call ' . $phone . '.';
+	$lines[] = '';
+
+	// Services — full detail per service.
+	$services = class_exists( '\\Showtime\\Services' ) ? \Showtime\Services::all() : array();
+	if ( $services ) {
+		$lines[] = '## Services';
+		$lines[] = '';
+		foreach ( $services as $svc ) {
+			$slug = (string) ( $svc['slug'] ?? '' );
+			$title = (string) ( $svc['title'] ?? '' );
+			if ( '' === $slug || '' === $title ) {
+				continue;
+			}
+			$url = home_url( '/services/' . $slug . '/' );
+			$lines[] = '### ' . $title;
+			$lines[] = '';
+			$lines[] = 'URL: ' . $url;
+			$intro = trim( wp_strip_all_tags( (string) ( $svc['seo_intro'] ?? $svc['summary'] ?? '' ) ) );
+			if ( '' !== $intro ) {
+				$lines[] = '';
+				$lines[] = $intro;
+			}
+			$price      = trim( wp_strip_all_tags( (string) ( $svc['default_price'] ?? '' ) ) );
+			$turnaround = trim( wp_strip_all_tags( (string) ( $svc['default_turnaround'] ?? '' ) ) );
+			if ( '' !== $price || '' !== $turnaround ) {
+				$lines[] = '';
+				if ( '' !== $price ) { $lines[] = '- Price: ' . $price; }
+				if ( '' !== $turnaround ) { $lines[] = '- Turnaround: ' . $turnaround; }
+			}
+			$includes = (array) ( $svc['default_includes'] ?? array() );
+			if ( $includes ) {
+				$lines[] = '';
+				$lines[] = 'What is included:';
+				foreach ( $includes as $item ) {
+					$lines[] = '- ' . trim( wp_strip_all_tags( (string) $item ) );
+				}
+			}
+			$faqs = (array) ( $svc['default_faqs'] ?? array() );
+			if ( $faqs ) {
+				$lines[] = '';
+				$lines[] = 'FAQs:';
+				foreach ( $faqs as $faq ) {
+					$q = trim( wp_strip_all_tags( (string) ( $faq['q'] ?? '' ) ) );
+					$a = trim( wp_strip_all_tags( (string) ( $faq['a'] ?? '' ) ) );
+					if ( '' === $q || '' === $a ) {
+						continue;
+					}
+					$lines[] = '- Q: ' . $q;
+					$lines[] = '  A: ' . $a;
+				}
+			}
+			$lines[] = '';
+		}
+	}
+
+	// Service areas — full detail per city.
+	$areas = class_exists( '\\Showtime\\Areas' ) ? \Showtime\Areas::all() : array();
+	if ( $areas ) {
+		$lines[] = '## Service Areas';
+		$lines[] = '';
+		foreach ( $areas as $area ) {
+			$slug = (string) ( $area['slug'] ?? '' );
+			$name = (string) ( $area['name'] ?? '' );
+			if ( '' === $slug || '' === $name ) {
+				continue;
+			}
+			$url = home_url( '/service-areas/' . $slug . '/' );
+			$lines[] = '### ' . $name;
+			$lines[] = '';
+			$lines[] = 'URL: ' . $url;
+			$intro = trim( wp_strip_all_tags( (string) ( $area['seo_intro'] ?? $area['lead'] ?? '' ) ) );
+			if ( '' !== $intro ) {
+				$lines[] = '';
+				$lines[] = $intro;
+			}
+			$characteristics = (array) ( $area['characteristics'] ?? array() );
+			if ( $characteristics ) {
+				$lines[] = '';
+				$lines[] = 'Local conditions:';
+				foreach ( $characteristics as $c ) {
+					$lines[] = '- ' . trim( wp_strip_all_tags( (string) $c ) );
+				}
+			}
+			$jobs = (array) ( $area['common_jobs'] ?? array() );
+			if ( $jobs ) {
+				$lines[] = '';
+				$lines[] = 'Common jobs in this area:';
+				foreach ( $jobs as $j ) {
+					$lines[] = '- ' . trim( wp_strip_all_tags( (string) $j ) );
+				}
+			}
+			$lines[] = '';
+		}
+	}
+
+	// Company & contact.
+	$book    = function_exists( 'showtime_booking_url' ) ? showtime_booking_url() : home_url( '/book/' );
+	$lines[] = '## Contact & Booking';
+	$lines[] = '';
+	$lines[] = '- Contact: ' . home_url( '/contact/' );
+	$lines[] = '- Book an Appointment: ' . $book;
+	$lines[] = '- Phone: ' . $phone;
+	$lines[] = '- Email: ' . $email;
+	$lines[] = '';
+	$lines[] = 'Canonical site: ' . home_url( '/' );
 	$lines[] = '';
 
 	return implode( "\n", $lines );

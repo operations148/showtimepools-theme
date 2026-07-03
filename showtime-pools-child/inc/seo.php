@@ -40,14 +40,27 @@ function showtime_canonical_url(): string {
 }
 
 /**
+ * Whether the current request should be noindexed: thin GHL-iframe utility
+ * pages (/quote/, /book/, via page-iframe.php) and the /shop/ coming-soon
+ * placeholder (page-shop.php) carry no unique indexable content of their
+ * own. Everything else stays indexable.
+ */
+function showtime_seo_should_noindex(): bool {
+	if ( ! is_page_template( array( 'page-iframe.php', 'page-shop.php' ) ) ) {
+		return false;
+	}
+	return (bool) apply_filters( 'showtime/seo/noindex', true );
+}
+
+/**
  * Resolve a per-page SEO title. Falls back to wp_get_document_title().
  */
 function showtime_seo_title(): string {
 	if ( is_front_page() ) {
-		return 'Showtime Pools — Stop juggling contractors. One team for repairs, weekly service, remodels, and equipment in LA.';
+		return 'Showtime Pools: Stop juggling contractors. One team for repairs, weekly service, remodels, and equipment in LA.';
 	}
 	if ( is_404() ) {
-		return 'Page not found — Showtime Pools';
+		return 'Page not found: Showtime Pools';
 	}
 	$title = wp_get_document_title();
 	return $title ? $title : get_bloginfo( 'name' );
@@ -113,8 +126,11 @@ function showtime_og_image(): string {
 			if ( $thumb ) { return $thumb; }
 			return showtime_image( 'lifestyle_main', 1200 );
 		}
+		// Archives, search, 404: fall back to the hero image (a real, resolvable
+		// asset) rather than a hardcoded path that may not exist.
+		return showtime_image( 'hero', 1200 );
 	}
-	return home_url( '/wp-content/themes/showtime-pools-child/assets/images/og-default.jpg' );
+	return SHOWTIME_CHILD_URI . '/assets/img/logo.png';
 }
 
 /**
@@ -251,7 +267,10 @@ add_action(
 ";
 		echo '<meta name="description" content="' . esc_attr( $desc ) . '">' . "
 ";
-		echo '<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">' . "
+		$robots = showtime_seo_should_noindex()
+			? 'noindex, follow'
+			: 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1';
+		echo '<meta name="robots" content="' . esc_attr( $robots ) . '">' . "
 ";
 
 		// Open Graph

@@ -12,7 +12,7 @@
  */
 
 /* ─── Shared section surfaces ───────────────────────────────────── */
-.section--cream { background: var(--c-sand-50); }
+.section--cream { background: var(--c-gray-50); }
 .section--ink   { background: var(--c-ink-900); color: var(--c-text-invert); }
 .eyebrow--invert { color: var(--c-accent-300); }
 
@@ -804,7 +804,19 @@
    and /services/ render them correctly (those pages don't load home.css). */
 
 /* ─── Process ────────────────────────────────────────────────────── */
-.process { padding: clamp(4rem, 7vw, 7rem) 0; position: relative; }
+.process {
+	padding: clamp(4rem, 7vw, 7rem) 0;
+	position: relative;
+	background:
+		linear-gradient(180deg, rgba(11, 23, 51, 0.6) 0%, rgba(11, 23, 51, 0.32) 45%, rgba(11, 23, 51, 0.6) 100%),
+		url('../img/cardshome.jpeg') center 35%/cover no-repeat fixed;
+}
+@media (max-width: 900px) {
+	/* background-attachment: fixed is unreliable on mobile browsers (and
+	   disabled outright on iOS Safari) — fall back to a normal scrolling
+	   background so the image still paints instead of going blank/janky. */
+	.process { background-attachment: scroll; }
+}
 .process__header { max-width: 56rem; margin-bottom: var(--sp-12); }
 .process__header h2 {
 	font-size: var(--fs-4xl);
@@ -1473,7 +1485,7 @@ main > section:first-child[data-reveal] {
 	height: 100%;
 	object-fit: cover;
 	display: block;
-	opacity: 0.4;
+	opacity: 0.7;
 }
 .home-hero--immersive .home-hero__bgphoto--poster {
 	position: absolute;
@@ -1496,8 +1508,8 @@ main > section:first-child[data-reveal] {
 	inset: 0;
 	z-index: 1;
 	background:
-		linear-gradient(95deg, rgba(11, 23, 51, 0.82) 0%, rgba(11, 23, 51, 0.58) 45%, rgba(11, 23, 51, 0.28) 100%),
-		linear-gradient(180deg, rgba(11, 23, 51, 0.12) 0%, rgba(11, 23, 51, 0.32) 100%);
+		linear-gradient(95deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.5) 45%, rgba(0, 0, 0, 0.22) 100%),
+		linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.28) 100%);
 }
 
 .home-hero--immersive .container { position: relative; z-index: 3; }

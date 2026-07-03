@@ -78,7 +78,7 @@ $schema = array(
 	<?php $area_hero_img = function_exists( 'showtime_image' ) ? showtime_image( 'area_' . $slug, 1600 ) : ''; ?>
 	<section class="area-hero" data-reveal style="--_area-grad: <?php echo esc_attr( $gradient ); ?>">
 		<?php if ( $area_hero_img ) : ?>
-			<img class="area-hero__photo" src="<?php echo esc_url( $area_hero_img ); ?>" <?php echo showtime_hero_srcset_attr( 'area_' . $slug ); ?> alt="" loading="eager" fetchpriority="high" decoding="async">
+			<img class="area-hero__photo" src="<?php echo esc_url( $area_hero_img ); ?>" <?php echo showtime_hero_srcset_attr( 'area_' . $slug ); ?> alt="<?php echo esc_attr( sprintf( /* translators: %s: neighborhood */ __( 'Pool service in %s, Los Angeles', 'showtime-pools' ), $name ) ); ?>" loading="eager" fetchpriority="high" decoding="async">
 		<?php endif; ?>
 		<div class="area-hero__bg" aria-hidden="true">
 			<svg viewBox="0 0 800 400" preserveAspectRatio="none" fill="none">

@@ -43,7 +43,7 @@ return array(
 		'scope'            => 'New build · Hardscape · Outdoor kitchen · Fire features',
 		'value_label'      => '$142k',
 		'duration_label'   => '10 weeks',
-		'client_quote'     => 'Steve handled everything. Permits, three trades, the inspector — we never made a single phone call.',
+		'client_quote'     => 'Steve handled everything. Permits, three trades, the inspector: we never made a single phone call.',
 	),
 
 	array(

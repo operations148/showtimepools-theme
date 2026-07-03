@@ -28,7 +28,7 @@ if ( $slug && function_exists( 'showtime_image' ) ) {
 ?>
 <section class="svc-hero section section--brand svc-hero--photo" data-reveal>
 	<?php if ( $svc_hero_img ) : ?>
-		<img class="svc-hero__photo" src="<?php echo esc_url( $svc_hero_img ); ?>" alt="" loading="eager" fetchpriority="high" decoding="async">
+		<img class="svc-hero__photo" src="<?php echo esc_url( $svc_hero_img ); ?>" alt="<?php echo esc_attr( sprintf( /* translators: %s: service name */ __( '%s by Showtime Pools in Los Angeles', 'showtime-pools' ), $title ) ); ?>" loading="eager" fetchpriority="high" decoding="async">
 	<?php endif; ?>
 	<div class="svc-hero__pattern" aria-hidden="true"></div>
 	<div class="container">

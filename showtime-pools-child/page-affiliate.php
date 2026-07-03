@@ -27,7 +27,7 @@ $_pm = static fn( string $k ) => (string) get_post_meta( $pid, $k, true );
 // Hero.
 $aff_hero_eyebrow = $_pm( 'affiliate_hero_eyebrow' ) ?: __( 'Now accepting referral partners', 'showtime-pools' );
 $aff_h1           = $_pm( 'affiliate_h1' )           ?: __( 'Refer pool owners. Earn recurring income.', 'showtime-pools' );
-$aff_hero_lead    = $_pm( 'affiliate_hero_lead' )    ?: __( 'Join the Showtime Pools Partner Program. Every homeowner, property manager, or HOA you send our way earns you commission for as long as they stay on service — no chasing, no cold-selling, no cap.', 'showtime-pools' );
+$aff_hero_lead    = $_pm( 'affiliate_hero_lead' )    ?: __( 'Join the Showtime Pools Partner Program. Every homeowner, property manager, or HOA you send our way earns you commission for as long as they stay on service, with no chasing, no cold-selling, no cap.', 'showtime-pools' );
 $aff_hero_cta     = $_pm( 'affiliate_hero_cta' )     ?: __( 'Become a Partner', 'showtime-pools' );
 
 // Trust strip (skip empties).
@@ -41,7 +41,7 @@ $aff_trust = array_filter( array(
 // Benefits.
 $aff_ben_eyebrow = $_pm( 'affiliate_benefits_eyebrow' ) ?: __( 'Why partner with us', 'showtime-pools' );
 $aff_ben_h2      = $_pm( 'affiliate_benefits_h2' )      ?: __( 'Build a referral income that pays you every month.', 'showtime-pools' );
-$aff_ben_lead    = $_pm( 'affiliate_benefits_lead' )    ?: __( 'Earn predictable monthly commission from every customer you refer — without one-time payouts or constant selling. A scalable income stream that compounds as your referrals stay on service.', 'showtime-pools' );
+$aff_ben_lead    = $_pm( 'affiliate_benefits_lead' )    ?: __( 'Earn predictable monthly commission from every customer you refer, without one-time payouts or constant selling. A scalable income stream that compounds as your referrals stay on service.', 'showtime-pools' );
 
 // Benefit cards — title/body editable, icon is fixed presentation.
 $aff_benefits = array(
@@ -58,7 +58,7 @@ $aff_benefits = array(
 	array(
 		'icon'  => 'infinity',
 		'title' => $_pm( 'affiliate_benefit3_title' ) ?: __( 'No Cap on Earnings', 'showtime-pools' ),
-		'body'  => $_pm( 'affiliate_benefit3_body' )  ?: __( 'Refer one pool owner or fifty — there is no limit. Scale your income as fast as you can send qualified leads our way.', 'showtime-pools' ),
+		'body'  => $_pm( 'affiliate_benefit3_body' )  ?: __( 'Refer one pool owner or fifty; there is no limit. Scale your income as fast as you can send qualified leads our way.', 'showtime-pools' ),
 	),
 	array(
 		'icon'  => 'rocket',
@@ -69,7 +69,7 @@ $aff_benefits = array(
 
 // Process.
 $aff_proc_eyebrow = $_pm( 'affiliate_process_eyebrow' ) ?: __( 'Process', 'showtime-pools' );
-$aff_proc_h2      = $_pm( 'affiliate_process_h2' )      ?: __( 'From referral to recurring income — here is how it works.', 'showtime-pools' );
+$aff_proc_h2      = $_pm( 'affiliate_process_h2' )      ?: __( 'From referral to recurring income: here is how it works.', 'showtime-pools' );
 $aff_proc_lead    = $_pm( 'affiliate_process_lead' )    ?: __( 'Three simple steps. Sign up, share, and get paid every month your referral stays with us.', 'showtime-pools' );
 
 $aff_steps = array(
@@ -79,7 +79,7 @@ $aff_steps = array(
 	),
 	array(
 		'title' => $_pm( 'affiliate_step2_title' ) ?: __( 'Refer Pool Owners', 'showtime-pools' ),
-		'body'  => $_pm( 'affiliate_step2_body' )  ?: __( 'Send homeowners, property managers, and HOAs our way through your link — or just have them mention your name.', 'showtime-pools' ),
+		'body'  => $_pm( 'affiliate_step2_body' )  ?: __( 'Send homeowners, property managers, and HOAs our way through your link, or just have them mention your name.', 'showtime-pools' ),
 	),
 	array(
 		'title' => $_pm( 'affiliate_step3_title' ) ?: __( 'Earn Every Month', 'showtime-pools' ),
@@ -92,7 +92,7 @@ $aff_faq_eyebrow = $_pm( 'affiliate_faq_eyebrow' ) ?: __( 'Questions', 'showtime
 $aff_faq_h2      = $_pm( 'affiliate_faq_h2' )      ?: __( 'Everything partners ask before they join.', 'showtime-pools' );
 $aff_faq_defaults = array(
 	array( 'q' => __( 'How much can I earn?', 'showtime-pools' ),                 'a' => __( 'You earn recurring commission every month your referral stays on a Showtime Pools maintenance plan, plus a share of qualifying repair and remodel work. We confirm your exact rate when you join.', 'showtime-pools' ) ),
-	array( 'q' => __( 'Who makes a good referral?', 'showtime-pools' ),           'a' => __( 'Any pool owner in our service area — homeowners, property managers, HOAs, and home inspectors all refer to us. If they own or manage a pool in the LA area, they qualify.', 'showtime-pools' ) ),
+	array( 'q' => __( 'Who makes a good referral?', 'showtime-pools' ),           'a' => __( 'Any pool owner in our service area: homeowners, property managers, HOAs, and home inspectors all refer to us. If they own or manage a pool in the LA area, they qualify.', 'showtime-pools' ) ),
 	array( 'q' => __( 'When and how do I get paid?', 'showtime-pools' ),          'a' => __( 'Commissions are paid monthly once your referral is active and billed. You can track every referral and payout in your partner dashboard.', 'showtime-pools' ) ),
 	array( 'q' => __( 'Does it cost anything to join?', 'showtime-pools' ),       'a' => __( 'No. The program is free to join. You apply, we approve, and you start referring the same day.', 'showtime-pools' ) ),
 	array( 'q' => __( 'Do I need a website or audience?', 'showtime-pools' ),     'a' => __( 'No. A referral link helps, but plenty of partners simply introduce us by name. We just need a way to credit the referral to you.', 'showtime-pools' ) ),

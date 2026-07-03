@@ -23,16 +23,16 @@ $outside_h2   = (string) get_post_meta( $pid, 'outside_h2',   true );
 $outside_body = (string) get_post_meta( $pid, 'outside_body', true );
 
 if ( '' === $hero_eyebrow ) { $hero_eyebrow = 'Where we work'; }
-if ( '' === $hero_lead )    { $hero_lead    = 'Pool service, pool cleaning, and pool repair across our West Valley and Westside routes. The same in-house tech every week — Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, Woodland Hills, West Hollywood, Bel Air, and Calabasas. Custom construction and remodel work runs LA County-wide.'; }
+if ( '' === $hero_lead )    { $hero_lead    = 'Pool service, pool cleaning, and pool repair across our West Valley and Westside routes. The same in-house tech every week: Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, Woodland Hills, West Hollywood, Bel Air, and Calabasas. Custom construction and remodel work runs LA County-wide.'; }
 if ( '' === $outside_h2 )   { $outside_h2   = 'Outside the route?'; }
-if ( '' === $outside_body ) { $outside_body = 'New construction, full remodels, and inspections are available across LA County — Hancock Park, Pacific Palisades, Burbank, Glendale, Pasadena, Toluca Lake, Northridge, Granada Hills, and beyond. Weekly service is geographically restricted to keep the same-tech promise.'; }
+if ( '' === $outside_body ) { $outside_body = 'New construction, full remodels, and inspections are available across LA County: Hancock Park, Pacific Palisades, Burbank, Glendale, Pasadena, Toluca Lake, Northridge, Granada Hills, and beyond. Weekly service is geographically restricted to keep the same-tech promise.'; }
 ?>
 <main id="primary" class="site-main interior-page">
 
 	<?php $areas_hero = function_exists( 'showtime_image' ) ? showtime_image( 'lifestyle_4', 1920 ) : ''; ?>
 	<section class="int-hero int-hero--brand int-hero--photo" data-reveal>
 		<?php if ( $areas_hero ) : ?>
-			<img class="int-hero__photo" src="<?php echo esc_url( $areas_hero ); ?>" <?php echo showtime_hero_srcset_attr( 'lifestyle_4' ); ?> alt="" loading="eager" fetchpriority="high" decoding="async">
+			<img class="int-hero__photo" src="<?php echo esc_url( $areas_hero ); ?>" <?php echo showtime_hero_srcset_attr( 'lifestyle_4' ); ?> alt="<?php esc_attr_e( 'Showtime Pools serving Los Angeles and the San Fernando Valley', 'showtime-pools' ); ?>" loading="eager" fetchpriority="high" decoding="async">
 		<?php endif; ?>
 		<div class="int-hero__pattern" aria-hidden="true"></div>
 		<div class="container">
@@ -58,7 +58,7 @@ if ( '' === $outside_body ) { $outside_body = 'New construction, full remodels, 
 				?>
 					<a class="area-card area-card--lg" href="<?php echo esc_url( home_url( '/service-areas/' . $slug . '/' ) ); ?>" style="--_area-grad: <?php echo esc_attr( $area['gradient'] ); ?>">
 						<?php if ( $img_url ) : ?>
-							<img class="area-card__img" src="<?php echo esc_url( $img_url ); ?>" alt="" loading="lazy" decoding="async">
+							<img class="area-card__img" src="<?php echo esc_url( $img_url ); ?>" alt="<?php echo esc_attr( sprintf( /* translators: %s: neighborhood */ __( 'Pool service in %s', 'showtime-pools' ), (string) $area['name'] ) ); ?>" loading="lazy" decoding="async">
 						<?php endif; ?>
 						<div class="area-card__overlay" aria-hidden="true"></div>
 						<div class="area-card__content">

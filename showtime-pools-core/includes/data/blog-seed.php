@@ -22,7 +22,7 @@ return array(
 		array(
 			'slug'        => 'pool-trends',
 			'name'        => 'Pool Trends',
-			'description' => 'What homeowners are choosing in 2026 — finishes, design moves, equipment, lifestyle decisions.',
+			'description' => 'What homeowners are choosing in 2026: finishes, design moves, equipment, lifestyle decisions.',
 		),
 		array(
 			'slug'        => 'maintenance-tips',
@@ -47,10 +47,10 @@ return array(
 <p>Across Sherman Oaks, Encino, and Beverly Hills, the pools we are quoting in 2026 look almost nothing like the pools we were quoting in 2019. Three things are driving the shift, and homeowners can plan around them without guessing.</p>
 
 <h2>Earth-tone pebble is taking over from bright blue</h2>
-<p>White plaster used to be the default. Then it was Caribbean Blue PebbleSheen. Now it is warm grey, gentle green, and onyx-toned PebbleTec finishes that read more like natural water and less like a hotel pool. The shift is partly aesthetic and partly practical — earth-tone pebble hides surface stains, holds color through aggressive sun, and pairs with natural-stone coping instead of fighting it.</p>
+<p>White plaster used to be the default. Then it was Caribbean Blue PebbleSheen. Now it is warm grey, gentle green, and onyx-toned PebbleTec finishes that read more like natural water and less like a hotel pool. The shift is partly aesthetic and partly practical: earth-tone pebble hides surface stains, holds color through aggressive sun, and pairs with natural-stone coping instead of fighting it.</p>
 
 <h2>Vanishing edges are no longer just for hillside lots</h2>
-<p>We are seeing infinity-edge designs on flat lots in the valley because homeowners want a sightline from the kitchen to the water without a coping line breaking it. The engineering changes slightly — you need a catch basin and a separate equipment loop — but the cost difference on a new build is small enough that it is becoming a default-yes question instead of a default-no.</p>
+<p>We are seeing infinity-edge designs on flat lots in the valley because homeowners want a sightline from the kitchen to the water without a coping line breaking it. The engineering changes slightly (you need a catch basin and a separate equipment loop), but the cost difference on a new build is small enough that it is becoming a default-yes question instead of a default-no.</p>
 
 <h2>Integrated spas, not bolt-on spas</h2>
 <p>The old pattern was a separate round spa next to the pool. The new pattern is a spa that shares one wall with the pool, spills into it on a timer, and uses a single equipment pad. Cheaper to run, easier to automate, and looks like one cohesive water feature instead of two.</p>
@@ -70,13 +70,13 @@ HTML,
 <p>If you call us for a remodel quote and we walk out without recommending pebble, something is wrong with the pool, not the finish. Here is why pebble has effectively replaced plaster on every quote we write.</p>
 
 <h2>Lifespan, not cost-per-square-foot</h2>
-<p>White plaster runs roughly twenty percent cheaper than a basic PebbleTec finish at install time. But plaster's realistic lifespan in Southern California water is five to seven years before staining, etching, and chip-out start showing up. PebbleTec — with even mediocre water chemistry — sits at fifteen to twenty. Once you amortize the install cost across the lifespan, pebble is the cheaper finish by a wide margin.</p>
+<p>White plaster runs roughly twenty percent cheaper than a basic PebbleTec finish at install time. But plaster's realistic lifespan in Southern California water is five to seven years before staining, etching, and chip-out start showing up. PebbleTec (with even mediocre water chemistry) sits at fifteen to twenty. Once you amortize the install cost across the lifespan, pebble is the cheaper finish by a wide margin.</p>
 
-<h2>Pebble is harder to stain — but not invincible</h2>
+<h2>Pebble is harder to stain, but not invincible</h2>
 <p>The exposed-aggregate texture hides calcium scaling and metal staining that would be glaring on plaster. That said, pebble still benefits from a salt cell that does not overshoot the pH ceiling, and from a monthly hand-test of total alkalinity. Skip both and you will end up with a finish that still lasts but does not look its best at year ten.</p>
 
 <h2>Color choice matters more than you think</h2>
-<p>Cool Blue, Aqua White, Black Onyx, and Caribbean Blue all behave differently under California sun. Black Onyx holds heat — useful for solar gain, expensive for chillers. Aqua White makes the pool look bright and tropical but shows leaves and debris within hours. Cool Blue is the safe default for valley pools because it balances visual depth with stain-hiding without being too dark.</p>
+<p>Cool Blue, Aqua White, Black Onyx, and Caribbean Blue all behave differently under California sun. Black Onyx holds heat: useful for solar gain, expensive for chillers. Aqua White makes the pool look bright and tropical but shows leaves and debris within hours. Cool Blue is the safe default for valley pools because it balances visual depth with stain-hiding without being too dark.</p>
 
 <h2>The five-year warranty is real</h2>
 <p>PebbleTec backs certified applicators with a written five-year finish warranty. We are certified, which means the warranty passes through to the homeowner. Most plaster jobs come with a one-year workmanship warranty and no manufacturer backing. That alone is worth more than the price difference.</p>
@@ -90,13 +90,13 @@ HTML,
 			'category'  => 'maintenance-tips',
 			'excerpt'   => 'The eight things that actually matter every week. Doing these in order takes thirty minutes and prevents almost every problem that ends in an emergency phone call.',
 			'content'   => <<<HTML
-<p>Most pool problems are not surprises. They are slow drifts in chemistry, clogged baskets, and missed runtime that compound over weeks. Here is the checklist our crews run on every visit — homeowners can run the same one and save themselves a service call.</p>
+<p>Most pool problems are not surprises. They are slow drifts in chemistry, clogged baskets, and missed runtime that compound over weeks. Here is the checklist our crews run on every visit: homeowners can run the same one and save themselves a service call.</p>
 
 <h2>1. Skim the surface</h2>
 <p>Before anything else, get debris off the surface with a leaf rake. The longer leaves sit on the water, the more tannins they release and the harder your sanitizer has to work.</p>
 
 <h2>2. Empty the skimmer and pump baskets</h2>
-<p>A full skimmer basket starves the pump of water. A full pump basket starves it more. Empty both. If the pump basket is more than half full at the weekly check, your skimmer's not catching enough — investigate why.</p>
+<p>A full skimmer basket starves the pump of water. A full pump basket starves it more. Empty both. If the pump basket is more than half full at the weekly check, your skimmer's not catching enough. Investigate why.</p>
 
 <h2>3. Brush the walls and waterline</h2>
 <p>Two minutes with a nylon brush prevents algae from setting up shop. Pay extra attention to the waterline tile and the shadow side of the pool where sun hits least.</p>
@@ -105,7 +105,7 @@ HTML,
 <p>If you have a robot, run it. If you have a manual vacuum head, hook it up to the dedicated suction line and walk the bottom. Skipping vacuuming for three weeks straight is how a clean-looking pool turns into an algae outbreak overnight.</p>
 
 <h2>5. Test free chlorine, pH, total alkalinity</h2>
-<p>Use a drop kit, not test strips — strips drift. Free chlorine: 2 to 4 ppm. pH: 7.4 to 7.6. Total alkalinity: 80 to 120 ppm. If any of these is out, adjust before moving on.</p>
+<p>Use a drop kit, not test strips. Strips drift. Free chlorine: 2 to 4 ppm. pH: 7.4 to 7.6. Total alkalinity: 80 to 120 ppm. If any of these is out, adjust before moving on.</p>
 
 <h2>6. Check the filter pressure</h2>
 <p>Note the pressure reading on the filter gauge. If it is more than 8 PSI above the clean-filter baseline, backwash (DE/sand) or hose down the cartridges. Filtering through a clogged filter wastes electricity and water.</p>
@@ -121,34 +121,34 @@ HTML,
 
 		array(
 			'slug'      => 'spring-pool-opening-step-by-step',
-			'title'     => 'Spring pool opening — a step-by-step the right way',
+			'title'     => 'Spring pool opening: a step-by-step the right way',
 			'category'  => 'maintenance-tips',
 			'excerpt'   => 'LA pools rarely close fully, but the seasonal reset still matters. Here is the eight-step opening sequence that prevents an algae bloom in week three.',
 			'content'   => <<<HTML
-<p>Most LA homeowners never fully close their pool. What we call a spring opening here is really a deep reset — the moment to undo a winter of low runtime and slightly relaxed chemistry. Done right, it sets the pool up for a clean summer. Done wrong, you fight algae until July.</p>
+<p>Most LA homeowners never fully close their pool. What we call a spring opening here is really a deep reset: the moment to undo a winter of low runtime and slightly relaxed chemistry. Done right, it sets the pool up for a clean summer. Done wrong, you fight algae until July.</p>
 
-<h2>Step one — clear and clean</h2>
+<h2>Step one: clear and clean</h2>
 <p>Before anything else, get the cover off (if any), skim, brush every surface aggressively, and vacuum to waste if you have any visible sediment. Starting clean is non-negotiable.</p>
 
-<h2>Step two — equipment inspection</h2>
+<h2>Step two: equipment inspection</h2>
 <p>Open the pump and filter, check seals and O-rings, inspect the impeller through the basket port, and prime the pump before you turn it on. Run for an hour and watch for leaks at unions.</p>
 
-<h2>Step three — full chemistry test</h2>
-<p>Do not just check free chlorine. Test free chlorine, total chlorine (the gap tells you if you have combined chloramines), pH, total alkalinity, calcium hardness, cyanuric acid, and total dissolved solids if you can. The CYA test is the one most homeowners skip — it controls how much chlorine you actually need.</p>
+<h2>Step three: full chemistry test</h2>
+<p>Do not just check free chlorine. Test free chlorine, total chlorine (the gap tells you if you have combined chloramines), pH, total alkalinity, calcium hardness, cyanuric acid, and total dissolved solids if you can. The CYA test is the one most homeowners skip: it controls how much chlorine you actually need.</p>
 
-<h2>Step four — shock to break point</h2>
+<h2>Step four: shock to break point</h2>
 <p>If combined chlorine is above 0.5 ppm, shock to ten times that level. Use cal-hypo unless you are running a salt cell, in which case use sodium hypochlorite (liquid). Run the pump 24 hours after.</p>
 
-<h2>Step five — adjust pH and alkalinity</h2>
+<h2>Step five: adjust pH and alkalinity</h2>
 <p>Get total alkalinity into the 80–120 ppm window first. Adjust pH to 7.4–7.6 after. Doing it in the other order causes you to chase your own tail.</p>
 
-<h2>Step six — clean the salt cell</h2>
+<h2>Step six: clean the salt cell</h2>
 <p>If you are on salt, pull the cell, inspect for calcium buildup, soak in a 1:4 muriatic-to-water acid bath until bubbling stops (usually two to ten minutes), rinse, reinstall. Skip this and you will replace a six-hundred-dollar cell two years before you needed to.</p>
 
-<h2>Step seven — set runtime up</h2>
-<p>Add at least two hours per day to your off-season runtime. Sun hits the pool harder, water heats up, organic load increases — runtime has to keep up.</p>
+<h2>Step seven: set runtime up</h2>
+<p>Add at least two hours per day to your off-season runtime. Sun hits the pool harder, water heats up, organic load increases; runtime has to keep up.</p>
 
-<h2>Step eight — retest in 48 hours</h2>
+<h2>Step eight: retest in 48 hours</h2>
 <p>Confirm everything held. If chlorine dropped fast, you probably have CYA too low (sun burning chlorine off) or organic load too high (more brushing and vacuuming needed). Adjust and move on.</p>
 HTML,
 			'image_slot' => 'blog_tips',
@@ -169,9 +169,9 @@ HTML,
 <p>Same logic in reverse. AquaPure pairs natively with AquaLink and reports through the same iAquaLink app. Mixing brands works, but it adds a layer of inconsistency that homeowners notice the first time the salt cell shuts down and they cannot figure out which app to open.</p>
 
 <h2>If your pad is mixed-brand or has nothing yet, lean Pentair</h2>
-<p>Slightly broader installer base in Los Angeles, slightly easier to source replacement parts, slightly better reliability on the diagnostic LED. None of these are dealbreakers — but if all else is equal, Pentair wins our pick by a small margin.</p>
+<p>Slightly broader installer base in Los Angeles, slightly easier to source replacement parts, slightly better reliability on the diagnostic LED. None of these are dealbreakers, but if all else is equal, Pentair wins our pick by a small margin.</p>
 
-<h2>Cell life is roughly the same — chemistry is not</h2>
+<h2>Cell life is roughly the same: chemistry is not</h2>
 <p>Both manufacturers rate cells around 10,000 hours. Real-world lifespan depends almost entirely on whether you keep pH below 7.8 and acid-clean the cell once or twice a year. Skip those and you will see four-year cell death whether the badge says Pentair or Jandy.</p>
 
 <h2>What we install most often</h2>
@@ -182,7 +182,7 @@ HTML,
 
 		array(
 			'slug'      => 'when-to-replace-your-pool-pump',
-			'title'     => 'When to replace your pool pump — five signs to act',
+			'title'     => 'When to replace your pool pump: five signs to act',
 			'category'  => 'equipment-guides',
 			'excerpt'   => 'A failing pump rarely dies in one moment. It nags you for months. Here are the five signals worth listening to before you find yourself without filtration in July.',
 			'content'   => <<<HTML
@@ -201,7 +201,7 @@ HTML,
 <p>Single-speed pumps are now banned in California for residential pools larger than a hot tub. If you are still running one, your replacement quote is a variable-speed pump that uses a quarter of the energy and lasts longer. Either you replace it on your terms or the next inspection forces you to.</p>
 
 <h2>5. Visible rust or moisture at the seal</h2>
-<p>Wet streaks below the pump, rust on the bolts that hold the motor to the wet end, or condensation on the motor housing — all signs the shaft seal is failing. The seal itself is a cheap part, but once it leaks, water gets into the motor and you are looking at a full replacement within weeks.</p>
+<p>Wet streaks below the pump, rust on the bolts that hold the motor to the wet end, or condensation on the motor housing: all signs the shaft seal is failing. The seal itself is a cheap part, but once it leaks, water gets into the motor and you are looking at a full replacement within weeks.</p>
 
 <h2>What we install most often</h2>
 <p>Pentair IntelliFlo3 VSF for most valley pools, Jandy ePump VS for Jandy automation pads. Both pull around 1.8–2.0 amps at low speed. Standard install is half a day for a like-for-like swap, full day if we are also rebuilding the suction-side plumbing. Variable-speed quotes typically include the LADWP rebate paperwork so you get the rebate credited in week six instead of chasing it yourself.</p>

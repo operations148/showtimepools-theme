@@ -24,7 +24,7 @@ foreach ( array( 'svg', 'webp', 'png', 'jpg' ) as $ext ) {
 
 $site_name = (string) get_bloginfo( 'name' );
 ?>
-<a class="site-branding" href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home" aria-label="<?php echo esc_attr( sprintf( __( '%s — home', 'showtime-pools' ), $site_name ) ); ?>">
+<a class="site-branding" href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home" aria-label="<?php echo esc_attr( sprintf( __( '%s home', 'showtime-pools' ), $site_name ) ); ?>">
 	<?php if ( has_custom_logo() ) : ?>
 		<?php the_custom_logo(); ?>
 	<?php elseif ( $logo_uri ) : ?>

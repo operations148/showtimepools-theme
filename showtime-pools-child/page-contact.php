@@ -206,7 +206,7 @@ if ( preg_match( '#/widget/form/([A-Za-z0-9]+)#', $contact_form_url, $cm ) ) {
 
 					<div class="contact-info__alt">
 						<p><strong><?php echo esc_html( '' !== $contact_existing_customer ? $contact_existing_customer : __( 'Already a service customer?', 'showtime-pools' ) ); ?></strong></p>
-						<p><?php echo esc_html( '' !== $contact_existing_body ? $contact_existing_body : __( 'Text the same number you used at sign-up — same-day priority is reserved for the route schedule.', 'showtime-pools' ) ); ?></p>
+						<p><?php echo esc_html( '' !== $contact_existing_body ? $contact_existing_body : __( 'Text the same number you used at sign-up; same-day priority is reserved for the route schedule.', 'showtime-pools' ) ); ?></p>
 					</div>
 				</aside>
 

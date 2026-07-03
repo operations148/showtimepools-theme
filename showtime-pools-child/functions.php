@@ -23,7 +23,7 @@ define('SHOWTIME_CHILD_VERSION', '0.1.0');
  * service detail pages) is also untouched — it has no code source.
  */
 if ( ! defined( 'SHOWTIME_CODE_FIRST' ) ) {
-	define( 'SHOWTIME_CODE_FIRST', true );
+	define( 'SHOWTIME_CODE_FIRST', false );
 }
 
 /** GHL booking widget URL — embedded on /book/ (page-iframe.php). */

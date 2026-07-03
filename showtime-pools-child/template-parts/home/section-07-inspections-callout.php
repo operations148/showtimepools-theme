@@ -15,7 +15,7 @@ $insp_body  = $opt ? (string) get_field( 'inspections_cta_body', $opt ) : '';
 $insp_label = $opt ? (string) get_field( 'inspections_cta_label', $opt ) : '';
 
 $insp_title = '' !== $insp_title ? $insp_title : __( 'Buying a house with a pool? We inspect it before you sign.', 'showtime-pools' );
-$insp_body  = '' !== $insp_body  ? $insp_body  : __( 'Pre-purchase inspections, seasonal diagnostics, and equipment health checks. Written report in 24 hours so you negotiate with leverage — or walk away clean.', 'showtime-pools' );
+$insp_body  = '' !== $insp_body  ? $insp_body  : __( 'Pre-purchase inspections, seasonal diagnostics, and equipment health checks. Written report in 24 hours so you negotiate with leverage, or walk away clean.', 'showtime-pools' );
 $insp_label = '' !== $insp_label ? $insp_label : __( 'Book an Inspection', 'showtime-pools' );
 ?>
 <section class="inspections-callout" data-reveal>

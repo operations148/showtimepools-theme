@@ -175,7 +175,7 @@ $category_slot_map = array(
 							<?php endwhile; wp_reset_postdata(); ?>
 						</div>
 					<?php else : ?>
-						<p class="blog-empty"><?php esc_html_e( 'Articles coming soon — the crew is writing.', 'showtime-pools' ); ?></p>
+						<p class="blog-empty"><?php esc_html_e( 'Articles coming soon. The crew is writing.', 'showtime-pools' ); ?></p>
 					<?php endif; ?>
 				</div>
 

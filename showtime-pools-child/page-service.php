@@ -34,6 +34,9 @@ $ctx = array(
 	'summary'    => '',
 	'icon'       => $registry['icon']         ?? 'equipment',
 	'price'      => '',
+	'price_was'  => '',
+	'price_badge'=> '',
+	'price_items'=> array(),
 	'turnaround' => '',
 	'disclaimer' => '',
 	'includes'   => array(),
@@ -47,8 +50,11 @@ if ( $registry ) {
 	$ctx['seo_h1']     = (string) ( $registry['seo_h1'] ?? '' );
 	$ctx['seo_intro']  = (string) ( $registry['seo_intro'] ?? '' );
 	$ctx['summary']    = (string) ( $registry['summary'] ?? '' );
-	$ctx['price']      = (string) ( $registry['default_price'] ?? '' );
-	$ctx['turnaround'] = (string) ( $registry['default_turnaround'] ?? '' );
+	$ctx['price']       = (string) ( $registry['default_price'] ?? '' );
+	$ctx['price_was']   = (string) ( $registry['default_price_was'] ?? '' );
+	$ctx['price_badge'] = (string) ( $registry['default_price_badge'] ?? '' );
+	$ctx['price_items'] = (array)  ( $registry['default_price_items'] ?? array() );
+	$ctx['turnaround']  = (string) ( $registry['default_turnaround'] ?? '' );
 	$ctx['includes']   = (array)  ( $registry['default_includes'] ?? array() );
 	$ctx['faqs']       = (array)  ( $registry['default_faqs'] ?? array() );
 }
@@ -113,6 +119,7 @@ $sections = apply_filters(
 		'hero',
 		'includes',
 		'process',
+		'before-after',
 		'pricing',
 		'faq',
 		'related',

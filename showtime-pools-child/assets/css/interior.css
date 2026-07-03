@@ -128,7 +128,7 @@
 
 /* ─── Shared interior section ───────────────────────────────────── */
 .int-section { padding: clamp(4rem, 7vw, 7rem) 0; }
-.int-section--cream { background: var(--c-sand-50); }
+.int-section--cream { background: var(--c-gray-50); }
 .int-section__head { max-width: 56rem; margin-bottom: var(--sp-10); }
 .int-section__head h2 {
 	font-size: var(--fs-4xl);
@@ -929,6 +929,38 @@
 	transition: background var(--dur-fast) var(--ease-out);
 }
 .not-found__shortcuts a:hover { background: rgba(255,255,255,0.08); color: #fff; }
+
+/* Founder contact grid — info column + premium map card, /the-founder/ */
+.founder-contact__grid {
+	display: grid;
+	grid-template-columns: 1fr 1.1fr;
+	gap: clamp(2.5rem, 5vw, 5rem);
+	align-items: center;
+	max-width: var(--container-narrow);
+	margin: 0 auto;
+}
+@media (max-width: 880px) {
+	.founder-contact__grid { grid-template-columns: 1fr; gap: var(--sp-8); max-width: 40rem; }
+}
+
+.founder-contact__map {
+	position: relative;
+	border-radius: var(--r-xl);
+	overflow: hidden;
+	box-shadow: var(--sh-xl);
+	border: 1px solid rgba(11, 23, 51, 0.08);
+	line-height: 0;
+	aspect-ratio: 4 / 5;
+}
+.founder-contact__map iframe {
+	display: block;
+	width: 100%;
+	height: 100%;
+	border: 0;
+}
+@media (max-width: 880px) {
+	.founder-contact__map { aspect-ratio: 16 / 10; }
+}
 
 /* Founder contact list — hairline-divided rows, used at bottom of /the-founder/ */
 .founder-contact-list {

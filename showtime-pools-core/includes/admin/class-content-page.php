@@ -190,7 +190,7 @@ JS;
 			array( 'key' => 'about_lead',       'label' => 'Hero lead paragraph',          'type' => 'textarea', 'default' => 'Showtime Pools designs, builds, and transforms pools and outdoor spaces that elevate the way you live.' ),
 			array( 'key' => 'about_wwa_title',  'label' => '"Who We Are" section title',   'type' => 'text',     'default' => 'Years of hands-on experience. Built on quality, transparency, and reliability.' ),
 			array( 'key' => 'about_wwa_body',   'label' => '"Who We Are" body (paragraphs)','type' => 'wysiwyg', 'default' => '' ),
-			array( 'key' => 'about_values_title','label' => '"What We Believe" section title','type' => 'text',  'default' => 'Five commitments. Every project, every visit.' ),
+			array( 'key' => 'about_values_title','label' => '"What We Believe" section title','type' => 'text',  'default' => 'Six commitments. Every project, every visit.' ),
 		);
 		$this->render_field_list( $fields );
 	}

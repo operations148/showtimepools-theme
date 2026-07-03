@@ -16,8 +16,14 @@
 	padding-block: clamp(4rem, 8vw, 7rem);
 	border-bottom: 1px solid rgba(255, 255, 255, 0.10);
 	background:
-		radial-gradient(900px 500px at 100% 0%, rgba(92, 138, 158, 0.28) 0%, transparent 60%),
-		linear-gradient(180deg, var(--c-ink-soft) 0%, var(--c-ink) 100%);
+		linear-gradient(100deg, rgba(0, 0, 0, 0.62) 0%, rgba(0, 0, 0, 0.42) 45%, rgba(0, 0, 0, 0.22) 100%),
+		url('../img/CTA.png') center 60%/cover no-repeat fixed;
+}
+@media (max-width: 900px) {
+	/* background-attachment: fixed is unreliable on mobile browsers (and
+	   disabled outright on iOS Safari) — fall back to a normal scrolling
+	   background so the image still paints instead of going blank/janky. */
+	.footer-cta { background-attachment: scroll; }
 }
 
 .footer-cta__pattern {
@@ -142,8 +148,8 @@
 /* Footer logo emblem above the wordmark (CMS: Site Images → Footer logo). */
 .footer-main__logo {
 	display: block;
-	width: 60px;
-	height: 60px;
+	width: 78px;
+	height: 78px;
 	object-fit: contain;
 	margin-bottom: var(--sp-3);
 }

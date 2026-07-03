@@ -21,7 +21,7 @@ $hero_eyebrow = (string) get_post_meta( $pid, 'hero_eyebrow', true );
 $hero_lead    = (string) get_post_meta( $pid, 'hero_lead',    true );
 
 if ( '' === $hero_eyebrow ) { $hero_eyebrow = 'Live from Google'; }
-if ( '' === $hero_lead )    { $hero_lead    = 'Live from our Google Business Profile — every review you see is published directly by the customer, with no editing on our side.'; }
+if ( '' === $hero_lead )    { $hero_lead    = 'Live from our Google Business Profile: every review you see is published directly by the customer, with no editing on our side.'; }
 ?>
 <main id="primary" class="site-main interior-page">
 

@@ -40,7 +40,7 @@ return array(
 			array( 'n' => '04', 'title' => 'Q&A call', 'body' => '15-minute call to walk you through findings before you reply to the seller. Free, no upsell.' ),
 		),
 		'faqs'           => array(
-			array( 'q' => 'How is this different from a general home inspection?', 'a' => 'General home inspectors scan a pool for 5-10 minutes and look at gross condition. We spend 60-90 minutes specifically on the pool — pressure-testing, opening equipment, checking bonding continuity, photographing structural cracks. Most general inspectors miss the bonding and structural issues we catch.' ),
+			array( 'q' => 'How is this different from a general home inspection?', 'a' => 'General home inspectors scan a pool for 5-10 minutes and look at gross condition. We spend 60-90 minutes specifically on the pool: pressure-testing, opening equipment, checking bonding continuity, photographing structural cracks. Most general inspectors miss the bonding and structural issues we catch.' ),
 			array( 'q' => 'Is the report independent from the construction line?', 'a' => 'Yes. The Mechanics line is firewalled from construction. We will tell you to walk away from a pool, even if it costs us a $80k construction job, when walking away is the right call. Our reputation is worth more than any single deal.' ),
 			array( 'q' => 'Will the report stand up with my lender or home warranty?', 'a' => 'Yes. The report includes inspector credentials, methodology, and dated photos. Lenders and home warranty companies accept it as third-party documentation.' ),
 		),
@@ -75,7 +75,7 @@ return array(
 		),
 		'faqs'           => array(
 			array( 'q' => 'Do I need to be home?', 'a' => 'No. Most seasonal customers leave a side gate code or a key. We send a 24-hour-before reminder text and a same-day text once we are wrapping up.' ),
-			array( 'q' => 'What if my pool was closed by another company?', 'a' => 'Fine — we do not require continuity to inspect. We will note any items that look incomplete from the close and flag them in the punch list, not as a sales pitch.' ),
+			array( 'q' => 'What if my pool was closed by another company?', 'a' => 'Fine, we do not require continuity to inspect. We will note any items that look incomplete from the close and flag them in the punch list, not as a sales pitch.' ),
 			array( 'q' => 'Can I bundle this with weekly service?', 'a' => 'Yes. Active weekly service customers get a free seasonal inspection in spring and a $99 fall close (vs. flat $245 retail). The discount comes from already being on the route.' ),
 		),
 	),
@@ -84,10 +84,10 @@ return array(
 		'slug'           => 'equipment-diagnostics',
 		'name'           => 'Equipment Diagnostics',
 		'short'          => 'Full mechanical workup',
-		'price'          => 'Flat $185',
+		'price'          => 'Flat $159',
 		'turnaround'     => 'Verbal on-site · written next day',
 		'duration'       => '60 minutes on-site',
-		'lead'           => 'Something is wrong with the equipment but you do not know what. We diagnose the actual fault, document it with photos, and give you a written quote with parts pricing — separate from any repair work.',
+		'lead'           => 'Something is wrong with the equipment but you do not know what. We diagnose the actual fault, document it with photos, and give you a written quote with parts pricing, separate from any repair work.',
 		'who_for'        => array(
 			'Owners with a pump, heater, or salt cell behaving badly',
 			'Owners who got a quote elsewhere and want a second opinion',
@@ -97,8 +97,8 @@ return array(
 			'On-site diagnostic with multimeter, pressure gauge, flow meter',
 			'Photos of each component with serial numbers, in-service dates, runtime hours',
 			'Written report identifying the actual fault and root cause',
-			'Repair quote from us — you can shop it elsewhere or hire us, no pressure',
-			'$185 inspection fee credits toward repair work if you hire us within 30 days',
+			'Repair quote from us: you can shop it elsewhere or hire us, no pressure',
+			'$159 inspection fee credits toward repair work if you hire us within 30 days',
 		),
 		'process'        => array(
 			array( 'n' => '01', 'title' => 'Schedule', 'body' => 'Most diagnostics happen within 48 hours. Same-day for active service customers.' ),
@@ -107,9 +107,9 @@ return array(
 			array( 'n' => '04', 'title' => 'Written',  'body' => 'Full written report next business day with photos, root cause, and repair quote.' ),
 		),
 		'faqs'           => array(
-			array( 'q' => 'My pump is loud and I think it is the motor. Why pay $185?', 'a' => 'Because half the time it is not the motor. Bearings, impeller damage, and stuck check valves all sound like a bad motor. The diagnostic prevents a $1,200 unnecessary motor swap.' ),
+			array( 'q' => 'My pump is loud and I think it is the motor. Why pay $159?', 'a' => 'Because half the time it is not the motor. Bearings, impeller damage, and stuck check valves all sound like a bad motor. The diagnostic prevents a $1,200 unnecessary motor swap.' ),
 			array( 'q' => 'Will you tell me to fix something I do not need?', 'a' => 'No. We document what is broken and what is not. The report goes to you, not to a sales pipeline. If we hire you a fix, the inspection fee credits toward the work.' ),
-			array( 'q' => 'Do you diagnose every brand?', 'a' => 'Pentair, Jandy: full authorized diagnostics. Hayward: yes. Sta-Rite, Polaris, Aqualink: yes for repair-track diagnostics, retrofit recommendations when honest. Older off-brand units we will tell you up front if a diagnostic is worth the $185.' ),
+			array( 'q' => 'Do you diagnose every brand?', 'a' => 'Pentair, Jandy: full authorized diagnostics. Hayward: yes. Sta-Rite, Polaris, Aqualink: yes for repair-track diagnostics, retrofit recommendations when honest. Older off-brand units we will tell you up front if a diagnostic is worth the $159.' ),
 		),
 	),
 

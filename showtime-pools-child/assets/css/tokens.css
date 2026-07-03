@@ -22,6 +22,7 @@
 	--c-bg:         #FFFFFF;   /* pure white page background — was warm cream */
 	--c-bg-pure:    #FFFFFF;   /* card and modal surfaces */
 	--c-paper:      #F1F7FF;   /* cool sky-blue tinted alt section — was warm paper */
+	--c-gray-50:    color-mix(in oklab, var(--c-ink) 4%, white); /* light gray — alternating section background, replaces cream */
 
 	/* ─── Color: pool blue (single chromatic accent — Poolax electric) ─ */
 	--c-aqua-50:  #EAF2FF;

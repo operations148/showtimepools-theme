@@ -220,13 +220,13 @@ while ( have_posts() ) :
 				<div class="proj-compare-grid<?php echo ( $has_before && $has_after ) ? '' : ' proj-compare-grid--single'; ?>">
 					<?php if ( $has_before ) : ?>
 						<figure class="proj-compare-grid__item">
-							<img src="<?php echo esc_url( $before_img['sizes']['large'] ?? $before_img['url'] ); ?>" alt="<?php echo esc_attr( get_the_title() . ' — before' ); ?>" loading="lazy" decoding="async">
+							<img src="<?php echo esc_url( $before_img['sizes']['large'] ?? $before_img['url'] ); ?>" alt="<?php echo esc_attr( get_the_title() . ' (before)' ); ?>" loading="lazy" decoding="async">
 							<figcaption><?php esc_html_e( 'Before', 'showtime-pools' ); ?></figcaption>
 						</figure>
 					<?php endif; ?>
 					<?php if ( $has_after ) : ?>
 						<figure class="proj-compare-grid__item">
-							<img src="<?php echo esc_url( $after_img['sizes']['large'] ?? $after_img['url'] ); ?>" alt="<?php echo esc_attr( get_the_title() . ' — after' ); ?>" loading="lazy" decoding="async">
+							<img src="<?php echo esc_url( $after_img['sizes']['large'] ?? $after_img['url'] ); ?>" alt="<?php echo esc_attr( get_the_title() . ' (after)' ); ?>" loading="lazy" decoding="async">
 							<figcaption><?php esc_html_e( 'After', 'showtime-pools' ); ?></figcaption>
 						</figure>
 					<?php endif; ?>

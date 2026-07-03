@@ -18,10 +18,14 @@ defined( 'ABSPATH' ) || exit;
  */
 function showtime_popup_form_url(): string {
 	// URL is a CMS field (Showtime → Settings → "GHL Popup Form URL"); falls back
-	// to the bundled default form so the popup always has a form to show.
+	// to the same GHL form used on /contact/ (SHOWTIME_CONTACT_FORM_URL) so the
+	// popup always has a form to show.
 	$base = trim( (string) get_option( 'showtime_popup_form_url', '' ) );
 	if ( '' === $base ) {
-		$base = 'https://app.showtimepoolmechanics.com/widget/form/pZm1SEhLB9YMX21EvIV5';
+		$base = defined( 'SHOWTIME_CONTACT_FORM_URL' ) ? SHOWTIME_CONTACT_FORM_URL : '';
+	}
+	if ( '' === $base ) {
+		return '';
 	}
 	$url  = add_query_arg(
 		array(

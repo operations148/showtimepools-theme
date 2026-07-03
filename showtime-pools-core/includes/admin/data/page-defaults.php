@@ -32,7 +32,7 @@ return array(
 			'about_wwa_title'      => 'Years of hands-on experience. Built on quality, transparency, and reliability.',
 			'about_wwa_body'       => '',
 			'about_photo_caption'  => 'Sherman Oaks shop · Ventura Boulevard',
-			'about_values_title'   => 'Five commitments. Every project, every visit.',
+			'about_values_title'   => 'Six commitments. Every project, every visit.',
 			'about_values_eyebrow' => 'What we believe',
 			'about_team_eyebrow'   => 'The team',
 			'about_team_h2'        => 'Who actually shows up to your house.',
@@ -44,9 +44,9 @@ return array(
 		// ─── Service Areas Hub ─────────────────────────────────────────────────
 		'page-areas.php' => array(
 			'hero_eyebrow' => 'Where we work',
-			'hero_lead'    => 'Pool service, pool cleaning, and pool repair across six West Valley and Westside neighborhoods. The same in-house tech every week — Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills. Custom construction and remodel work runs LA County-wide.',
+			'hero_lead'    => 'Pool service, pool cleaning, and pool repair across six West Valley and Westside neighborhoods. The same in-house tech every week: Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills. Custom construction and remodel work runs LA County-wide.',
 			'outside_h2'   => 'Outside the route?',
-			'outside_body' => 'New construction, full remodels, and inspections are available across LA County — Hancock Park, Pacific Palisades, Calabasas, Burbank, Glendale, Pasadena, Toluca Lake, Northridge, Granada Hills, and beyond. Weekly service is geographically restricted to keep the same-tech promise.',
+			'outside_body' => 'New construction, full remodels, and inspections are available across LA County: Hancock Park, Pacific Palisades, Calabasas, Burbank, Glendale, Pasadena, Toluca Lake, Northridge, Granada Hills, and beyond. Weekly service is geographically restricted to keep the same-tech promise.',
 		),
 
 		// ─── Blog Hub ──────────────────────────────────────────────────────────
@@ -67,7 +67,7 @@ return array(
 			'contact_form_title'        => 'Tell us about your pool.',
 			'contact_sidebar_h2'        => 'Or reach us directly',
 			'contact_existing_customer' => 'Already a service customer?',
-			'contact_existing_body'     => 'Text the same number you used at sign-up — same-day priority is reserved for the route schedule.',
+			'contact_existing_body'     => 'Text the same number you used at sign-up; same-day priority is reserved for the route schedule.',
 		),
 
 		// ─── Founder ───────────────────────────────────────────────────────────
@@ -109,13 +109,13 @@ return array(
 		// hardcodes a rating or count that could drift from the live GBP.
 		'page-reviews.php' => array(
 			'hero_eyebrow' => 'Live from Google',
-			'hero_lead'    => 'Live from our Google Business Profile — every review you see is published directly by the customer, with no editing on our side.',
+			'hero_lead'    => 'Live from our Google Business Profile: every review you see is published directly by the customer, with no editing on our side.',
 		),
 
 		// ─── Services Hub ──────────────────────────────────────────────────────
 		'page-services-hub.php' => array(
 			'hero_eyebrow'    => 'Every pool service, one team',
-			'hero_lead'       => 'Pool repair, pool cleaning service, pool remodeling, pool installation, equipment upgrades, inspections, spa work, and outdoor living — handled by one supervised crew across Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills.',
+			'hero_lead'       => 'Pool repair, pool cleaning service, pool remodeling, pool installation, equipment upgrades, inspections, spa work, and outdoor living, handled by one supervised crew across Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills.',
 			'core_eyebrow'    => 'Core services',
 			'core_h2'         => 'Repairs, service, remodels, equipment, inspections, automation.',
 			'core_lead'       => 'The day-to-day of pool ownership. Every one of these is on the route or in the shop right now.',
@@ -131,7 +131,7 @@ return array(
 		'page-affiliate.php' => array(
 			'affiliate_hero_eyebrow'     => 'Now accepting referral partners',
 			'affiliate_h1'               => 'Refer pool owners. Earn recurring income.',
-			'affiliate_hero_lead'        => 'Join the Showtime Pools Partner Program. Every homeowner, property manager, or HOA you send our way earns you commission for as long as they stay on service — no chasing, no cold-selling, no cap.',
+			'affiliate_hero_lead'        => 'Join the Showtime Pools Partner Program. Every homeowner, property manager, or HOA you send our way earns you commission for as long as they stay on service, with no chasing, no cold-selling, no cap.',
 			'affiliate_hero_cta'         => 'Become a Partner',
 			'affiliate_trust1'           => 'Paid monthly',
 			'affiliate_trust2'           => 'No cap on referrals',
@@ -139,22 +139,22 @@ return array(
 			'affiliate_trust4'           => 'Free to join',
 			'affiliate_benefits_eyebrow' => 'Why partner with us',
 			'affiliate_benefits_h2'      => 'Build a referral income that pays you every month.',
-			'affiliate_benefits_lead'    => 'Earn predictable monthly commission from every customer you refer — without one-time payouts or constant selling. A scalable income stream that compounds as your referrals stay on service.',
+			'affiliate_benefits_lead'    => 'Earn predictable monthly commission from every customer you refer, without one-time payouts or constant selling. A scalable income stream that compounds as your referrals stay on service.',
 			'affiliate_benefit1_title'   => 'Recurring Commission',
 			'affiliate_benefit1_body'    => 'Earn commission every month your referral stays on a maintenance plan. Steady income that grows with your book of referrals.',
 			'affiliate_benefit2_title'   => 'Real-Time Tracking',
 			'affiliate_benefit2_body'    => 'See every referral, conversion, and payout in your partner dashboard. Always know exactly what you have earned.',
 			'affiliate_benefit3_title'   => 'No Cap on Earnings',
-			'affiliate_benefit3_body'    => 'Refer one pool owner or fifty — there is no limit. Scale your income as fast as you can send qualified leads our way.',
+			'affiliate_benefit3_body'    => 'Refer one pool owner or fifty; there is no limit. Scale your income as fast as you can send qualified leads our way.',
 			'affiliate_benefit4_title'   => 'Fast Onboarding',
 			'affiliate_benefit4_body'    => 'Apply in minutes and get your referral link the same day. We handle the quote, the work, and the warranty.',
 			'affiliate_process_eyebrow'  => 'Process',
-			'affiliate_process_h2'       => 'From referral to recurring income — here is how it works.',
+			'affiliate_process_h2'       => 'From referral to recurring income: here is how it works.',
 			'affiliate_process_lead'     => 'Three simple steps. Sign up, share, and get paid every month your referral stays with us.',
 			'affiliate_step1_title'      => 'Apply Free',
 			'affiliate_step1_body'       => 'Fill out the form below. We review and send your unique referral link the same day. No cost to join.',
 			'affiliate_step2_title'      => 'Refer Pool Owners',
-			'affiliate_step2_body'       => 'Send homeowners, property managers, and HOAs our way through your link — or just have them mention your name.',
+			'affiliate_step2_body'       => 'Send homeowners, property managers, and HOAs our way through your link, or just have them mention your name.',
 			'affiliate_step3_title'      => 'Earn Every Month',
 			'affiliate_step3_body'       => 'Get paid for as long as your referral stays on service. True recurring income from work we deliver.',
 			'affiliate_faq_eyebrow'      => 'Questions',
@@ -162,7 +162,7 @@ return array(
 			'affiliate_faq1_q'           => 'How much can I earn?',
 			'affiliate_faq1_a'           => 'You earn recurring commission every month your referral stays on a Showtime Pools maintenance plan, plus a share of qualifying repair and remodel work. We confirm your exact rate when you join.',
 			'affiliate_faq2_q'           => 'Who makes a good referral?',
-			'affiliate_faq2_a'           => 'Any pool owner in our service area — homeowners, property managers, HOAs, and home inspectors all refer to us. If they own or manage a pool in the LA area, they qualify.',
+			'affiliate_faq2_a'           => 'Any pool owner in our service area: homeowners, property managers, HOAs, and home inspectors all refer to us. If they own or manage a pool in the LA area, they qualify.',
 			'affiliate_faq3_q'           => 'When and how do I get paid?',
 			'affiliate_faq3_a'           => 'Commissions are paid monthly once your referral is active and billed. You can track every referral and payout in your partner dashboard.',
 			'affiliate_faq4_q'           => 'Does it cost anything to join?',
@@ -235,12 +235,12 @@ return array(
 		'privacy-policy' => array(
 			'legal_eyebrow' => 'Last updated 2026-05-06',
 			'legal_lead'    => 'Plain-English summary of what we collect, why, and how we treat it. The full text follows.',
-			'legal_body'    => '<h2>What we collect</h2><p>Three things: contact info you give us via the contact form (name, phone, email, message), the page URL you came from, and your IP address. The IP is logged for spam protection only — never sold, never used for advertising.</p><h2>Why we collect it</h2><p>So that Steve or a senior tech can call you back about your message. Period. We do not run ad retargeting on this site, we do not sell or share your information with third parties, and we do not use your data for marketing analytics.</p><h2>Where it goes</h2><p>Form submissions are forwarded to GoHighLevel (our internal CRM) for follow-up. GHL is hosted in the United States and is bound by industry-standard data-protection terms. Nothing leaves the GHL boundary unless you ask us to send it (e.g. you forward us a contractor reference).</p><h2>Cookies</h2><p>We use a session cookie for honeypot/spam protection on the contact form, and standard WordPress login cookies if you have a staff account. We do not run third-party analytics cookies, advertising cookies, or social-tracking pixels.</p><h2>Your rights</h2><p>You can ask us to delete your record at any time. Email <a href="mailto:operations@showtimepoolmechanics.com">operations@showtimepoolmechanics.com</a> with the subject "Delete my data" and we will purge your contact record from GHL and our backups within 30 days. California residents have additional rights under CCPA — same process, same email.</p><h2>Children</h2><p>This site is for adult business inquiries about pool services. We do not knowingly collect data from anyone under 16.</p><h2>Updates</h2><p>If we ever change this policy, the "last updated" date at the top of the page changes. Material changes get an email notice to anyone with an active service contract.</p><h2>Questions</h2><p>Email <a href="mailto:operations@showtimepoolmechanics.com">operations@showtimepoolmechanics.com</a> or call (323) 825-2099. Steve usually answers.</p>',
+			'legal_body'    => '<h2>What we collect</h2><p>Three things: contact info you give us via the contact form (name, phone, email, message), the page URL you came from, and your IP address. The IP is logged for spam protection only; it is never sold, never used for advertising.</p><h2>Why we collect it</h2><p>So that Steve or a senior tech can call you back about your message. Period. We do not run ad retargeting on this site, we do not sell or share your information with third parties, and we do not use your data for marketing analytics.</p><h2>Where it goes</h2><p>Form submissions are forwarded to GoHighLevel (our internal CRM) for follow-up. GHL is hosted in the United States and is bound by industry-standard data-protection terms. Nothing leaves the GHL boundary unless you ask us to send it (e.g. you forward us a contractor reference).</p><h2>Cookies</h2><p>We use a session cookie for honeypot/spam protection on the contact form, and standard WordPress login cookies if you have a staff account. We do not run third-party analytics cookies, advertising cookies, or social-tracking pixels.</p><h2>Your rights</h2><p>You can ask us to delete your record at any time. Email <a href="mailto:operations@showtimepoolmechanics.com">operations@showtimepoolmechanics.com</a> with the subject "Delete my data" and we will purge your contact record from GHL and our backups within 30 days. California residents have additional rights under CCPA: same process, same email.</p><h2>Children</h2><p>This site is for adult business inquiries about pool services. We do not knowingly collect data from anyone under 16.</p><h2>Updates</h2><p>If we ever change this policy, the "last updated" date at the top of the page changes. Material changes get an email notice to anyone with an active service contract.</p><h2>Questions</h2><p>Email <a href="mailto:operations@showtimepoolmechanics.com">operations@showtimepoolmechanics.com</a> or call (323) 825-2099. Steve usually answers.</p>',
 		),
 		'terms' => array(
 			'legal_eyebrow' => 'Last updated 2026-05-06',
 			'legal_lead'    => 'The terms that govern using this website. Service contracts have their own terms in the signed contract.',
-			'legal_body'    => '<h2>Use of this site</h2><p>This website is informational. Browsing the site, reading service pages, or filling out the contact form does not create a contract for pool work. A signed proposal does.</p><h2>Quotes and proposals</h2><p>Quotes and itemized proposals are valid for 30 days from the date issued, unless otherwise stated in writing on the quote. Pricing on website pages is directional — your written quote is the binding number.</p><h2>Service contracts</h2><p>Weekly service is month-to-month. You can cancel any time with 7 days written notice. Construction and remodel contracts have project-specific terms in the signed contract, including milestone payments, change-order procedure, and warranty coverage.</p><h2>Warranties</h2><p>We warrant our workmanship for 2 years on construction and remodel work. PebbleTec finishes carry an additional 5-year manufacturer warranty. Equipment carries the manufacturer warranty pass-through (typically 1-3 years depending on the item). Specific terms are in your signed contract or finish-warranty document — those govern in any disagreement with this summary.</p><h2>Liability</h2><p>Our liability is limited to the cost of the work performed. Insurance and certificate details are provided to property owners directly on request as part of the contract process.</p><h2>Photography and references</h2><p>By default we ask permission before photographing a completed project for our website or social media. If you would prefer your project not be photographed at all, mention it before we start work and we will note it on the project record.</p><h2>Governing law</h2><p>These terms are governed by California law. Any dispute that cannot be resolved between us directly is subject to the exclusive jurisdiction of the courts of Los Angeles County, California.</p><h2>Contact</h2><p>Email <a href="mailto:operations@showtimepoolmechanics.com">operations@showtimepoolmechanics.com</a> or call (323) 825-2099 with any questions.</p>',
+			'legal_body'    => '<h2>Use of this site</h2><p>This website is informational. Browsing the site, reading service pages, or filling out the contact form does not create a contract for pool work. A signed proposal does.</p><h2>Quotes and proposals</h2><p>Quotes and itemized proposals are valid for 30 days from the date issued, unless otherwise stated in writing on the quote. Pricing on website pages is directional; your written quote is the binding number.</p><h2>Service contracts</h2><p>Weekly service is month-to-month. You can cancel any time with 7 days written notice. Construction and remodel contracts have project-specific terms in the signed contract, including milestone payments, change-order procedure, and warranty coverage.</p><h2>Warranties</h2><p>We warrant our workmanship for 2 years on construction and remodel work. PebbleTec finishes carry an additional 5-year manufacturer warranty. Equipment carries the manufacturer warranty pass-through (typically 1-3 years depending on the item). Specific terms are in your signed contract or finish-warranty document; those govern in any disagreement with this summary.</p><h2>Liability</h2><p>Our liability is limited to the cost of the work performed. Insurance and certificate details are provided to property owners directly on request as part of the contract process.</p><h2>Photography and references</h2><p>By default we ask permission before photographing a completed project for our website or social media. If you would prefer your project not be photographed at all, mention it before we start work and we will note it on the project record.</p><h2>Governing law</h2><p>These terms are governed by California law. Any dispute that cannot be resolved between us directly is subject to the exclusive jurisdiction of the courts of Los Angeles County, California.</p><h2>Contact</h2><p>Email <a href="mailto:operations@showtimepoolmechanics.com">operations@showtimepoolmechanics.com</a> or call (323) 825-2099 with any questions.</p>',
 		),
 	),
 );

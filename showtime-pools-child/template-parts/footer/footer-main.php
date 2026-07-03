@@ -85,7 +85,7 @@ if ( '' === $footer_logo ) {
 	<div class="container">
 		<div class="footer-main__top">
 			<div class="footer-main__brand">
-				<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="site-branding site-branding--footer" rel="home" aria-label="<?php esc_attr_e( 'Showtime Pools — home', 'showtime-pools' ); ?>">
+				<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="site-branding site-branding--footer" rel="home" aria-label="<?php esc_attr_e( 'Showtime Pools home', 'showtime-pools' ); ?>">
 					<?php if ( '' !== $footer_logo ) : ?>
 						<img class="footer-main__logo" src="<?php echo esc_url( $footer_logo ); ?>" alt="<?php esc_attr_e( 'Showtime Pools', 'showtime-pools' ); ?>" width="60" height="60" loading="lazy" decoding="async">
 					<?php endif; ?>

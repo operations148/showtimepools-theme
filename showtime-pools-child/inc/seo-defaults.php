@@ -63,7 +63,7 @@ function showtime_seo_context() {
 			'type'    => 'home',
 			'h1'      => 'Pool Service in Los Angeles',
 			'keyword' => 'pool service near me',
-			'intro'   => 'Los Angeles pool companies near me — pool service, pool cleaning service, pool repair near me, remodeling, and new pool construction. One supervised crew. Steve on every quote.',
+			'intro'   => 'Los Angeles pool companies near me: pool service, pool cleaning service, pool repair near me, remodeling, and new pool construction. One supervised crew. Steve on every quote.',
 			'title'   => 'Pool Service & Repair in Los Angeles | Showtime Pools',
 			'meta'    => 'Stop juggling contractors. One LA crew for pool repair, weekly service, remodels, and equipment since 2003. Free quote, call (323) 825-2099.',
 		);

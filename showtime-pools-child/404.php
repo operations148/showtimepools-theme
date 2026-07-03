@@ -17,7 +17,7 @@ get_header();
 				<span class="not-found__num">404</span>
 				<h1 class="not-found__title balance"><?php esc_html_e( 'Pool not found.', 'showtime-pools' ); ?></h1>
 				<p class="not-found__lead">
-					<?php esc_html_e( 'Either the page moved or the link was wrong. Easier to start fresh — try the homepage, browse services, or send us a message and we will route you.', 'showtime-pools' ); ?>
+					<?php esc_html_e( 'Either the page moved or the link was wrong. Easier to start fresh: try the homepage, browse services, or send us a message and we will route you.', 'showtime-pools' ); ?>
 				</p>
 				<div class="cluster">
 					<a class="btn btn--invert btn--lg" href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Go home', 'showtime-pools' ); ?></a>

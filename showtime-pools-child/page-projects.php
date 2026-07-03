@@ -28,7 +28,7 @@ if ( post_type_exists( 'project' ) ) {
 	$q = new WP_Query(
 		array(
 			'post_type'      => 'project',
-			'posts_per_page' => 24,
+			'posts_per_page' => 6,
 			'orderby'        => 'menu_order',
 			'order'          => 'ASC',
 			'no_found_rows'  => true,

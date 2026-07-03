@@ -52,15 +52,15 @@
 .site-branding .custom-logo,
 .site-branding__logo {
 	display: block;
-	height: 64px;
+	height: 82px;
 	width: auto;
-	max-width: 240px;
+	max-width: 258px;
 	object-fit: contain;
 }
 
 @media (max-width: 540px) {
 	.site-branding .custom-logo,
-	.site-branding__logo { height: 48px; max-width: 180px; }
+	.site-branding__logo { height: 66px; max-width: 198px; }
 }
 
 /* (Header is solid on every page now — no logo invert filter needed.) */

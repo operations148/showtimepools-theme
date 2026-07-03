@@ -1,6 +1,7 @@
 <?php
 /**
- * Sitewide "Weekly Maintenance" lead popup (GHL form pZm1SEhLB9YMX21EvIV5).
+ * Sitewide "Weekly Maintenance" lead popup (GHL form tH1eoDpRA4hMEb04GgzX,
+ * the same contact form embedded on /contact/).
  *
  * Output once in wp_footer by inc/popup.php (gated by the CMS toggle and page
  * rules). The GHL <iframe> is NOT printed here — assets/js/popup.js injects it
@@ -23,14 +24,14 @@ if ( '' === $stp_popup_src ) {
 	<div class="stp-popup__dialog"
 		role="dialog"
 		aria-modal="true"
-		aria-label="<?php esc_attr_e( 'Weekly pool maintenance — get a quote', 'showtime-pools' ); ?>">
+		aria-label="<?php esc_attr_e( 'Weekly pool maintenance: get a quote', 'showtime-pools' ); ?>">
 		<button type="button" class="stp-popup__close" data-popup-close aria-label="<?php esc_attr_e( 'Close', 'showtime-pools' ); ?>">
 			<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
 		</button>
 		<div class="stp-popup__embed"
 			data-popup-embed
 			data-src="<?php echo esc_url( $stp_popup_src ); ?>"
-			data-form-id="pZm1SEhLB9YMX21EvIV5"
+			data-form-id="tH1eoDpRA4hMEb04GgzX"
 			data-title="<?php esc_attr_e( 'Popup – Weekly Maintenance', 'showtime-pools' ); ?>">
 			<noscript>
 				<iframe src="<?php echo esc_url( $stp_popup_src ); ?>" style="width:100%;min-height:520px;border:0" title="<?php esc_attr_e( 'Popup – Weekly Maintenance', 'showtime-pools' ); ?>"></iframe>

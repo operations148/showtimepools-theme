@@ -39,7 +39,7 @@ $outdoor_lead    = (string) get_post_meta( $pid, 'outdoor_lead',    true );
 
 // Fallbacks — used when the meta field is empty.
 if ( '' === $hero_eyebrow ) { $hero_eyebrow = 'Every pool service, one team'; }
-if ( '' === $hero_lead )    { $hero_lead    = 'Pool repair, pool cleaning service, pool remodeling, pool installation, equipment upgrades, inspections, spa work, and outdoor living — handled by one supervised crew across Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills.'; }
+if ( '' === $hero_lead )    { $hero_lead    = 'Pool repair, pool cleaning service, pool remodeling, pool installation, equipment upgrades, inspections, spa work, and outdoor living, handled by one supervised crew across Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, and Woodland Hills.'; }
 
 if ( '' === $core_eyebrow ) { $core_eyebrow = 'Core services'; }
 if ( '' === $core_h2 )      { $core_h2      = 'Repairs, service, remodels, equipment, inspections, automation.'; }

@@ -33,7 +33,7 @@ $about_bullets  = $opt ? get_field( 'home_about_bullets', $opt ) : null;
 
 $about_eyebrow = '' !== $about_eyebrow ? $about_eyebrow : __( 'About Showtime Pools', 'showtime-pools' );
 $about_title   = '' !== $about_title   ? $about_title   : __( 'The pool service company Los Angeles homeowners actually call back.', 'showtime-pools' );
-$about_lead    = '' !== $about_lead    ? $about_lead    : __( 'Pool repair, pool cleaning service, pool remodeling, equipment installation, and new construction — handled end-to-end by the same supervised crew. The technician who quotes your job is on-site when the work happens.', 'showtime-pools' );
+$about_lead    = '' !== $about_lead    ? $about_lead    : __( 'Pool repair, pool cleaning service, pool remodeling, equipment installation, and new construction, handled end-to-end by the same supervised crew. The technician who quotes your job is on-site when the work happens.', 'showtime-pools' );
 $about_years   = '' !== $about_years   ? $about_years   : '23';
 $about_cta_lbl = '' !== $about_cta_lbl ? $about_cta_lbl : __( 'More about us', 'showtime-pools' );
 $about_cta_url = '' !== $about_cta_url ? $about_cta_url : home_url( '/about/' );

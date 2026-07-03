@@ -33,7 +33,7 @@ $about_body          = $_pm( 'about_wwa_body' )      ?: ( $opt ? (string) get_fi
 $about_photo_caption = $_pm( 'about_photo_caption' ) ?: __( 'Sherman Oaks shop · Ventura Boulevard', 'showtime-pools' );
 
 // Values section.
-$values_title   = $_pm( 'about_values_title' )   ?: ( $opt ? (string) get_field( 'about_values_intro_title', $opt ) : '' ) ?: __( 'Five commitments. Every project, every visit.', 'showtime-pools' );
+$values_title   = $_pm( 'about_values_title' )   ?: ( $opt ? (string) get_field( 'about_values_intro_title', $opt ) : '' ) ?: __( 'Six commitments. Every project, every visit.', 'showtime-pools' );
 $values_eyebrow = $_pm( 'about_values_eyebrow' ) ?: __( 'What we believe', 'showtime-pools' );
 $values_intro   = $opt ? (string) get_field( 'about_values_intro_body', $opt ) : '';
 
@@ -104,7 +104,7 @@ $person_schema = array(
 					<?php if ( '' !== $about_body ) : ?>
 						<?php echo wp_kses_post( wpautop( $about_body ) ); ?>
 					<?php else : ?>
-						<p><?php esc_html_e( 'Showtime Pools has become a trusted name for homeowners, property managers, and businesses seeking long-lasting, high-performance pool systems. Repairs, weekly service, remodels, equipment, inspections, and outdoor living are all handled by one supervised crew — in-house W-2 for the day-to-day, with exclusive partner crews for Replaster and demo that Steve supervises on-site.', 'showtime-pools' ); ?></p>
+						<p><?php esc_html_e( 'Showtime Pools has become a trusted name for homeowners, property managers, and businesses seeking long-lasting, high-performance pool systems. Repairs, weekly service, remodels, equipment, inspections, and outdoor living are all handled by one supervised crew: in-house W-2 for the day-to-day, with exclusive partner crews for Replaster and demo that Steve supervises on-site.', 'showtime-pools' ); ?></p>
 						<p><?php esc_html_e( 'We do not believe in shortcuts, only results that stand the test of time. Every project is treated like it is our own backyard. That means engineered structure, honest communication, premium materials, and standing behind our work with integrity.', 'showtime-pools' ); ?></p>
 						<p><?php esc_html_e( 'When something breaks, we identify the root cause first so you do not waste money on temporary patches. When you are remodeling, we coordinate every trade so you are not chasing five contractors. When you are buying a house, we inspect the pool independently and tell you the truth.', 'showtime-pools' ); ?></p>
 					<?php endif; ?>
@@ -129,7 +129,7 @@ $person_schema = array(
 					array( 'icon' => 'sparkle', 'title' => __( 'Proven methods, modern technology', 'showtime-pools' ),         'body' => __( 'We blend tested construction methods with current automation, salt systems, and energy-efficient equipment. No experiments on your dime.', 'showtime-pools' ) ),
 					array( 'icon' => 'check',   'title' => __( 'Honest communication start to finish', 'showtime-pools' ),     'body' => __( 'Itemized written quotes. Daily updates during construction. Final walk-through with a punch list. Nothing important happens verbally.', 'showtime-pools' ) ),
 					array( 'icon' => 'shield',  'title' => __( 'Standing behind our work with integrity', 'showtime-pools' ),  'body' => __( 'Two-year workmanship warranty on construction. Five-year warranty on PebbleTec finishes. Manufacturer pass-through on every piece of equipment.', 'showtime-pools' ) ),
-					array( 'icon' => 'heart',   'title' => __( 'Dedicated to everything we do', 'showtime-pools' ),            'body' => __( 'Same crew, same standards. Steve supervises every job — including the partner crews we use exclusively for Replaster and demo. The person who quotes the job is on-site when the work happens.', 'showtime-pools' ) ),
+					array( 'icon' => 'heart',   'title' => __( 'Dedicated to everything we do', 'showtime-pools' ),            'body' => __( 'Same crew, same standards. Steve supervises every job, including the partner crews we use exclusively for Replaster and demo. The person who quotes the job is on-site when the work happens.', 'showtime-pools' ) ),
 					array( 'icon' => 'star',    'title' => __( 'No shortcuts, only lasting results', 'showtime-pools' ),       'body' => __( 'We say no to bad ideas, including our own. If a finish, a layout, or a piece of equipment will not last, we tell you up front.', 'showtime-pools' ) ),
 				);
 				$values = function_exists( 'showtime_acf_rows' )
@@ -163,13 +163,18 @@ $person_schema = array(
 			<div class="team-grid">
 				<?php
 				$team_default = array(
-					array( 'name' => 'Steve Adams', 'role' => __( 'Founder & CEO', 'showtime-pools' ), 'note' => __( 'On every quote, walks every site, pulls every permit personally. The phone you call rings on his desk.', 'showtime-pools' ), 'initials' => 'SA', 'href' => home_url( '/the-founder/' ) ),
-					array( 'name' => 'Viktor O',     'role' => __( 'Repair Manager', 'showtime-pools' ),         'note' => __( 'Runs the repair line. Diagnoses the failure before he quotes the fix. Pentair- and Jandy-certified for warranty pass-through.', 'showtime-pools' ), 'initials' => 'VO', 'href' => '' ),
-					array( 'name' => 'Felipe A',    'role' => __( 'Pool Service Technician', 'showtime-pools' ), 'note' => __( 'Senior route tech. Same customers every week. Photo report after every visit before he leaves the driveway.', 'showtime-pools' ), 'initials' => 'FA', 'href' => '' ),
-					array( 'name' => 'George C',    'role' => __( 'Senior Cleaner', 'showtime-pools' ),          'note' => __( 'Owns the chemistry-and-detail side of weekly maintenance. Tile-line wipe-down, full chemistry balance, equipment runtime check.', 'showtime-pools' ), 'initials' => 'GC', 'href' => '' ),
+					array( 'name' => 'Steve Adams', 'role' => __( 'Founder & CEO', 'showtime-pools' ), 'note' => __( 'On every quote, walks every site, pulls every permit personally. The phone you call rings on his desk.', 'showtime-pools' ), 'initials' => 'SA', 'href' => home_url( '/the-founder/' ), 'photo' => SHOWTIME_CHILD_URI . '/assets/img/steve.webp' ),
+					array( 'name' => 'Viktor O',     'role' => __( 'Repair Manager', 'showtime-pools' ),         'note' => __( 'Runs the repair line. Diagnoses the failure before he quotes the fix. Pentair- and Jandy-certified for warranty pass-through.', 'showtime-pools' ), 'initials' => 'VO', 'href' => '', 'photo' => SHOWTIME_CHILD_URI . '/assets/img/viktor1.webp' ),
+					array( 'name' => 'Felipe A',    'role' => __( 'Pool Service Technician', 'showtime-pools' ), 'note' => __( 'Senior route tech. Same customers every week. Photo report after every visit before he leaves the driveway.', 'showtime-pools' ), 'initials' => 'FA', 'href' => '', 'photo' => SHOWTIME_CHILD_URI . '/assets/img/george1.webp' ),
+					array( 'name' => 'George C',    'role' => __( 'Senior Cleaner', 'showtime-pools' ),          'note' => __( 'Owns the chemistry-and-detail side of weekly maintenance. Tile-line wipe-down, full chemistry balance, equipment runtime check.', 'showtime-pools' ), 'initials' => 'GC', 'href' => '', 'photo' => SHOWTIME_CHILD_URI . '/assets/img/yousif1.webp' ),
 				);
 				// Priority: native wp_options (Showtime Pools → Site Content → Team) → ACF → PHP fallback.
-				if ( $_ct ) {
+				// Code-first edit mode short-circuits straight to $team_default (same
+				// convention as showtime_ct()/showtime_acf_rows()) since get_all_team()
+				// reads native wp_options directly and isn't covered by the ACF filter.
+				if ( defined( 'SHOWTIME_CODE_FIRST' ) && SHOWTIME_CODE_FIRST ) {
+					$team = $team_default;
+				} elseif ( $_ct ) {
 					$team = $_ct::get_all_team();
 				} else {
 					$team = showtime_acf_rows( 'team', $team_default );
