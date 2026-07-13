@@ -190,7 +190,7 @@ function showtime_image( string $slot, int $w = 1600, int $h = 0 ): string {
 	// user drop authentic shots (founder portrait, neighborhood hero,
 	// project photos) without touching WP admin OR PHP. Drop the file,
 	// hard-refresh, done.
-	$local_slots = array( 'founder', 'about_hero', 'about_split', 'hero', 'hero_poster', 'lifestyle_main', 'lifestyle_1', 'lifestyle_2', 'lifestyle_3', 'lifestyle_4', 'inspections_bg' );
+	$local_slots = array( 'founder', 'about_hero', 'about_split', 'hero', 'hero_poster', 'lifestyle_main', 'lifestyle_1', 'lifestyle_2', 'lifestyle_3', 'lifestyle_4', 'inspections_bg', 'interactive_pool', 'add_spa', 'add_rock', 'add_bar', 'add_diving', 'add_fire', 'add_water', 'add_deckjets' );
 	// Allow every area_*, project_*, service_*, blog_*, team_* slot too.
 	if ( str_starts_with( $slot, 'area_' )
 		|| str_starts_with( $slot, 'project_' )

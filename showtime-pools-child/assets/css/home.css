@@ -1452,8 +1452,8 @@ main > section:first-child[data-reveal] {
 	position: relative;
 	overflow: hidden;
 	color: var(--c-text-invert);
-	min-height: clamp(560px, 78vh, 820px);
-	padding: clamp(4rem, 9vw, 7rem) 0 clamp(5rem, 10vw, 8rem);
+	min-height: clamp(680px, 92vh, 940px);
+	padding: clamp(4.5rem, 10vw, 8rem) 0 clamp(5.5rem, 11vw, 9rem);
 	display: flex;
 	align-items: center;
 	background: var(--c-ink);
@@ -1570,6 +1570,111 @@ main > section:first-child[data-reveal] {
 }
 .home-hero--immersive .home-hero__link:hover {
 	border-color: var(--c-aqua-300);
+}
+
+/* Call/Text line — moved here from the site header on the homepage only
+   (see header.php). Sits under the primary CTA row, not inside it, so it
+   reads as a secondary, lower-commitment path to reach a human. */
+.home-hero__phone-cta {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--sp-3);
+	margin-top: var(--sp-6);
+	color: #FFFFFF;
+	font-weight: 600;
+	font-size: 0.98rem;
+	letter-spacing: 0.01em;
+	text-decoration: none;
+	transition: color var(--dur-fast) var(--ease-out);
+}
+.home-hero__phone-cta-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	flex: 0 0 auto;
+	border-radius: var(--r-full);
+	background: rgba(255, 255, 255, 0.12);
+	border: 1px solid rgba(255, 255, 255, 0.22);
+	color: #FFFFFF;
+	transition: background var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+.home-hero__phone-cta:hover .home-hero__phone-cta-icon,
+.home-hero__phone-cta:focus-visible .home-hero__phone-cta-icon {
+	background: var(--c-aqua-500);
+	transform: scale(1.06);
+}
+.home-hero__phone-cta:hover,
+.home-hero__phone-cta:focus-visible {
+	color: var(--c-aqua-300);
+}
+.home-hero__phone-cta:focus-visible {
+	outline: none;
+	box-shadow: var(--sh-ring);
+	border-radius: var(--r-md);
+}
+.home-hero__phone-cta:active .home-hero__phone-cta-icon {
+	transform: scale(0.96);
+}
+
+/* Slim trust row — short forms of claims made elsewhere on the site
+   (home-about, service pages), not new copy. Hairline-divided.
+   Sits directly under .container (not inside the 720px-capped
+   .home-hero__inner) so it gets the full container width to fit all 4
+   items on one row at a larger, more prominent size. */
+.home-hero__trust {
+	display: flex;
+	flex-wrap: nowrap;
+	align-items: center;
+	justify-content: flex-start;
+	gap: var(--sp-2) var(--sp-5);
+	list-style: none;
+	margin: var(--sp-8) 0 0;
+	padding-top: var(--sp-6);
+	border-top: 1px solid rgba(255, 255, 255, 0.16);
+}
+.home-hero__trust-item {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--sp-2);
+	color: rgba(255, 255, 255, 0.92);
+	font-size: 1.4rem;
+	font-weight: 700;
+	letter-spacing: 0;
+	white-space: nowrap;
+}
+.home-hero__trust-icon {
+	display: inline-flex;
+	width: 30px;
+	height: 30px;
+	flex: 0 0 auto;
+	color: var(--c-aqua-300);
+}
+.home-hero__trust-icon svg { width: 100%; height: 100%; }
+
+@media (max-width: 1240px) {
+	.home-hero__trust { gap: var(--sp-2) var(--sp-4); }
+	.home-hero__trust-item { font-size: 1.15rem; }
+	.home-hero__trust-icon { width: 26px; height: 26px; }
+}
+@media (max-width: 900px) {
+	.home-hero__trust { flex-wrap: wrap; }
+	.home-hero__trust-item { font-size: 1.05rem; }
+}
+@media (max-width: 640px) {
+	.home-hero__trust { gap: var(--sp-2) var(--sp-4); margin-top: var(--sp-6); padding-top: var(--sp-5); }
+	.home-hero__trust-item { font-size: 0.92rem; }
+	.home-hero__trust-icon { width: 22px; height: 22px; }
+}
+
+/* Estimator card wrapper — sits inside the hero, full container width,
+   right below the trust row. The card itself (.estimator-strip__card)
+   carries its own opaque dark background so it reads cleanly over the
+   hero photo/veil. */
+.home-hero__estimator { margin-top: var(--sp-10); }
+@media (max-width: 640px) {
+	.home-hero__estimator { margin-top: var(--sp-8); }
 }
 
 
@@ -2041,4 +2146,380 @@ main > section:first-child[data-reveal] {
 }
 @media (max-width: 640px) {
 	.home-map__embed iframe { height: 340px; }
+}
+
+/* ─── Estimator strip — dark promo card, links out to EstimatorPro.
+   No form fields; a static "preview" card sells the tool instead. Lives
+   inside the hero (.home-hero__estimator wraps it) — see hero rules below
+   for placement/spacing. ────────────────────────────────────────────── */
+.estimator-strip__card {
+	position: relative;
+	overflow: hidden;
+	display: grid;
+	grid-template-columns: 1.1fr 1fr;
+	gap: clamp(2rem, 5vw, 4rem);
+	align-items: center;
+	padding: clamp(2.25rem, 4vw, 3.5rem);
+	border-radius: var(--r-3xl);
+	background:
+		radial-gradient(900px 420px at 100% -10%, rgba(30, 93, 255, 0.28) 0%, transparent 60%),
+		linear-gradient(155deg, var(--c-ink-soft) 0%, var(--c-ink) 70%);
+	box-shadow: var(--sh-xl);
+}
+@media (max-width: 900px) {
+	.estimator-strip__card { grid-template-columns: 1fr; }
+}
+
+.estimator-strip__eyebrow {
+	display: inline-flex;
+	align-items: center;
+	gap: 12px;
+	color: var(--c-aqua-300);
+	font-size: 0.78rem;
+	font-weight: 700;
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+	margin-bottom: var(--sp-5);
+}
+.estimator-strip__eyebrow-line {
+	width: 36px; height: 2px;
+	background: var(--c-aqua-500);
+	border-radius: 999px;
+}
+
+.estimator-strip__title {
+	font-family: var(--ff-display);
+	font-weight: 700;
+	font-size: clamp(1.75rem, 1.3rem + 2vw, 2.5rem);
+	line-height: 1.1;
+	letter-spacing: -0.02em;
+	color: #FFFFFF;
+	margin: 0 0 var(--sp-4);
+	max-width: 16ch;
+}
+
+.estimator-strip__lead {
+	font-size: clamp(1rem, 0.95rem + 0.2vw, 1.08rem);
+	line-height: 1.65;
+	color: rgba(255, 255, 255, 0.72);
+	max-width: 44ch;
+	margin: 0;
+}
+
+.estimator-strip__panel {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: var(--sp-5);
+}
+
+.estimator-strip__preview {
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-1);
+	width: 100%;
+	padding: var(--sp-6);
+	border-radius: var(--r-xl);
+	background: rgba(255, 255, 255, 0.06);
+	border: 1px solid rgba(255, 255, 255, 0.14);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 18px 40px -20px rgba(0, 0, 0, 0.5);
+}
+.estimator-strip__preview-label {
+	font-size: 0.72rem;
+	font-weight: 700;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.55);
+	margin-bottom: var(--sp-2);
+}
+.estimator-strip__preview-service {
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: rgba(255, 255, 255, 0.85);
+}
+.estimator-strip__preview-range {
+	font-family: var(--ff-display);
+	font-size: clamp(1.5rem, 1.3rem + 0.8vw, 1.9rem);
+	font-weight: 700;
+	letter-spacing: -0.01em;
+	color: #FFFFFF;
+	margin: 2px 0;
+}
+.estimator-strip__preview-note {
+	font-size: 0.8rem;
+	color: rgba(255, 255, 255, 0.5);
+}
+
+.estimator-strip__trust {
+	margin: 0;
+	font-size: 0.82rem;
+	color: rgba(255, 255, 255, 0.55);
+}
+
+@media (max-width: 480px) {
+	.estimator-strip__cta { width: 100%; justify-content: center; }
+}
+
+/* ─── Interactive pool visualizer — real photo, functional Day/Night
+   filter toggle, and feature buttons that add a live tag over the photo.
+   Sits between About and Services. ──────────────────────────────────── */
+.interactive-pool { padding-block: clamp(3rem, 6vw, 5.5rem); }
+
+.interactive-pool__header {
+	max-width: 640px;
+	margin: 0 auto var(--sp-10);
+	text-align: center;
+}
+.interactive-pool__title {
+	font-family: var(--ff-display);
+	font-weight: 800;
+	font-size: clamp(1.9rem, 1.5rem + 1.8vw, 2.6rem);
+	line-height: 1.08;
+	letter-spacing: -0.025em;
+	color: var(--c-text);
+	margin: var(--sp-3) 0 var(--sp-4);
+}
+.interactive-pool__lead {
+	font-size: var(--fs-lg);
+	line-height: 1.65;
+	color: var(--c-text-muted);
+	margin: 0;
+}
+
+.interactive-pool__grid {
+	display: grid;
+	grid-template-columns: 1.3fr 1fr;
+	gap: clamp(1.5rem, 3vw, 2.5rem);
+	align-items: start;
+}
+@media (max-width: 900px) {
+	.interactive-pool__grid { grid-template-columns: 1fr; }
+}
+
+/* ── Photo + Day/Night filter. Clicking a feature swaps .interactive-pool__img
+   to a real composite photo (see JS); this is a genuine photo swap, not an
+   overlay drawn on top of one fixed image. ── */
+.interactive-pool__media {
+	position: relative;
+	overflow: hidden;
+	border-radius: var(--r-2xl);
+	aspect-ratio: 4 / 3;
+	background: var(--c-ink);
+	box-shadow: var(--sh-lg);
+	min-height: 320px;
+}
+.interactive-pool__img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	filter: brightness(1) saturate(1) contrast(1);
+	opacity: 1;
+	transition: filter 600ms var(--ease-out), opacity 180ms var(--ease-out);
+}
+.interactive-pool__img.is-swapping { opacity: 0; }
+.interactive-pool__media.is-night .interactive-pool__img {
+	filter: brightness(0.48) saturate(1.15) hue-rotate(-6deg) contrast(1.08);
+}
+.interactive-pool__veil {
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(180deg, rgba(11, 23, 51, 0) 55%, rgba(11, 23, 51, 0.45) 100%);
+	opacity: 0;
+	transition: opacity 600ms var(--ease-out);
+	pointer-events: none;
+}
+.interactive-pool__media.is-night .interactive-pool__veil { opacity: 1; }
+
+/* ── Night-mode LED glow — illustrated light points along the waterline.
+   Shown only with .is-night; this is the day photo plus a filter (above)
+   and these glow points, not a separate night photograph. ── */
+.interactive-pool__glow {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	opacity: 0;
+	transition: opacity 700ms var(--ease-out);
+	pointer-events: none;
+}
+.interactive-pool__media.is-night .interactive-pool__glow { opacity: 1; }
+
+.interactive-pool__glow-dot {
+	position: absolute;
+	width: 34px;
+	height: 34px;
+	margin: -17px 0 0 -17px;
+	border-radius: var(--r-full);
+	background: radial-gradient(circle, rgba(180, 226, 255, 0.95) 0%, rgba(120, 190, 255, 0.5) 40%, rgba(30, 93, 255, 0) 72%);
+	filter: blur(1px);
+	animation: stp-led-pulse 2.6s ease-in-out infinite;
+}
+.interactive-pool__glow-dot:nth-child(2) { animation-delay: 0.4s; }
+.interactive-pool__glow-dot:nth-child(3) { animation-delay: 0.8s; }
+.interactive-pool__glow-dot:nth-child(4) { animation-delay: 1.2s; }
+.interactive-pool__glow-dot:nth-child(5) { animation-delay: 0.2s; }
+.interactive-pool__glow-dot:nth-child(6) { animation-delay: 1s; }
+
+@keyframes stp-led-pulse {
+	0%, 100% { opacity: 0.65; transform: scale(0.92); }
+	50%      { opacity: 1;    transform: scale(1.08); }
+}
+@media (prefers-reduced-motion: reduce) {
+	.interactive-pool__glow-dot { animation: none; opacity: 0.85; }
+	.interactive-pool__img { transition: filter 600ms var(--ease-out); }
+}
+
+/* Badge — "<Feature> added", set via JS when a feature photo is showing. */
+.interactive-pool__badge {
+	position: absolute;
+	left: var(--sp-4);
+	bottom: var(--sp-4);
+	z-index: 2;
+	background: rgba(11, 23, 51, 0.78);
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+	border: 1px solid rgba(255, 255, 255, 0.28);
+	color: #FFFFFF;
+	font-size: 0.8rem;
+	font-weight: 700;
+	padding: 8px 14px;
+	border-radius: var(--r-full);
+	box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.5);
+}
+.interactive-pool__badge:empty { display: none; }
+
+/* ── Dark panel: Day/Night toggle + feature list ── */
+.interactive-pool__panel {
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-4);
+	padding: clamp(1.25rem, 2.5vw, 1.75rem);
+	border-radius: var(--r-2xl);
+	background:
+		radial-gradient(700px 340px at 100% -10%, rgba(30, 93, 255, 0.22) 0%, transparent 60%),
+		linear-gradient(160deg, var(--c-ink-soft) 0%, var(--c-ink) 100%);
+	box-shadow: var(--sh-lg);
+}
+
+.interactive-pool__toggle {
+	display: inline-flex;
+	align-self: flex-start;
+	gap: 4px;
+	padding: 4px;
+	border-radius: var(--r-full);
+	background: rgba(255, 255, 255, 0.08);
+}
+.interactive-pool__toggle-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 8px 16px;
+	border: none;
+	border-radius: var(--r-full);
+	background: transparent;
+	color: rgba(255, 255, 255, 0.68);
+	font-size: 0.85rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+.interactive-pool__toggle-btn:hover:not(.is-active) { color: #FFFFFF; }
+.interactive-pool__toggle-btn:focus-visible { outline: none; box-shadow: var(--sh-ring); }
+.interactive-pool__toggle-btn.is-active {
+	background: #FFFFFF;
+	color: var(--c-ink);
+}
+
+.interactive-pool__panel-title {
+	margin: 0;
+	color: #FFFFFF;
+	font-size: 1rem;
+	font-weight: 700;
+}
+
+.interactive-pool__feature-list {
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-2);
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.interactive-pool__feature {
+	display: flex;
+	align-items: center;
+	gap: var(--sp-3);
+	width: 100%;
+	padding: var(--sp-2) var(--sp-3);
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	border-radius: var(--r-md);
+	background: rgba(255, 255, 255, 0.06);
+	text-align: left;
+	cursor: pointer;
+	transition: background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+.interactive-pool__feature:hover { background: rgba(255, 255, 255, 0.1); }
+.interactive-pool__feature:active { transform: scale(0.99); }
+.interactive-pool__feature:focus-visible { outline: none; box-shadow: var(--sh-ring); }
+.interactive-pool__feature.is-active {
+	background: rgba(30, 93, 255, 0.2);
+	border-color: rgba(30, 93, 255, 0.55);
+}
+
+.interactive-pool__feature-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	flex: 0 0 auto;
+	border-radius: var(--r-full);
+	background: #FFFFFF;
+	color: var(--c-ink);
+}
+.interactive-pool__feature-icon svg { width: 15px; height: 15px; }
+
+.interactive-pool__feature-text {
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+	flex: 1 1 auto;
+	min-width: 0;
+}
+.interactive-pool__feature-text strong {
+	color: #FFFFFF;
+	font-size: 0.86rem;
+	font-weight: 700;
+}
+.interactive-pool__feature-text small {
+	color: rgba(255, 255, 255, 0.58);
+	font-size: 0.74rem;
+}
+
+.interactive-pool__feature-check {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 18px;
+	height: 18px;
+	flex: 0 0 auto;
+	border-radius: var(--r-full);
+	border: 2px solid rgba(255, 255, 255, 0.3);
+	color: transparent;
+	transition: background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+.interactive-pool__feature.is-active .interactive-pool__feature-check {
+	background: var(--c-aqua-500);
+	border-color: var(--c-aqua-500);
+	color: #FFFFFF;
+}
+
+.interactive-pool__cta-wrap {
+	text-align: center;
+	margin-top: var(--sp-10);
+}
+
+@media (max-width: 480px) {
+	.interactive-pool__feature-text strong { font-size: 0.82rem; }
+	.interactive-pool__feature-text small { font-size: 0.7rem; }
 }

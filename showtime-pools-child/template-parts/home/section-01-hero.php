@@ -41,6 +41,31 @@ $hero_url = $hero_img['src'];
 $eyebrow_text = ( '' !== ( $opt ? (string) get_field( 'hero_eyebrow', $opt ) : '' ) )
 	? (string) get_field( 'hero_eyebrow', $opt )
 	: __( 'YOUR POOL, OUR PRIORITY', 'showtime-pools' );
+
+// Phone — same Customizer-bridged filter used sitewide (header, footer,
+// home-about), so it stays in sync everywhere it is edited from.
+$phone     = (string) apply_filters( 'showtime/business/phone', '(323) 825-2099' );
+$phone_tel = preg_replace( '/[^0-9+]/', '', $phone );
+
+// Slim trust row under the phone line. Short forms of claims already made
+// (and already approved) elsewhere on the site — home-about bullets and the
+// service registry — not new claims. Filterable so copy can change without
+// touching this template.
+$hero_trust_items = apply_filters(
+	'showtime/hero_trust_strip',
+	array(
+		array( 'icon' => 'crew',   'label' => __( 'In-House W-2 Crew', 'showtime-pools' ) ),
+		array( 'icon' => 'brand',  'label' => __( 'Pentair + Jandy Authorized', 'showtime-pools' ) ),
+		array( 'icon' => 'pebble', 'label' => __( 'PebbleTec Certified', 'showtime-pools' ) ),
+		array( 'icon' => 'clock',  'label' => __( 'Same-Day Service Available', 'showtime-pools' ) ),
+	)
+);
+$hero_trust_icons = array(
+	'crew'   => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+	'brand'  => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>',
+	'pebble' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9 10.5a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" fill="currentColor" stroke="none"/><path d="M15.5 15a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" fill="currentColor" stroke="none"/><path d="M13 9.2a.8.8 0 1 0 0-1.6.8.8 0 0 0 0 1.6Z" fill="currentColor" stroke="none"/></svg>',
+	'clock'  => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>',
+);
 ?>
 <?php
 // Background video. In code-first edit mode the bundled asset always plays; in
@@ -95,6 +120,32 @@ $hero_poster = function_exists( 'showtime_image' ) ? showtime_image( 'hero_poste
 					<?php echo esc_html( $cta2_label ); ?>
 				</a>
 			</div>
+
+			<a class="home-hero__phone-cta" href="tel:<?php echo esc_attr( $phone_tel ); ?>">
+				<span class="home-hero__phone-cta-icon" aria-hidden="true">
+					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
+				</span>
+				<span><?php echo esc_html( sprintf( /* translators: %s: phone number */ __( 'Call/Text %s', 'showtime-pools' ), $phone ) ); ?></span>
+			</a>
+		</div>
+
+		<?php if ( ! empty( $hero_trust_items ) ) : ?>
+			<ul class="home-hero__trust" role="list">
+				<?php foreach ( $hero_trust_items as $item ) :
+					$icon_key = (string) ( $item['icon'] ?? '' );
+					$label    = (string) ( $item['label'] ?? '' );
+					if ( '' === $label ) { continue; }
+				?>
+					<li class="home-hero__trust-item">
+						<span class="home-hero__trust-icon" aria-hidden="true"><?php echo $hero_trust_icons[ $icon_key ] ?? ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — static SVG ?></span>
+						<span><?php echo esc_html( $label ); ?></span>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		<?php endif; ?>
+
+		<div class="home-hero__estimator">
+			<?php get_template_part( 'template-parts/home/section-estimator-strip' ); ?>
 		</div>
 	</div>
 

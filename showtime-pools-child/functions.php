@@ -43,6 +43,15 @@ function showtime_booking_url(): string {
 }
 
 /**
+ * EstimatorPro tool URL — used by the homepage estimator strip CTA.
+ * Update in one place via the `showtime/estimator_url` filter (or swap the
+ * default string below) rather than editing the template.
+ */
+function showtime_estimator_url(): string {
+	return (string) apply_filters( 'showtime/estimator_url', 'https://estimatorpro-widget.vercel.app/embed-example.html?key=d7ad907f6911837b9be9383fa36bf7ff' );
+}
+
+/**
  * Resolve which top-level nav item should be active for the current request.
  *
  * Returns one of: 'home', 'about', 'services', 'projects', 'service-areas',
