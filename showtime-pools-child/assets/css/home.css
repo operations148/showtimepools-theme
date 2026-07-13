@@ -1116,24 +1116,6 @@
 	padding-top: var(--sp-3);
 }
 
-/* Oversized italic Playfair numeral ghosted behind the headline */
-.about-split__ghost-num {
-	position: absolute;
-	top: -0.4em;
-	right: -0.1em;
-	font-family: var(--ff-display);
-	font-style: italic;
-	font-weight: var(--fw-regular);
-	font-size: clamp(8rem, 18vw, 14rem);
-	line-height: 1;
-	letter-spacing: -0.04em;
-	color: var(--c-ink);
-	opacity: 0.04;
-	pointer-events: none;
-	user-select: none;
-	z-index: 0;
-}
-
 .about-split__eyebrow {
 	display: inline-flex;
 	align-items: baseline;

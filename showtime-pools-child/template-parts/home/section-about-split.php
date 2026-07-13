@@ -1,6 +1,6 @@
 <?php
 /**
- * About split — editorial 50/50. Founder voice, ghost numeral, signature.
+ * About split — editorial 50/50. Founder voice, signature.
  *
  * @package ShowtimePools
  */
@@ -28,8 +28,6 @@ $img = function_exists( 'showtime_image' ) ? showtime_image( 'about_split', 1200
 			</figure>
 
 			<div class="about-split__copy">
-				<span class="about-split__ghost-num" aria-hidden="true">01</span>
-
 				<span class="eyebrow about-split__eyebrow">
 					<?php esc_html_e( 'About Showtime Pools', 'showtime-pools' ); ?>
 				</span>
