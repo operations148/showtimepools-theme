@@ -68,7 +68,7 @@ $faq_schema = array(
 <section class="faq section section--surface" data-reveal>
 	<div class="container stack stack--lg" style="max-width:var(--container-narrow)">
 		<header class="stack stack--sm">
-			<span class="eyebrow"><em>10</em> &mdash; <?php esc_html_e( 'Common Questions', 'showtime-pools' ); ?></span>
+			<span class="eyebrow"><?php esc_html_e( 'Common Questions', 'showtime-pools' ); ?></span>
 			<h2 class="balance"><?php esc_html_e( 'What customers ask before signing up.', 'showtime-pools' ); ?></h2>
 		</header>
 

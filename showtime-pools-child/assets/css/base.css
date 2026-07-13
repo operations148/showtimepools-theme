@@ -209,8 +209,9 @@ h6 {
 }
 
 /* Eyebrow micro-label — small caps, used above section H2s sitewide.
- * <em> inside renders as italic Playfair numeral for the editorial section
- * marker pattern: "<em>01</em> — Services". */
+ * <em> inside renders as italic display-font emphasis if ever needed;
+ * the numbered-section-marker pattern ("01 — Services") was removed
+ * sitewide per request. */
 .eyebrow {
 	display: inline-flex;
 	align-items: baseline;

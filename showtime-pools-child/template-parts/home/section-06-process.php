@@ -30,7 +30,7 @@ $steps = apply_filters( 'showtime/home_process_steps', showtime_acf_rows( 'proce
 <section class="process section section--ink" data-reveal>
 	<div class="container">
 		<header class="process__header">
-			<span class="eyebrow eyebrow--invert"><em>06</em> &mdash; <?php esc_html_e( 'How We Work', 'showtime-pools' ); ?></span>
+			<span class="eyebrow eyebrow--invert"><?php esc_html_e( 'How We Work', 'showtime-pools' ); ?></span>
 			<h2 class="process__title"><?php esc_html_e( 'Three steps from "interested" to "done."', 'showtime-pools' ); ?></h2>
 			<p class="process__lead"><?php esc_html_e( 'No drip campaigns, no junior reps, no pressure. Same team owns the job from the first call to the final walk-through.', 'showtime-pools' ); ?></p>
 		</header>

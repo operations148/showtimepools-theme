@@ -31,7 +31,7 @@ $img = function_exists( 'showtime_image' ) ? showtime_image( 'about_split', 1200
 				<span class="about-split__ghost-num" aria-hidden="true">01</span>
 
 				<span class="eyebrow about-split__eyebrow">
-					<em>01</em> &mdash; <?php esc_html_e( 'About Showtime Pools', 'showtime-pools' ); ?>
+					<?php esc_html_e( 'About Showtime Pools', 'showtime-pools' ); ?>
 				</span>
 
 				<h2 class="about-split__title balance">

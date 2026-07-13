@@ -15,7 +15,7 @@ $services = class_exists( '\\Showtime\\Services' ) ? \Showtime\Services::all() :
 
 		<header class="services-index__header">
 			<span class="eyebrow services-index__eyebrow">
-				<em>02</em> &mdash; <?php esc_html_e( 'Services', 'showtime-pools' ); ?>
+				<?php esc_html_e( 'Services', 'showtime-pools' ); ?>
 			</span>
 			<h2 class="services-index__title balance">
 				<?php esc_html_e( 'Twelve services. ', 'showtime-pools' ); ?>

@@ -35,7 +35,7 @@ $tel   = preg_replace( '/[^0-9+]/', '', $phone );
 <section class="home-map section section--cream" data-reveal aria-labelledby="home-map-title">
 	<div class="container">
 		<header class="home-map__head">
-			<span class="eyebrow"><em>11</em> &mdash; <?php esc_html_e( 'Find us', 'showtime-pools' ); ?></span>
+			<span class="eyebrow"><?php esc_html_e( 'Find us', 'showtime-pools' ); ?></span>
 			<h2 id="home-map-title" class="balance"><?php esc_html_e( 'Headquartered on Ventura Boulevard, Sherman Oaks.', 'showtime-pools' ); ?></h2>
 			<p class="home-map__addr">
 				<?php echo esc_html( trim( $o_street . ', ' . $o_city, ', ' ) ); ?>

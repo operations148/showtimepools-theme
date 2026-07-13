@@ -101,7 +101,7 @@ if ( empty( $projects ) ) {
 	<div class="container">
 		<header class="featured-projects__header">
 			<div>
-				<span class="eyebrow"><em>04</em> &mdash; <?php esc_html_e( 'Recent Work', 'showtime-pools' ); ?></span>
+				<span class="eyebrow"><?php esc_html_e( 'Recent Work', 'showtime-pools' ); ?></span>
 				<h2 class="balance"><?php esc_html_e( 'Three projects, three streets, one crew.', 'showtime-pools' ); ?></h2>
 			</div>
 			<a class="btn btn--ghost" href="<?php echo esc_url( home_url( '/projects/' ) ); ?>">

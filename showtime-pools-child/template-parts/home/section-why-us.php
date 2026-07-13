@@ -61,7 +61,7 @@ $icon = function ( string $key ): string {
 <section class="why-us" data-reveal>
 	<div class="container">
 		<header class="why-us__header">
-			<span class="eyebrow"><em>05</em> &mdash; <?php esc_html_e( 'Why Us', 'showtime-pools' ); ?></span>
+			<span class="eyebrow"><?php esc_html_e( 'Why Us', 'showtime-pools' ); ?></span>
 			<h2 class="why-us__title"><?php esc_html_e( 'Six reasons LA homeowners switch to us and stay.', 'showtime-pools' ); ?></h2>
 			<p class="why-us__lead">
 				<?php esc_html_e( 'A pool company should not feel like a series of contractors. Here is what we hold ourselves to, every project, every visit.', 'showtime-pools' ); ?>

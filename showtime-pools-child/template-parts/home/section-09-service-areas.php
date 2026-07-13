@@ -18,7 +18,7 @@ $areas = array_slice( $areas, 0, 6 );
 	<div class="container">
 		<header class="service-areas__header">
 			<div>
-				<span class="eyebrow"><em>09</em> &mdash; <?php esc_html_e( 'Where We Work', 'showtime-pools' ); ?></span>
+				<span class="eyebrow"><?php esc_html_e( 'Where We Work', 'showtime-pools' ); ?></span>
 				<h2 class="balance">
 					<?php
 					printf(

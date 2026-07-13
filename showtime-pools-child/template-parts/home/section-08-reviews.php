@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
 	<div class="container">
 		<header class="reviews__header">
 			<div>
-				<span class="eyebrow"><em>08</em> &mdash; <?php esc_html_e( 'What Customers Say', 'showtime-pools' ); ?></span>
+				<span class="eyebrow"><?php esc_html_e( 'What Customers Say', 'showtime-pools' ); ?></span>
 				<h2 class="balance"><?php esc_html_e( 'Reviews from our Google Business Profile.', 'showtime-pools' ); ?></h2>
 			</div>
 			<a class="btn btn--ghost" href="<?php echo esc_url( home_url( '/reviews/' ) ); ?>">

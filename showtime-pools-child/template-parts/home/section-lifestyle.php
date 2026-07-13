@@ -13,7 +13,7 @@ if ( ! function_exists( 'showtime_image' ) ) { return; }
 <section class="lifestyle" data-reveal>
 	<div class="container">
 		<header class="lifestyle__header">
-			<span class="eyebrow"><em>03</em> &mdash; <?php esc_html_e( 'The Lifestyle', 'showtime-pools' ); ?></span>
+			<span class="eyebrow"><?php esc_html_e( 'The Lifestyle', 'showtime-pools' ); ?></span>
 			<h2 class="balance"><?php esc_html_e( 'What we are really selling. Time in the water.', 'showtime-pools' ); ?></h2>
 			<p class="lead"><?php esc_html_e( 'Equipment specs and chemistry numbers matter. But what you actually buy is Sundays in your backyard, kids who learn to swim where they live, and a deck that looks better at 5pm than it did at noon. We design and service for that.', 'showtime-pools' ); ?></p>
 		</header>
