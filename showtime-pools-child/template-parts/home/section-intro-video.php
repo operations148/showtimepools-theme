@@ -1,9 +1,14 @@
 <?php
 /**
  * Intro video — founder-led brand-authority section directly under the
- * hero. Video on the left (native controls, poster frame), the single-team
- * / twelve-services promise on the right. Ties every service line together
- * under one accountable crew before the page gets into individual sections.
+ * hero. YouTube video on the left, the single-team / twelve-services
+ * promise on the right. Ties every service line together under one
+ * accountable crew before the page gets into individual sections.
+ *
+ * The video is a click-to-play facade (poster image + play button) rather
+ * than an always-loaded iframe: YouTube's embed script is heavy, so it
+ * only loads once the visitor actually clicks play. Uses youtube-nocookie.com
+ * so no YouTube cookies are set until that click, either.
  *
  * All copy is ACF-editable from Site Content → Page Copy → Intro Video
  * (option scope), same pattern as every other homepage section.
@@ -44,10 +49,10 @@ $services_covered = array(
 	__( 'Fire & Water Features', 'showtime-pools' ),
 );
 
-$video_rel = 'assets/img/showtime-intro.mp4';
-$has_video = file_exists( SHOWTIME_CHILD_DIR . '/' . $video_rel );
-$video_url = SHOWTIME_CHILD_URI . '/' . $video_rel;
-$poster    = function_exists( 'showtime_image' ) ? showtime_image( 'showtime-intro-poster', 1280 ) : '';
+// YouTube video ID — override via Site Content if the video ever changes.
+$youtube_id = $opt ? (string) get_field( 'intro_video_youtube_id', $opt ) : '';
+$youtube_id = '' !== $youtube_id ? $youtube_id : 'B_BP72diPBY';
+$poster     = function_exists( 'showtime_image' ) ? showtime_image( 'showtime-intro-poster', 1280 ) : '';
 ?>
 <section class="intro-video" data-reveal>
 	<div class="container">
@@ -59,14 +64,13 @@ $poster    = function_exists( 'showtime_image' ) ? showtime_image( 'showtime-int
 
 		<div class="intro-video__grid">
 
-			<div class="intro-video__media">
-				<?php if ( $has_video ) : ?>
-					<video class="intro-video__player" controls preload="metadata" <?php if ( $poster ) : ?>poster="<?php echo esc_url( $poster ); ?>"<?php endif; ?>>
-						<source src="<?php echo esc_url( $video_url ); ?>" type="video/mp4">
-					</video>
-				<?php elseif ( $poster ) : ?>
+			<div class="intro-video__media js-yt-facade" data-yt-id="<?php echo esc_attr( $youtube_id ); ?>">
+				<?php if ( $poster ) : ?>
 					<img class="intro-video__fallback" src="<?php echo esc_url( $poster ); ?>" alt="<?php esc_attr_e( 'Showtime Pools', 'showtime-pools' ); ?>" loading="lazy" decoding="async">
 				<?php endif; ?>
+				<button type="button" class="intro-video__play" aria-label="<?php esc_attr_e( 'Play video', 'showtime-pools' ); ?>">
+					<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+				</button>
 			</div>
 
 			<div class="intro-video__copy">

@@ -117,6 +117,30 @@
 		document.addEventListener('DOMContentLoaded', fn, { once: true });
 	};
 
+	// Intro video — click-to-play YouTube facade. The iframe (and everything
+	// YouTube loads with it) is only created after a real click, not on
+	// page load, so the section costs nothing until someone wants it.
+	function initIntroVideoFacade() {
+		const facade = document.querySelector('.js-yt-facade');
+		if (!facade) return;
+
+		facade.addEventListener('click', () => {
+			const id = facade.dataset.ytId;
+			if (!id) return;
+
+			const iframe = document.createElement('iframe');
+			iframe.className = 'intro-video__iframe';
+			iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0`;
+			iframe.title = 'Showtime Pools';
+			iframe.setAttribute('frameborder', '0');
+			iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+			iframe.setAttribute('allowfullscreen', '');
+
+			facade.replaceChildren(iframe);
+		}, { once: true });
+	}
+
 	ready(initReviewsCarousel);
 	ready(initInteractivePool);
+	ready(initIntroVideoFacade);
 })();
