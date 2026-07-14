@@ -949,17 +949,56 @@
 	margin: var(--sp-3) 0 0;
 }
 
-.service-areas__grid {
-	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	gap: var(--sp-5);
-}
-@media (max-width: 900px) { .service-areas__grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 540px) { .service-areas__grid { grid-template-columns: 1fr; } }
-
 /* .area-card component styles moved to components.css so they load on every
    template that renders the card (homepage section + /service-areas/ hub),
    not just the front page. */
+
+/* ── Two-row auto-scrolling marquee. Row 1 drifts left→right, row 2 drifts
+   right→left, both looping forever; each row pauses independently on
+   hover. Full-bleed (sits outside .container) for an edge-to-edge feel,
+   with a soft mask fading each row's edges to transparent. Each row's
+   card set is duplicated once (aria-hidden) so the loop has no seam. ── */
+.service-areas__marquee {
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-5);
+	width: 100%;
+	margin-top: var(--sp-10);
+	overflow: hidden;
+}
+.service-areas__row {
+	overflow: hidden;
+	width: 100%;
+	-webkit-mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+	mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+}
+.service-areas__track {
+	display: flex;
+	gap: var(--sp-5);
+	width: max-content;
+	padding-inline: var(--gutter);
+	will-change: transform;
+}
+.service-areas__row--ltr .service-areas__track { animation: stp-marquee-ltr 36s linear infinite; }
+.service-areas__row--rtl .service-areas__track { animation: stp-marquee-rtl 36s linear infinite; }
+.service-areas__row:hover .service-areas__track { animation-play-state: paused; }
+
+@keyframes stp-marquee-ltr {
+	from { transform: translateX(-50%); }
+	to   { transform: translateX(0); }
+}
+@keyframes stp-marquee-rtl {
+	from { transform: translateX(0); }
+	to   { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+	.service-areas__track { animation: none !important; }
+}
+
+.area-card--marquee {
+	flex: 0 0 auto;
+	width: clamp(240px, 30vw, 340px);
+}
 
 .service-areas__outside {
 	margin-top: var(--sp-10);

@@ -20,7 +20,6 @@ $sections = apply_filters(
 		'about-split',
 		'interactive-pool',
 		'03-services',
-		'lifestyle',
 		'05-featured-projects',
 		'why-us',
 		'06-process',

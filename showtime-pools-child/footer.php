@@ -11,6 +11,7 @@ defined( 'ABSPATH' ) || exit;
 <footer id="colophon" class="site-footer">
 	<?php get_template_part( 'template-parts/footer/footer-cta' ); ?>
 	<?php get_template_part( 'template-parts/footer/footer-main' ); ?>
+	<?php get_template_part( 'template-parts/footer/footer-wordmark' ); ?>
 	<?php get_template_part( 'template-parts/footer/footer-legal' ); ?>
 </footer>
 

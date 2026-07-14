@@ -110,7 +110,7 @@
 .footer-main__top {
 	display: grid;
 	gap: clamp(2rem, 4vw, 4rem);
-	grid-template-columns: 1.4fr 1fr 1fr 1fr 1.2fr;
+	grid-template-columns: 1.6fr 1fr 1.3fr;
 	align-items: start;
 }
 
@@ -189,37 +189,6 @@
 	font-variant-numeric: tabular-nums;
 }
 
-.footer-main__socials {
-	list-style: none;
-	display: flex;
-	flex-wrap: wrap;
-	gap: var(--sp-2);
-	padding: 0;
-	margin: 0;
-}
-.footer-main__socials li + li { margin-top: 0; }
-.footer-main__socials a {
-	display: inline-flex;
-	align-items: center;
-	gap: var(--sp-1);
-	font-size: var(--fs-xs);
-	font-weight: var(--fw-semibold);
-	letter-spacing: var(--ls-wide);
-	text-transform: uppercase;
-	color: rgba(255, 255, 255, 0.85);
-	background: rgba(255, 255, 255, 0.06);
-	border: 1px solid rgba(255, 255, 255, 0.12);
-	padding: 6px var(--sp-3);
-	border-radius: var(--r-full);
-	text-decoration: none;
-	transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
-}
-.footer-main__socials a:hover {
-	background: var(--c-aqua-500);
-	color: #fff;
-	border-color: var(--c-aqua-500);
-}
-
 .footer-main__col {}
 
 .footer-main__title {
@@ -287,6 +256,39 @@
 
 .footer-main__hours dt { color: rgba(255, 255, 255, 0.6); }
 .footer-main__hours dd { color: #fff; margin: 0; }
+
+/* ─── Wordmark watermark — large outlined "Showtime Pools" between the
+   nav grid and the legal bar. Same navy background as the rest of the
+   footer; the text itself is transparent with a faint light stroke so it
+   reads as a subtle brand mark, not competing content. ─────────────── */
+.footer-wordmark {
+	overflow: hidden;
+	border-top: 1px solid rgba(255, 255, 255, 0.08);
+	padding-block: clamp(0.5rem, 2vw, 1.5rem);
+}
+.footer-wordmark__text {
+	display: block;
+	width: 100%;
+	font-family: var(--ff-display);
+	font-weight: 800;
+	font-size: clamp(2.75rem, 9.5vw, 8.5rem);
+	line-height: 1;
+	letter-spacing: -0.02em;
+	white-space: nowrap;
+	text-align: center;
+	/* Fallback for browsers without text-stroke (Firefox): a faint solid
+	   fill, same watermark effect, just filled instead of outlined. */
+	color: rgba(255, 255, 255, 0.05);
+}
+@supports (-webkit-text-stroke: 1px black) {
+	.footer-wordmark__text {
+		color: transparent;
+		-webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.14);
+	}
+	@media (max-width: 640px) {
+		.footer-wordmark__text { -webkit-text-stroke: 1px rgba(255, 255, 255, 0.16); }
+	}
+}
 
 /* ─── Legal bar ─────────────────────────────────────────────────── */
 .footer-legal {

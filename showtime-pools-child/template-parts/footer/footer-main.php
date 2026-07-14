@@ -1,6 +1,8 @@
 <?php
 /**
- * Main footer — 3 offices, real socials, real services + about links.
+ * Main footer — offices, hours, and a quick-links column mirroring the
+ * primary nav. Social icons live in footer-legal.php's bottom bar only
+ * (no duplicate text-label social list here).
  *
  * @package ShowtimePools
  */
@@ -18,7 +20,6 @@ $email = (string) apply_filters( 'showtime/business/email', 'operations@showtime
 $offices_default = array(
 	array( 'label' => __( 'Sherman Oaks (Main)', 'showtime-pools' ), 'street' => '15301 Ventura Blvd.', 'city' => 'Sherman Oaks, CA 91403' ),
 	array( 'label' => __( 'Century City', 'showtime-pools' ),         'street' => '1925 Century Park East, Suite 1700', 'city' => 'Los Angeles, CA 90067' ),
-	array( 'label' => __( 'Beverly Hills', 'showtime-pools' ),        'street' => '9461 Charleville Blvd. #1902', 'city' => 'Beverly Hills, CA 90212' ),
 );
 $offices = apply_filters( 'showtime/business/offices', showtime_acf_rows( 'offices', $offices_default ) );
 
@@ -43,24 +44,16 @@ if ( is_array( $hours_rows ) && ! empty( $hours_rows ) ) {
 }
 $hours = apply_filters( 'showtime/business/hours', $hours );
 
-$socials = apply_filters(
-	'showtime/business/socials',
-	array(
-		array( 'label' => 'Facebook',  'url' => 'https://facebook.com/share/18DZy64EfX/' ),
-		array( 'label' => 'Instagram', 'url' => 'https://instagram.com/showtime_pools' ),
-		array( 'label' => 'Google',    'url' => 'https://share.google/ltdNPoJBWevHTvrzq' ),
-		array( 'label' => 'LinkedIn',  'url' => 'https://linkedin.com/in/showtimepoolssocal/' ),
-		array( 'label' => 'TikTok',    'url' => 'https://tiktok.com/@showtimepools' ),
-		array( 'label' => 'YouTube',   'url' => 'https://youtube.com/channel/UC3Dw1LtPvuX1JSGT7_KLntw' ),
-	)
+// Quick links — mirrors the primary nav exactly (same labels, same URLs)
+// instead of the old three-column service/area mega-list.
+$quick_links = array(
+	array( 'label' => __( 'About', 'showtime-pools' ),         'url' => home_url( '/about/' ) ),
+	array( 'label' => __( 'Services', 'showtime-pools' ),      'url' => home_url( '/services/' ) ),
+	array( 'label' => __( 'Projects', 'showtime-pools' ),      'url' => home_url( '/projects/' ) ),
+	array( 'label' => __( 'Service Areas', 'showtime-pools' ), 'url' => home_url( '/service-areas/' ) ),
+	array( 'label' => __( 'Get Quote', 'showtime-pools' ),     'url' => home_url( '/contact/' ) ),
+	array( 'label' => __( 'Shop', 'showtime-pools' ),          'url' => home_url( '/shop/' ) ),
 );
-
-$services = class_exists( '\\Showtime\\Services' ) ? \Showtime\Services::all() : array();
-$services_top6 = array_slice( $services, 0, 6 );
-$services_rest = array_slice( $services, 6, 6 );
-
-// Area pages from the registry so new neighborhoods appear automatically.
-$footer_areas = class_exists( '\\Showtime\\Areas' ) ? \Showtime\Areas::all() : array();
 
 // Footer logo: CMS override (Site Images → Footer logo) else the bundled logo
 // file. Same resolution order as the header branding so the two stay in sync.
@@ -103,44 +96,16 @@ if ( '' === $footer_logo ) {
 						<a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php esc_html_e( 'Send us a message →', 'showtime-pools' ); ?></a>
 					<?php endif; ?>
 				</address>
-
-				<ul class="footer-main__socials" role="list">
-					<?php foreach ( $socials as $s ) : ?>
-						<li><a href="<?php echo esc_url( $s['url'] ); ?>" target="_blank" rel="noopener" aria-label="<?php echo esc_attr( $s['label'] ); ?>"><?php echo esc_html( $s['label'] ); ?></a></li>
-					<?php endforeach; ?>
-				</ul>
 			</div>
 
 			<div class="footer-main__col">
-				<h3 class="footer-main__title"><?php esc_html_e( 'Services', 'showtime-pools' ); ?></h3>
+				<h3 class="footer-main__title"><?php esc_html_e( 'Quick Links', 'showtime-pools' ); ?></h3>
 				<ul class="footer-main__list">
-					<?php foreach ( $services_top6 as $svc ) : ?>
-						<li><a href="<?php echo esc_url( home_url( '/services/' . $svc['slug'] . '/' ) ); ?>"><?php echo esc_html( (string) $svc['title'] ); ?></a></li>
+					<?php foreach ( $quick_links as $link ) : ?>
+						<li><a href="<?php echo esc_url( $link['url'] ); ?>"><?php echo esc_html( $link['label'] ); ?></a></li>
 					<?php endforeach; ?>
 				</ul>
 			</div>
-
-			<div class="footer-main__col">
-				<h3 class="footer-main__title"><?php esc_html_e( 'More Services', 'showtime-pools' ); ?></h3>
-				<ul class="footer-main__list">
-					<?php foreach ( $services_rest as $svc ) : ?>
-						<li><a href="<?php echo esc_url( home_url( '/services/' . $svc['slug'] . '/' ) ); ?>"><?php echo esc_html( (string) $svc['title'] ); ?></a></li>
-					<?php endforeach; ?>
-				</ul>
-			</div>
-
-			<?php if ( ! empty( $footer_areas ) ) : ?>
-				<div class="footer-main__col">
-					<h3 class="footer-main__title"><?php esc_html_e( 'Service Areas', 'showtime-pools' ); ?></h3>
-					<ul class="footer-main__list">
-						<?php foreach ( $footer_areas as $fa ) : ?>
-							<?php if ( empty( $fa['slug'] ) || empty( $fa['name'] ) ) { continue; } ?>
-							<li><a href="<?php echo esc_url( home_url( '/service-areas/' . $fa['slug'] . '/' ) ); ?>"><?php echo esc_html( (string) $fa['name'] ); ?></a></li>
-						<?php endforeach; ?>
-						<li><a href="<?php echo esc_url( home_url( '/service-areas/' ) ); ?>"><?php esc_html_e( 'All service areas', 'showtime-pools' ); ?></a></li>
-					</ul>
-				</div>
-			<?php endif; ?>
 
 			<div class="footer-main__col">
 				<h3 class="footer-main__title"><?php esc_html_e( 'Offices', 'showtime-pools' ); ?></h3>
