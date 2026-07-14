@@ -17,6 +17,7 @@ $sections = apply_filters(
 	'showtime/home_sections',
 	array(
 		'01-hero',
+		'intro-video',
 		'about-split',
 		'interactive-pool',
 		'03-services',

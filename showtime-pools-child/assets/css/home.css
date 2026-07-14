@@ -973,10 +973,17 @@
 	mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
 }
 .service-areas__track {
+	/* No padding-inline, and card spacing comes from margin-right on
+	   .area-card--marquee below, NOT flex `gap` — this element is what the
+	   50% keyframe translation targets, and flex `gap` does not add space
+	   after the last item while our loop math needs it to (the "repeat
+	   distance" from card 1 to its duplicate must equal exactly half of
+	   the track's total width). margin-right applies after every card,
+	   including the last, so width: max-content comes out to exactly
+	   2 x (one card-set + its trailing margins), making the 50% split
+	   land precisely on the duplicate-set boundary with no seam. */
 	display: flex;
-	gap: var(--sp-5);
 	width: max-content;
-	padding-inline: var(--gutter);
 	will-change: transform;
 }
 .service-areas__row--ltr .service-areas__track { animation: stp-marquee-ltr 36s linear infinite; }
@@ -998,6 +1005,7 @@
 .area-card--marquee {
 	flex: 0 0 auto;
 	width: clamp(240px, 30vw, 340px);
+	margin-right: var(--sp-5);
 }
 
 .service-areas__outside {
@@ -2543,4 +2551,83 @@ main > section:first-child[data-reveal] {
 @media (max-width: 480px) {
 	.interactive-pool__feature-text strong { font-size: 0.82rem; }
 	.interactive-pool__feature-text small { font-size: 0.7rem; }
+}
+
+/* ─── Intro video — founder-led brand-authority section under the hero.
+   Native <video> with controls, no custom player chrome. ────────────── */
+.intro-video { padding-block: clamp(3.5rem, 6vw, 6rem); }
+
+.intro-video__header {
+	max-width: 46rem;
+	margin: 0 auto var(--sp-10);
+	text-align: center;
+}
+.intro-video__title {
+	font-family: var(--ff-display);
+	font-weight: 800;
+	font-size: clamp(2rem, 1.5rem + 2vw, 2.75rem);
+	line-height: 1.1;
+	letter-spacing: -0.025em;
+	color: var(--c-text);
+	margin: var(--sp-3) 0 0;
+}
+
+.intro-video__grid {
+	display: grid;
+	grid-template-columns: 1.1fr 1fr;
+	gap: clamp(2rem, 4vw, 3.5rem);
+	align-items: center;
+}
+@media (max-width: 900px) {
+	.intro-video__grid { grid-template-columns: 1fr; }
+}
+
+.intro-video__media {
+	border-radius: var(--r-2xl);
+	overflow: hidden;
+	background: var(--c-ink);
+	box-shadow: var(--sh-lg);
+	aspect-ratio: 16 / 9;
+}
+.intro-video__player,
+.intro-video__fallback {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.intro-video__copy h3 {
+	font-family: var(--ff-display);
+	font-size: var(--fs-xl);
+	font-weight: var(--fw-extra);
+	letter-spacing: -0.01em;
+	color: var(--c-text);
+	margin: 0 0 var(--sp-3);
+}
+.intro-video__copy h3:not(:first-child) { margin-top: var(--sp-7); }
+.intro-video__copy p {
+	font-size: var(--fs-md);
+	line-height: var(--lh-relaxed);
+	color: var(--c-text-muted);
+	margin: 0;
+}
+
+.intro-video__services {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--sp-2);
+	list-style: none;
+	margin: var(--sp-6) 0 0;
+	padding: 0;
+}
+.intro-video__services li {
+	font-size: 0.82rem;
+	font-weight: 600;
+	color: var(--c-aqua-800);
+	background: var(--c-aqua-50);
+	border: 1px solid var(--c-aqua-100);
+	padding: 6px 14px;
+	border-radius: var(--r-full);
+	white-space: nowrap;
 }

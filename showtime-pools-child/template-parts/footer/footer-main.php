@@ -55,35 +55,11 @@ $quick_links = array(
 	array( 'label' => __( 'Shop', 'showtime-pools' ),          'url' => home_url( '/shop/' ) ),
 );
 
-// Footer logo: CMS override (Site Images → Footer logo) else the bundled logo
-// file. Same resolution order as the header branding so the two stay in sync.
-// Code-first edit mode skips the CMS override and uses the bundled logo.
-$footer_logo = '';
-if ( ! ( defined( 'SHOWTIME_CODE_FIRST' ) && SHOWTIME_CODE_FIRST ) ) {
-	$flo = get_option( 'showtime_img_footer_logo', '' );
-	if ( '' !== (string) $flo ) {
-		$footer_logo = is_numeric( $flo ) ? (string) wp_get_attachment_url( (int) $flo ) : (string) $flo;
-	}
-}
-if ( '' === $footer_logo ) {
-	foreach ( array( 'svg', 'webp', 'png' ) as $ext ) {
-		if ( file_exists( SHOWTIME_CHILD_DIR . "/assets/img/logo.{$ext}" ) ) {
-			$footer_logo = SHOWTIME_CHILD_URI . "/assets/img/logo.{$ext}";
-			break;
-		}
-	}
-}
 ?>
 <div class="footer-main">
 	<div class="container">
 		<div class="footer-main__top">
 			<div class="footer-main__brand">
-				<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="site-branding site-branding--footer" rel="home" aria-label="<?php esc_attr_e( 'Showtime Pools home', 'showtime-pools' ); ?>">
-					<?php if ( '' !== $footer_logo ) : ?>
-						<img class="footer-main__logo" src="<?php echo esc_url( $footer_logo ); ?>" alt="<?php esc_attr_e( 'Showtime Pools', 'showtime-pools' ); ?>" width="60" height="60" loading="lazy" decoding="async">
-					<?php endif; ?>
-					<span class="footer-main__wordmark">Showtime<em>Pools</em></span>
-				</a>
 				<p class="footer-main__tagline">
 					<?php esc_html_e( 'Stop juggling contractors. One team handles repairs, weekly service, remodels, and new equipment across Los Angeles.', 'showtime-pools' ); ?>
 				</p>
