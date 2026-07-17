@@ -17,6 +17,46 @@ return array(
 	array(
 		'slug'              => 'pool-repairs-plumbing',
 		'title'             => 'Pool Repairs & Plumbing',
+		// ── AEO/GEO ──────────────────────────────────────────────────
+		'aeo_area_anchor'   => 'Pool repair',
+		'aeo_areas'         => array( 'sherman-oaks', 'encino', 'studio-city', 'tarzana', 'woodland-hills', 'beverly-hills' ),
+		'aeo_glance'        => array(
+			'answer'   => 'Pool repair covers the mechanical and structural failures that stop a pool from running: pumps, filters, heaters, salt cells, valves, and underground plumbing leaks. It suits any Los Angeles owner whose equipment has quit, is leaking, or is running loud or weak. Most jobs open with a documented on-site diagnostic, and common parts are Pentair- and Jandy-authorized.',
+			'best_for' => 'Owners with a dead pump, a leak, or failing equipment',
+		),
+		'aeo_cost'          => array(
+			'heading' => 'How much does pool repair cost in Los Angeles?',
+			'intro'   => 'Most repairs open with a diagnostic visit, then a written quote for the fix. Simple part swaps land at the low end; plumbing and electrical work scales with access and how buried the fault is.',
+			'rows'    => array(
+				array( 'type' => 'On-site diagnostic', 'price' => 'From $159', 'factors' => 'Credited toward the repair if you hire us within 30 days', 'timeframe' => 'Same-day to 48 hours' ),
+				array( 'type' => 'Plumbing repairs', 'price' => 'From $315', 'factors' => 'Line depth, access, and whether the leak is at the pad or underground', 'timeframe' => 'Same visit to a few days' ),
+				array( 'type' => 'Electrical repairs', 'price' => 'From $195', 'factors' => 'GFCI, bonding, light niche, or conduit work involved', 'timeframe' => 'Same visit to a few days' ),
+			),
+		),
+		'aeo_decision'      => array(
+			'heading' => 'Repair the component, or replace it?',
+			'intro'   => 'For pumps, heaters, and salt cells the real question is repair versus replace. The honest answer depends on the age of the unit and the cost of the failed part relative to a new one.',
+			'a'       => array(
+				'label'     => 'Repair the component',
+				'when'      => array( 'The unit is under 6 to 8 years old', 'The failed part is a motor, igniter, board, cell, or seal', 'The rest of the equipment pad is healthy' ),
+				'limits'    => 'Not worth it once repair cost approaches half of replacement, or on units already past their service life.',
+				'longevity' => 'Buys several more years on a sound unit',
+			),
+			'b'       => array(
+				'label'     => 'Replace or upgrade',
+				'when'      => array( 'The unit is past 8 to 10 years', 'A major part failed, like a heat exchanger or an old pump motor', 'You want energy savings or fresh warranty coverage' ),
+				'limits'    => 'Higher up-front cost, and a new model may need pad or electrical rework to fit.',
+				'longevity' => 'New equipment lasts 8 to 15 years by type',
+			),
+			'reco'    => 'We diagnose the actual fault first and show you the repair-versus-replace math before any work is approved. When the numbers are close, we lean toward the repair.',
+		),
+		'aeo_problems'      => array(
+			array( 'q' => 'Why is my pool pump making a loud grinding noise?', 'a' => 'A grinding or screeching pump is usually failing motor bearings, not the whole pump. Bearings dry out and wear, especially on single-speed pumps run long hours through an LA summer. Left running, the motor can seize. The next step is a quick diagnostic to confirm bearings versus an impeller or a stuck check valve, since a bearing job is far cheaper than a new motor.' ),
+			array( 'q' => 'Why does my pump keep losing prime or pulling in air?', 'a' => 'Air in the pump basket almost always means a suction-side leak, drawing air in before the water reaches the pump. Common causes are a dried-out lid o-ring, a loose union, or a cracked fitting on the intake line. It starves the pump and can overheat it, so the fix is to pressure-test the suction side, find the draw point, and reseal it.' ),
+			array( 'q' => 'Why is my filter pressure gauge reading high?', 'a' => 'A high filter gauge means flow is restricted, usually a dirty or channeled filter that needs cleaning or media replacement. In LA, heavy pollen and nearby landscaping load a filter faster than owners expect. Ignore it and you starve the heater and lose circulation. The next step is a filter clean or cartridge swap, plus a check that the gauge itself still reads true.' ),
+			array( 'q' => 'Why did my salt system stop producing chlorine?', 'a' => 'A salt cell that reads low output or "inspect cell" is usually scaled with calcium or simply worn out. Hard LADWP fill water accelerates scaling across the Valley. A scaled cell can often be acid-cleaned and returned to service; a cell past four to seven years has usually reached the end of its plates. We test output before deciding which it is.' ),
+			array( 'q' => 'Why does my heater shut off before the water is warm?', 'a' => 'A heater that fires then quits mid-cycle is usually protecting itself from low flow, not failing outright. A dirty filter, a closing valve, or a weak pump drops flow below the heater\'s minimum and trips its safety switch. The fix starts upstream: restore flow at the filter and pump, then confirm the heater\'s flow and limit switches are reading correctly.' ),
+		),
 		'seo_h1'            => 'Pool Repair Service in Los Angeles',
 		'seo_keyword'       => 'pool repair near me',
 		'seo_title'         => 'Pool Repair Service in Los Angeles | Showtime Pools',
@@ -93,6 +133,45 @@ return array(
 	array(
 		'slug'              => 'weekly-pool-maintenance',
 		'title'             => 'Weekly Pool Maintenance',
+		// ── AEO/GEO ──────────────────────────────────────────────────
+		'aeo_area_anchor'   => 'Weekly pool service',
+		'aeo_areas'         => array( 'sherman-oaks', 'encino', 'beverly-hills', 'studio-city', 'tarzana', 'woodland-hills', 'west-hollywood' ),
+		'aeo_glance'        => array(
+			'answer'   => 'Weekly pool maintenance is a recurring service that keeps water balanced and equipment healthy: chemistry testing, skim, brush, vacuum, basket and filter care, and an equipment check every visit. It suits residential and commercial owners who want a hands-off, consistent pool. The same technician runs your route each week and leaves a photo report after every visit.',
+			'best_for' => 'Owners who want a reliably clean, balanced pool without the weekly work',
+		),
+		'aeo_cost'          => array(
+			'heading' => 'How much does weekly pool service cost in Los Angeles?',
+			'intro'   => 'Weekly service is billed monthly and covers labor, standard chemistry, and the photo report. Salt pools, attached spas, and larger or heavily-used pools sit higher within the range.',
+			'rows'    => array(
+				array( 'type' => 'Residential weekly service', 'price' => '$159/month', 'factors' => 'Pool size, salt vs. chlorine, and whether a spa is attached', 'timeframe' => 'Weekly, year-round' ),
+				array( 'type' => 'Commercial weekly service', 'price' => '$350/month', 'factors' => 'Bather load, county reporting, and equipment count', 'timeframe' => 'Weekly or more frequent' ),
+			),
+		),
+		'aeo_decision'      => array(
+			'heading' => 'DIY maintenance or professional weekly service?',
+			'intro'   => 'Plenty of LA owners start by doing it themselves. Whether that holds up depends on your time, your water, and how much a swing in chemistry would cost you.',
+			'a'       => array(
+				'label'     => 'DIY maintenance',
+				'when'      => array( 'You enjoy the routine and have time each week', 'The pool is simple, with no spa or salt system', 'You are comfortable balancing chemistry and cleaning the filter' ),
+				'limits'    => 'Miss a week or two in summer and algae or scale can take hold fast; equipment issues often go unnoticed until they fail.',
+				'longevity' => 'Depends entirely on consistency',
+			),
+			'b'       => array(
+				'label'     => 'Professional weekly service',
+				'when'      => array( 'You want the pool handled without thinking about it', 'The pool has a spa, salt system, or heavy use', 'You want small equipment problems caught early' ),
+				'limits'    => 'A monthly cost, and specialty chemicals are itemized when test results call for them.',
+				'longevity' => 'Protects finish and equipment life long-term',
+			),
+			'reco'    => 'If your pool is simple and your schedule is steady, DIY can work. For salt pools, spas, or anyone who would rather not chase chemistry, professional weekly service pays for itself in avoided algae blooms and early equipment catches.',
+		),
+		'aeo_problems'      => array(
+			array( 'q' => 'Why does my pool keep turning green even when I add chlorine?', 'a' => 'Green water despite adding chlorine usually means the chlorine cannot work, not that there is too little. The most common cause is stabilizer (cyanuric acid) built up too high, which locks chlorine out, or phosphates feeding algae faster than the chlorine can kill it. The fix is a full panel test, then correcting the underlying balance rather than just pouring in more chlorine.' ),
+			array( 'q' => 'Why does my chlorine burn off so fast in summer?', 'a' => 'Los Angeles sun destroys unprotected chlorine within hours, so fast burn-off usually means low stabilizer or a heavy bather load. Direct UV can strip most of your free chlorine in a single afternoon. The next step is checking stabilizer and adjusting the feed or salt output to match the season, rather than constantly re-dosing a pool that keeps going flat.' ),
+			array( 'q' => 'Why is my pool cloudy right after I balanced the chemistry?', 'a' => 'Cloudy water with balanced numbers is usually a filtration or fine-particulate issue, not a chemistry one. High pH can also cloud a pool by clouding out dissolved calcium. Check that the filter is clean and running long enough, confirm pH is not drifting high, and give circulation time; if it lingers, the filter media or a clarifier step is the next move.' ),
+			array( 'q' => 'Why do my skimmer and pump baskets fill up so fast?', 'a' => 'Fast-filling baskets are almost always the landscaping around the pool, and mature LA yards shed constantly. Palms, ficus, and seasonal wind load a skimmer within days. Empty baskets more often in heavy-shed months and keep the pump basket clear, since a clogged basket starves the pump and can overheat the motor over time.' ),
+			array( 'q' => 'Why does the water sting my eyes when the chlorine reads fine?', 'a' => 'Stinging eyes with normal chlorine is almost always pH or chloramines, not "too much chlorine." When pH drifts away from the 7.4 to 7.6 range, or when used-up chlorine (chloramine) builds after heavy use, the water gets harsh. The fix is to correct pH and, if needed, shock the pool to clear chloramines, not to cut back on sanitizer.' ),
+		),
 		'seo_h1'            => 'Pool Cleaning Service in Los Angeles',
 		'seo_keyword'       => 'pool cleaning service',
 		'seo_title'         => 'Pool Cleaning Service in Los Angeles | Showtime Pools',
@@ -197,6 +276,45 @@ return array(
 	array(
 		'slug'              => 'pool-remodeling-resurfacing',
 		'title'             => 'Pool Remodeling, Resurfacing & Finishes',
+		// ── AEO/GEO ──────────────────────────────────────────────────
+		'aeo_area_anchor'   => 'Pool remodeling',
+		'aeo_areas'         => array( 'sherman-oaks', 'encino', 'beverly-hills', 'studio-city', 'tarzana', 'woodland-hills', 'bel-air', 'calabasas' ),
+		'aeo_glance'        => array(
+			'answer'   => 'Pool remodeling and resurfacing renews a worn pool: draining and re-coating the shell in plaster, quartz, or PebbleTec, plus optional new tile, coping, and decking. It suits owners whose finish is rough, stained, or failing, or who want a dated pool to look and feel new. Showtime Pools is a PebbleTec-certified applicator and backs finishes with a written finish warranty.',
+			'best_for' => 'Owners with a structurally sound pool and a worn or dated finish',
+		),
+		'aeo_cost'          => array(
+			'heading' => 'How much does pool resurfacing cost in Los Angeles?',
+			'intro'   => 'Resurfacing is priced by the pool\'s perimeter (linear feet), with a 90-foot minimum. The finish you choose is the biggest driver; adding tile, coping, or decking raises the total.',
+			'rows'    => array(
+				array( 'type' => 'Standard plaster resurface', 'price' => 'From $75 per linear ft.', 'factors' => 'Perimeter, prep, and whether tile/coping is included (90 LF minimum)', 'timeframe' => '3 to 5 weeks' ),
+				array( 'type' => 'Mini-pebble / quartz resurface', 'price' => 'From $103 per linear ft.', 'factors' => 'Finish selection and any accent or feature add-ons (90 LF minimum)', 'timeframe' => '3 to 5 weeks' ),
+			),
+		),
+		'aeo_decision'      => array(
+			'heading' => 'Resurface, or do a full remodel?',
+			'intro'   => 'Both start by draining the pool, so the question is how far to take it. That comes down to whether you are only refreshing surfaces or actually changing the pool.',
+			'a'       => array(
+				'label'     => 'Resurface only',
+				'when'      => array( 'The shell and structure are sound', 'You want a fresh finish, and maybe new tile and coping', 'The shape and size of the pool are staying the same' ),
+				'limits'    => 'Does not change the pool\'s shape or size and will not fix structural cracks or settling.',
+				'longevity' => 'Plaster 5 to 7 years; pebble 15 to 20 years',
+			),
+			'b'       => array(
+				'label'     => 'Full remodel',
+				'when'      => array( 'You want to reshape the pool or add a spa or water features', 'The equipment pad is also at end of life', 'You are redoing decking and hardscape at the same time' ),
+				'limits'    => 'Longer timeline and higher cost; reshaping needs engineering and permits.',
+				'longevity' => 'Decades on structure; finish per material chosen',
+			),
+			'reco'    => 'If the shell is sound and you mainly want the pool to look and feel new, resurfacing with fresh tile and coping is the high-value move. If you are changing the pool\'s shape, adding features, or the equipment is also failing, fold it all into one coordinated remodel.',
+		),
+		'aeo_problems'      => array(
+			array( 'q' => 'Why is my pool plaster rough and scratchy underfoot?', 'a' => 'A plaster surface that has gone rough is usually etched, meaning aggressive water has eaten the smooth top layer away. Low pH, low calcium hardness, or years of service wear it down, and Los Angeles fill water swings can accelerate it. Light etching can sometimes be polished, but a broadly rough surface is signaling that the finish is nearing the end of its life and is due to be resurfaced.' ),
+			array( 'q' => 'Why does my plaster have gray or blotchy discoloration?', 'a' => 'Gray mottling and blotchiness usually come from how the plaster cured, not dirt, so it will not brush or scrub out. Uneven troweling, moisture, or calcium nodules pushing through the surface are common causes. Some early-life mottling settles over time; if it is spreading or the surface is also rough, it points toward a resurface rather than a cleaning.' ),
+			array( 'q' => 'Why is my pool finish flaking or peeling in patches?', 'a' => 'Finish that flakes or "spalls" in patches is delaminating, separating from the shell underneath. It happens when a previous coat did not bond well or when aggressive chemistry undercut it. Patching rarely holds for long once it starts, so the durable fix is to chip out the failing finish and re-coat the shell properly.' ),
+			array( 'q' => 'Why won\'t a stain brush out of my pool plaster?', 'a' => 'A stain that resists brushing is bonded into the surface, and the color usually reveals the cause: brown or green from organics like leaves, or blue-green and rust tones from metals in the water. LA yards with heavy landscaping drop a lot of organic material. The next step is identifying the stain type with a spot test so it is treated correctly instead of scrubbed at pointlessly.' ),
+			array( 'q' => 'How do I know when my pool needs replastering instead of a patch?', 'a' => 'When problems are everywhere rather than in one spot, it is time to resurface. Thin or exposed gunite, chronic rough patches, spreading stains, and chemistry that will not hold all point to a finish at the end of its life. A patch buys time on an isolated chip; a shell showing wear across the board is more cost-effective to replaster once than to keep repairing.' ),
+		),
 		'seo_h1'            => 'Pool Remodeling & Resurfacing in Los Angeles',
 		'seo_keyword'       => 'pool remodeling',
 		'seo_title'         => 'Pool Remodeling & Resurfacing in Los Angeles',
@@ -350,6 +468,46 @@ return array(
 	array(
 		'slug'              => 'custom-pool-design-construction',
 		'title'             => 'Custom Pool Design & New Construction',
+		// ── AEO/GEO ──────────────────────────────────────────────────
+		'aeo_area_anchor'   => 'Custom pool construction',
+		'aeo_areas'         => array( 'encino', 'woodland-hills', 'studio-city', 'sherman-oaks', 'bel-air', 'calabasas', 'beverly-hills' ),
+		'aeo_glance'        => array(
+			'answer'   => 'Custom pool design and new construction is a ground-up build: site survey, structural engineering, permits, steel and gunite, plumbing and electrical, tile, finish, equipment, and startup. It suits homeowners adding a pool, or replacing one past saving, who want a design built around their yard and lifestyle. Engineering and permitting are handled in-house, backed by a written workmanship warranty.',
+			'best_for' => 'Homeowners building a new pool or replacing one beyond repair',
+		),
+		'aeo_cost'          => array(
+			'heading' => 'How much does a new pool cost in Los Angeles?',
+			'intro'   => 'A build starts with a design fee, then construction priced to the design. A standard gunite pool starts around $85k; adding a spa, water features, or hardscape moves it up, and hillside access adds engineering.',
+			'rows'    => array(
+				array( 'type' => 'Pool design fee (to begin)', 'price' => '$650', 'factors' => 'Design complexity and site survey scope', 'timeframe' => 'Design phase, before build' ),
+				array( 'type' => 'New gunite pool (typical)', 'price' => 'From $85,000', 'factors' => 'Size, features, finish and equipment selection, lot access', 'timeframe' => '8 to 14 weeks' ),
+				array( 'type' => 'Estate build with spa, features & hardscape', 'price' => '$120,000 to $200,000+', 'factors' => 'Structural engineering, hillside access, design complexity', 'timeframe' => '14 to 16 weeks' ),
+			),
+		),
+		'aeo_decision'      => array(
+			'heading' => 'Remodel the existing pool, or build new?',
+			'intro'   => 'If you already have a pool, the first question is whether to rebuild it or start over. It comes down to the condition, size, and placement of what you have now.',
+			'a'       => array(
+				'label'     => 'Remodel the existing pool',
+				'when'      => array( 'The shell and structure are sound', 'You like the pool\'s location and footprint', 'You mainly want it modernized and re-finished' ),
+				'limits'    => 'You stay constrained by the existing shape, size, and placement.',
+				'longevity' => 'Decades more on a sound retained structure',
+			),
+			'b'       => array(
+				'label'     => 'Build a new custom pool',
+				'when'      => array( 'The existing pool is failing structurally', 'The size, shape, or location no longer works', 'You want a fully custom design or there is no pool yet' ),
+				'limits'    => 'Highest cost and longest timeline, with full permitting and engineering.',
+				'longevity' => '30+ years on a new engineered structure',
+			),
+			'reco'    => 'If your current shell is sound and well-placed, a remodel gets you most of the way for far less. If the pool is failing, poorly located, or you want something genuinely custom, new construction is the honest call. We will tell you which during the assessment.',
+		),
+		'aeo_problems'      => array(
+			array( 'q' => 'Do I need a soil report or special engineering for my lot?', 'a' => 'Most custom builds in Los Angeles need soil and structural engineering, and hillside lots always do. Expansive soils, slopes, and retaining requirements are common across the Valley and the hillsides, and they drive how the shell is engineered. We scope the soil report and structural drawings as part of the design phase so the build is permitted correctly rather than reworked later.' ),
+			array( 'q' => 'Can you build a pool with limited backyard access?', 'a' => 'Usually yes. Tight side-yard access is common on LA lots, and it is handled with smaller equipment, conveyor or pump-over gunite, and careful staging rather than by ruling the project out. Very restricted access can add time and cost, so we assess the approach on-site during design and build the logistics into the schedule up front.' ),
+			array( 'q' => 'Gunite, fiberglass, or vinyl — which is right for a custom build?', 'a' => 'For a truly custom pool, gunite (sprayed concrete) is the standard because it can be formed into any shape, depth, or feature. Fiberglass and vinyl are faster and cheaper but come in fixed shapes and sizes, which limits custom design. If you want a specific shape, a tanning ledge, or an integrated spa and features, gunite is almost always the answer.' ),
+			array( 'q' => 'How much space do I need to leave around a new pool?', 'a' => 'Plan for more than the water itself: decking, code setbacks from structures and property lines, and an equipment pad. In Los Angeles, cooking or fire elements and fencing add their own clearances. During design we lay out the pool, deck, and equipment together against your lot and the code so the finished yard is usable, not crowded.' ),
+			array( 'q' => 'Should features like a spa or tanning ledge be designed in from the start?', 'a' => 'Yes. Attached spas, tanning ledges, water features, and automation are dramatically cheaper and cleaner when engineered into the original shell rather than retrofitted. Plumbing, structure, and equipment can all be sized for them up front. Tell us your wish list during design, even for "someday" items, so the build can accommodate them without a future rebuild.' ),
+		),
 		'seo_h1'            => 'Swimming Pool Contractors in Los Angeles',
 		'seo_keyword'       => 'swimming pool contractors',
 		'seo_title'         => 'Swimming Pool Contractors in Los Angeles',
@@ -497,6 +655,45 @@ return array(
 	array(
 		'slug'              => 'outdoor-kitchens-bbq',
 		'title'             => 'Outdoor Kitchens & BBQ Areas',
+		// ── AEO/GEO ──────────────────────────────────────────────────
+		'aeo_area_anchor'   => 'Outdoor kitchens',
+		'aeo_areas'         => array( 'sherman-oaks', 'encino', 'studio-city', 'tarzana', 'woodland-hills', 'calabasas' ),
+		'aeo_glance'        => array(
+			'answer'   => 'An outdoor kitchen build adds a permanent cooking and entertaining zone beside the pool: a structural island, countertops, a built-in grill, and options like a fridge, sink, and side burner, with the gas and electrical permitted and run. It suits homeowners who entertain outdoors and want more than a rollaway grill. Layout is planned around flow, cleanup, and the pool deck.',
+			'best_for' => 'Homeowners who entertain and want a built-in cooking zone',
+		),
+		'aeo_cost'          => array(
+			'heading' => 'How much does an outdoor kitchen cost in Los Angeles?',
+			'intro'   => 'Cost tracks the appliance count and finish. A single built-in grill island starts the range; a full kitchen with a fridge, sink, side burner, and premium stone reaches the top of it.',
+			'rows'    => array(
+				array( 'type' => 'Built-in grill island', 'price' => 'From $25,000', 'factors' => 'Grill brand, countertop material, single vs. multiple appliances', 'timeframe' => '2 to 4 weeks' ),
+				array( 'type' => 'Full outdoor kitchen', 'price' => 'Up to $45,000', 'factors' => 'Fridge, sink, side burner, premium stone, and gas + electrical runs', 'timeframe' => '3 to 7 weeks' ),
+			),
+		),
+		'aeo_decision'      => array(
+			'heading' => 'Upgrade an existing kitchen, or build a new one?',
+			'intro'   => 'If you already have an outdoor cooking area, the choice is whether to refresh it or start over. It hinges on the condition of the island and how well the layout actually works.',
+			'a'       => array(
+				'label'     => 'Upgrade the existing kitchen',
+				'when'      => array( 'The island structure and counters are sound', 'You mainly want new appliances or a resurface', 'The current layout still works for how you entertain' ),
+				'limits'    => 'You stay locked into the existing footprint and utility runs.',
+				'longevity' => 'New appliances last 10 to 15 years',
+			),
+			'b'       => array(
+				'label'     => 'Build a new built-in kitchen',
+				'when'      => array( 'There is no built-in kitchen yet', 'The current layout fights the flow of your yard', 'You want to add utilities like gas, water, or power' ),
+				'limits'    => 'Higher cost, new utility runs, and permits for gas and electrical.',
+				'longevity' => 'Structure lasts decades; appliances per unit',
+			),
+			'reco'    => 'If the island and counters are solid and you just want better appliances, an upgrade is the efficient move. If there is no kitchen yet, or the current one fights the way you actually entertain, a new built-in designed around flow and the pool is worth it.',
+		),
+		'aeo_problems'      => array(
+			array( 'q' => 'Why do outdoor refrigerators and ice makers fail so quickly out here?', 'a' => 'Most early failures are indoor-rated appliances used outdoors, which cannot handle the heat and weather. An indoor fridge parked in a Los Angeles yard runs hot, works overtime, and dies young, and it voids its warranty. The fix is outdoor-rated appliances on a dedicated, GFCI-protected circuit, which is what we spec and wire so the units actually last.' ),
+			array( 'q' => 'Why is my outdoor countertop cracking, shifting, or staining?', 'a' => 'Cracking and shifting usually trace to the base, not the stone, meaning a weak or settling structural island underneath. Staining is often the wrong material for the outdoors, like quartz, whose resin discolors under UV. Granite and porcelain hold up far better in direct LA sun. A durable fix means a properly built island and a UV-stable surface.' ),
+			array( 'q' => 'Why does grill smoke keep blowing back toward my seating?', 'a' => 'Smoke blowback is almost always placement, where the grill sits relative to prevailing wind and the seating and house. It is a layout problem, not a grill defect. Orienting the cook station, adding clearance, and positioning any shade structure with airflow in mind solves it, which is why we plan the run-of-show layout before pouring the island.' ),
+			array( 'q' => 'Can I really use an outdoor kitchen year-round in Los Angeles?', 'a' => 'Yes. The LA climate is one of the best in the country for outdoor cooking, and a well-built kitchen is usable nearly every month. The main comfort add is shade and, for some, a heat or fire element for cooler evenings. We design for year-round use, planning shade and any covered structure alongside the cooking zone.' ),
+			array( 'q' => 'Should I build the kitchen at the same time as a pool remodel or deck project?', 'a' => 'If you are already remodeling the pool or redoing the deck, building the kitchen at the same time usually saves money and headaches. Shared demolition, concrete, utility trenching, and permitting are far cheaper done once. Coordinating the projects also keeps the finishes and layout consistent instead of stitching separate jobs together later.' ),
+		),
 		'seo_h1'            => 'Outdoor Kitchens & BBQ Builders in Los Angeles',
 		'seo_keyword'       => 'outdoor kitchen builder',
 		'seo_title'         => 'Outdoor Kitchen & BBQ Builders in Los Angeles',

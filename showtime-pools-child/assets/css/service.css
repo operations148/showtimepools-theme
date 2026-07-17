@@ -442,3 +442,234 @@
 	.svc-hero__title { font-size: var(--fs-4xl); }
 	.svc-pricing__value { font-size: var(--fs-2xl); }
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   AEO / GEO service sections — glance, cost, decision, problems, projects,
+   service areas. Reuse existing tokens; no new visual language.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ─── Service at a glance ──────────────────────────────────────────── */
+.svc-glance__card {
+	max-width: 60rem;
+	margin: 0 auto;
+	display: grid;
+	grid-template-columns: 1.3fr 1fr;
+	gap: clamp(1.5rem, 4vw, 3rem);
+	align-items: start;
+	padding: clamp(1.5rem, 4vw, 2.75rem);
+	background: linear-gradient(160deg, var(--c-brand-50) 0%, var(--c-bg) 60%);
+	border: 1px solid var(--c-brand-100);
+	border-radius: var(--r-2xl);
+	box-shadow: var(--sh-md);
+}
+@media (max-width: 760px) { .svc-glance__card { grid-template-columns: 1fr; } }
+.svc-glance__lead {
+	margin: var(--sp-3) 0 0;
+	font-size: var(--fs-lg);
+	line-height: var(--lh-relaxed);
+	color: var(--c-text);
+}
+.svc-glance__reviewed {
+	margin: var(--sp-4) 0 0;
+	font-size: var(--fs-xs);
+	color: var(--c-text-soft);
+	letter-spacing: var(--ls-wide);
+	text-transform: uppercase;
+}
+.svc-glance__facts { margin: 0; display: flex; flex-direction: column; gap: var(--sp-3); }
+.svc-glance__fact {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	padding-bottom: var(--sp-3);
+	border-bottom: 1px dashed var(--c-border);
+}
+.svc-glance__fact:last-child { border-bottom: 0; padding-bottom: 0; }
+.svc-glance__fact dt {
+	font-size: var(--fs-xs);
+	font-weight: var(--fw-semibold);
+	letter-spacing: var(--ls-wide);
+	text-transform: uppercase;
+	color: var(--c-text-muted);
+}
+.svc-glance__fact dd { margin: 0; font-size: var(--fs-md); font-weight: var(--fw-semibold); color: var(--c-brand-800); }
+
+/* ─── Shared AEO table wrapper (cost + decision) ───────────────────── */
+.svc-cost__table-wrap,
+.svc-decision__table-wrap {
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+	border: 1px solid var(--c-border);
+	border-radius: var(--r-lg);
+	box-shadow: var(--sh-sm);
+}
+.svc-cost__table-wrap:focus-visible,
+.svc-decision__table-wrap:focus-visible { outline: 2px solid var(--c-focus-ring); outline-offset: 2px; }
+.svc-cost__table,
+.svc-decision__table {
+	width: 100%;
+	min-width: 640px;
+	border-collapse: collapse;
+	background: var(--c-surface-2);
+	font-size: var(--fs-sm);
+}
+.svc-cost__table thead th,
+.svc-decision__table thead th {
+	background: var(--c-brand-800);
+	color: #fff;
+	text-align: left;
+	font-size: var(--fs-xs);
+	font-weight: var(--fw-semibold);
+	letter-spacing: var(--ls-wide);
+	text-transform: uppercase;
+	padding: var(--sp-3) var(--sp-4);
+}
+.svc-cost__table tbody th,
+.svc-cost__table tbody td,
+.svc-decision__table tbody th,
+.svc-decision__table tbody td {
+	padding: var(--sp-3) var(--sp-4);
+	border-top: 1px solid var(--c-border);
+	vertical-align: top;
+	line-height: var(--lh-snug);
+	color: var(--c-text);
+	text-align: left;
+}
+.svc-cost__table tbody th,
+.svc-decision__table tbody th { font-weight: var(--fw-bold); color: var(--c-brand-900); white-space: nowrap; }
+.svc-cost__table tbody tr:nth-child(even),
+.svc-decision__table tbody tr:nth-child(even) { background: var(--c-brand-50); }
+.svc-cost__intro,
+.svc-decision__intro {
+	max-width: 60ch;
+	color: var(--c-text-muted);
+	font-size: var(--fs-md);
+	line-height: var(--lh-relaxed);
+	margin: var(--sp-3) 0 0;
+}
+.svc-cost__disclaimer { font-size: var(--fs-sm); color: var(--c-text-soft); font-style: italic; margin: 0; }
+.svc-decision__reco {
+	font-size: var(--fs-md);
+	line-height: var(--lh-relaxed);
+	color: var(--c-text);
+	margin: 0;
+	padding: var(--sp-4) var(--sp-5);
+	background: var(--c-brand-50);
+	border-left: 3px solid var(--c-aqua-500);
+	border-radius: var(--r-sm);
+}
+.svc-cost__head,
+.svc-decision__head,
+.svc-problems__head,
+.svc-areas__head { max-width: 46rem; }
+.svc-cost__head h2,
+.svc-decision__head h2,
+.svc-problems__head h2,
+.svc-areas__head h2 {
+	font-size: var(--fs-3xl);
+	font-weight: var(--fw-extra);
+	letter-spacing: -0.02em;
+	line-height: var(--lh-tight);
+	margin: var(--sp-3) 0 0;
+}
+
+/* ─── Common problems ──────────────────────────────────────────────── */
+.svc-problems__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sp-5); }
+@media (max-width: 720px) { .svc-problems__grid { grid-template-columns: 1fr; } }
+.svc-problems__item {
+	padding: var(--sp-5) var(--sp-6);
+	background: var(--c-surface-2);
+	border: 1px solid var(--c-border);
+	border-radius: var(--r-lg);
+	box-shadow: var(--sh-sm);
+}
+.svc-problems__q {
+	margin: 0 0 var(--sp-2);
+	font-size: var(--fs-lg);
+	font-weight: var(--fw-bold);
+	letter-spacing: -0.01em;
+	color: var(--c-brand-900);
+}
+.svc-problems__a { margin: 0; font-size: var(--fs-md); line-height: var(--lh-relaxed); color: var(--c-text); }
+
+/* ─── Real projects (mirrors before/after grid) ────────────────────── */
+.svc-projects__head { margin-inline: auto; text-align: center; }
+.svc-projects__head h2 {
+	font-size: var(--fs-4xl);
+	font-weight: var(--fw-extra);
+	letter-spacing: -0.03em;
+	line-height: var(--lh-tight);
+	margin: var(--sp-3) 0 0;
+}
+.svc-projects__lead {
+	margin: var(--sp-4) auto 0;
+	max-width: 46rem;
+	color: var(--c-text-muted);
+	font-size: var(--fs-md);
+	line-height: var(--lh-relaxed);
+}
+.svc-projects__grid { display: grid; grid-template-columns: 1fr; gap: var(--sp-5); max-width: 56rem; margin: 0 auto; }
+@media (min-width: 640px) { .svc-projects__grid { grid-template-columns: 1fr 1fr; gap: var(--sp-6); } }
+.svc-projects__item {
+	position: relative;
+	margin: 0;
+	border-radius: var(--r-xl);
+	overflow: hidden;
+	box-shadow: var(--sh-lg);
+	border: 1px solid rgba(11, 23, 51, 0.08);
+}
+.svc-projects__item img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.svc-projects__badge {
+	position: absolute;
+	left: var(--sp-4);
+	bottom: var(--sp-4);
+	padding: 6px 14px;
+	border-radius: var(--r-full);
+	font-size: var(--fs-xs);
+	font-weight: var(--fw-bold);
+	letter-spacing: var(--ls-wide);
+	text-transform: uppercase;
+	box-shadow: 0 4px 12px rgba(11, 23, 51, 0.18);
+}
+.svc-projects__badge--before { background: rgba(255, 255, 255, 0.92); color: var(--c-ink-900); backdrop-filter: blur(4px); }
+.svc-projects__badge--after  { background: var(--c-brand-700); color: #fff; }
+.svc-projects__meta { max-width: 56rem; margin: 0 auto; display: flex; flex-wrap: wrap; gap: var(--sp-4) var(--sp-8); }
+.svc-projects__meta div { display: flex; flex-direction: column; gap: 2px; }
+.svc-projects__meta dt {
+	font-size: var(--fs-xs);
+	font-weight: var(--fw-semibold);
+	letter-spacing: var(--ls-wide);
+	text-transform: uppercase;
+	color: var(--c-text-muted);
+}
+.svc-projects__meta dd { margin: 0; font-size: var(--fs-sm); color: var(--c-text); }
+.svc-projects__cta { display: flex; flex-wrap: wrap; gap: var(--sp-4); align-items: center; justify-content: center; }
+
+/* ─── Relevant service areas ───────────────────────────────────────── */
+.svc-areas__list {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: var(--sp-3);
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+@media (max-width: 760px) { .svc-areas__list { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 460px) { .svc-areas__list { grid-template-columns: 1fr; } }
+.svc-areas__link {
+	display: flex;
+	align-items: center;
+	gap: var(--sp-2);
+	padding: var(--sp-3) var(--sp-4);
+	background: var(--c-surface-2);
+	border: 1px solid var(--c-border);
+	border-radius: var(--r-md);
+	color: var(--c-brand-800);
+	font-size: var(--fs-sm);
+	font-weight: var(--fw-semibold);
+	text-decoration: none;
+	transition: background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+.svc-areas__link svg { flex: 0 0 auto; color: var(--c-aqua-500); }
+.svc-areas__link:hover { background: var(--c-brand-50); border-color: var(--c-aqua-300); transform: translateY(-1px); }
+.svc-areas__link:focus-visible { outline: 2px solid var(--c-focus-ring); outline-offset: 2px; }

@@ -43,6 +43,15 @@ $ctx = array(
 	'faqs'       => array(),
 	'related'    => class_exists( '\\Showtime\\Services' ) ? \Showtime\Services::related( $service_slug, 3 ) : array(),
 	'related_areas' => array(),
+	// AEO/GEO section data (registry-driven; each section hides itself if empty).
+	'glance'          => array(),
+	'cost'            => array(),
+	'decision'        => array(),
+	'problems'        => array(),
+	'problems_heading'=> '',
+	'real_project'    => array(),
+	'area_anchor'     => '',
+	'areas_relevant'  => array(),
 );
 
 // Layer registry defaults first.
@@ -57,6 +66,26 @@ if ( $registry ) {
 	$ctx['turnaround']  = (string) ( $registry['default_turnaround'] ?? '' );
 	$ctx['includes']   = (array)  ( $registry['default_includes'] ?? array() );
 	$ctx['faqs']       = (array)  ( $registry['default_faqs'] ?? array() );
+
+	// AEO/GEO registry fields.
+	$ctx['glance']           = (array)  ( $registry['aeo_glance'] ?? array() );
+	$ctx['cost']             = (array)  ( $registry['aeo_cost'] ?? array() );
+	$ctx['decision']         = (array)  ( $registry['aeo_decision'] ?? array() );
+	$ctx['problems']         = (array)  ( $registry['aeo_problems'] ?? array() );
+	$ctx['problems_heading'] = (string) ( $registry['aeo_problems_heading'] ?? '' );
+	$ctx['real_project']     = (array)  ( $registry['aeo_real_project'] ?? array() );
+	$ctx['area_anchor']      = (string) ( $registry['aeo_area_anchor'] ?? '' );
+
+	// Resolve the curated relevant-area slugs to [slug,name] pairs.
+	$aeo_area_slugs = (array) ( $registry['aeo_areas'] ?? array() );
+	if ( $aeo_area_slugs && class_exists( '\\Showtime\\Areas' ) ) {
+		foreach ( $aeo_area_slugs as $aslug ) {
+			$area = \Showtime\Areas::get( (string) $aslug );
+			if ( $area && ! empty( $area['name'] ) ) {
+				$ctx['areas_relevant'][] = array( 'slug' => (string) $aslug, 'name' => (string) $area['name'] );
+			}
+		}
+	}
 }
 
 // Layer ACF overrides on top (only when populated).
@@ -119,7 +148,15 @@ $sections = apply_filters(
 		'hero',
 		'includes',
 		'process',
-		'before-after',
+		// AEO/GEO block — placed after the main service explanation and before
+		// the pricing/FAQ/CTA close. Each part self-hides when its registry
+		// data is empty, so partially-filled services show no empty sections.
+		'glance',
+		'cost',
+		'decision',
+		'problems',
+		'projects',       // real before/after (replaces the old 'before-after')
+		'service-areas',
 		'pricing',
 		'faq',
 		'related',

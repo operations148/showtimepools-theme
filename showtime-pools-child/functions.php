@@ -52,6 +52,15 @@ function showtime_estimator_url(): string {
 }
 
 /**
+ * "Last reviewed" freshness date shown on the service AEO "at a glance" block.
+ * One filterable source (`showtime/aeo/reviewed`) so it can be bumped in a
+ * single place when service content is reviewed, rather than dated per page.
+ */
+function showtime_aeo_reviewed_date(): string {
+	return (string) apply_filters( 'showtime/aeo/reviewed', 'July 2026' );
+}
+
+/**
  * Resolve which top-level nav item should be active for the current request.
  *
  * Returns one of: 'home', 'about', 'services', 'projects', 'service-areas',
