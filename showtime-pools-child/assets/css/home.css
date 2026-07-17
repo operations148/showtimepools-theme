@@ -2190,10 +2190,18 @@ main > section:first-child[data-reveal] {
 	align-items: center;
 	padding: clamp(2.25rem, 4vw, 3.5rem);
 	border-radius: var(--r-3xl);
+	/* Frosted glass over the dark hero video. The translucent NAVY tint (not
+	   a light one) is deliberate: it keeps a consistent dark base behind the
+	   white text so contrast stays high no matter what frame of the hero
+	   video shows through the blur. Falls back to the same tint (just
+	   un-blurred) where backdrop-filter is unsupported. */
 	background:
-		radial-gradient(900px 420px at 100% -10%, rgba(30, 93, 255, 0.28) 0%, transparent 60%),
-		linear-gradient(155deg, var(--c-ink-soft) 0%, var(--c-ink) 70%);
-	box-shadow: var(--sh-xl);
+		radial-gradient(900px 420px at 100% -10%, rgba(30, 93, 255, 0.22) 0%, transparent 60%),
+		linear-gradient(155deg, rgba(27, 37, 71, 0.58) 0%, rgba(11, 23, 51, 0.66) 70%);
+	backdrop-filter: blur(22px) saturate(1.25);
+	-webkit-backdrop-filter: blur(22px) saturate(1.25);
+	border: 1px solid rgba(255, 255, 255, 0.16);
+	box-shadow: var(--sh-xl), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 @media (max-width: 900px) {
 	.estimator-strip__card { grid-template-columns: 1fr; }

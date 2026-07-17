@@ -10,12 +10,12 @@
 	position: relative;
 	overflow: hidden;
 	color: var(--c-text-invert);
-	/* Phase K — unified interior hero height. Same min-height across every
-	   page that uses .int-hero (services hub, projects hub, areas hub,
-	   inspections hub, about, founder, blog, archive). Match the home hero
-	   block height proportionally so the brand feels consistent
-	   page-to-page. */
-	min-height: clamp(420px, 56vh, 580px);
+	/* Interior heroes fill one full screen at 100% zoom: viewport height
+	   minus the solid interior header, so hero + header == one page. The
+	   home hero (.home-hero--immersive) is intentionally left on its own,
+	   larger scale. min-height (not height) so taller content still grows. */
+	min-height: calc(100vh - var(--header-h));
+	min-height: calc(100dvh - var(--header-h));
 	padding-top: clamp(3rem, 6vw, 5rem);
 	padding-bottom: clamp(3rem, 6vw, 5rem);
 	display: flex;
@@ -214,8 +214,9 @@
 	overflow: hidden;
 	background: var(--_area-grad);
 	color: #fff;
-	/* Phase K — unified interior hero height. */
-	min-height: clamp(420px, 56vh, 580px);
+	/* Full-screen interior hero (viewport minus header) — see .int-hero. */
+	min-height: calc(100vh - var(--header-h));
+	min-height: calc(100dvh - var(--header-h));
 	padding-top: clamp(3rem, 6vw, 5rem);
 	padding-bottom: clamp(3rem, 6vw, 5rem);
 	display: flex;

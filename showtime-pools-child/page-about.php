@@ -179,7 +179,7 @@ $person_schema = array(
 				} else {
 					$team = showtime_acf_rows( 'team', $team_default );
 				}
-				foreach ( $team as $t ) :
+				foreach ( $team as $t_index => $t ) :
 					$t_name     = (string) ( $t['name'] ?? '' );
 					$t_role     = (string) ( $t['role'] ?? '' );
 					$t_note     = (string) ( $t['note'] ?? '' );
@@ -189,13 +189,24 @@ $person_schema = array(
 						$parts = preg_split( '/\s+/', $t_name );
 						$t_initials = strtoupper( substr( $parts[0] ?? '', 0, 1 ) . substr( $parts[1] ?? '', 0, 1 ) );
 					}
-					// Photo field — ACF returns an array with url/sizes; plain string also accepted.
+					// Photo field resolution, in order:
+					//   1. ACF image array (url/sizes),
+					//   2. a native wp_options attachment ID (what Site Content → Team
+					//      stores) — must be converted to a URL, not used as-is,
+					//   3. a plain URL string,
+					//   4. the bundled theme photo shipped in $team_default (matched by
+					//      index) when the CMS has no photo set.
 					$t_photo_raw = $t['photo'] ?? '';
 					$t_photo_url = '';
 					if ( is_array( $t_photo_raw ) ) {
 						$t_photo_url = (string) ( $t_photo_raw['sizes']['medium_large'] ?? $t_photo_raw['sizes']['large'] ?? $t_photo_raw['url'] ?? '' );
+					} elseif ( is_numeric( $t_photo_raw ) ) {
+						$t_photo_url = (string) wp_get_attachment_image_url( (int) $t_photo_raw, 'medium_large' );
 					} elseif ( is_string( $t_photo_raw ) ) {
 						$t_photo_url = $t_photo_raw;
+					}
+					if ( '' === $t_photo_url && isset( $team_default[ $t_index ]['photo'] ) ) {
+						$t_photo_url = (string) $team_default[ $t_index ]['photo'];
 					}
 				?>
 					<article class="team-card<?php echo $t_photo_url ? ' team-card--has-photo' : ''; ?>">

@@ -242,7 +242,9 @@
 
 .post-hero {
 	position: relative;
-	min-height: clamp(420px, 50vw, 580px);
+	/* Full-screen interior hero (viewport minus header) — see .int-hero. */
+	min-height: calc(100vh - var(--header-h));
+	min-height: calc(100dvh - var(--header-h));
 	padding: clamp(4rem, 7vw, 6rem) 0 clamp(3.5rem, 6vw, 5rem);
 	color: #fff;
 	overflow: hidden;
@@ -492,8 +494,9 @@
 	overflow: hidden;
 	background: linear-gradient(180deg, #FFFFFF 0%, var(--c-paper) 60%, #FFFFFF 100%);
 	color: var(--c-ink);
-	/* Phase K — unified interior hero height. */
-	min-height: clamp(420px, 56vh, 580px);
+	/* Full-screen interior hero (viewport minus header) — see .int-hero. */
+	min-height: calc(100vh - var(--header-h));
+	min-height: calc(100dvh - var(--header-h));
 	padding: clamp(2.5rem, 5vw, 4.5rem) 0 clamp(3rem, 6vw, 5rem);
 	display: flex;
 	flex-direction: column;
