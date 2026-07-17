@@ -30,9 +30,9 @@ $sub2_body  = $opt ? (string) get_field( 'intro_video_sub2_body', $opt )  : '';
 $eyebrow    = '' !== $eyebrow    ? $eyebrow    : __( 'Meet Showtime Pools', 'showtime-pools' );
 $headline   = '' !== $headline   ? $headline   : __( 'One team for every service, start to finish.', 'showtime-pools' );
 $sub1_title = '' !== $sub1_title ? $sub1_title : __( 'Founder-Led, Every Job', 'showtime-pools' );
-$sub1_body  = '' !== $sub1_body  ? $sub1_body  : __( 'Steve Adams built Showtime Pools on one idea: the person who quotes your job is accountable for it, start to finish. That is still how the crew works today: no subcontractors passing the blame, no call center between you and the technician standing in your yard.', 'showtime-pools' );
-$sub2_title = '' !== $sub2_title ? $sub2_title : __( 'Twelve Services. One Accountable Crew.', 'showtime-pools' );
-$sub2_body  = '' !== $sub2_body  ? $sub2_body  : __( 'Weekly maintenance, repairs, remodeling, equipment, inspections, automation, new construction, spas, tile and decking, outdoor living, kitchens, and fire and water features: all handled in-house by the same team, supervised by Steve from first fill to last remodel.', 'showtime-pools' );
+$sub1_body  = '' !== $sub1_body  ? $sub1_body  : __( 'Steve Adams built Showtime Pools on one idea: the person who quotes your job is accountable for it, start to finish. That is still how the crew works today — an in-house crew backed by a small set of exclusive partner crews Steve supervises on-site, and no call center between you and the technician standing in your yard.', 'showtime-pools' );
+$sub2_title = '' !== $sub2_title ? $sub2_title : __( 'Fourteen Services. One Accountable Crew.', 'showtime-pools' );
+$sub2_body  = '' !== $sub2_body  ? $sub2_body  : __( 'Weekly maintenance, repairs, remodeling, equipment, inspections, automation, new construction, spas, tile and decking, outdoor living, kitchens, and fire and water features: handled by one supervised crew, with Steve on every job from first fill to last remodel.', 'showtime-pools' );
 
 $services_covered = array(
 	__( 'Weekly Maintenance', 'showtime-pools' ),

@@ -48,7 +48,7 @@ if ( '' === $f_lead && $page_id ) {
 	$excerpt = get_the_excerpt( $page_id );
 	if ( '' !== $excerpt ) { $f_lead = $excerpt; }
 }
-$f_lead = '' !== $f_lead ? $f_lead : __( 'Showtime Pools is owner-operated. The shop on Ventura Boulevard. The crew is W-2. The phone is a real phone, answered by a real person.', 'showtime-pools' );
+$f_lead = '' !== $f_lead ? $f_lead : __( 'Showtime Pools is owner-operated. The shop on Ventura Boulevard. Steve supervises every job. The phone is a real phone, answered by a real person.', 'showtime-pools' );
 
 // Bio: WP page content (Gutenberg editor)
 $f_blocks   = null; // ACF story blocks not used without Pro
@@ -210,7 +210,7 @@ $person_schema = array(
 						?>
 					<?php else : ?>
 						<p><?php esc_html_e( 'Steve started Showtime Pools with one truck and a handful of weekly customers in Sherman Oaks. The first decade was just service: drive the route, balance the chemistry, fix what breaks, send a photo report before leaving the driveway. Customers asked when we would start doing remodels. Steve said no for years.', 'showtime-pools' ); ?></p>
-						<p><?php esc_html_e( 'When we finally added construction, it was because the same handful of customers kept asking. We built a pool for one. Then a remodel for another. Word got around. Today the construction line and the service line are both staffed by W-2 crew, both supervised by Steve, both working off the same standards. Same shop on Ventura Boulevard. Same trucks. Same number.', 'showtime-pools' ); ?></p>
+						<p><?php esc_html_e( 'When we finally added construction, it was because the same handful of customers kept asking. We built a pool for one. Then a remodel for another. Word got around. Today the construction line and the service line are both run by one supervised crew, both overseen by Steve on-site, both working off the same standards. Same shop on Ventura Boulevard. Same trucks. Same number.', 'showtime-pools' ); ?></p>
 						<p><?php esc_html_e( 'Quotes are written and itemized. Permits are pulled in person. The person who walks your site is on the job when the work happens. When the inspection says walk away from a deal, that is what the inspection says, even when it costs us a six-figure construction quote. Independence is the whole point.', 'showtime-pools' ); ?></p>
 					<?php endif; ?>
 				</div>

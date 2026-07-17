@@ -28,7 +28,7 @@ $steps = apply_filters(
 		array(
 			'n'     => '04',
 			'title' => __( 'Execute & sign-off', 'showtime-pools' ),
-			'body'  => __( 'Same W-2 crew start to finish. Daily photo updates. Final walk-through and warranty docs delivered before you pay the balance.', 'showtime-pools' ),
+			'body'  => __( 'One supervised crew start to finish, with Steve on the job. Daily photo updates. Final walk-through and warranty docs delivered before you pay the balance.', 'showtime-pools' ),
 		),
 	)
 );

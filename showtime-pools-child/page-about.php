@@ -104,7 +104,7 @@ $person_schema = array(
 					<?php if ( '' !== $about_body ) : ?>
 						<?php echo wp_kses_post( wpautop( $about_body ) ); ?>
 					<?php else : ?>
-						<p><?php esc_html_e( 'Showtime Pools has become a trusted name for homeowners, property managers, and businesses seeking long-lasting, high-performance pool systems. Repairs, weekly service, remodels, equipment, inspections, and outdoor living are all handled by one supervised crew: in-house W-2 for the day-to-day, with exclusive partner crews for Replaster and demo that Steve supervises on-site.', 'showtime-pools' ); ?></p>
+						<p><?php esc_html_e( 'Showtime Pools has become a trusted name for homeowners, property managers, and businesses seeking long-lasting, high-performance pool systems. Repairs, weekly service, remodels, equipment, inspections, and outdoor living are all handled by one supervised crew: in-house for the day-to-day, with exclusive partner crews for Replaster and demo that Steve supervises on-site.', 'showtime-pools' ); ?></p>
 						<p><?php esc_html_e( 'We do not believe in shortcuts, only results that stand the test of time. Every project is treated like it is our own backyard. That means engineered structure, honest communication, premium materials, and standing behind our work with integrity.', 'showtime-pools' ); ?></p>
 						<p><?php esc_html_e( 'When something breaks, we identify the root cause first so you do not waste money on temporary patches. When you are remodeling, we coordinate every trade so you are not chasing five contractors. When you are buying a house, we inspect the pool independently and tell you the truth.', 'showtime-pools' ); ?></p>
 					<?php endif; ?>

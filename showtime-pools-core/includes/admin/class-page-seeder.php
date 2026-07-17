@@ -455,7 +455,7 @@ final class PageSeeder {
 	private function founder_default_content(): string {
 		return '<p>Steve started Showtime Pools with one truck and a handful of weekly customers in Sherman Oaks. The first decade was just service: drive the route, balance the chemistry, fix what breaks, send a photo report before leaving the driveway. Customers asked when we would start doing remodels. Steve said no for years.</p>
 
-<p>When we finally added construction, it was because the same handful of customers kept asking. We built a pool for one. Then a remodel for another. Word got around. Today the construction line and the service line are both staffed by W-2 crew, both supervised by Steve, both working off the same standards. Same shop on Ventura Boulevard. Same trucks. Same number.</p>
+<p>When we finally added construction, it was because the same handful of customers kept asking. We built a pool for one. Then a remodel for another. Word got around. Today the construction line and the service line are both run by one supervised crew, both overseen by Steve on-site, both working off the same standards. Same shop on Ventura Boulevard. Same trucks. Same number.</p>
 
 <p>Quotes are written and itemized. Permits are pulled in person. The person who walks your site is on the job when the work happens. When the inspection says walk away from a deal, that is what the inspection says, even when it costs us a six-figure construction quote. Independence is the whole point.</p>';
 	}

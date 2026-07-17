@@ -54,7 +54,7 @@ $phone_tel = preg_replace( '/[^0-9+]/', '', $phone );
 $hero_trust_items = apply_filters(
 	'showtime/hero_trust_strip',
 	array(
-		array( 'icon' => 'crew',   'label' => __( 'In-House W-2 Crew', 'showtime-pools' ) ),
+		array( 'icon' => 'crew',   'label' => __( 'Owner-Supervised Crew', 'showtime-pools' ) ),
 		array( 'icon' => 'brand',  'label' => __( 'Pentair + Jandy Authorized', 'showtime-pools' ) ),
 		array( 'icon' => 'pebble', 'label' => __( 'PebbleTec Certified', 'showtime-pools' ) ),
 		array( 'icon' => 'clock',  'label' => __( 'Same-Day Service Available', 'showtime-pools' ) ),

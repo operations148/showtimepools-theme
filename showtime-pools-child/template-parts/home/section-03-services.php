@@ -18,11 +18,11 @@ $services = class_exists( '\\Showtime\\Services' ) ? \Showtime\Services::all() :
 				<?php esc_html_e( 'Services', 'showtime-pools' ); ?>
 			</span>
 			<h2 class="services-index__title balance">
-				<?php esc_html_e( 'Twelve services. ', 'showtime-pools' ); ?>
+				<?php esc_html_e( 'Fourteen services. ', 'showtime-pools' ); ?>
 				<em><?php esc_html_e( 'One supervised crew.', 'showtime-pools' ); ?></em>
 			</h2>
 			<p class="services-index__lead">
-				<?php esc_html_e( 'From new construction to next Tuesday\'s chemistry, every job is staffed by the same W-2 crew on every job, supervised by Steve, end to end.', 'showtime-pools' ); ?>
+				<?php esc_html_e( 'From new construction to next Tuesday\'s chemistry, every job runs through one supervised crew, with Steve on every job, end to end.', 'showtime-pools' ); ?>
 			</p>
 		</header>
 

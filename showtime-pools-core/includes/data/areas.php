@@ -22,8 +22,8 @@ return array(
 		'seo_meta'    => 'Pool service in Sherman Oaks (91403, 91423, 91436) since 2003. Same tech weekly, repairs, remodels, equipment. Call (323) 825-2099.',
 		'name'        => 'Sherman Oaks',
 		'seo_h1'      => 'Pool Service in Sherman Oaks, Los Angeles',
-		'seo_intro'   => 'Pool service near you in Sherman Oaks, Los Angeles. One of the highest-rated pool companies near me for Sherman Oaks homeowners; Showtime Pools is headquartered on Ventura Boulevard. Weekly pool cleaning service, pool repair near me calls, remodels, and equipment upgrades across ZIP codes 91403, 91423, and 91436, seven days a week.',
-		'tag'         => 'Home base · 7 days a week',
+		'seo_intro'   => 'Pool service near you in Sherman Oaks, Los Angeles. Showtime Pools is headquartered on Ventura Boulevard. Weekly pool cleaning service, pool repair near me calls, remodels, and equipment upgrades across ZIP codes 91403, 91423, and 91436, six days a week, with Sunday reserved for emergencies.',
+		'tag'         => 'Home base · 6 days a week',
 		'pool_count'  => '420+',
 		'gradient'    => 'linear-gradient(135deg,#1F2F3A 0%,#5C8A9E 100%)',
 		'lat'         => 34.1511,
@@ -233,7 +233,7 @@ return array(
 		'seo_meta'    => 'Estate pool service in Bel Air (90077). Weekly care, remodels, automation, and equipment for large hillside pools. Call (323) 825-2099.',
 		'name'        => 'Bel Air',
 		'seo_h1'      => 'Pool Service in Bel Air',
-		'seo_intro'   => 'Pool service in Bel Air for estate properties off Stone Canyon and Bellagio Road. Showtime Pools maintains, remodels, and re-equips large hillside pools across 90077: infinity edges, attached spas, and full automation, serviced by a badged W-2 crew with gate protocols handled.',
+		'seo_intro'   => 'Pool service in Bel Air for estate properties off Stone Canyon and Bellagio Road. Showtime Pools maintains, remodels, and re-equips large hillside pools across 90077: infinity edges, attached spas, and full automation, serviced by a badged, owner-supervised crew with gate protocols handled.',
 		'tag'         => 'Estate service · now booking',
 		// Intentionally empty until Steve confirms a real serviced-pool count;
 		// templates skip the count pill when this is blank.

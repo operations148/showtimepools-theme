@@ -46,7 +46,7 @@
                     "type": "textarea",
                     "rows": 2,
                     "required": 1,
-                    "placeholder": "Same W-2 crew start to finish. Steve on every job — supervises the partner crews we use for Replaster and demo. The person who quotes the job is on-site when work happens.",
+                    "placeholder": "One supervised crew start to finish. Steve on every job — supervises the partner crews we use for Replaster and demo. The person who quotes the job is on-site when work happens.",
                     "wrapper": { "width": "40" }
                 }
             ]

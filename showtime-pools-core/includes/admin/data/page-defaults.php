@@ -76,7 +76,7 @@ return array(
 			'founder_title'            => 'Founder & CEO',
 			'founder_eyebrow'          => 'The Founder',
 			'founder_h1'               => 'A pool company, run like a small shop.',
-			'founder_lead'             => 'Showtime Pools is owner-operated. The shop on Ventura Boulevard. The crew is W-2. The phone is a real phone, answered by a real person.',
+			'founder_lead'             => 'Showtime Pools is owner-operated. The shop on Ventura Boulevard. Steve supervises every job. The phone is a real phone, answered by a real person.',
 			'founder_quote'            => 'If my name is on the warranty, my crew earns it on every job.',
 			'founder_quote_attr'       => 'Steve Adams, Founder & CEO',
 			'founder_story_h2'         => 'Founder, CEO, on every quote.',

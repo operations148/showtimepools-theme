@@ -15,7 +15,7 @@ $pillars_default = array(
 	array(
 		'icon'  => 'shield',
 		'title' => __( 'In-house crew · 100% supervised', 'showtime-pools' ),
-		'body'  => __( 'Trained professionals with deep field experience across construction, remodeling, equipment, and weekly service. The same W-2 team start to finish, and Steve personally supervises the exclusive partner crews we use for Replaster and demo.', 'showtime-pools' ),
+		'body'  => __( 'Trained professionals with deep field experience across construction, remodeling, equipment, and weekly service. The same in-house team start to finish, and Steve personally supervises the exclusive partner crews we use for Replaster and demo.', 'showtime-pools' ),
 	),
 	array(
 		'icon'  => 'clock',

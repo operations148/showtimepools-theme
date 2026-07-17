@@ -1017,7 +1017,7 @@
 .service-areas__outside a { color: var(--c-link); font-weight: var(--fw-semibold); margin-left: var(--sp-2); }
 
 /* FAQ accordion styles moved to components.css so they apply on every
-   template that uses .faq__item (homepage FAQ, all 12 service pages, all
+   template that uses .faq__item (homepage FAQ, all 14 service pages, all
    3 inspection detail pages). Do not re-add here. */
 
 /* CTA banner styles moved to footer.css as .footer-cta — the closer is
