@@ -12,12 +12,13 @@
 defined( 'ABSPATH' ) || exit;
 
 $areas = class_exists( '\\Showtime\\Areas' ) ? \Showtime\Areas::all() : array();
-// Homepage shows the six established-route neighborhoods (first six in the
-// registry, each with a real pool count). The full set lives on the
-// /service-areas/ hub.
-$areas = array_slice( $areas, 0, 6 );
-$row_1 = array_slice( $areas, 0, 3 );
-$row_2 = array_slice( $areas, 3, 3 );
+// Show every neighborhood in the registry (matches the /service-areas/ hub).
+// Split across the two marquee rows: first half (rounded up) drifts one way,
+// the rest the other. Each row's set is duplicated in the markup below so the
+// loop stays seamless whatever the row count is.
+$split = (int) ceil( count( $areas ) / 2 );
+$row_1 = array_slice( $areas, 0, $split );
+$row_2 = array_slice( $areas, $split );
 
 $render_card = static function ( array $area, bool $duplicate = false ): void {
 	$slug    = (string) ( $area['slug'] ?? '' );
