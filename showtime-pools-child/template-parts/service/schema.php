@@ -18,6 +18,30 @@ $summary    = (string) ( $ctx['summary'] ?? '' );
 $price      = (string) ( $ctx['price'] ?? '' );
 $turnaround = (string) ( $ctx['turnaround'] ?? '' );
 $faqs       = (array)  ( $ctx['faqs'] ?? array() );
+$problems   = (array)  ( $ctx['problems'] ?? array() );
+
+// Fold the visible "Common problems" Q&A into the same FAQPage entity set as
+// the FAQ accordion. Both use the {q,a} shape and both render visible answers
+// on the page, so both are legitimately eligible. We keep a SINGLE FAQPage
+// block (not a second one) to avoid duplicate/competing schema, and dedupe by
+// question text so a repeated question never lands twice. This makes the
+// symptom-style problem questions ("why is my pump grinding?") machine-readable
+// for AI answer engines without changing anything the visitor sees.
+$faq_entities = array();
+$seen_q       = array();
+foreach ( array_merge( $faqs, $problems ) as $qa ) {
+	$q = trim( (string) ( $qa['q'] ?? '' ) );
+	$a = trim( (string) ( $qa['a'] ?? '' ) );
+	if ( '' === $q || '' === $a ) {
+		continue;
+	}
+	$key = strtolower( $q );
+	if ( isset( $seen_q[ $key ] ) ) {
+		continue;
+	}
+	$seen_q[ $key ] = true;
+	$faq_entities[] = array( 'q' => $q, 'a' => $a );
+}
 
 $service_schema = array(
 	'@context'      => 'https://schema.org',
@@ -52,7 +76,7 @@ $service_schema = apply_filters( 'showtime/schema/service', $service_schema, $ct
 ?>
 <script type="application/ld+json"><?php echo wp_json_encode( $service_schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ); ?></script>
 
-<?php if ( ! empty( $faqs ) ) : ?>
+<?php if ( ! empty( $faq_entities ) ) : ?>
 	<?php
 	$faq_schema = array(
 		'@context'   => 'https://schema.org',
@@ -70,7 +94,7 @@ $service_schema = apply_filters( 'showtime/schema/service', $service_schema, $ct
 						),
 					);
 				},
-				$faqs
+				$faq_entities
 			)
 		),
 	);
