@@ -56,6 +56,7 @@ return array(
 			array( 'q' => 'Why is my filter pressure gauge reading high?', 'a' => 'A high filter gauge means flow is restricted, usually a dirty or channeled filter that needs cleaning or media replacement. In LA, heavy pollen and nearby landscaping load a filter faster than owners expect. Ignore it and you starve the heater and lose circulation. The next step is a filter clean or cartridge swap, plus a check that the gauge itself still reads true.' ),
 			array( 'q' => 'Why did my salt system stop producing chlorine?', 'a' => 'A salt cell that reads low output or "inspect cell" is usually scaled with calcium or simply worn out. Hard LADWP fill water accelerates scaling across the Valley. A scaled cell can often be acid-cleaned and returned to service; a cell past four to seven years has usually reached the end of its plates. We test output before deciding which it is.' ),
 			array( 'q' => 'Why does my heater shut off before the water is warm?', 'a' => 'A heater that fires then quits mid-cycle is usually protecting itself from low flow, not failing outright. A dirty filter, a closing valve, or a weak pump drops flow below the heater\'s minimum and trips its safety switch. The fix starts upstream: restore flow at the filter and pump, then confirm the heater\'s flow and limit switches are reading correctly.' ),
+			array( 'q' => 'Why is water leaking from my pump or filter housing?', 'a' => 'A drip at the equipment pad is usually a failed seal or o-ring, or a housing cracked by pressure or age. Pump shaft seals, filter tank o-rings, and multiport valve gaskets all dry out and weep over time, and freeze-thaw or over-tightening can crack the plastic. Left alone it can flood the pad and corrode the motor, so the fix is to isolate the leaking component and reseal or replace it.' ),
 		),
 		'seo_h1'            => 'Pool Repair Service in Los Angeles',
 		'seo_keyword'       => 'pool repair near me',
@@ -97,6 +98,45 @@ return array(
 	array(
 		'slug'              => 'pool-leak-detection',
 		'title'             => 'Pool Leak Detection',
+		// ── AEO/GEO ──────────────────────────────────────────────────
+		'aeo_area_anchor'   => 'Pool leak detection',
+		'aeo_areas'         => array( 'sherman-oaks', 'encino', 'beverly-hills', 'studio-city', 'tarzana', 'woodland-hills', 'west-hollywood' ),
+		'aeo_glance'        => array(
+			'answer'   => 'Pool leak detection pinpoints where a pool is losing water without tearing up the deck: dye testing at the skimmers and returns, pressure testing of the plumbing lines, and electronic listening for underground breaks. It suits any Los Angeles owner adding water more often than evaporation explains. Most leaks are located in a single non-invasive visit, followed by a clear repair quote.',
+			'best_for' => 'Owners losing water faster than evaporation explains',
+		),
+		'aeo_cost'          => array(
+			'heading' => 'How much does pool leak detection cost in Los Angeles?',
+			'intro'   => 'Detection is a flat starting fee that covers the full non-invasive assessment. It is credited toward the repair if you hire us to fix the leak; the repair itself is quoted separately once the source is found.',
+			'rows'    => array(
+				array( 'type' => 'Leak detection (standard residential)', 'price' => 'Starts at $495', 'factors' => 'Pool size, single vs. multi-source leak, and whether a spa is involved. Credited toward the repair if you hire us.', 'timeframe' => 'Most leaks located in one visit' ),
+			),
+		),
+		'aeo_decision'      => array(
+			'heading' => 'Keep watching the water, or schedule detection?',
+			'intro'   => 'A little water loss is normal. The question is whether to keep topping off and monitoring, or bring in detection before the loss does damage.',
+			'a'       => array(
+				'label'     => 'Monitor the water loss',
+				'when'      => array( 'Loss is within normal evaporation (about a quarter to half inch a week)', 'The level is stable once you account for splash-out and heat', 'A bucket test shows the pool and bucket dropping together' ),
+				'limits'    => 'A real leak rarely fixes itself and can undermine decking or flood the equipment pad while you wait.',
+				'longevity' => 'Fine only if it is truly evaporation',
+			),
+			'b'       => array(
+				'label'     => 'Schedule professional detection',
+				'when'      => array( 'You are adding water more than half an inch a week', 'The bucket test shows the pool dropping faster than the bucket', 'The pad, deck, or yard shows damp spots or erosion' ),
+				'limits'    => 'A flat detection fee up front, though it is credited toward the repair.',
+				'longevity' => 'Stops ongoing structural and equipment damage',
+			),
+			'reco'    => 'Run a 24-hour bucket test first. If the pool drops noticeably more than the bucket, or the pump-off test still shows loss, schedule detection before the leak undermines the deck or corrodes the equipment pad.',
+		),
+		'aeo_problems'      => array(
+			array( 'q' => 'How can I tell if my pool is actually leaking or just evaporating?', 'a' => 'Run a bucket test: float a bucket of pool water on a step, mark both levels, wait 24 hours, and compare. If the pool drops noticeably more than the bucket, it is a true leak, not evaporation. LA summer evaporation runs roughly a quarter to half an inch a week; more than that, especially with the pump off, is the signal to schedule detection.' ),
+			array( 'q' => 'Why does my pool only lose water when the pump is running?', 'a' => 'Water loss that shows up only with the pump on usually points to a pressure-side leak, on the return plumbing after the filter. When the pump pressurizes those lines, a cracked fitting or pipe pushes water out; with the pump off, the leak slows or stops. That pattern actually helps us narrow the search, and pressure testing confirms exactly which line is involved.' ),
+			array( 'q' => 'Why does my pool lose water only when the pump is off?', 'a' => 'Loss that happens mostly with the pump off usually means a suction-side or structural leak, on the intake lines or in the shell. With the pump idle, water can drain back through a cracked suction line or seep through a shell crack or a bad fitting. Noting whether loss is worse pump-on or pump-off tells us where to focus before any digging.' ),
+			array( 'q' => 'Can a pool leak damage my deck, yard, or equipment?', 'a' => 'Yes, and that is why waiting is risky. A slow structural leak can undermine decking and coping over months, an equipment-pad leak can flood and corrode the pump and heater, and underground line leaks near a foundation are the ones we tell people not to sit on. Catching it early keeps a plumbing repair from turning into deck or foundation work.' ),
+			array( 'q' => 'Do you have to drain or dig up my pool to find the leak?', 'a' => 'No. Detection is non-invasive and the pool stays full. We dye-test the skimmers, returns, lights, and main drain, pressure-test the plumbing, and use electronic listening for underground lines. We only excavate after the leak is pinpointed and you approve the repair, and then only the smallest access point needed.' ),
+			array( 'q' => 'Why is the ground wet near my equipment pad?', 'a' => 'A soggy equipment pad almost always means a leak at the pad plumbing, a valve, or a fitting rather than the pool shell. Constant moisture there is more than a nuisance: it corrodes pump and heater components and can undermine the pad. Because pad leaks are usually accessible, they are often found and repaired quickly once detection confirms the source.' ),
+		),
 		'seo_h1'            => 'Pool Leak Detection in Los Angeles',
 		'seo_keyword'       => 'pool leak detection los angeles',
 		'seo_title'         => 'Pool Leak Detection in Los Angeles | Showtime',
@@ -171,6 +211,7 @@ return array(
 			array( 'q' => 'Why is my pool cloudy right after I balanced the chemistry?', 'a' => 'Cloudy water with balanced numbers is usually a filtration or fine-particulate issue, not a chemistry one. High pH can also cloud a pool by clouding out dissolved calcium. Check that the filter is clean and running long enough, confirm pH is not drifting high, and give circulation time; if it lingers, the filter media or a clarifier step is the next move.' ),
 			array( 'q' => 'Why do my skimmer and pump baskets fill up so fast?', 'a' => 'Fast-filling baskets are almost always the landscaping around the pool, and mature LA yards shed constantly. Palms, ficus, and seasonal wind load a skimmer within days. Empty baskets more often in heavy-shed months and keep the pump basket clear, since a clogged basket starves the pump and can overheat the motor over time.' ),
 			array( 'q' => 'Why does the water sting my eyes when the chlorine reads fine?', 'a' => 'Stinging eyes with normal chlorine is almost always pH or chloramines, not "too much chlorine." When pH drifts away from the 7.4 to 7.6 range, or when used-up chlorine (chloramine) builds after heavy use, the water gets harsh. The fix is to correct pH and, if needed, shock the pool to clear chloramines, not to cut back on sanitizer.' ),
+			array( 'q' => 'How often does my pool filter actually need cleaning?', 'a' => 'Most LA pools need a filter clean every three to four months, but heavy landscaping or a spring pollen load can shorten that. Rising filter pressure is the real signal: once the gauge climbs well above its clean baseline, flow is choking and it is time. On weekly service we track that pressure and clean the filter on schedule so the pump and heater never run starved.' ),
 		),
 		'seo_h1'            => 'Pool Cleaning Service in Los Angeles',
 		'seo_keyword'       => 'pool cleaning service',
@@ -210,6 +251,45 @@ return array(
 	array(
 		'slug'              => 'pool-tile-cleaning',
 		'title'             => 'Pool Tile Cleaning',
+		// ── AEO/GEO ──────────────────────────────────────────────────
+		'aeo_area_anchor'   => 'Pool tile cleaning',
+		'aeo_areas'         => array( 'sherman-oaks', 'encino', 'beverly-hills', 'studio-city', 'tarzana', 'woodland-hills' ),
+		'aeo_glance'        => array(
+			'answer'   => 'Pool tile cleaning removes calcium and mineral scale from the waterline tile using the right method for the surface: bead blasting for glass and ceramic, softer soda or salt blasting for pebble and natural stone, or a surface-safe chemical treatment. It suits owners whose tile has gone white, crusty, or dull. Every job includes containment, cleanup, and a photo before-and-after.',
+			'best_for' => 'Owners with hard-water calcium scale on the waterline tile',
+		),
+		'aeo_cost'          => array(
+			'heading' => 'How much does pool tile cleaning cost in Los Angeles?',
+			'intro'   => 'Cleaning is priced from a standard residential waterline band. Larger pools, heavy scale, and delicate surfaces that need gentler media sit higher, confirmed after a free on-site look.',
+			'rows'    => array(
+				array( 'type' => 'Calcium / scale tile cleaning', 'price' => 'Starts at $1,800', 'factors' => 'Pool size, scale severity, and tile type (glass, ceramic, pebble, or natural stone)', 'timeframe' => '1 to 2 days on-site' ),
+			),
+		),
+		'aeo_decision'      => array(
+			'heading' => 'Clean the tile, or repair and replace it?',
+			'intro'   => 'Most dull, crusty waterline tile just needs cleaning. But once tile is cracked, loose, or the glaze itself is etched, cleaning cannot bring it back.',
+			'a'       => array(
+				'label'     => 'Clean the existing tile',
+				'when'      => array( 'The tile is intact and firmly attached', 'The problem is calcium scale, film, or dullness', 'The glaze underneath is still smooth, not pitted' ),
+				'limits'    => 'Cannot restore cracked, loose, or etched tile, and scale slowly returns in hard water.',
+				'longevity' => 'Typically 18 to 36 months before re-cleaning',
+			),
+			'b'       => array(
+				'label'     => 'Repair or replace the tile',
+				'when'      => array( 'Tiles are cracked, loose, or missing', 'The glaze is pitted or etched past cleaning', 'You want a new waterline look' ),
+				'limits'    => 'A larger job that may involve dropping the water level and demolition.',
+				'longevity' => 'New tile lasts many years',
+			),
+			'reco'    => 'If the tile is sound and just scaled, cleaning restores it for a fraction of replacement. If tiles are cracked, falling off, or the glaze is etched past saving, replacement is the honest call, and we tell you which on-site before quoting.',
+		),
+		'aeo_problems'      => array(
+			array( 'q' => 'Why is there a hard white crust on my waterline tile that won\'t scrub off?', 'a' => 'That crust is calcium carbonate scale, minerals that plated onto the tile as water evaporated, and it is too hard to scrub away by hand. Hard LADWP fill water across the San Fernando Valley makes it especially common. It needs the right removal method for your tile type, bead or soda blasting or a surface-safe chemical, rather than abrasive scrubbing that can scratch the glaze.' ),
+			array( 'q' => 'Why is my glass or pebble tile looking cloudy and dull?', 'a' => 'A cloudy film on glass or pebble tile is usually a thin, even layer of mineral scale that dulls the surface before it ever gets crusty. It builds fastest at the waterline where splash and evaporation concentrate minerals. Because glass and pebble scratch easily, the fix is a gentle, surface-matched blasting method, not aggressive scrubbing or harsh acid.' ),
+			array( 'q' => 'Is the white buildup calcium scale or calcium nodules?', 'a' => 'They look similar but are different: scale is a surface mineral layer on the tile, while nodules are small deposits pushing up through plaster from behind. Scale cleans off with the right method; nodules point to a plaster issue underneath. Telling them apart on-site matters, because blasting a nodule does not solve what is causing it.' ),
+			array( 'q' => 'Can I remove pool tile calcium myself with a pressure washer or acid?', 'a' => 'It is risky, and usually a false economy. Consumer pressure washers rarely lift hardened calcium and can drive water behind the tile, while strong acids etch grout and surrounding finishes and are hazardous to handle. Professional cleaning uses containment and a media matched to your tile so the scale comes off without wrecking the glaze or grout.' ),
+			array( 'q' => 'Why does my spa or waterline scale faster than the rest of the pool?', 'a' => 'The waterline and spa scale fastest because that is where evaporation concentrates minerals and, in a spa, heat drives it harder. Warm water holds less dissolved calcium, so a heated spa plates scale quickly onto its tile. Balanced chemistry slows it, but in hard-water areas the waterline band will always need periodic professional cleaning.' ),
+			array( 'q' => 'Does tile cleaning fix stained or crumbling grout too?', 'a' => 'Cleaning restores the tile, and light grout discoloration often improves with it, but failing grout is a separate repair. Scale removal will not rebuild grout that is cracked, missing, or crumbling. If we find the grout has failed during the on-site look, we flag it as re-grouting work rather than pretending a cleaning will hold it together.' ),
+		),
 		'seo_h1'            => 'Pool Tile Cleaning in Los Angeles',
 		'seo_keyword'       => 'pool tile cleaning Los Angeles',
 		'seo_title'         => 'Pool Tile Cleaning in Los Angeles (From $1,800)',
@@ -314,6 +394,7 @@ return array(
 			array( 'q' => 'Why is my pool finish flaking or peeling in patches?', 'a' => 'Finish that flakes or "spalls" in patches is delaminating, separating from the shell underneath. It happens when a previous coat did not bond well or when aggressive chemistry undercut it. Patching rarely holds for long once it starts, so the durable fix is to chip out the failing finish and re-coat the shell properly.' ),
 			array( 'q' => 'Why won\'t a stain brush out of my pool plaster?', 'a' => 'A stain that resists brushing is bonded into the surface, and the color usually reveals the cause: brown or green from organics like leaves, or blue-green and rust tones from metals in the water. LA yards with heavy landscaping drop a lot of organic material. The next step is identifying the stain type with a spot test so it is treated correctly instead of scrubbed at pointlessly.' ),
 			array( 'q' => 'How do I know when my pool needs replastering instead of a patch?', 'a' => 'When problems are everywhere rather than in one spot, it is time to resurface. Thin or exposed gunite, chronic rough patches, spreading stains, and chemistry that will not hold all point to a finish at the end of its life. A patch buys time on an isolated chip; a shell showing wear across the board is more cost-effective to replaster once than to keep repairing.' ),
+			array( 'q' => 'Can I change my pool\'s color or look when I resurface?', 'a' => 'Yes, resurfacing is the moment to change the water\'s color and character. The finish drives it: a lighter plaster or quartz reads bright and tropical, while a darker pebble reads deeper, warmer, and more natural. New waterline tile and coping shift the look further. During the assessment we show finish and tile samples wet, since colors look very different underwater than they do on the sample board.' ),
 		),
 		'seo_h1'            => 'Pool Remodeling & Resurfacing in Los Angeles',
 		'seo_keyword'       => 'pool remodeling',
@@ -354,6 +435,48 @@ return array(
 	array(
 		'slug'              => 'equipment-installation-upgrades',
 		'title'             => 'Equipment Installation & Upgrades',
+		// ── AEO/GEO ──────────────────────────────────────────────────
+		'aeo_area_anchor'   => 'Pool equipment installation',
+		'aeo_areas'         => array( 'sherman-oaks', 'encino', 'beverly-hills', 'studio-city', 'tarzana', 'woodland-hills' ),
+		'aeo_glance'        => array(
+			'answer'   => 'Equipment installation and upgrades replaces or adds the machinery that runs a pool: variable-speed pumps, heaters, filters, salt systems, and lighting, installed to spec and tuned. It suits owners with aging, inefficient, or failed equipment, or anyone wanting lower energy bills. Showtime Pools is Pentair- and Jandy-authorized and handles the LADWP rebate paperwork on qualifying pump upgrades.',
+			'best_for' => 'Owners upgrading aging or inefficient pool equipment',
+		),
+		'aeo_cost'          => array(
+			'heading' => 'How much does pool equipment installation cost in Los Angeles?',
+			'intro'   => 'Pricing is per installed unit and includes tuning, warranty registration, and haul-away of the old equipment. Plumbing or electrical rework to fit a new model can add to the base.',
+			'rows'    => array(
+				array( 'type' => 'Variable-speed pump', 'price' => '$2,000', 'factors' => 'Plumbing rework, brand, and LADWP rebate paperwork (handled for you)', 'timeframe' => 'Usually 1 day' ),
+				array( 'type' => 'Heater (gas or heat pump)', 'price' => '$2,950', 'factors' => 'Gas line, sizing to pool volume, and heater type', 'timeframe' => '1 to 2 days' ),
+				array( 'type' => 'Filter', 'price' => '$1,950', 'factors' => 'Filter type (cartridge, DE, or sand) and size', 'timeframe' => 'Usually 1 day' ),
+				array( 'type' => 'Pool / spa lights', 'price' => '$1,500', 'factors' => 'LED conversion and number of light niches', 'timeframe' => 'Usually 1 day' ),
+			),
+		),
+		'aeo_decision'      => array(
+			'heading' => 'Repair the equipment, or replace and upgrade it?',
+			'intro'   => 'When a pump, heater, or filter acts up, the call is repair versus upgrade. Age and running cost usually decide it more than the failed part alone.',
+			'a'       => array(
+				'label'     => 'Repair the existing unit',
+				'when'      => array( 'The unit is under about 5 years old', 'One minor part failed and the rest is sound', 'You are not chasing energy savings right now' ),
+				'limits'    => 'No efficiency gain, and older tech keeps costing more to run.',
+				'longevity' => 'Buys a few more years on a young unit',
+			),
+			'b'       => array(
+				'label'     => 'Replace / upgrade',
+				'when'      => array( 'The unit is past its service life', 'You want lower bills, rebates, and fresh warranty', 'A single-speed pump can become variable-speed' ),
+				'limits'    => 'Higher up-front cost and possible pad or electrical rework.',
+				'longevity' => 'New equipment lasts 8 to 15 years by type',
+			),
+			'reco'    => 'A young, healthy unit with one bad part is a repair. An old, inefficient one, especially a single-speed pump, is usually better upgraded: a variable-speed pump cuts runtime electricity sharply, qualifies for LADWP rebates, and typically pays back in 18 to 30 months.',
+		),
+		'aeo_problems'      => array(
+			array( 'q' => 'Why is my pool electric bill so high in the summer?', 'a' => 'A single-speed pump running long summer hours is usually the culprit; it draws full power the entire time it runs. Eight hours a day can add $50 to $80 a month on its own. The fix is a variable-speed pump, which runs at low RPM most of the day and typically drops that to $15 to $25, while qualifying for an LADWP rebate.' ),
+			array( 'q' => 'Why won\'t my old pump prime or hold speed like it used to?', 'a' => 'A pump that struggles to prime or feels weaker than it was is usually worn: tired bearings, a degraded impeller, or a failing capacitor on the motor. Suction-side air leaks make it worse. On a young pump these are repairs; on an aging single-speed unit it is often the moment to upgrade to variable-speed rather than keep patching an inefficient motor.' ),
+			array( 'q' => 'Why do my pool lights keep burning out or flickering?', 'a' => 'Repeated burnouts usually mean aging incandescent fixtures, moisture reaching the light niche, or a failing seal. Old incandescent pool lamps run hot and die fast. Flickering can also signal a wiring or GFCI issue that needs checking for safety. Converting to sealed LED fixtures fixes the burnouts and cuts the lighting energy draw sharply.' ),
+			array( 'q' => 'Can I add a heater to a pool that never had one?', 'a' => 'Usually yes. Retrofitting a heater onto a pool built without one comes down to gas supply and equipment-pad space, both common on LA properties. A gas heater needs an adequately sized line; a heat pump needs a dedicated circuit and airflow. We assess the pad, size the unit to your pool volume, and run the utilities as part of the install.' ),
+			array( 'q' => 'My equipment is a mix of old brands — can it be modernized without replacing everything?', 'a' => 'Often yes, in phases. A pad does not have to be gutted all at once; the usual path is upgrading the highest-cost item first, typically the pump, then adding automation and other pieces as budget allows. We map a sequence so each upgrade works with what stays, avoiding a forced all-at-once replacement.' ),
+			array( 'q' => 'How do I know if my pool filter is too small?', 'a' => 'An undersized filter shows up as a gauge that climbs fast, water that never fully clears, and frequent cleaning. When the filter cannot keep up with the pump\'s flow, it clogs quickly and lets fine particulate through. We check the filter\'s rated flow against the pump and pool size, and if it is undersized, right-sizing it fixes the clarity and eases the whole system.' ),
+		),
 		'seo_h1'            => 'Pool Equipment Installation in Los Angeles',
 		'seo_keyword'       => 'pool installation near me',
 		'seo_title'         => 'Pool Equipment Installation in Los Angeles',
@@ -394,6 +517,47 @@ return array(
 	array(
 		'slug'              => 'pool-inspections-diagnostics',
 		'title'             => 'Pool Inspections & Diagnostics',
+		// ── AEO/GEO ──────────────────────────────────────────────────
+		'aeo_area_anchor'   => 'Pool inspection',
+		'aeo_areas'         => array( 'sherman-oaks', 'encino', 'beverly-hills', 'studio-city', 'tarzana', 'woodland-hills' ),
+		'aeo_glance'        => array(
+			'answer'   => 'A pool inspection is an independent, documented assessment of a pool by pool specialists, not a general home inspector: structure, equipment, plumbing, electrical bonding, and remaining component life, with a written report. It suits homebuyers in escrow, owners with a recurring problem, and anyone about to spend on a repair or remodel. The fee is flat and the report is yours.',
+			'best_for' => 'Homebuyers and owners who want documented answers',
+		),
+		'aeo_cost'          => array(
+			'heading' => 'How much does a pool inspection cost in Los Angeles?',
+			'intro'   => 'Each inspection type is a flat fee, so you know the cost up front. The equipment diagnostic fee is credited toward the repair if you hire us for the fix within 30 days.',
+			'rows'    => array(
+				array( 'type' => 'Equipment diagnostics (first service call)', 'price' => 'Flat $159', 'factors' => 'Credited toward the repair if you hire us within 30 days', 'timeframe' => 'Verbal on-site, written next day' ),
+				array( 'type' => 'Seasonal inspection', 'price' => 'Flat $245', 'factors' => 'Spring open or fall close, chemistry and equipment runtime check', 'timeframe' => 'Same-day verbal, 48-hour written' ),
+				array( 'type' => 'Pre-purchase inspection', 'price' => 'Flat $385', 'factors' => 'Full structure, equipment, plumbing and bonding, report suitable for escrow', 'timeframe' => '24-hour written report' ),
+			),
+		),
+		'aeo_decision'      => array(
+			'heading' => 'A quick visual check, or a documented inspection?',
+			'intro'   => 'Sometimes eyes on the pool are enough. Other times you need a written, defensible record. It depends on the stakes.',
+			'a'       => array(
+				'label'     => 'Basic visual check',
+				'when'      => array( 'You just want quick reassurance', 'The stakes are low and nothing is being bought or sold', 'You only need a general sense of condition' ),
+				'limits'    => 'No pressure testing, nothing opened, and no written report to stand on.',
+				'longevity' => 'Not suitable for a purchase or a claim',
+			),
+			'b'       => array(
+				'label'     => 'Documented professional inspection',
+				'when'      => array( 'You are buying or selling a home with a pool', 'A lender, insurer, or warranty needs documentation', 'You want the root cause of a recurring problem found' ),
+				'limits'    => 'A flat fee and a 60 to 90 minute on-site visit.',
+				'longevity' => 'Report stands up for escrow, lenders, and disputes',
+			),
+			'reco'    => 'For low-stakes peace of mind, a visual walk-through is fine. For a purchase, a dispute, or before spending real money on a repair or remodel, a documented inspection with pressure testing and a written report is worth the flat fee.',
+		),
+		'aeo_problems'      => array(
+			array( 'q' => 'My equipment works but I don\'t know how old it is — can an inspection tell me?', 'a' => 'Yes. A documented inspection reads the serial numbers and in-service dates on each component and estimates the remaining life on the pump, heater, filter, and salt cell. That matters most when buying a home, so you know whether the pad has years left or is about to cost you. You get that component-by-component picture in writing, not just a pass or fail.' ),
+			array( 'q' => 'My pool has a recurring problem no one has fixed — can diagnostics find the root cause?', 'a' => 'That is exactly what a diagnostic is for. Instead of swapping parts and hoping, we test the equipment running, with a multimeter, pressure gauge, and flow meter, to isolate the actual fault and its root cause. A recurring trip, leak, or chemistry swing usually has one underlying source, and documenting it prevents paying for the same repair twice.' ),
+			array( 'q' => 'How can I tell if a crack in my pool is cosmetic or structural?', 'a' => 'From the surface you often cannot, which is the point of an inspection. A thin surface craze in plaster is usually cosmetic, but a crack that follows the shell, weeps, or moves can be structural, and hillside and expansive-soil lots across LA make that more likely. We assess the crack in context and, when needed, pressure-test to see whether it is leaking before you assume the worst.' ),
+			array( 'q' => 'Is my pool\'s wiring safe — bonding and GFCI?', 'a' => 'Pool electrical safety comes down to bonding and GFCI protection, and both are checked in an inspection. Bonding ties the metal parts together to prevent shock, and older LA pools sometimes have gaps or corrosion in that system. We verify bonding continuity and GFCI function and document anything out of code, because this is the part of a pool where a hidden fault is genuinely dangerous.' ),
+			array( 'q' => 'Should I get an inspection before a remodel or a big repair?', 'a' => 'It is often worth it, because a baseline inspection keeps you from building on a hidden problem. Before spending on a resurface, an equipment upgrade, or a big repair, knowing the true condition of the shell, plumbing, and bonding prevents surprises mid-project. The report also gives you an independent scope to compare quotes against.' ),
+			array( 'q' => 'Can an inspection settle who pays for a pool repair?', 'a' => 'Often, yes. An independent, dated report with photos and methodology is documentation a seller, lender, home-warranty company, or insurer will accept. When there is a dispute over a pool\'s condition or who owes for a fix, a third-party inspection replaces opinion with a defensible record, which is why the report is addressed to you rather than filtered through anyone else\'s incentive.' ),
+		),
 		'seo_h1'            => 'Pool Inspection Service in Los Angeles',
 		'seo_keyword'       => 'pool inspection',
 		'seo_title'         => 'Independent Pool Inspection in Los Angeles',
@@ -431,6 +595,45 @@ return array(
 	array(
 		'slug'              => 'smart-pool-automation',
 		'title'             => 'Smart Pool Automation Upgrades',
+		// ── AEO/GEO ──────────────────────────────────────────────────
+		'aeo_area_anchor'   => 'Pool automation',
+		'aeo_areas'         => array( 'sherman-oaks', 'encino', 'beverly-hills', 'studio-city', 'bel-air', 'calabasas' ),
+		'aeo_glance'        => array(
+			'answer'   => 'Smart pool automation puts the pump, heater, lights, and water features on one app-controlled system, with schedules, scenes, and optional chemistry alerts. It suits owners still using a dial timer or a discontinued controller, or anyone who wants to run the pool from their phone. Installed on Pentair IntelliCenter or Jandy AquaLink, with a hands-on training session included.',
+			'best_for' => 'Owners tired of a dial timer or manual pad',
+		),
+		'aeo_cost'          => array(
+			'heading' => 'How much does pool automation cost in Los Angeles?',
+			'intro'   => 'The base covers the controller, app integration, and training. A retrofit kit for older equipment, a Wi-Fi bridge for a weak signal, or more controlled features can add to it.',
+			'rows'    => array(
+				array( 'type' => 'Automation upgrade (controller + app control)', 'price' => 'Starts at $2,125', 'factors' => 'Retrofit kit for older equipment, Wi-Fi bridge if the pad signal is weak, and number of controlled features', 'timeframe' => '3 to 5 days' ),
+			),
+		),
+		'aeo_decision'      => array(
+			'heading' => 'Repair the old controller, or upgrade the system?',
+			'intro'   => 'If your controller is acting up, the question is whether to keep it going or move to a modern platform. Parts availability and the features you want usually decide it.',
+			'a'       => array(
+				'label'     => 'Repair / keep the existing controller',
+				'when'      => array( 'The current system still works reliably', 'Replacement parts are still available for it', 'You do not need app control or scheduling' ),
+				'limits'    => 'Aging tech with limited app, scene, and alert features; parts are getting scarce on older units.',
+				'longevity' => 'Uncertain once a model is discontinued',
+			),
+			'b'       => array(
+				'label'     => 'Upgrade the automation system',
+				'when'      => array( 'The controller is failing or discontinued', 'You want phone control, scheduling, and alerts', 'You want to schedule a variable-speed pump for savings' ),
+				'limits'    => 'Install cost, and older equipment may need a retrofit kit.',
+				'longevity' => 'Modern Pentair or Jandy platforms supported for years',
+			),
+			'reco'    => 'If your controller works and parts are still available, keep it. If it is failing, discontinued, or you want real app control and energy scheduling, upgrading to a current Pentair or Jandy platform is the move, and it can be phased if budget is a factor.',
+		),
+		'aeo_problems'      => array(
+			array( 'q' => 'My pool still runs on an old dial timer — how do I get phone control?', 'a' => 'A mechanical dial timer only switches the pump on and off at set times, so getting app control means adding an automation controller. The good news is most modern Pentair and Jandy equipment is automation-ready, so the upgrade is usually a controller install rather than replacing the whole pad. Older non-variable pumps or analog heaters may need a small retrofit kit, which we quote up front.' ),
+			array( 'q' => 'My automation controller is discontinued and parts are scarce — what now?', 'a' => 'Once a controller is discontinued, chasing used parts gets expensive and unreliable, and the honest move is usually to upgrade to a current platform. A modern IntelliCenter or AquaLink is supported, gets software updates, and adds app control the old unit never had. We can often reuse the existing wiring and relays, which keeps the upgrade from becoming a full pad rebuild.' ),
+			array( 'q' => 'Can automation schedule my variable-speed pump to cut the energy bill?', 'a' => 'Yes, and it is one of the biggest savings automation unlocks. A variable-speed pump saves the most when it runs low and long on a smart schedule instead of full-speed on a dumb timer. Automation runs it at efficient RPM through the day and ramps up only for cleaning or features, which is where the real electricity savings come from in an LA summer.' ),
+			array( 'q' => 'Why do I have to walk outside just to turn on the spa or heater?', 'a' => 'That is the limitation of a manual pad or a basic timer: every change means a trip to the equipment. Automation replaces that with scenes, so a single tap on the app switches valves, fires the heater, and sets the pump for spa mode. You can have the spa warm by the time you walk outside instead of standing at the pad waiting for it.' ),
+			array( 'q' => 'Can I add automation without re-plumbing the whole equipment pad?', 'a' => 'Usually yes. Automation controls the equipment you already have, so a re-plumb is rarely required, the controller and actuator valves tie into the existing pad. Some pads need a valve or relay added, and a weak Wi-Fi signal at the pad may need a bridge, both of which we scope before the quote so there are no surprise charges.' ),
+			array( 'q' => 'Can more than one person in the household control the pool?', 'a' => 'Yes. The Pentair and Jandy apps let multiple household members log in and control the pool from their own phones, so it is not tied to one device. Everyone can run the spa, lights, or schedules, and permissions can be managed so guests or a service tech only get what they need. We cover multi-user setup in the training session.' ),
+		),
 		'seo_h1'            => 'Smart Pool Automation in Los Angeles',
 		'seo_keyword'       => 'pool automation installation',
 		'seo_title'         => 'Smart Pool Automation in Los Angeles | Showtime',
@@ -507,6 +710,7 @@ return array(
 			array( 'q' => 'Gunite, fiberglass, or vinyl — which is right for a custom build?', 'a' => 'For a truly custom pool, gunite (sprayed concrete) is the standard because it can be formed into any shape, depth, or feature. Fiberglass and vinyl are faster and cheaper but come in fixed shapes and sizes, which limits custom design. If you want a specific shape, a tanning ledge, or an integrated spa and features, gunite is almost always the answer.' ),
 			array( 'q' => 'How much space do I need to leave around a new pool?', 'a' => 'Plan for more than the water itself: decking, code setbacks from structures and property lines, and an equipment pad. In Los Angeles, cooking or fire elements and fencing add their own clearances. During design we lay out the pool, deck, and equipment together against your lot and the code so the finished yard is usable, not crowded.' ),
 			array( 'q' => 'Should features like a spa or tanning ledge be designed in from the start?', 'a' => 'Yes. Attached spas, tanning ledges, water features, and automation are dramatically cheaper and cleaner when engineered into the original shell rather than retrofitted. Plumbing, structure, and equipment can all be sized for them up front. Tell us your wish list during design, even for "someday" items, so the build can accommodate them without a future rebuild.' ),
+			array( 'q' => 'What happens if you hit rock or bad soil while digging?', 'a' => 'Rock and unstable soil are handled with a plan, not a surprise bill, when the site is engineered properly first. Across LA hillsides and older lots, crews do hit rock, expansive clay, or fill that needs over-excavation, and the soil report is meant to anticipate that. Genuinely unforeseen conditions are documented and quoted as a clear change order before extra work proceeds, so there is no mid-dig ambush.' ),
 		),
 		'seo_h1'            => 'Swimming Pool Contractors in Los Angeles',
 		'seo_keyword'       => 'swimming pool contractors',
@@ -546,6 +750,46 @@ return array(
 	array(
 		'slug'              => 'spa-installation-renovations',
 		'title'             => 'Spa Installation & Renovations',
+		// ── AEO/GEO ──────────────────────────────────────────────────
+		'aeo_area_anchor'   => 'Spa installation',
+		'aeo_areas'         => array( 'sherman-oaks', 'encino', 'beverly-hills', 'studio-city', 'tarzana', 'woodland-hills' ),
+		'aeo_glance'        => array(
+			'answer'   => 'Spa installation and renovation adds or rebuilds a spa: raised, attached, or freestanding, with engineered structure, jets, heating, finish, and automation coordinated with the pool. It suits owners who want to add a spa to an existing pool, or bring a dated, weak-jetted spa back to life. Finishes and tile are matched across the pool and spa so the result reads as one project.',
+			'best_for' => 'Owners adding a spa or reviving a dated one',
+		),
+		'aeo_cost'          => array(
+			'heading' => 'How much does a spa cost in Los Angeles?',
+			'intro'   => 'Cost depends on whether the spa is added at deck level, raised with a spillway, or fully custom. Sharing the pool\'s equipment keeps an attached spa toward the lower end.',
+			'rows'    => array(
+				array( 'type' => 'Spa added to an existing pool', 'price' => 'From $12,000', 'factors' => 'Attached vs. raised, shared vs. separate equipment, and tile match', 'timeframe' => '3 to 6 weeks' ),
+				array( 'type' => 'Full custom / raised spa build', 'price' => 'Up to $48,000+', 'factors' => 'Structural wall, spillway, jet count, finish, and automation', 'timeframe' => '3 to 6 weeks' ),
+			),
+		),
+		'aeo_decision'      => array(
+			'heading' => 'Repair the spa, or renovate it?',
+			'intro'   => 'A spa problem can be a quick fix or a sign the whole thing is tired. It depends on whether one component failed or several are aging together.',
+			'a'       => array(
+				'label'     => 'Repair the spa',
+				'when'      => array( 'The shell is structurally sound', 'The issue is isolated, like one jet, a valve, or the heater', 'The finish and jets are otherwise in good shape' ),
+				'limits'    => 'Will not fix a dated finish, weak overall jet action, or aging plumbing.',
+				'longevity' => 'A fix buys years on a sound spa',
+			),
+			'b'       => array(
+				'label'     => 'Renovate or replace systems',
+				'when'      => array( 'Multiple systems are aging at once', 'The finish and jets are dated or tired', 'You want modern automation and a fresh look' ),
+				'limits'    => 'Bigger cost and timeline, with the spa out of use during the work.',
+				'longevity' => 'A renovation resets the spa for many years',
+			),
+			'reco'    => 'A single failed component is a repair. When the finish is dated, the jets are tired, and the plumbing or heater is aging all at once, a renovation is more cost-effective than chasing one repair after another.',
+		),
+		'aeo_problems'      => array(
+			array( 'q' => 'Why do my spa jets feel weak?', 'a' => 'Weak jets usually mean the air or water side is not delivering full pressure: a blower that is failing, an air line that is clogged or leaking, or a pump and plumbing undersized for the jet count. As more jets were added over the years without matching the blower, pressure drops. The fix starts by testing the blower and plumbing to find where the pressure is being lost, rather than just replacing jet fittings.' ),
+			array( 'q' => 'Why does my spa take so long to heat up?', 'a' => 'Slow heating usually comes down to heater sizing or a shared setup: a heater sized for the pool doing double duty, or valves that are not isolating the spa. A spa is a small volume and should heat fast when the heater and valves are set up for it. We check the heater capacity and the spa-side valving, since often it is a plumbing or automation setting, not a failing heater.' ),
+			array( 'q' => 'Why won\'t my spa hold its temperature?', 'a' => 'A spa that heats but then loses temperature is usually shedding heat faster than it should: no cover or a worn one, a heater short-cycling on low flow, or a spillway constantly bleeding warm water into the pool. Because the volume is small, small losses show quickly. We look at the cover, the flow to the heater, and whether a spillway is running when it should be closed.' ),
+			array( 'q' => 'Why is my spa water always cloudy or foamy?', 'a' => 'Cloudy or foamy spa water is a small-volume chemistry problem magnified by heat and body oils. A spa holds a fraction of the pool\'s water, so oils, lotions, and bather load concentrate fast and outrun the sanitizer, while heat drives chemistry harder. The fix is a spa-specific chemistry routine and good filtration, not simply dumping in more chemicals.' ),
+			array( 'q' => 'Can I run my spa separately from the pool?', 'a' => 'Often yes. Many spas can be set to operate independently so they heat and run without warming the whole pool, which saves energy and lets the spa be used on demand. Whether it is a simple valve-and-automation change or needs a dedicated heater depends on the existing plumbing. We assess the pad and tell you what independent operation would take.' ),
+			array( 'q' => 'Why is my spa\'s tile or plaster failing faster than the pool\'s?', 'a' => 'A spa\'s finish and tile take more punishment than the pool\'s because of constant heating and cooling and more concentrated chemistry. Thermal cycling and higher bather load per gallon stress the surface, so a spa can look tired while the pool still looks fine. When the spa finish is going, a spa renovation, often coordinated with the pool, is usually the right response.' ),
+		),
 		'seo_h1'            => 'Spa Installation & Renovation in Los Angeles',
 		'seo_keyword'       => 'spa installation',
 		'seo_title'         => 'Spa Installation & Renovation in Los Angeles',
@@ -580,6 +824,49 @@ return array(
 	array(
 		'slug'              => 'tile-coping-plaster-decking',
 		'title'             => 'Tile, Coping, Plaster & Decking',
+		// ── AEO/GEO ──────────────────────────────────────────────────
+		'aeo_area_anchor'   => 'Pool tile & coping',
+		'aeo_areas'         => array( 'sherman-oaks', 'encino', 'beverly-hills', 'studio-city', 'tarzana', 'woodland-hills' ),
+		'aeo_glance'        => array(
+			'answer'   => 'This is the finish work around the pool\'s edge: waterline tile, coping, and the surrounding deck, plus the plaster shell when it is part of the job. It suits owners whose tile is dropping, coping is cracking, or deck is dated or failing, and anyone refreshing the look without a full remodel. Priced by the linear foot, with a 90-foot minimum.',
+			'best_for' => 'Owners refreshing worn tile, coping, or decking',
+		),
+		'aeo_cost'          => array(
+			'heading' => 'How much does pool tile, coping, and decking cost in Los Angeles?',
+			'intro'   => 'This work is priced by the linear foot with a 90-foot minimum, so the pool\'s perimeter and the material you choose drive the total. Demolition of the old surface is a separate line.',
+			'rows'    => array(
+				array( 'type' => 'Waterline tile install', 'price' => '$32 per linear ft.', 'factors' => 'Tile type (glass vs. porcelain) and removal of old tile (90 LF minimum)', 'timeframe' => '1 to 3 weeks' ),
+				array( 'type' => 'Coping', 'price' => '$35 per linear ft.', 'factors' => 'Natural stone vs. precast, and cantilever vs. set coping (90 LF minimum)', 'timeframe' => '1 to 3 weeks' ),
+				array( 'type' => 'Decking', 'price' => '$10 per linear ft.', 'factors' => 'Material (concrete, paver, stone) and overlay vs. new pour (90 LF minimum)', 'timeframe' => 'Varies with scope' ),
+				array( 'type' => 'Demolition', 'price' => '$23 per linear ft.', 'factors' => 'Existing material and site access (90 LF minimum)', 'timeframe' => 'Part of the project' ),
+				array( 'type' => 'Plumbing pressure test', 'price' => '$795', 'factors' => 'Verifying the plumbing before finish work begins', 'timeframe' => 'One visit' ),
+			),
+		),
+		'aeo_decision'      => array(
+			'heading' => 'Make localized repairs, or replace the surface?',
+			'intro'   => 'A few loose tiles or a cracked coping section can be spot-fixed. When the failure is widespread or coming from below, replacing the surface is the lasting fix.',
+			'a'       => array(
+				'label'     => 'Localized repair',
+				'when'      => array( 'Only a few tiles are loose or a small coping section is damaged', 'Deck cracks are minor and isolated', 'The underlying structure and sub-base are sound' ),
+				'limits'    => 'Will not help if failure is widespread or the sub-base underneath is bad.',
+				'longevity' => 'Holds when the cause is truly isolated',
+			),
+			'b'       => array(
+				'label'     => 'Replace the surface',
+				'when'      => array( 'Tile is failing in multiple spots', 'Coping is cracking along a whole run', 'The deck is heaving or the sub-base is settling' ),
+				'limits'    => 'A larger job that may involve dropping the water and demolition.',
+				'longevity' => 'New tile, coping, or deck lasts decades',
+			),
+			'reco'    => 'Isolated damage is a repair. When tile is failing in multiple spots, coping is cracking along a run, or the deck is heaving from below, replacing the surface fixes the cause instead of chasing symptoms one patch at a time.',
+		),
+		'aeo_problems'      => array(
+			array( 'q' => 'Why does my waterline tile keep falling off?', 'a' => 'Tile that keeps popping off is usually a bond or movement problem, not bad luck. Failed thinset, water getting behind the tile, or slight shell and coping movement all break the bond over time, and re-sticking one tile rarely lasts if the cause is still there. We look at why the section is failing, whether it is moisture, a bad substrate, or movement, before re-setting so the repair holds.' ),
+			array( 'q' => 'Why is my pool deck cracking?', 'a' => 'Deck cracks almost always come from below: a settling or poorly compacted sub-base, expansive soil, or missing expansion joints. LA soils move seasonally, and a deck poured on a weak base will keep cracking no matter how many times it is patched. The durable fix addresses the base and jointing, which is why we diagnose the cause before resurfacing rather than pouring over the same problem.' ),
+			array( 'q' => 'Why is my pool deck so hot to walk on in the summer?', 'a' => 'A deck that scorches bare feet is usually a dark or dense material soaking up the LA sun, plain gray concrete being the worst offender. Lighter, more porous surfaces like travertine stay noticeably cooler underfoot, which is why they are popular on exposed Valley decks. If comfort is the goal, the material choice matters more than anything, and we can resurface or replace with a cooler option.' ),
+			array( 'q' => 'Why does the grout between my tiles keep failing?', 'a' => 'Grout that cracks, powders, or washes out usually means movement, aggressive water chemistry, or the wrong grout for a wet, submerged setting. Constant wet-dry cycling at the waterline is hard on ordinary grout. The fix is not just re-grouting but using the right product for the location and addressing any movement, so it does not fail again in a season.' ),
+			array( 'q' => 'Why is my coping stone stained or flaking?', 'a' => 'Coping that is staining or flaking is usually weathering, a failed or missing sealer, or salt and mineral exposure breaking down the surface. Natural stone left unsealed in the sun and splash zone absorbs stains and can spall. Depending on severity, coping can sometimes be cleaned and resealed; when the stone is delaminating, replacing the affected run is the honest fix.' ),
+			array( 'q' => 'Can I replace just the tile without redoing the whole pool?', 'a' => 'Yes. Waterline tile and coping can be replaced on their own without resurfacing the plaster, as long as the shell is sound. It usually means dropping the water below the tile line and swapping the band, a defined job separate from a full remodel. It is one of the highest-impact refreshes for the cost, since the waterline is what the eye lands on first.' ),
+		),
 		'seo_h1'            => 'Pool Tile, Coping & Plaster in Los Angeles',
 		'seo_keyword'       => 'pool resurfacing',
 		'seo_title'         => 'Pool Tile, Coping & Plaster in Los Angeles',
@@ -621,6 +908,46 @@ return array(
 	array(
 		'slug'              => 'outdoor-living-hardscape',
 		'title'             => 'Outdoor Living & Hardscape',
+		// ── AEO/GEO ──────────────────────────────────────────────────
+		'aeo_area_anchor'   => 'Outdoor living',
+		'aeo_areas'         => array( 'sherman-oaks', 'encino', 'studio-city', 'tarzana', 'woodland-hills', 'calabasas' ),
+		'aeo_glance'        => array(
+			'answer'   => 'Outdoor living and hardscape builds the usable space around the pool: decking, pavers and natural stone, retaining walls, planters, and drainage, coordinated with the pool deck. It suits owners whose deck is cracked, dated, or too small, and anyone turning a slope or plain yard into layered outdoor space. Structural elements and permits are handled alongside the surface work.',
+			'best_for' => 'Owners extending or rebuilding the space around the pool',
+		),
+		'aeo_cost'          => array(
+			'heading' => 'How much does outdoor living and hardscape cost in Los Angeles?',
+			'intro'   => 'Cost scales with square footage, material, and how much structure and grading the site needs. A straightforward deck or paver project starts the range; walls, multi-level work, and drainage push toward the top.',
+			'rows'    => array(
+				array( 'type' => 'Deck & paver work', 'price' => 'From $22,000', 'factors' => 'Material, square footage, and demolition of the old deck', 'timeframe' => '2 to 6 weeks' ),
+				array( 'type' => 'Full outdoor living build', 'price' => 'Up to $55,000', 'factors' => 'Retaining structure, grading, drainage, and permits', 'timeframe' => '2 to 6 weeks' ),
+			),
+		),
+		'aeo_decision'      => array(
+			'heading' => 'Repair or overlay the hardscape, or rebuild it?',
+			'intro'   => 'Tired hardscape can sometimes be refreshed on top of what is there. Whether that lasts depends entirely on the base underneath.',
+			'a'       => array(
+				'label'     => 'Repair or overlay',
+				'when'      => array( 'The sub-base and structure are sound', 'The surface is worn or dated but stable', 'You mainly want a fresh look, not a new layout' ),
+				'limits'    => 'Will not fix settling, bad drainage, or a failing base underneath.',
+				'longevity' => 'An overlay lasts when the base is solid',
+			),
+			'b'       => array(
+				'label'     => 'Rebuild',
+				'when'      => array( 'The sub-base is failing or the deck is heaving', 'Water drains toward the house or pools on the deck', 'You are reconfiguring or adding levels and walls' ),
+				'limits'    => 'A bigger job with demolition, grading, and higher cost.',
+				'longevity' => 'New hardscape on a proper base lasts decades',
+			),
+			'reco'    => 'If the base is solid and you just want a fresh surface, an overlay or targeted repair is efficient. If the deck is heaving, draining the wrong way, or you are changing the layout, rebuilding on a properly prepared base is the lasting fix.',
+		),
+		'aeo_problems'      => array(
+			array( 'q' => 'Why is my pool deck so hot to walk on in the summer?', 'a' => 'A deck that burns bare feet is usually a dark or dense material absorbing the LA sun, and plain gray concrete is the worst for it. Lighter, more porous surfaces like travertine or certain pavers stay noticeably cooler, which matters a lot on an exposed Valley deck. If comfort is the goal, resurfacing or replacing with a cooler material makes the biggest difference.' ),
+			array( 'q' => 'Why are my pavers sinking or shifting in spots?', 'a' => 'Pavers that dip or wobble almost always mean the sub-base beneath them failed, not the pavers themselves. Poor compaction, washout from bad drainage, or roots undermine the bedding and let sections settle. The lasting fix is to lift the affected area, correct and re-compact the base, and reset the pavers, rather than just filling the low spot on top.' ),
+			array( 'q' => 'Why does my deck crack again every time it\'s patched?', 'a' => 'A crack that keeps coming back is a symptom of something below the surface: a settling sub-base, expansive soil movement, or missing expansion joints. Patching only treats the top while the real cause keeps working. LA soils move seasonally, so the durable answer is to address the base and jointing, which is why we diagnose the cause before resurfacing.' ),
+			array( 'q' => 'Can I extend or resurface my deck without it looking bolted-on?', 'a' => 'Yes, with planning. A deck extension or resurface reads as one project when the levels, joint lines, and materials are pulled off the existing deck and pool coping rather than just butted up against them. The trick is matching or deliberately contrasting on purpose. We lay out the transition so a new section looks designed-in, not added-on.' ),
+			array( 'q' => 'What hardscape material lasts longest in a Los Angeles backyard?', 'a' => 'For LA sun and dry heat, natural stone like travertine and quality pavers tend to last longest and stay coolest, while stamped concrete is more budget-friendly but shows wear and heat more. The real driver of longevity, though, is the base and drainage under any material. A premium surface on a weak base still fails, so we build the sub-base to match the material.' ),
+			array( 'q' => 'Why do weeds and ants keep coming up through my paver joints?', 'a' => 'Weeds and ants in paver joints mean the joint sand has washed out or was never stabilized. Ordinary sand erodes and leaves gaps that seeds and insects exploit. The fix is re-sanding with polymeric jointing sand, which locks the joints and resists washout, along with correcting any drainage that keeps flushing the joints out in the first place.' ),
+		),
 		'seo_h1'            => 'Outdoor Living & Pool Hardscape in Los Angeles',
 		'seo_keyword'       => 'pool hardscape',
 		'seo_title'         => 'Outdoor Living & Pool Hardscape in Los Angeles',
@@ -693,6 +1020,7 @@ return array(
 			array( 'q' => 'Why does grill smoke keep blowing back toward my seating?', 'a' => 'Smoke blowback is almost always placement, where the grill sits relative to prevailing wind and the seating and house. It is a layout problem, not a grill defect. Orienting the cook station, adding clearance, and positioning any shade structure with airflow in mind solves it, which is why we plan the run-of-show layout before pouring the island.' ),
 			array( 'q' => 'Can I really use an outdoor kitchen year-round in Los Angeles?', 'a' => 'Yes. The LA climate is one of the best in the country for outdoor cooking, and a well-built kitchen is usable nearly every month. The main comfort add is shade and, for some, a heat or fire element for cooler evenings. We design for year-round use, planning shade and any covered structure alongside the cooking zone.' ),
 			array( 'q' => 'Should I build the kitchen at the same time as a pool remodel or deck project?', 'a' => 'If you are already remodeling the pool or redoing the deck, building the kitchen at the same time usually saves money and headaches. Shared demolition, concrete, utility trenching, and permitting are far cheaper done once. Coordinating the projects also keeps the finishes and layout consistent instead of stitching separate jobs together later.' ),
+			array( 'q' => 'Do I need a permit for an outdoor kitchen in Los Angeles?', 'a' => 'Usually yes, because the gas and electrical work require permits even when the island itself does not. Running a natural-gas line, adding dedicated circuits, or plumbing a sink all trigger permitting through the city or LA County, and cooking elements have their own clearance rules. We pull the permits and coordinate the inspections in-house, so the finished kitchen is code-compliant and safe to insure.' ),
 		),
 		'seo_h1'            => 'Outdoor Kitchens & BBQ Builders in Los Angeles',
 		'seo_keyword'       => 'outdoor kitchen builder',
@@ -728,6 +1056,47 @@ return array(
 	array(
 		'slug'              => 'fire-water-features',
 		'title'             => 'Fire Features & Water Features',
+		// ── AEO/GEO ──────────────────────────────────────────────────
+		'aeo_area_anchor'   => 'Fire & water features',
+		'aeo_areas'         => array( 'sherman-oaks', 'encino', 'beverly-hills', 'studio-city', 'bel-air', 'calabasas' ),
+		'aeo_glance'        => array(
+			'answer'   => 'Fire and water features add movement, sound, and a focal point to a pool: waterfalls, scuppers, sheer descents, and laminar deck jets, plus fire bowls and fire pits. It suits owners wanting a resort feel, and most features can be retrofitted into an existing pool. Plumbing, gas, electrical, and automation are handled to code, with finishes matched to the pool.',
+			'best_for' => 'Owners adding a focal point to a new or existing pool',
+		),
+		'aeo_cost'          => array(
+			'heading' => 'How much do fire and water features cost in Los Angeles?',
+			'intro'   => 'Simple deck jets and scuppers start the range; raised walls, sheer descents, and combined fire-and-water builds sit higher. Retrofitting into an existing pool is common and priced by the elements involved.',
+			'rows'    => array(
+				array( 'type' => 'Deck jets, scuppers, or spillway', 'price' => 'From $5,000', 'factors' => 'Number of elements and plumbing tie-in to the filtration loop', 'timeframe' => '1 to 4 weeks' ),
+				array( 'type' => 'Fire bowls or fire pit (gas)', 'price' => 'From $5,000', 'factors' => 'Gas line run, bowl count, and automation integration', 'timeframe' => '1 to 2 weeks' ),
+				array( 'type' => 'Sheer-descent wall / combined fire & water', 'price' => 'Up to $22,000+', 'factors' => 'Raised structural wall, element count, and finish', 'timeframe' => '1 to 4 weeks' ),
+			),
+		),
+		'aeo_decision'      => array(
+			'heading' => 'Repair the existing feature, or replace or add one?',
+			'intro'   => 'A tired feature can often be brought back, or it can be the moment to change the look entirely. It depends on the condition and what you want.',
+			'a'       => array(
+				'label'     => 'Repair the existing feature',
+				'when'      => array( 'The structure and finish are fine', 'The issue is flow, a pump, or an igniter', 'You are happy with the current look' ),
+				'limits'    => 'Will not modernize a dated feature or add a new focal point.',
+				'longevity' => 'A repair buys years on a sound feature',
+			),
+			'b'       => array(
+				'label'     => 'Replace or add a feature',
+				'when'      => array( 'The feature is dated or has failed', 'You want a new look, sound, or focal point', 'You are already remodeling and can build it in' ),
+				'limits'    => 'Cost, plus permits for gas or structural work.',
+				'longevity' => 'New features last many years',
+			),
+			'reco'    => 'A flow or ignition problem on a sound feature is a repair. If the feature is dated, failed, or you want a new focal point, adding or replacing is worth doing, and many features retrofit into an existing pool without a full redo.',
+		),
+		'aeo_problems'      => array(
+			array( 'q' => 'Why isn\'t my waterfall or scupper flowing evenly anymore?', 'a' => 'Uneven flow usually means the feature is not getting the water it needs: a feature pump losing strength, a partially clogged line, or debris in the weir or scupper opening. Over time mineral buildup and leaves restrict the path. The fix is to check the feature pump and clear the plumbing and outlets, then tune the flow, rather than assuming the whole feature has failed.' ),
+			array( 'q' => 'Why won\'t my fire bowl light or stay lit?', 'a' => 'A fire feature that will not light or keeps going out is usually an ignition or gas-delivery issue: a dirty or failed igniter, low gas pressure, or wind blowing the flame out. Automated fire features also have safety cutoffs that trip if they do not sense flame. We check the igniter, the gas supply and pressure, and the wind exposure of the placement to find which it is.' ),
+			array( 'q' => 'Why does my water feature keep clogging or losing pressure?', 'a' => 'A feature that clogs or weakens is usually collecting debris in its loop or running on a struggling pump. Because features often draw from the pool, leaves and fine debris migrate into the feature lines and outlets, and LA landscaping loads them fast. Clearing the lines, servicing or resizing the feature pump, and improving pre-filtration restores steady flow.' ),
+			array( 'q' => 'Why is my sheer descent splashing outside the pool?', 'a' => 'A sheer descent that splashes past the edge is a leveling or flow-tuning issue, not a design flaw. If the lip is slightly off level or the flow rate is too high, the sheet of water lands short or wide. Adjusting the flow at the feature pump and re-leveling or shimming the outlet brings the water back into the pool and gives it the clean sheet it is supposed to have.' ),
+			array( 'q' => 'Can I run a new fire feature off my existing gas line?', 'a' => 'Sometimes, but only if the line has the capacity. A new fire bowl or pit adds BTU demand, and if the existing line already feeds a grill or heater, running everything at once can starve them all. We calculate the combined BTU load against the line and meter before tying in, and upsize the supply if needed, so the feature and your other gas appliances all work together.' ),
+			array( 'q' => 'Are fire and water features safe with young kids around?', 'a' => 'They can be, with the right design and controls. Water features add sound and movement without adding much risk, while fire features are safest when placed with clearance and run through automation so they are only on when you want them, not lit by hand. We plan placement, controls, and any required barriers with young children in mind so the feature is enjoyable rather than a worry.' ),
+		),
 		'seo_h1'            => 'Pool Fire & Water Features in Los Angeles',
 		'seo_keyword'       => 'pool water features',
 		'seo_title'         => 'Pool Fire & Water Features in Los Angeles',

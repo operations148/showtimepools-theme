@@ -157,7 +157,9 @@ $sections = apply_filters(
 		'problems',
 		'projects',       // real before/after (replaces the old 'before-after')
 		'service-areas',
-		'pricing',
+		// 'pricing' (the "Investment" card) retired: the starting price now
+		// shows as a fact in the glance block, the itemized breakdown lives in
+		// the cost guide, and the quote CTA moved into the glance section.
 		'faq',
 		'related',
 	),

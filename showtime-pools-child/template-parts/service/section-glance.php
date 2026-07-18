@@ -27,6 +27,16 @@ $price      = (string) ( $ctx['price'] ?? '' );
 $turnaround = (string) ( $ctx['turnaround'] ?? '' );
 $reviewed   = function_exists( 'showtime_aeo_reviewed_date' ) ? showtime_aeo_reviewed_date() : '';
 
+// Quote CTA + disclaimer live here now (the standalone pricing/"Investment"
+// section was retired — the starting price shows as a fact above and the
+// itemized breakdown lives in the cost guide).
+$disclaimer = (string) ( $ctx['disclaimer'] ?? '' );
+if ( '' === $disclaimer ) {
+	$disclaimer = __( 'Final price depends on pool size, equipment, finish selection, and site access. We give you a written quote within 48 hours of the free site visit. No mid-job upcharges.', 'showtime-pools' );
+}
+$phone = (string) apply_filters( 'showtime/business/phone', '(323) 825-2099' );
+$tel   = preg_replace( '/[^0-9+]/', '', $phone );
+
 // Only rows with a value render — no empty facts.
 $facts = array(
 	array( 'label' => __( 'Typical starting price', 'showtime-pools' ), 'value' => $price ),
@@ -57,6 +67,18 @@ $facts = array(
 					</div>
 				<?php endforeach; ?>
 			</dl>
+
+			<div class="svc-glance__foot">
+				<p class="svc-glance__disclaimer"><?php echo esc_html( $disclaimer ); ?></p>
+				<div class="cluster svc-glance__ctas">
+					<a class="btn btn--primary btn--lg" href="<?php echo esc_url( showtime_booking_url() ); ?>">
+						<?php esc_html_e( 'Get my quote', 'showtime-pools' ); ?>
+					</a>
+					<a class="btn btn--link" href="<?php echo esc_url( 'tel:' . $tel ); ?>">
+						<?php echo esc_html( sprintf( /* translators: %s: phone number */ __( 'Or call %s', 'showtime-pools' ), $phone ) ); ?>
+					</a>
+				</div>
+			</div>
 		</div>
 	</div>
 </section>
