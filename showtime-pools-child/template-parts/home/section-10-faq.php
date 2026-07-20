@@ -18,7 +18,7 @@ $faqs_default = array(
 		),
 		array(
 			'q' => __( 'How long does a remodel take?', 'showtime-pools' ),
-			'a' => __( 'A standard replaster + retile + equipment refresh runs 2-4 weeks depending on scope and weather. New construction is 8-14 weeks. We commit to a written timeline before work starts.', 'showtime-pools' ),
+			'a' => __( 'A standard replaster, retile, and equipment refresh typically runs 30 to 60 days depending on scope, finish, permits, and weather. New pool construction typically runs 120 to 210 days from approved design through water startup. These are planning estimates; we commit to a written timeline before work starts.', 'showtime-pools' ),
 		),
 		array(
 			'q' => __( 'Who actually shows up to my house?', 'showtime-pools' ),

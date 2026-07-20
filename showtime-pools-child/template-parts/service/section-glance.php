@@ -25,7 +25,13 @@ $best_for   = (string) ( $glance['best_for'] ?? '' );
 $area       = (string) ( $glance['area'] ?? apply_filters( 'showtime/business/primary_area', 'Sherman Oaks & greater Los Angeles' ) );
 $price      = (string) ( $ctx['price'] ?? '' );
 $turnaround = (string) ( $ctx['turnaround'] ?? '' );
+$turnaround_detail = (string) ( $ctx['turnaround_detail'] ?? '' );
 $reviewed   = function_exists( 'showtime_aeo_reviewed_date' ) ? showtime_aeo_reviewed_date() : '';
+
+// Timeline caveats: the per-service nuance (turnaround_detail) plus the shared
+// global helper. Shown small + muted beneath the "Typical timeframe" fact, not
+// in a tooltip, so the planning-estimate caveat is always readable.
+$timeline_helper = function_exists( 'showtime_timeline_helper' ) ? showtime_timeline_helper() : '';
 
 // Quote CTA + disclaimer live here now (the standalone pricing/"Investment"
 // section was retired — the starting price shows as a fact above and the
@@ -69,6 +75,16 @@ $facts = array(
 			</dl>
 
 			<div class="svc-glance__foot">
+				<?php if ( '' !== $turnaround && ( '' !== $turnaround_detail || '' !== $timeline_helper ) ) : ?>
+					<div class="svc-glance__timeline">
+						<?php if ( '' !== $turnaround_detail ) : ?>
+							<p class="svc-glance__timeline-detail"><?php echo esc_html( $turnaround_detail ); ?></p>
+						<?php endif; ?>
+						<?php if ( '' !== $timeline_helper ) : ?>
+							<p class="svc-glance__timeline-helper"><?php echo esc_html( $timeline_helper ); ?></p>
+						<?php endif; ?>
+					</div>
+				<?php endif; ?>
 				<p class="svc-glance__disclaimer"><?php echo esc_html( $disclaimer ); ?></p>
 				<div class="cluster svc-glance__ctas">
 					<a class="btn btn--primary btn--lg" href="<?php echo esc_url( showtime_booking_url() ); ?>">

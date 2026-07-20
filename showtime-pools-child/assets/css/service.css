@@ -510,6 +510,29 @@
 }
 .svc-glance__ctas { align-items: center; gap: var(--sp-4); }
 
+/* Timeline detail + shared helper: subordinate to the "Typical timeframe"
+   fact above — smaller, muted, and free-wrapping so long caveats stay readable
+   on every breakpoint. */
+.svc-glance__timeline {
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-2);
+}
+.svc-glance__timeline-detail {
+	margin: 0;
+	font-size: var(--fs-sm);
+	line-height: var(--lh-relaxed);
+	color: var(--c-text-muted);
+	overflow-wrap: break-word;
+}
+.svc-glance__timeline-helper {
+	margin: 0;
+	font-size: var(--fs-xs);
+	line-height: var(--lh-relaxed);
+	color: var(--c-text-soft);
+	overflow-wrap: break-word;
+}
+
 /* ─── Shared AEO table wrapper (cost + decision) ───────────────────── */
 .svc-cost__table-wrap,
 .svc-decision__table-wrap {

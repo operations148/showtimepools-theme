@@ -73,7 +73,8 @@ return array(
 			array( 'label' => 'Plumbing Repairs', 'price' => 'From $315' ),
 			array( 'label' => 'Electrical Repairs', 'price' => 'From $195' ),
 		),
-		'default_turnaround' => 'Same-day to 48 hours',
+		'default_turnaround' => '1–7 business days for most repairs',
+		'default_turnaround_detail' => 'Complex underground plumbing, deck removal, structural repair, or special-order parts may require 10–20 business days or a project-specific schedule.',
 		'default_includes'  => array(
 			'On-site diagnostic with photos and root-cause findings',
 			'Pump, filter, heater, salt cell, and valve repair',
@@ -149,7 +150,8 @@ return array(
 		'default_price_items' => array(
 			array( 'label' => 'Leak Detection', 'price' => 'Starts at $495' ),
 		),
-		'default_turnaround'=> 'Most leaks located in one visit',
+		'default_turnaround' => '1–2 service days',
+		'default_turnaround_detail' => 'Most leak detections are completed in one 2–6 hour visit. Complex plumbing, multiple bodies of water, or inconclusive initial testing may require a return visit.',
 		'default_includes'  => array(
 			'Full water-loss assessment (evaporation vs true leak, bucket test)',
 			'Dye testing at skimmers, returns, lights, and the main drain',
@@ -226,7 +228,8 @@ return array(
 			array( 'label' => 'Residential Pool Maintenance', 'price' => '$159/mo' ),
 			array( 'label' => 'Commercial Pool Maintenance', 'price' => '$350/mo' ),
 		),
-		'default_turnaround'=> 'Weekly visits',
+		'default_turnaround' => 'Weekly recurring visits',
+		'default_turnaround_detail' => 'Most routine visits take approximately 30–60 minutes. Initial onboarding, neglected pools, or recovery treatment may take longer.',
 		'default_includes'  => array(
 			'Same technician on your route every week',
 			'Full chemistry test and balance (chlorine, pH, alkalinity, calcium, CYA)',
@@ -302,7 +305,8 @@ return array(
 		'default_price_items' => array(
 			array( 'label' => 'Pool Calcium Tile Bead Blast Cleaning', 'price' => '$1,800' ),
 		),
-		'default_turnaround'=> '1-2 days on-site',
+		'default_turnaround' => '1–2 days on-site',
+		'default_turnaround_detail' => 'Most residential tile-cleaning projects finish in one day. Large pools or heavy mineral and calcium buildup may require a second day.',
 		'default_includes'  => array(
 			'On-site evaluation of tile type, scale severity, and method selection',
 			'Calcium and mineral scale removal from the full waterline tile band',
@@ -409,7 +413,8 @@ return array(
 			array( 'label' => 'Plaster (minimum 90 LF)', 'price' => '$75/LF' ),
 			array( 'label' => 'Mini Pebble (minimum 90 LF)', 'price' => '$103/LF' ),
 		),
-		'default_turnaround'=> '3-5 weeks',
+		'default_turnaround' => '30–60 calendar days',
+		'default_turnaround_detail' => 'Simple resurfacing may finish sooner. Structural modifications, extensive decking, special finishes, permit requirements, or concealed damage may take longer.',
 		'default_includes'  => array(
 			'Drain, prep, and bond coat on existing shell',
 			'Plaster, quartz, or PebbleTec finish (your choice)',
@@ -492,7 +497,8 @@ return array(
 			array( 'label' => 'Filter', 'price' => '$1,950' ),
 			array( 'label' => 'Pool / Spa Lights', 'price' => '$1,500' ),
 		),
-		'default_turnaround'=> '2-7 days',
+		'default_turnaround' => '2–7 business days',
+		'default_turnaround_detail' => 'Timing is measured after the selected equipment is available and any required permit, electrical, gas, or plumbing preparation is ready.',
 		'default_includes'  => array(
 			'In-person equipment audit with photo report',
 			'Pentair or Jandy authorized installation',
@@ -570,7 +576,8 @@ return array(
 		'default_price_items' => array(
 			array( 'label' => 'Pool Inspection & Diagnosis (1st Service Call)', 'price' => '$159' ),
 		),
-		'default_turnaround'=> 'Same-day verbal · 24-48 hour written',
+		'default_turnaround' => '1–3 business days',
+		'default_turnaround_detail' => 'Measured from the scheduled inspection and includes the on-site assessment and delivery of the written findings.',
 		'default_includes'  => array(
 			'On-site inspection: structure, equipment, plumbing, electrical, bonding',
 			'Written report within 24 to 48 hours, photos and code refs',
@@ -646,7 +653,8 @@ return array(
 		'default_price_items' => array(
 			array( 'label' => 'Automation Upgrade', 'price' => '$2,125' ),
 		),
-		'default_turnaround'=> '3-5 days',
+		'default_turnaround' => '3–5 business days',
+		'default_turnaround_detail' => 'Timing is measured after equipment availability, electrical readiness, system compatibility, and any required permits are confirmed.',
 		'default_includes'  => array(
 			'Pentair IntelliCenter or Jandy AquaLink RS install',
 			'Phone, tablet, and Alexa/Google Home integration',
@@ -725,7 +733,8 @@ return array(
 			array( 'label' => 'Pool Design Fee (to begin your project)', 'price' => '$650' ),
 			array( 'label' => 'Full Construction (typical range)', 'price' => 'From $85,000' ),
 		),
-		'default_turnaround'=> '8-14 weeks',
+		'default_turnaround' => '120–210 calendar days',
+		'default_turnaround_detail' => 'Typical total from approved scope through water startup, including ordinary design, engineering, permitting, construction, inspections, filling, and startup. Hillside properties, HOA review, coastal requirements, extensive hardscape, or complex municipal review may take longer.',
 		'default_includes'  => array(
 			'Site survey, soil report, and engineered structural plans',
 			'Full permitting through Sherman Oaks and LA County',
@@ -799,7 +808,8 @@ return array(
 		'icon'              => 'spa',
 		'accent_token'      => '--c-aqua-500',
 		'default_price'     => 'Starts at $12,000–$48,000+',
-		'default_turnaround'=> '3-6 weeks',
+		'default_turnaround' => 'Renovation: 30–60 days; new spa: 90–180 days',
+		'default_turnaround_detail' => 'Renovation refers to work using an existing spa shell. A new attached or custom spa includes typical design and permitting. Structural, access, hillside, or municipal-review conditions may extend the schedule.',
 		'default_includes'  => array(
 			'Engineered structural drawings for raised or attached spas',
 			'Permitting through LA County and city counter',
@@ -883,7 +893,8 @@ return array(
 			array( 'label' => 'Demo (minimum 90 LF)', 'price' => '$23/LF' ),
 			array( 'label' => 'Pressure Test', 'price' => '$795' ),
 		),
-		'default_turnaround'=> '1-3 weeks',
+		'default_turnaround' => '14–45 calendar days for most projects',
+		'default_turnaround_detail' => 'Timing depends on which finish elements are included. A full combined tile, coping, plaster, and decking scope may require up to 60 calendar days.',
 		'default_includes'  => array(
 			'Chip out and replace existing waterline tile and coping',
 			'Optional custom mosaic feature wall or step accents',
@@ -957,7 +968,8 @@ return array(
 		'icon'              => 'hardscape',
 		'accent_token'      => '--c-aqua-500',
 		'default_price'     => 'Starts at $22,000–$55,000',
-		'default_turnaround'=> '2-6 weeks',
+		'default_turnaround' => '21–60 calendar days',
+		'default_turnaround_detail' => 'Structural retaining walls, drainage modifications, extensive demolition, difficult access, special-order materials, or permit requirements can extend the schedule.',
 		'default_includes'  => array(
 			'Layout design coordinated with the pool deck',
 			'Concrete, paver, or natural stone surfaces',
@@ -1031,7 +1043,8 @@ return array(
 		'icon'              => 'kitchen',
 		'accent_token'      => '--c-aqua-500',
 		'default_price'     => 'Starts at $25,000–$45,000',
-		'default_turnaround'=> '3-7 weeks',
+		'default_turnaround' => '30–60 calendar days',
+		'default_turnaround_detail' => 'Includes ordinary design, utility permitting, fabrication, installation, and inspection. Special-order appliances, stone, countertops, or cabinetry may extend the schedule.',
 		'default_includes'  => array(
 			'Layout consultation focused on flow and cleanup',
 			'Concrete or block structural base',
@@ -1106,7 +1119,8 @@ return array(
 		'icon'              => 'fire',
 		'accent_token'      => '--c-aqua-500',
 		'default_price'     => 'Starts at $5,000–$22,000+',
-		'default_turnaround'=> '1-4 weeks',
+		'default_turnaround' => '21–60 calendar days for most projects',
+		'default_turnaround_detail' => 'Complex custom rockwork or projects involving multiple gas, plumbing, electrical, and structural elements may require a longer project-specific schedule.',
 		'default_includes'  => array(
 			'Spillways, sheer descents, and laminar deck jets',
 			'Fire bowls and fire pits, gas or propane',

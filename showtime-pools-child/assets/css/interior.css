@@ -655,6 +655,17 @@
 @media (max-width: 1000px) { .services-hub__grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 600px)  { .services-hub__grid { grid-template-columns: 1fr; } }
 
+/* One shared planning-estimate note beneath the service grids — the full
+   per-page timeline helper is not repeated on every card. */
+.services-hub__timeline-note {
+	max-width: var(--container-narrow);
+	margin: var(--sp-6) 0 0;
+	font-size: var(--fs-sm);
+	line-height: var(--lh-relaxed);
+	color: var(--c-text-muted);
+	overflow-wrap: break-word;
+}
+
 .svc-hub-card {
 	display: flex;
 	flex-direction: column;

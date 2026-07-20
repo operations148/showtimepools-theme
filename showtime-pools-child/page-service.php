@@ -38,6 +38,7 @@ $ctx = array(
 	'price_badge'=> '',
 	'price_items'=> array(),
 	'turnaround' => '',
+	'turnaround_detail' => '',
 	'disclaimer' => '',
 	'includes'   => array(),
 	'faqs'       => array(),
@@ -64,6 +65,7 @@ if ( $registry ) {
 	$ctx['price_badge'] = (string) ( $registry['default_price_badge'] ?? '' );
 	$ctx['price_items'] = (array)  ( $registry['default_price_items'] ?? array() );
 	$ctx['turnaround']  = (string) ( $registry['default_turnaround'] ?? '' );
+		$ctx['turnaround_detail'] = (string) ( $registry['default_turnaround_detail'] ?? '' );
 	$ctx['includes']   = (array)  ( $registry['default_includes'] ?? array() );
 	$ctx['faqs']       = (array)  ( $registry['default_faqs'] ?? array() );
 
@@ -93,6 +95,7 @@ if ( $acf ) {
 	$summary    = (string) get_field( 'hero_summary' );
 	$price      = (string) get_field( 'price_starting_at' );
 	$turnaround = (string) get_field( 'turnaround' );
+	$turnaround_detail = (string) get_field( 'turnaround_detail' );
 	$disclaimer = (string) get_field( 'pricing_disclaimer' );
 	$includes   = (array)  ( get_field( 'includes' ) ?: array() );
 	$faqs_acf   = (array)  ( get_field( 'faqs' ) ?: array() );
@@ -101,6 +104,7 @@ if ( $acf ) {
 	if ( $summary    !== '' ) { $ctx['summary']    = $summary; }
 	if ( $price      !== '' ) { $ctx['price']      = $price; }
 	if ( $turnaround !== '' ) { $ctx['turnaround'] = $turnaround; }
+	if ( $turnaround_detail !== '' ) { $ctx['turnaround_detail'] = $turnaround_detail; }
 	if ( $disclaimer !== '' ) { $ctx['disclaimer'] = $disclaimer; }
 
 	if ( $includes ) {

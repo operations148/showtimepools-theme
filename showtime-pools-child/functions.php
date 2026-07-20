@@ -61,6 +61,21 @@ function showtime_aeo_reviewed_date(): string {
 }
 
 /**
+ * Global timeline helper text shown once beneath the "Typical timeframe" on
+ * every individual service page. Defined in one filterable place
+ * (`showtime/timeline_helper`) so the caveat wording is never duplicated per
+ * service. The per-service timeline value + detail live in the service
+ * registry (default_turnaround / default_turnaround_detail); this is the
+ * shared disclaimer that applies to all of them.
+ */
+function showtime_timeline_helper(): string {
+	return (string) apply_filters(
+		'showtime/timeline_helper',
+		__( 'Typical timeframes are planning estimates, not guaranteed completion dates. Final timing is confirmed after site conditions, scope, materials, scheduling, and permit requirements are reviewed. Weather, inspection availability, access, change orders, special orders, and concealed conditions may extend completion.', 'showtime-pools' )
+	);
+}
+
+/**
  * Resolve which top-level nav item should be active for the current request.
  *
  * Returns one of: 'home', 'about', 'services', 'projects', 'service-areas',

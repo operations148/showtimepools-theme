@@ -2,7 +2,7 @@
 /**
  * Template Name: Services Hub
  *
- * /services/ — full 12-service hub. Magazine-style cards grouped into
+ * /services/ — full 14-service hub. Magazine-style cards grouped into
  * "Core" (first 6) and "Outdoor & Custom" (last 6). Service registry is
  * the single source of truth.
  *
@@ -134,6 +134,7 @@ if ( '' === $outdoor_lead )    { $outdoor_lead    = 'The bigger projects. Same c
 					</a>
 				<?php endforeach; ?>
 			</div>
+			<p class="services-hub__timeline-note"><?php esc_html_e( 'Timeframes are typical planning estimates. Final schedules depend on scope, materials, permits, inspections, access, and site conditions.', 'showtime-pools' ); ?></p>
 		</div>
 	</section>
 
