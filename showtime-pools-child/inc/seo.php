@@ -53,17 +53,16 @@ function showtime_seo_should_noindex(): bool {
 }
 
 /**
- * Resolve a per-page SEO title. Falls back to wp_get_document_title().
+ * Resolve the per-page SEO title for Open Graph + Twitter.
+ *
+ * Deliberately delegates to wp_get_document_title(), which is driven by the
+ * single title authority in inc/seo-defaults.php (pre_get_document_title).
+ * This guarantees og:title and twitter:title are ALWAYS identical to the
+ * <title> tag — no separate, drifting front-page/404 strings.
  */
 function showtime_seo_title(): string {
-	if ( is_front_page() ) {
-		return 'Showtime Pools: Stop juggling contractors. One team for repairs, weekly service, remodels, and equipment in LA.';
-	}
-	if ( is_404() ) {
-		return 'Page not found: Showtime Pools';
-	}
 	$title = wp_get_document_title();
-	return $title ? $title : get_bloginfo( 'name' );
+	return $title ? $title : (string) apply_filters( 'showtime/business/name', 'Showtime Pools' );
 }
 
 /**
@@ -218,23 +217,10 @@ function showtime_website_schema(): array {
 
 // ─── wp_head injectors ─────────────────────────────────────────────
 
-// Remove WP's auto title-tag injection so we can place ours with intent.
-// (Astra registers `title-tag`; theme-setup keeps it; we override via the
-// document_title_parts filter rather than removing support.)
-
-// Drive title tag through a clean filter so Rank Math + WP play nice.
-add_filter(
-	'document_title_parts',
-	function ( $parts ) {
-		if ( is_front_page() ) {
-			$parts['title']   = 'Showtime Pools';
-			$parts['tagline'] = 'Stop juggling contractors. One team handles it all.';
-			$parts['site']    = '';
-		}
-		return $parts;
-	},
-	5
-);
+// The <title> tag has ONE authority: the pre_get_document_title filter in
+// inc/seo-defaults.php. A former document_title_parts front-page branch lived
+// here but was dead code (pre_get_document_title short-circuits it) and gave
+// the impression of a second title generator — removed so there is exactly one.
 
 // Open Graph + Twitter + canonical + theme color + extra schema
 add_action(

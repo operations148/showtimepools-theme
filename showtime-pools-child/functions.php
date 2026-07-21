@@ -61,6 +61,28 @@ function showtime_aeo_reviewed_date(): string {
 }
 
 /**
+ * One centralized telephone value for the whole theme.
+ *
+ * Display form: (323) 825-2099  — human-readable, used in copy + tel: labels.
+ * Machine form: +13238252099    — strict E.164, used in every schema node.
+ *
+ * The E.164 value is DERIVED from the display value (single source of truth),
+ * so the two can never drift and no generator hardcodes its own phone string.
+ * This is what keeps Service, LocalBusiness, ContactPoint, and branch schema
+ * on the same valid number, and guards against the malformed, double-dashed
+ * E.164 variant seen in the production (Search Atlas OTTO) schema layer.
+ */
+function showtime_phone_display(): string {
+	return (string) apply_filters( 'showtime/business/phone', '(323) 825-2099' );
+}
+
+function showtime_phone_e164(): string {
+	$digits  = preg_replace( '/\D/', '', preg_replace( '/^\+?1/', '', showtime_phone_display() ) );
+	$default = '+1' . $digits;
+	return (string) apply_filters( 'showtime/business/phone_e164', $default );
+}
+
+/**
  * Global timeline helper text shown once beneath the "Typical timeframe" on
  * every individual service page. Defined in one filterable place
  * (`showtime/timeline_helper`) so the caveat wording is never duplicated per

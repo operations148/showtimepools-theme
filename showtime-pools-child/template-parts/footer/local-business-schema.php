@@ -99,13 +99,20 @@ $days_to_schema = static function ( string $day ): array {
 // NAP exactly even when the WP site title carries an environment or
 // sub-brand suffix. Override via the filter if the brand ever changes.
 $biz_name        = (string) apply_filters( 'showtime/business/name',      'Showtime Pools' );
-$biz_phone       = (string) apply_filters( 'showtime/business/phone',     '(323) 825-2099' );
 $biz_email       = (string) apply_filters( 'showtime/business/email',     'operations@showtimepoolmechanics.com' );
 $biz_description = (string) apply_filters( 'showtime/business/tagline',
 	'Stop juggling contractors. One team handles pool repairs, weekly service, remodels, equipment installation, inspections, and outdoor living across Los Angeles.'
 );
 
-$tel_e164 = '+1' . preg_replace( '/[^0-9]/', '', preg_replace( '/^\+1/', '', $biz_phone ) );
+// Telephone comes from the one centralized source (functions.php). Every
+// telephone in this file — business, contactPoint, and each branch — uses
+// $tel_e164, so there is a single valid number across the whole graph.
+$biz_phone = function_exists( 'showtime_phone_display' )
+	? showtime_phone_display()
+	: (string) apply_filters( 'showtime/business/phone', '(323) 825-2099' );
+$tel_e164  = function_exists( 'showtime_phone_e164' )
+	? showtime_phone_e164()
+	: '+1' . preg_replace( '/[^0-9]/', '', preg_replace( '/^\+1/', '', $biz_phone ) );
 
 $socials_raw = apply_filters( 'showtime/business/socials', array() );
 $sameAs = array();

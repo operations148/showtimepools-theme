@@ -64,7 +64,7 @@ function showtime_seo_context() {
 			'h1'      => 'Pool Service in Los Angeles',
 			'keyword' => 'pool service near me',
 			'intro'   => 'Los Angeles pool companies near me: pool service, pool cleaning service, pool repair near me, remodeling, and new pool construction. One supervised crew. Steve on every quote.',
-			'title'   => 'Pool Service & Repair in Los Angeles | Showtime Pools',
+			'title'   => 'Pool Service & Repairs in Los Angeles | Showtime Pools',
 			'meta'    => 'Stop juggling contractors. One LA crew for pool repair, weekly service, remodels, and equipment since 2003. Free quote, call (323) 825-2099.',
 		);
 	}
@@ -175,17 +175,64 @@ function showtime_seo_resolved_desc( array $ctx ): string {
 }
 
 /**
- * Drive the <title> from the registry on every environment.
+ * The single, authoritative <title> generator for the whole site.
+ *
+ * `pre_get_document_title` short-circuits wp_get_document_title(), so this is
+ * the one place titles are decided — no document_title_parts branch competes
+ * with it. Order:
+ *   1. Hand-crafted registry seo_title (home, services, areas, hub/utility) —
+ *      these already carry the brand exactly once.
+ *   2. Fall-through (posts, projects, archives, unmapped singles): build
+ *      "{page title} | Showtime Pools". The brand is HARDCODED, never
+ *      get_bloginfo('name'): the live WP Site Title carries a sub-brand suffix
+ *      ("Showtime Pools Mechanics"), and letting it into the title is what
+ *      produced the double/'wrong-brand' SERP title. We also never append the
+ *      brand twice when the base already contains it.
+ *
+ * This controls the SERVER-rendered title only. On production, Search Atlas
+ * OTTO can still rewrite the title in its own layer — that is a dashboard
+ * setting, documented in .claude/audits/critical-schema-metadata-fix.md, not
+ * something the theme can override from here.
  */
 add_filter(
 	'pre_get_document_title',
 	function ( $title ) {
+		$brand = (string) apply_filters( 'showtime/business/name', 'Showtime Pools' );
+
+		// 1. Registry-owned titles (already brand-correct).
 		$ctx = showtime_seo_context();
-		if ( ! $ctx ) {
-			return $title;
+		if ( $ctx ) {
+			$resolved = showtime_seo_resolved_title( $ctx );
+			if ( '' !== $resolved ) {
+				return $resolved;
+			}
 		}
-		$resolved = showtime_seo_resolved_title( $ctx );
-		return '' !== $resolved ? $resolved : $title;
+
+		// 2. Fall-through — force a single-brand "{base} | {brand}" title and
+		// keep the WP Site Title (blogname) out of the tag entirely.
+		if ( is_404() ) {
+			return 'Page not found | ' . $brand;
+		}
+
+		$base = '';
+		if ( is_singular() ) {
+			$base = wp_strip_all_tags( get_the_title( get_queried_object_id() ) );
+		} elseif ( is_archive() ) {
+			$base = wp_strip_all_tags( get_the_archive_title() );
+		} elseif ( is_search() ) {
+			$base = 'Search results';
+		}
+
+		$base = trim( (string) $base );
+		if ( '' === $base ) {
+			return $title; // Leave genuinely unknown edge cases to WP.
+		}
+
+		// Don't double-brand when the base already names the brand.
+		if ( false !== stripos( $base, $brand ) ) {
+			return $base;
+		}
+		return $base . ' | ' . $brand;
 	},
 	20
 );
