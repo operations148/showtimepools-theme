@@ -72,8 +72,8 @@ $hero_trust_icons = array(
 // WordPress mode it reads the Hero video URL setting (empty = no video, hero
 // falls back to the still image). The poster is the hero_poster slot, which
 // defaults to the hero still, so the LCP preload in inc/performance.php stays
-// valid. Mobile shows the poster image only (CSS hides the video < 961px) so
-// no video bytes load on phones.
+// valid. The video plays on ALL viewports (mobile matches desktop);
+// `preload="none"` + the poster frame keep it off the critical LCP path.
 $hero_video = ( defined( 'SHOWTIME_CODE_FIRST' ) && SHOWTIME_CODE_FIRST )
 	? SHOWTIME_CHILD_URI . '/assets/img/Showtimehero.mp4'
 	: (string) get_option( 'showtime_hero_video_url', '' );

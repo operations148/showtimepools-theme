@@ -1504,8 +1504,12 @@ main > section:first-child[data-reveal] {
 	display: block;
 }
 
-/* Optional hero background video (desktop only). Poster <img> covers mobile and
-   the pre-play moment; the video is hidden < 961px so phones load no video. */
+/* Optional hero background video. Plays on ALL viewports (mobile matches
+   desktop, per request). The <video> carries poster="…" for the pre-play
+   frame, and the separate poster <img> stays hidden — the video element with
+   its poster attribute covers the moment before autoplay. `preload="none"`
+   keeps the video from competing with the LCP paint; muted + playsinline +
+   autoplay lets it start on mobile. */
 .home-hero--immersive .home-hero__bgvideo {
 	position: absolute;
 	inset: 0;
@@ -1524,10 +1528,6 @@ main > section:first-child[data-reveal] {
 	height: 100%;
 	object-fit: cover;
 	display: none;
-}
-@media (max-width: 960px) {
-	.home-hero--immersive .home-hero__bgvideo { display: none; }
-	.home-hero--immersive .home-hero__bgphoto--poster { display: block; }
 }
 
 /* Diagonal dark veil — heavier on the left where the copy sits,
@@ -2331,6 +2331,15 @@ main > section:first-child[data-reveal] {
 }
 @media (max-width: 900px) {
 	.interactive-pool__grid { grid-template-columns: 1fr; }
+	/* Let the grid tracks and the media card shrink below their content /
+	   intrinsic width instead of blowing past the viewport. */
+	.interactive-pool__grid > * { min-width: 0; }
+	/* min-height:320px + aspect-ratio:4/3 transfers to a ~427px implied minimum
+	   WIDTH, which overflowed phones narrower than that (card cut off on the
+	   right). Drop the min-height on mobile so the 4/3 ratio sizes off the
+	   column. Two-class selector so this beats the later base rule regardless
+	   of source order (media queries add no specificity). */
+	.interactive-pool .interactive-pool__media { min-height: 0; }
 }
 
 /* ── Photo + Day/Night filter. Clicking a feature swaps .interactive-pool__img
