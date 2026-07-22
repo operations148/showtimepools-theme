@@ -42,16 +42,15 @@ $contact_existing_body     = $_pm( 'contact_existing_body' );
 $phone = (string) apply_filters( 'showtime/business/phone', '(323) 825-2099' );
 $email = (string) apply_filters( 'showtime/business/email', 'operations@showtimepoolmechanics.com' );
 
-// Offices + hours come from Site Content → Offices & hours ACF repeaters.
-$offices_default = array(
-	array( 'label' => __( 'Sherman Oaks (Main)', 'showtime-pools' ), 'street' => '15301 Ventura Blvd.', 'city' => 'Sherman Oaks, CA 91403' ),
-	array( 'label' => __( 'Century City', 'showtime-pools' ),         'street' => '1925 Century Park East, Suite 1700', 'city' => 'Los Angeles, CA 90067' ),
-	array( 'label' => __( 'Beverly Hills', 'showtime-pools' ),        'street' => '9461 Charleville Blvd. #1902', 'city' => 'Beverly Hills, CA 90212' ),
-);
-$offices = function_exists( 'showtime_acf_rows' )
-	? showtime_acf_rows( 'offices', $offices_default )
-	: $offices_default;
-$offices = apply_filters( 'showtime/business/offices', $offices );
+// Offices come from the one canonical source (functions.php): Sherman Oaks +
+// Century City. Beverly Hills is a service area, not an office — it must not
+// appear in this list. ACF `offices` rows still override in wp-admin.
+$offices = function_exists( 'showtime_offices' )
+	? showtime_offices()
+	: array(
+		array( 'label' => __( 'Sherman Oaks (Main)', 'showtime-pools' ), 'street' => '15301 Ventura Blvd.', 'city' => 'Sherman Oaks, CA 91403' ),
+		array( 'label' => __( 'Century City', 'showtime-pools' ),         'street' => '1925 Century Park East, Suite 1700', 'city' => 'Los Angeles, CA 90067' ),
+	);
 
 $hours_default_map = array(
 	__( 'Mon-Sat', 'showtime-pools' ) => __( '8:00 AM - 5:00 PM', 'showtime-pools' ),

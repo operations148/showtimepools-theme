@@ -335,3 +335,32 @@ add_filter(
 	10,
 	2
 );
+
+// Keep the noindex utility pages (/book/, /quote/, /shop/) OUT of the pages
+// sitemap. WordPress core does not honour the robots noindex meta for
+// sitemaps, so a page can be noindexed yet still listed. We drive the
+// exclusion off the SAME template list as the robots meta
+// (showtime_noindex_page_templates) so the two never disagree. The OR with
+// NOT EXISTS keeps default-template pages (no _wp_page_template meta) in.
+add_filter(
+	'wp_sitemaps_posts_query_args',
+	function ( array $args, string $post_type ): array {
+		if ( 'page' !== $post_type || ! function_exists( 'showtime_noindex_page_templates' ) ) {
+			return $args;
+		}
+		$templates = showtime_noindex_page_templates();
+		if ( empty( $templates ) ) {
+			return $args;
+		}
+		$meta_query   = (array) ( $args['meta_query'] ?? array() );
+		$meta_query[] = array(
+			'relation' => 'OR',
+			array( 'key' => '_wp_page_template', 'value' => $templates, 'compare' => 'NOT IN' ),
+			array( 'key' => '_wp_page_template', 'compare' => 'NOT EXISTS' ),
+		);
+		$args['meta_query'] = $meta_query;
+		return $args;
+	},
+	10,
+	2
+);

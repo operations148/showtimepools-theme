@@ -14,8 +14,13 @@
  *   - areaServed                                         ← Showtime\Areas registry
  *
  * Outputs:
- *   - 1× canonical LocalBusiness node (the @id Google's KG anchors to)
- *   - N× branch LocalBusiness nodes, one per additional office
+ *   - EXACTLY ONE business entity: the canonical node (@id #organization) that
+ *     Google's KG anchors to. Its primary `address` is Sherman Oaks.
+ *   - Secondary offices (e.g. Century City) ride ON that node as subordinate
+ *     `location` Place references — never as separate LocalBusiness/branch
+ *     entities. There are no #branch-* nodes.
+ *   - Beverly Hills is a service area only (see \Showtime\Areas): it appears in
+ *     `areaServed`, never as an office address or branch.
  *
  * @package ShowtimePools
  */
@@ -132,16 +137,14 @@ if ( empty( $sameAs ) ) {
 	);
 }
 
-// Offices from ACF (fallback to legacy hardcoded 3-office set).
+// Offices from the one canonical source (functions.php): Sherman Oaks
+// (primary) + Century City (secondary). Beverly Hills is a service area, not
+// an office, so it is never in this list and never becomes a business branch.
 $offices_default = array(
 	array( 'label' => 'Sherman Oaks (Main)', 'street' => '15301 Ventura Blvd.', 'city' => 'Sherman Oaks, CA 91403' ),
 	array( 'label' => 'Century City',         'street' => '1925 Century Park East, Suite 1700', 'city' => 'Los Angeles, CA 90067' ),
-	array( 'label' => 'Beverly Hills',        'street' => '9461 Charleville Blvd. #1902', 'city' => 'Beverly Hills, CA 90212' ),
 );
-$offices = function_exists( 'showtime_acf_rows' )
-	? showtime_acf_rows( 'offices', $offices_default )
-	: $offices_default;
-$offices = apply_filters( 'showtime/business/offices', $offices );
+$offices = function_exists( 'showtime_offices' ) ? showtime_offices() : $offices_default;
 
 $main_office = $offices[0] ?? $offices_default[0];
 $main_parsed = $parse_city( (string) ( $main_office['city'] ?? '' ) );
@@ -276,25 +279,23 @@ $schema = apply_filters(
 	)
 );
 
-// Branch offices — separate LocalBusiness nodes, one per additional office.
-$branches = array();
-$slug_for = static function ( string $label ): string {
-	return sanitize_title( $label );
-};
+// Secondary offices (Century City) are represented as subordinate `location`
+// Place nodes ON the central organization — NOT as separate LocalBusiness /
+// branch entities. This keeps exactly ONE business entity site-wide (no
+// #branch-* nodes, no competing LocalBusiness) while still declaring the real
+// second office. array_slice skips the primary office (Sherman Oaks), which is
+// already the organization's main `address`.
+$secondary_places = array();
 foreach ( array_slice( $offices, 1 ) as $office ) {
 	$label  = (string) ( $office['label']  ?? '' );
 	$street = (string) ( $office['street'] ?? '' );
 	$city   = (string) ( $office['city']   ?? '' );
 	if ( '' === $street ) { continue; }
 	$parsed = $parse_city( $city );
-	$branches[] = array(
-		'@context'  => 'https://schema.org',
-		'@type'     => 'LocalBusiness',
-		'@id'       => home_url( '/#branch-' . $slug_for( $label ) ),
-		'branchOf'  => array( '@id' => $home_id ),
-		'name'      => $biz_name . ', ' . $label,
-		'telephone' => $tel_e164,
-		'address'   => array(
+	$secondary_places[] = array(
+		'@type'   => 'Place',
+		'name'    => $biz_name . ' - ' . $label,
+		'address' => array(
 			'@type'           => 'PostalAddress',
 			'streetAddress'   => $street,
 			'addressLocality' => $parsed['locality'],
@@ -304,10 +305,11 @@ foreach ( array_slice( $offices, 1 ) as $office ) {
 		),
 	);
 }
-$branches = apply_filters( 'showtime/schema/local_business_branches', $branches );
+$secondary_places = apply_filters( 'showtime/schema/secondary_locations', $secondary_places );
+if ( ! empty( $secondary_places ) ) {
+	// schema.org accepts a single object or an array for `location`.
+	$schema['location'] = ( 1 === count( $secondary_places ) ) ? $secondary_places[0] : $secondary_places;
+}
 
 ?>
 <script type="application/ld+json"><?php echo wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ); ?></script>
-<?php foreach ( $branches as $branch ) : ?>
-<script type="application/ld+json"><?php echo wp_json_encode( $branch, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ); ?></script>
-<?php endforeach; ?>

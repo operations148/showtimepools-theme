@@ -15,13 +15,14 @@ $phone = apply_filters( 'showtime/business/phone', '(323) 825-2099' );
 // once a primary @showtimepools.com mailbox is provisioned.
 $email = (string) apply_filters( 'showtime/business/email', 'operations@showtimepoolmechanics.com' );
 
-// PHP defaults — match the legacy hardcoded arrays so the site renders
-// correctly when ACF is inactive or no rows have been entered yet.
-$offices_default = array(
-	array( 'label' => __( 'Sherman Oaks (Main)', 'showtime-pools' ), 'street' => '15301 Ventura Blvd.', 'city' => 'Sherman Oaks, CA 91403' ),
-	array( 'label' => __( 'Century City', 'showtime-pools' ),         'street' => '1925 Century Park East, Suite 1700', 'city' => 'Los Angeles, CA 90067' ),
-);
-$offices = apply_filters( 'showtime/business/offices', showtime_acf_rows( 'offices', $offices_default ) );
+// Offices come from the one canonical source (functions.php) so footer,
+// contact page, and schema never drift. Sherman Oaks + Century City only.
+$offices = function_exists( 'showtime_offices' )
+	? showtime_offices()
+	: apply_filters( 'showtime/business/offices', showtime_acf_rows( 'offices', array(
+		array( 'label' => __( 'Sherman Oaks (Main)', 'showtime-pools' ), 'street' => '15301 Ventura Blvd.', 'city' => 'Sherman Oaks, CA 91403' ),
+		array( 'label' => __( 'Century City', 'showtime-pools' ),         'street' => '1925 Century Park East, Suite 1700', 'city' => 'Los Angeles, CA 90067' ),
+	) ) );
 
 // Hours: ACF stores as repeater rows [{day, time}], legacy was day=>time map.
 // Normalize to legacy shape so the dl renderer below stays unchanged.

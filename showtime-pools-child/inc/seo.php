@@ -40,13 +40,25 @@ function showtime_canonical_url(): string {
 }
 
 /**
- * Whether the current request should be noindexed: thin GHL-iframe utility
- * pages (/quote/, /book/, via page-iframe.php) and the /shop/ coming-soon
- * placeholder (page-shop.php) carry no unique indexable content of their
- * own. Everything else stays indexable.
+ * Page templates whose pages are noindexed AND kept out of the XML sitemap:
+ * thin GHL-iframe utility pages (/quote/, /book/, via page-iframe.php) and the
+ * /shop/ coming-soon placeholder (page-shop.php). One list, so the robots meta
+ * (showtime_seo_should_noindex) and the sitemap exclusion (inc/crawl.php) can
+ * never disagree about what is indexable.
+ */
+function showtime_noindex_page_templates(): array {
+	return (array) apply_filters(
+		'showtime/seo/noindex_templates',
+		array( 'page-iframe.php', 'page-shop.php' )
+	);
+}
+
+/**
+ * Whether the current request should be noindexed. Everything not built on a
+ * noindex template stays indexable.
  */
 function showtime_seo_should_noindex(): bool {
-	if ( ! is_page_template( array( 'page-iframe.php', 'page-shop.php' ) ) ) {
+	if ( ! is_page_template( showtime_noindex_page_templates() ) ) {
 		return false;
 	}
 	return (bool) apply_filters( 'showtime/seo/noindex', true );

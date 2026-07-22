@@ -83,6 +83,34 @@ function showtime_phone_e164(): string {
 }
 
 /**
+ * The ONE canonical office list for the whole theme — footer, contact page,
+ * and LocalBusiness schema all read from here so the three can never drift.
+ *
+ * Two real, staffed offices only:
+ *   1. Sherman Oaks (primary / registered business address)
+ *   2. Century City (secondary office)
+ *
+ * Beverly Hills is a SERVICE AREA, not an office — it lives in the
+ * \Showtime\Areas registry (areaServed + the /service-areas/beverly-hills/
+ * page) and must NEVER appear here as an office or a LocalBusiness branch.
+ *
+ * Layering matches the rest of the business-fact helpers: ACF `offices`
+ * rows (when entered in wp-admin) override the code default, and the
+ * `showtime/business/offices` filter has the final say. Each row is
+ * ['label','street','city'].
+ */
+function showtime_offices(): array {
+	$default = array(
+		array( 'label' => __( 'Sherman Oaks (Main)', 'showtime-pools' ), 'street' => '15301 Ventura Blvd.', 'city' => 'Sherman Oaks, CA 91403' ),
+		array( 'label' => __( 'Century City', 'showtime-pools' ),        'street' => '1925 Century Park East, Suite 1700', 'city' => 'Los Angeles, CA 90067' ),
+	);
+	$offices = function_exists( 'showtime_acf_rows' )
+		? showtime_acf_rows( 'offices', $default )
+		: $default;
+	return (array) apply_filters( 'showtime/business/offices', $offices );
+}
+
+/**
  * Global timeline helper text shown once beneath the "Typical timeframe" on
  * every individual service page. Defined in one filterable place
  * (`showtime/timeline_helper`) so the caveat wording is never duplicated per

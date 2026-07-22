@@ -186,6 +186,16 @@ if ( null === $probe ) {
 		$dupe_ids
 			? bad( "$label: duplicate @id node(s): " . implode( ', ', $dupe_ids ) )
 			: ok( "$label: no duplicate @id nodes" );
+
+		// Business-entity hygiene (sitewide footer schema): exactly one
+		// #organization, no #branch-* LocalBusiness, no Beverly Hills office
+		// address in schema. Beverly Hills must remain only as an areaServed City.
+		$n_branch     = substr_count( $h, '#branch-' );
+		$n_charleville= substr_count( $h, 'Charleville' ) + substr_count( $h, '90212' );
+		$n_org        = count( array_filter( $ids, static fn( $id ) => str_ends_with( $id, '#organization' ) ) );
+		0 === $n_branch      ? ok( "$label: no #branch-* business entity" )        : bad( "$label: $n_branch #branch-* node(s) present" );
+		0 === $n_charleville ? ok( "$label: no Beverly Hills office in schema" )    : bad( "$label: Beverly Hills office address in schema" );
+		( 1 === $n_org || 0 === $n_org ) ? ok( "$label: single (or zero) #organization node" ) : bad( "$label: $n_org #organization nodes (expected 1)" );
 	}
 }
 
