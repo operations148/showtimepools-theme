@@ -1,7 +1,15 @@
 <?php
 /**
- * Frontend perf cleanup. WP Rocket handles caching, this file handles the
- * default WP bloat that has no business loading on a service-business site.
+ * Frontend perf cleanup + cache advertising.
+ *
+ * There is NO page-cache plugin on this site (verified 2026-07-22: no WP
+ * Rocket / LiteSpeed / W3TC footprint in the live HTML). Caching is expected
+ * to happen at the Cloudflare edge — see
+ * .claude/audits/cloudflare-performance-runbook.md.
+ *
+ * This file handles the default WP bloat that has no business loading on a
+ * service-business site, and emits the Cache-Control header that lets an edge
+ * cache hold anonymous HTML.
  *
  * @package ShowtimePools
  */
@@ -101,4 +109,61 @@ add_filter(
 	},
 	10,
 	2
+);
+
+/**
+ * Advertise anonymous HTML as edge-cacheable.
+ *
+ * WordPress ships no Cache-Control on front-end HTML, so a shared cache has
+ * nothing to act on and every visitor pays a full PHP+MySQL render (measured
+ * ~1.2s origin think-time on 2026-07-22, cf-cache-status: DYNAMIC).
+ *
+ * `max-age=0` keeps BROWSERS from holding stale HTML, while `s-maxage` lets a
+ * SHARED cache (the Cloudflare edge) serve it. This header is inert until
+ * HTML caching is actually switched on at Cloudflare — either APO or a
+ * "Cache Everything" rule set to respect origin TTL. See the runbook.
+ *
+ * Deliberately skipped: logged-in users, admin/AJAX/cron/REST, non-GET
+ * requests, previews, and search/404 — anything that is personalised or
+ * must never be served from a shared cache.
+ */
+add_action(
+	'template_redirect',
+	function () {
+		if ( is_admin() || is_user_logged_in() || is_preview() ) {
+			return;
+		}
+		if ( ( defined( 'DOING_AJAX' ) && DOING_AJAX )
+			|| ( defined( 'DOING_CRON' ) && DOING_CRON )
+			|| ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) {
+			return;
+		}
+		// GET and HEAD are the cacheable methods; CDNs issue both.
+		$method = strtoupper( (string) ( $_SERVER['REQUEST_METHOD'] ?? 'GET' ) );
+		if ( 'GET' !== $method && 'HEAD' !== $method ) {
+			return;
+		}
+		// Never hand a shared cache a search result or a 404.
+		if ( is_search() || is_404() ) {
+			return;
+		}
+		// Logged-out visitors who still carry a WP auth/comment cookie are
+		// treated as personalised to be safe.
+		foreach ( array_keys( (array) $_COOKIE ) as $cookie ) {
+			if ( 0 === strpos( (string) $cookie, 'wordpress_logged_in' )
+				|| 0 === strpos( (string) $cookie, 'comment_author' ) ) {
+				return;
+			}
+		}
+
+		$s_maxage = (int) apply_filters( 'showtime/cache/s_maxage', 600 );
+		if ( $s_maxage < 1 ) {
+			return;
+		}
+		header( sprintf(
+			'Cache-Control: public, max-age=0, s-maxage=%d, stale-while-revalidate=60',
+			$s_maxage
+		) );
+	},
+	20
 );
