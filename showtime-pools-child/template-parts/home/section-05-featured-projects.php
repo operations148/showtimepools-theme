@@ -27,8 +27,11 @@ if ( post_type_exists( 'project' ) ) {
 			$pid = get_the_ID();
 			$slot = apply_filters( 'showtime/image/slot_for_project', 'project_1', (int) $pid );
 			$image = '';
+			$image_alt = '';
 			if ( has_post_thumbnail( $pid ) ) {
 				$image = (string) get_the_post_thumbnail_url( $pid, 'large' );
+				// Priority 1: the attachment's own alt metadata from the Media Library.
+				$image_alt = (string) get_post_meta( get_post_thumbnail_id( $pid ), '_wp_attachment_image_alt', true );
 			} elseif ( function_exists( 'showtime_image' ) ) {
 				$image = showtime_image( $slot, 1024 );
 			}
@@ -37,15 +40,25 @@ if ( post_type_exists( 'project' ) ) {
 				if ( null === $v || '' === $v ) { $v = get_post_meta( $id, $k, true ); }
 				return (string) $v;
 			};
+			$nb = $pm( 'neighborhood', (int) $pid );
+			// Alt priority: real attachment alt → contextual "…in {neighborhood}"
+			// → project title. Describes the photo without repeating the card's
+			// visible <h3> title verbatim, and never invents details.
+			if ( '' === $image_alt ) {
+				$image_alt = '' !== $nb
+					? sprintf( /* translators: %s: neighborhood */ __( 'Completed pool project in %s', 'showtime-pools' ), $nb )
+					: get_the_title();
+			}
 			$projects[] = array(
 				'title'        => get_the_title(),
 				'href'         => get_permalink(),
-				'neighborhood' => $pm( 'neighborhood', (int) $pid ),
+				'neighborhood' => $nb,
 				'scope'        => $pm( 'scope', (int) $pid ),
 				'finish'       => $pm( 'finish', (int) $pid ),
 				'duration'     => $pm( 'duration_label', (int) $pid ),
 				'value'        => $pm( 'value_label', (int) $pid ),
 				'image'        => $image,
+				'image_alt'    => $image_alt,
 				'gradient'     => 'linear-gradient(135deg,#1F2F3A 0%,#5C8A9E 100%)',
 			);
 		}
@@ -114,8 +127,18 @@ if ( empty( $projects ) ) {
 			<?php foreach ( $projects as $p ) : ?>
 				<a class="proj-card" href="<?php echo esc_url( $p['href'] ); ?>">
 					<div class="proj-card__media" style="background:<?php echo esc_attr( $p['gradient'] ?? 'linear-gradient(135deg,#1F2F3A,#5C8A9E)' ); ?>">
-						<?php if ( ! empty( $p['image'] ) ) : ?>
-							<img class="proj-card__media-img" src="<?php echo esc_url( $p['image'] ); ?>" alt="" loading="lazy" decoding="async" width="1024" height="768">
+						<?php
+						if ( ! empty( $p['image'] ) ) :
+							// Informative project photo — resolved alt, or a contextual
+							// fallback for the curated cards that don't carry one.
+							$proj_alt = (string) ( $p['image_alt'] ?? '' );
+							if ( '' === $proj_alt ) {
+								$proj_alt = '' !== (string) ( $p['neighborhood'] ?? '' )
+									? sprintf( /* translators: %s: neighborhood */ __( 'Completed pool project in %s', 'showtime-pools' ), (string) $p['neighborhood'] )
+									: (string) ( $p['title'] ?? '' );
+							}
+							?>
+							<img class="proj-card__media-img" src="<?php echo esc_url( $p['image'] ); ?>" alt="<?php echo esc_attr( $proj_alt ); ?>" loading="lazy" decoding="async" width="1024" height="768">
 						<?php endif; ?>
 						<?php if ( ! empty( $p['neighborhood'] ) ) : ?>
 							<span class="proj-card__neighborhood"><?php echo esc_html( $p['neighborhood'] ); ?></span>
