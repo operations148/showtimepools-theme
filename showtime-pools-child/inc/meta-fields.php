@@ -118,7 +118,7 @@ function showtime_inspections_hub_meta_box( WP_Post $post ): void {
 	showtime_meta_field( 'types_eyebrow', 'Eyebrow chip', $post->ID );
 	showtime_meta_field( 'types_h2',      'Section heading', $post->ID );
 
-	echo '<h4 style="margin:14px 0 10px;border-bottom:1px solid #ddd;padding-bottom:6px;">' . esc_html__( '"Why Mechanics" Section', 'showtime-pools' ) . '</h4>';
+	echo '<h4 style="margin:14px 0 10px;border-bottom:1px solid #ddd;padding-bottom:6px;">' . esc_html__( '"Why Independent" Section', 'showtime-pools' ) . '</h4>';
 	showtime_meta_field( 'why_eyebrow', 'Eyebrow chip', $post->ID );
 	showtime_meta_field( 'why_h2',      'Section heading', $post->ID );
 	showtime_meta_field( 'why_para1',   'Paragraph 1', $post->ID, true );

@@ -595,7 +595,7 @@ return array(
 			array( 'q' => 'How much does a pool inspection typically save a buyer?', 'a' => 'It varies, but catching a failing heater, an undersized pad, or a structural crack before close routinely gives buyers $5,000 to $20,000 of negotiating leverage on the purchase price, well beyond the cost of the inspection itself.' ),
 			array( 'q' => 'Do you inspect spas and water features too?', 'a' => 'Yes. Attached spas, water features, and automation systems are all included in the standard scope when present, since they share plumbing and electrical with the pool and can hide their own separate issues.' ),
 			array( 'q' => 'What if the seller already had an inspection done?', 'a' => 'We still recommend an independent one. A seller-ordered inspection is paid for by the seller, which is a conflict of interest even when the inspector is honest. Buyers get their own report addressed to them, not filtered through someone else\'s incentive.' ),
-			array( 'q' => 'Is equipment diagnostics the same thing as a pre-purchase inspection?', 'a' => 'No, they are two different inspection types under the same Mechanics line. Equipment diagnostics is a narrower, faster visit focused specifically on a malfunctioning component, while pre-purchase covers the entire pool system.' ),
+			array( 'q' => 'Is equipment diagnostics the same thing as a pre-purchase inspection?', 'a' => 'No, they are two different inspection types under the same independent inspection line. Equipment diagnostics is a narrower, faster visit focused specifically on a malfunctioning component, while pre-purchase covers the entire pool system.' ),
 		),
 	),
 

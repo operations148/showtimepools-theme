@@ -184,10 +184,10 @@ function showtime_seo_resolved_desc( array $ctx ): string {
  *      these already carry the brand exactly once.
  *   2. Fall-through (posts, projects, archives, unmapped singles): build
  *      "{page title} | Showtime Pools". The brand is HARDCODED, never
- *      get_bloginfo('name'): the live WP Site Title carries a sub-brand suffix
- *      ("Showtime Pools Mechanics"), and letting it into the title is what
- *      produced the double/'wrong-brand' SERP title. We also never append the
- *      brand twice when the base already contains it.
+ *      get_bloginfo('name'): if the WP Site Title ever carries a sub-brand or
+ *      environment suffix, letting it into the title is what produces a
+ *      double/'wrong-brand' SERP title. We also never append the brand twice
+ *      when the base already contains it.
  *
  * This controls the SERVER-rendered title only. On production, Search Atlas
  * OTTO can still rewrite the title in its own layer — that is a dashboard

@@ -21,7 +21,7 @@ $insp_label = '' !== $insp_label ? $insp_label : __( 'Book an Inspection', 'show
 <section class="inspections-callout" data-reveal>
 	<div class="container inspections-callout__inner">
 		<span class="eyebrow inspections-callout__eyebrow">
-			<?php esc_html_e( 'Showtime Pools Mechanics · Inspections', 'showtime-pools' ); ?>
+			<?php esc_html_e( 'Showtime Pools · Inspections', 'showtime-pools' ); ?>
 		</span>
 
 		<h2 class="inspections-callout__title balance">

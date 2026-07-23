@@ -1,6 +1,6 @@
 <?php
 /**
- * Process — 3-step Brikly flow per Showtime Mechanics canonical copy:
+ * Process — 3-step flow per Showtime Pools canonical copy:
  * Request Free Assessment → We Assess And Provide Options → Expert Execution.
  *
  * @package ShowtimePools

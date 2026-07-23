@@ -91,9 +91,9 @@ return array(
 			'hero_lead'     => 'Pre-purchase, seasonal, and equipment-only inspections. Firewalled from the construction line so the report goes to you, not to a sales pipeline. We will tell you to walk away from a pool when walking away is the right call.',
 			'types_eyebrow' => 'Three flavors',
 			'types_h2'      => 'Pick the inspection that fits the moment.',
-			'why_eyebrow'   => 'Why "Mechanics"',
+			'why_eyebrow'   => 'Why independent',
 			'why_h2'        => 'A separate line for inspections, by design.',
-			'why_para1'     => 'Most pool inspections are done by the same companies that want to win the resulting repair contract. That conflict shapes the report. We split inspections into a separate line called Showtime Pools Mechanics so the report comes from a different P&L than the construction quote.',
+			'why_para1'     => 'Most pool inspections are done by the same companies that want to win the resulting repair contract. That conflict shapes the report. We run inspections as a separate, independent line so the report comes from a different P&L than the construction quote.',
 			'why_para2'     => 'In practice this means we will document every fault, recommend repairs honestly, and tell you to walk away from a pool when walking away is the right call. Steve has personally killed deals worth tens of thousands of dollars in construction work because the pool was past saving. Independence is the whole point.',
 		),
 

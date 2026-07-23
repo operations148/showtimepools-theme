@@ -41,7 +41,7 @@ return array(
 		),
 		'faqs'           => array(
 			array( 'q' => 'How is this different from a general home inspection?', 'a' => 'General home inspectors scan a pool for 5-10 minutes and look at gross condition. We spend 60-90 minutes specifically on the pool: pressure-testing, opening equipment, checking bonding continuity, photographing structural cracks. Most general inspectors miss the bonding and structural issues we catch.' ),
-			array( 'q' => 'Is the report independent from the construction line?', 'a' => 'Yes. The Mechanics line is firewalled from construction. We will tell you to walk away from a pool, even if it costs us a $80k construction job, when walking away is the right call. Our reputation is worth more than any single deal.' ),
+			array( 'q' => 'Is the report independent from the construction line?', 'a' => 'Yes. Our inspection line is firewalled from construction. We will tell you to walk away from a pool, even if it costs us a $80k construction job, when walking away is the right call. Our reputation is worth more than any single deal.' ),
 			array( 'q' => 'Will the report stand up with my lender or home warranty?', 'a' => 'Yes. The report includes inspector credentials, methodology, and dated photos. Lenders and home warranty companies accept it as third-party documentation.' ),
 		),
 	),
