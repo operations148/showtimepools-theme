@@ -7,9 +7,11 @@
  *   SHOWTIME_BASE_URL="https://showtimepools.com" php tests/seo-smoke.php
  *   SHOWTIME_BASE_URL="http://localhost/showtimepools/wp" php tests/seo-smoke.php
  *
- * Exit 0 = all pass, 1 = one or more fail. Some checks (data-metasync-otto,
- * otto-tracker, /terms-2/) only prove out against LIVE, where MetaSync and the
- * duplicate page exist — they're reported as skips locally.
+ * Exit 0 = all pass, 1 = one or more fail. MetaSync/OTTO checks (otto meta,
+ * data-metasync-otto, otto-tracker, and the metadata-singleton checks that
+ * depend on OTTO being absent) and /terms-2/ only prove out against LIVE,
+ * where MetaSync and the duplicate page exist — they're reported as skips
+ * locally.
  *
  * @package ShowtimePools
  */
@@ -50,32 +52,53 @@ echo "\n[/about/]\n";
 $a = fetch( "$base/about/" );
 200 === $a['code'] ? ok( 'about 200' ) : bad( "about HTTP {$a['code']}" );
 false === stripos( $a['body'], 'Showtime Pools Mechanics' ) ? ok( 'no "Showtime Pools Mechanics"' ) : bad( 'contains "Showtime Pools Mechanics"' );
-if ( false !== stripos( $base, 'localhost' ) ) {
-	skp( 'data-metasync-otto / otto-tracker only testable on live (MetaSync not local)' );
-} else {
-	false === stripos( $a['body'], 'data-metasync-otto' ) ? ok( 'no data-metasync-otto attribute' ) : bad( 'data-metasync-otto present' );
-	false === stripos( $a['body'], 'otto-tracker' ) ? ok( 'no otto-tracker.min.js' ) : bad( 'otto-tracker.min.js still loaded' );
-}
 
-/* --- one-of-each metadata on indexable pages --- */
-echo "\n[metadata singletons on indexable pages]\n";
-foreach ( array( '/', '/about/', '/services/pool-leak-detection/' ) as $p ) {
+/* --- MetaSync/OTTO head-injection + metadata-singleton checks, site-wide.
+   otto meta / data-metasync-otto / otto-tracker / duplicate canonical / duplicate
+   og:url / duplicate robots are only reachable on LIVE (MetaSync is not
+   installed locally) — reported as skips locally, enforced strictly on live. --- */
+echo "\n[MetaSync/OTTO + metadata singletons — homepage, /about/, Calabasas, a service page, a blog article]\n";
+$is_local = false !== stripos( $base, 'localhost' );
+$pages_to_check = array(
+	'/'                                 => 'homepage',
+	'/about/'                           => 'about',
+	'/service-areas/calabasas/'         => 'calabasas',
+	'/services/pool-leak-detection/'    => 'service',
+	'/complete-pool-maintenance-guide-los-angeles/' => 'blog article',
+);
+// Live-only fixtures: not seeded in the local test DB, so a 404 there is
+// expected and reported as a skip rather than a failure. Homepage/about/service
+// must exist in both environments and always fail hard on non-200.
+$live_only_fixtures = array( 'calabasas', 'blog article' );
+foreach ( $pages_to_check as $p => $label ) {
 	$r = fetch( "$base$p" );
-	$t = $count( $r['body'], '#<title[ >]#i' );
-	$d = $count( $r['body'], '#<meta\s+name=["\']description["\']#i' );
-	$c = $count( $r['body'], '#rel=["\']canonical["\']#i' );
+	if ( 200 !== $r['code'] ) {
+		( in_array( $label, $live_only_fixtures, true ) && ( $is_local || 404 === $r['code'] ) )
+			? skp( "$label ($p) HTTP {$r['code']} — live-only fixture (publish/verify on live; see report)" )
+			: bad( "$label ($p) HTTP {$r['code']}" );
+		continue;
+	}
+	if ( $is_local ) {
+		skp( "$label: MetaSync/OTTO checks skipped (not installed locally)" );
+	} else {
+		false === stripos( $r['body'], '<meta name="otto"' ) ? ok( "$label: zero meta name=\"otto\"" ) : bad( "$label: meta name=\"otto\" present" );
+		false === stripos( $r['body'], 'data-metasync-otto' ) ? ok( "$label: zero data-metasync-otto" ) : bad( "$label: data-metasync-otto present" );
+		false === stripos( $r['body'], 'otto-tracker' ) ? ok( "$label: zero otto-tracker.min.js" ) : bad( "$label: otto-tracker.min.js loaded" );
+	}
+	$t  = $count( $r['body'], '#<title[ >]#i' );
+	$d  = $count( $r['body'], '#<meta\s+name=["\']description["\']#i' );
+	$c  = $count( $r['body'], '#rel=["\']canonical["\']#i' );
 	$ro = $count( $r['body'], '#<meta\s+name=["\']robots["\']#i' );
-	( 1 === $t && 1 === $d && 1 === $c && 1 === $ro )
-		? ok( "$p: exactly one title/description/canonical/robots" )
-		: bad( "$p: title=$t desc=$d canonical=$c robots=$ro (each must be 1)" );
+	$og = $count( $r['body'], '#property=["\']og:url["\']#i' );
+	( 1 === $t && 1 === $d && 1 === $c && 1 === $ro && 1 === $og )
+		? ok( "$label: exactly one title/description/canonical/robots/og:url" )
+		: bad( "$label: title=$t desc=$d canonical=$c robots=$ro og:url=$og (each must be 1)" );
 }
 
-/* --- HTML sitemap + Calabasas --- */
+/* --- HTML sitemap (Calabasas is covered in the loop above) --- */
 echo "\n[pages]\n";
 $s = fetch( "$base/sitemap/" );
 200 === $s['code'] && preg_match( '#<h1[^>]*>\s*Sitemap#i', $s['body'] ) ? ok( '/sitemap/ 200 with H1 Sitemap' ) : bad( "/sitemap/ HTTP {$s['code']}" );
-$cal = fetch( "$base/service-areas/calabasas/" );
-200 === $cal['code'] ? ok( '/service-areas/calabasas/ 200' ) : skp( "/service-areas/calabasas/ HTTP {$cal['code']} (publish the page — WP-CLI in report)" );
 
 /* --- noindex,follow on utility pages + categories --- */
 echo "\n[noindex, follow]\n";
