@@ -318,17 +318,28 @@ add_filter(
 	2
 );
 
-// Keep the default "Uncategorized" term out of the category sitemap. It
-// only ever holds placeholder content and dilutes the canonical set.
+// Keep the default "Uncategorized" term AND the noindexed thin category
+// archives (showtime_noindex_term_slugs) out of the category sitemap, so the
+// sitemap and the robots noindex meta never disagree.
 add_filter(
 	'wp_sitemaps_taxonomies_query_args',
 	function ( array $args, string $taxonomy ): array {
 		if ( 'category' !== $taxonomy ) {
 			return $args;
 		}
-		$uncategorized = get_term_by( 'slug', 'uncategorized', 'category' );
-		if ( $uncategorized instanceof WP_Term ) {
-			$args['exclude'] = array_merge( (array) ( $args['exclude'] ?? array() ), array( $uncategorized->term_id ) );
+		$slugs = array( 'uncategorized' );
+		if ( function_exists( 'showtime_noindex_term_slugs' ) ) {
+			$slugs = array_merge( $slugs, showtime_noindex_term_slugs() );
+		}
+		$exclude = array();
+		foreach ( array_unique( $slugs ) as $slug ) {
+			$term = get_term_by( 'slug', $slug, 'category' );
+			if ( $term instanceof WP_Term ) {
+				$exclude[] = $term->term_id;
+			}
+		}
+		if ( $exclude ) {
+			$args['exclude'] = array_merge( (array) ( $args['exclude'] ?? array() ), $exclude );
 		}
 		return $args;
 	},
@@ -359,6 +370,21 @@ add_filter(
 			array( 'key' => '_wp_page_template', 'compare' => 'NOT EXISTS' ),
 		);
 		$args['meta_query'] = $meta_query;
+
+		// Also drop specific noindex/legacy-duplicate slugs (e.g. /terms-2/,
+		// which 301s to /terms/) so a redirected URL is never advertised.
+		if ( function_exists( 'showtime_noindex_page_slugs' ) ) {
+			$ids = array();
+			foreach ( showtime_noindex_page_slugs() as $slug ) {
+				$page = get_page_by_path( $slug );
+				if ( $page instanceof WP_Post ) {
+					$ids[] = $page->ID;
+				}
+			}
+			if ( $ids ) {
+				$args['post__not_in'] = array_merge( (array) ( $args['post__not_in'] ?? array() ), $ids );
+			}
+		}
 		return $args;
 	},
 	10,

@@ -40,29 +40,128 @@ function showtime_canonical_url(): string {
 }
 
 /**
- * Page templates whose pages are noindexed AND kept out of the XML sitemap:
- * thin GHL-iframe utility pages (/quote/, /book/, via page-iframe.php) and the
- * /shop/ coming-soon placeholder (page-shop.php). One list, so the robots meta
+ * Page templates whose pages are noindexed AND kept out of the XML sitemap.
+ * Thin GHL-iframe utility pages (/quote/, /book/, via page-iframe.php), the
+ * /affiliate/ partner form (page-affiliate.php), and the /shop/ coming-soon
+ * placeholder (page-shop.php). One list, so the robots meta
  * (showtime_seo_should_noindex) and the sitemap exclusion (inc/crawl.php) can
  * never disagree about what is indexable.
+ *
+ * /shop/ indexing is a single documented switch: flip `showtime/seo/shop_indexable`
+ * to true once /shop/ is a real store with genuine Product/Offer data, and it
+ * returns to the index + sitemap with no other change.
  */
 function showtime_noindex_page_templates(): array {
+	$templates = array( 'page-iframe.php', 'page-affiliate.php' );
+	if ( ! apply_filters( 'showtime/seo/shop_indexable', false ) ) {
+		$templates[] = 'page-shop.php';
+	}
+	return (array) apply_filters( 'showtime/seo/noindex_templates', $templates );
+}
+
+/**
+ * Thin taxonomy archives (blog category groupings) that carry no unique
+ * indexable value. noindex,follow keeps link equity flowing while dropping them
+ * from the index and the taxonomy sitemap. Filterable.
+ */
+function showtime_noindex_term_slugs(): array {
 	return (array) apply_filters(
-		'showtime/seo/noindex_templates',
-		array( 'page-iframe.php', 'page-shop.php' )
+		'showtime/seo/noindex_terms',
+		array( 'pool-trends', 'maintenance-tips', 'equipment-guides' )
 	);
 }
 
 /**
- * Whether the current request should be noindexed. Everything not built on a
- * noindex template stays indexable.
+ * Page slugs to noindex + keep out of the sitemap even though they use a normal
+ * template — e.g. a legacy duplicate (/terms-2/) that 301s to the canonical.
+ */
+function showtime_noindex_page_slugs(): array {
+	return (array) apply_filters( 'showtime/seo/noindex_slugs', array( 'terms-2' ) );
+}
+
+/**
+ * Whether the current request should be noindexed. Everything not matched here
+ * stays indexable. Always noindex,follow (links stay followable).
  */
 function showtime_seo_should_noindex(): bool {
-	if ( ! is_page_template( showtime_noindex_page_templates() ) ) {
-		return false;
+	if ( is_page_template( showtime_noindex_page_templates() ) ) {
+		return (bool) apply_filters( 'showtime/seo/noindex', true );
 	}
-	return (bool) apply_filters( 'showtime/seo/noindex', true );
+	if ( is_page() ) {
+		$slug = (string) get_post_field( 'post_name', get_queried_object_id() );
+		if ( in_array( $slug, showtime_noindex_page_slugs(), true ) ) {
+			return (bool) apply_filters( 'showtime/seo/noindex', true );
+		}
+	}
+	if ( is_category() ) {
+		$term = get_queried_object();
+		if ( $term instanceof WP_Term && in_array( $term->slug, showtime_noindex_term_slugs(), true ) ) {
+			return (bool) apply_filters( 'showtime/seo/noindex', true );
+		}
+	}
+	return false;
 }
+
+/**
+ * Single robots directive. WordPress core prints exactly one robots meta from
+ * this filtered array (wp_robots), so the theme sets directives HERE rather
+ * than hand-printing a second tag. noindex,follow for the noindex set;
+ * index + max-* previews everywhere else.
+ */
+add_filter(
+	'wp_robots',
+	function ( array $robots ): array {
+		if ( showtime_seo_should_noindex() ) {
+			unset( $robots['index'], $robots['max-snippet'], $robots['max-image-preview'], $robots['max-video-preview'] );
+			$robots['noindex'] = true;
+			$robots['follow']  = true;
+			return $robots;
+		}
+		unset( $robots['noindex'], $robots['nofollow'] );
+		$robots['index']  = true;
+		$robots['follow'] = true;
+		// String values so WP core's wp_robots() renders "key:value"
+		// (an int renders as a bare directive with no value).
+		$robots['max-snippet']       = '-1';
+		$robots['max-image-preview'] = 'large';
+		$robots['max-video-preview'] = '-1';
+		return $robots;
+	},
+	20
+);
+
+/**
+ * Permanent redirects for retired/duplicate URLs, keyed by source page slug →
+ * destination path on this domain. /terms-2/ is a duplicate of /terms/. Fires
+ * early on template_redirect. wp_safe_redirect keeps the target on-site; the
+ * destination slug is never itself a key, so no loop is possible. The original
+ * page content is not touched — set it to draft in wp-admin after verifying the
+ * 301 (see the deployment report).
+ */
+add_action(
+	'template_redirect',
+	function () {
+		if ( ! is_page() ) {
+			return;
+		}
+		$slug = (string) get_post_field( 'post_name', get_queried_object_id() );
+		$map  = (array) apply_filters(
+			'showtime/seo/page_redirects',
+			array( 'terms-2' => '/terms/' )
+		);
+		if ( '' === $slug || ! isset( $map[ $slug ] ) ) {
+			return;
+		}
+		$dest = home_url( $map[ $slug ] );
+		$qs   = (string) ( $_SERVER['QUERY_STRING'] ?? '' );
+		if ( '' !== $qs ) {
+			$dest = add_query_arg( wp_parse_args( wp_unslash( $qs ) ), $dest );
+		}
+		wp_safe_redirect( $dest, 301 );
+		exit;
+	},
+	0
+);
 
 /**
  * Resolve the per-page SEO title for Open Graph + Twitter.
@@ -265,11 +364,9 @@ add_action(
 ";
 		echo '<meta name="description" content="' . esc_attr( $desc ) . '">' . "
 ";
-		$robots = showtime_seo_should_noindex()
-			? 'noindex, follow'
-			: 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1';
-		echo '<meta name="robots" content="' . esc_attr( $robots ) . '">' . "
-";
+		// Robots is emitted once by WordPress core's wp_robots(); the theme
+		// drives its directives via the `wp_robots` filter below (not a second
+		// hand-printed tag), so there is exactly one robots meta.
 
 		// Open Graph
 		echo '<meta property="og:type" content="' . ( is_singular() && ! is_front_page() ? 'article' : 'website' ) . '">' . "
