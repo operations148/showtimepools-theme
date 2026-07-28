@@ -79,19 +79,28 @@ $hero_video = ( defined( 'SHOWTIME_CODE_FIRST' ) && SHOWTIME_CODE_FIRST )
 	: (string) get_option( 'showtime_hero_video_url', '' );
 $hero_poster = function_exists( 'showtime_image' ) ? showtime_image( 'hero_poster', 1920 ) : $hero_url;
 ?>
+<?php
+// The hero photo sits full-bleed BEHIND the <h1> and lead copy — it carries no
+// information the text does not already state, so with no author-supplied alt
+// it is decorative and is hidden from assistive tech explicitly (aria-hidden)
+// rather than left as an ambiguous bare alt="". Setting "Hero image alt" in
+// Site Content makes it informative and the attribute is dropped.
+$hero_is_decorative = ( '' === trim( (string) $pc_alt ) );
+$hero_a11y_attr     = $hero_is_decorative ? ' aria-hidden="true"' : '';
+?>
 <section class="home-hero home-hero--immersive" data-reveal>
 	<?php if ( '' !== $hero_video ) : ?>
-		<video class="home-hero__bgvideo" autoplay muted loop playsinline preload="none" poster="<?php echo esc_url( $hero_poster ); ?>">
+		<video class="home-hero__bgvideo" autoplay muted loop playsinline preload="none" poster="<?php echo esc_url( $hero_poster ); ?>"<?php echo $hero_a11y_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — static attribute ?>>
 			<source src="<?php echo esc_url( $hero_video ); ?>" type="video/mp4">
 		</video>
-		<img class="home-hero__bgphoto home-hero__bgphoto--poster" src="<?php echo esc_url( $hero_poster ); ?>" alt="<?php echo esc_attr( $pc_alt ); ?>" loading="eager" fetchpriority="high" decoding="async">
+		<img class="home-hero__bgphoto home-hero__bgphoto--poster" src="<?php echo esc_url( $hero_poster ); ?>" alt="<?php echo esc_attr( $pc_alt ); ?>"<?php echo $hero_a11y_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — static attribute ?> loading="eager" fetchpriority="high" decoding="async">
 	<?php else : ?>
 		<picture class="home-hero__bgphoto">
 			<img
 				src="<?php echo esc_url( $hero_img['src'] ); ?>"
 				<?php if ( '' !== $hero_img['srcset'] ) : ?>srcset="<?php echo esc_attr( $hero_img['srcset'] ); ?>" sizes="<?php echo esc_attr( $hero_img['sizes'] ); ?>"<?php endif; ?>
 				width="<?php echo (int) $hero_img['width']; ?>" height="<?php echo (int) $hero_img['height']; ?>"
-				alt="<?php echo esc_attr( $pc_alt ); ?>" loading="eager" fetchpriority="high" decoding="async">
+				alt="<?php echo esc_attr( $pc_alt ); ?>"<?php echo $hero_a11y_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — static attribute ?> loading="eager" fetchpriority="high" decoding="async">
 		</picture>
 	<?php endif; ?>
 	<div class="home-hero__veil" aria-hidden="true"></div>

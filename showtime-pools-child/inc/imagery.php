@@ -230,6 +230,65 @@ function showtime_image( string $slot, int $w = 1600, int $h = 0 ): string {
 }
 
 /**
+ * Resolve the attachment ID backing an image slot, when one exists.
+ *
+ * Mirrors the same priority chain as showtime_image(): the native
+ * `showtime_img_{slot}` option first, then the ACF `img_{slot}` option field.
+ * Returns 0 when the slot resolves to a bundled file or the Unsplash fallback
+ * (i.e. there is no Media Library record and therefore no author-set alt).
+ *
+ * @param string $slot Image slot name.
+ */
+function showtime_image_attachment_id( string $slot ): int {
+	if ( defined( 'SHOWTIME_CODE_FIRST' ) && SHOWTIME_CODE_FIRST ) {
+		return 0;
+	}
+
+	$native = get_option( 'showtime_img_' . str_replace( '-', '_', $slot ), '' );
+	if ( is_numeric( $native ) && (int) $native > 0 ) {
+		return (int) $native;
+	}
+
+	if ( function_exists( 'get_field' ) ) {
+		$acf = get_field( 'img_' . str_replace( '-', '_', $slot ), 'option' );
+		if ( is_array( $acf ) && ! empty( $acf['ID'] ) ) {
+			return (int) $acf['ID'];
+		}
+		if ( is_numeric( $acf ) && (int) $acf > 0 ) {
+			return (int) $acf;
+		}
+	}
+
+	return 0;
+}
+
+/**
+ * Alt text for a slot-based image.
+ *
+ * Priority:
+ *   1. The alt the site owner saved on the Media Library attachment
+ *      (`_wp_attachment_image_alt`) — always authoritative when present.
+ *   2. The contextual fallback supplied BY THE CALLER, so each template
+ *      describes its own image; no per-image copy is hardcoded in this
+ *      global helper.
+ *   3. '' — a genuinely decorative image, or one we cannot describe without
+ *      guessing. An empty alt is correct here, never a placeholder string.
+ *
+ * @param string $slot     Image slot name.
+ * @param string $fallback Contextual description from the calling template.
+ */
+function showtime_image_alt( string $slot, string $fallback = '' ): string {
+	$id = showtime_image_attachment_id( $slot );
+	if ( $id > 0 ) {
+		$saved = (string) get_post_meta( $id, '_wp_attachment_image_alt', true );
+		if ( '' !== trim( $saved ) ) {
+			return $saved;
+		}
+	}
+	return (string) apply_filters( 'showtime/image_alt/' . $slot, $fallback, $slot, $id );
+}
+
+/**
  * Front-page hero URLs, desktop + mobile pair. Single source of truth shared
  * by the hero template (template-parts/home/section-01-hero.php) and the LCP
  * preload hook (inc/performance.php) so the preloaded URL always matches the

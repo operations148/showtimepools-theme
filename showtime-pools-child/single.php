@@ -24,12 +24,21 @@ while ( have_posts() ) :
 	// stock URLs stay dimensionless rather than carrying made-up numbers.
 	$hero_w = 0;
 	$hero_h = 0;
+	// Alt for the hero comes from the featured image's own Media Library alt
+	// text, which the template previously ignored. This is a global template,
+	// so no per-article description is invented here: when the attachment has
+	// no alt the hero stays alt="" (decorative — the <h1> directly beneath it
+	// already names the article), and the attachment is flagged for the owner
+	// to describe in wp-admin.
+	$hero_alt = '';
 	if ( has_post_thumbnail( $pid ) ) {
-		$thumb_src = wp_get_attachment_image_src( get_post_thumbnail_id( $pid ), 'full' );
+		$thumb_id  = get_post_thumbnail_id( $pid );
+		$thumb_src = wp_get_attachment_image_src( $thumb_id, 'full' );
 		if ( $thumb_src && ! empty( $thumb_src[1] ) && ! empty( $thumb_src[2] ) ) {
 			$hero_w = (int) $thumb_src[1];
 			$hero_h = (int) $thumb_src[2];
 		}
+		$hero_alt = trim( (string) get_post_meta( $thumb_id, '_wp_attachment_image_alt', true ) );
 	}
 
 	// Article JSON-LD.
@@ -127,7 +136,7 @@ while ( have_posts() ) :
 
 		<header class="post-hero">
 			<?php if ( $hero_img ) : ?>
-				<img class="post-hero__photo" src="<?php echo esc_url( $hero_img_large ); ?>" alt=""<?php echo $hero_w && $hero_h ? ' width="' . (int) $hero_w . '" height="' . (int) $hero_h . '"' : ''; ?> loading="eager" fetchpriority="high" decoding="async">
+				<img class="post-hero__photo" src="<?php echo esc_url( $hero_img_large ); ?>" alt="<?php echo esc_attr( $hero_alt ); ?>"<?php echo $hero_w && $hero_h ? ' width="' . (int) $hero_w . '" height="' . (int) $hero_h . '"' : ''; ?> loading="eager" fetchpriority="high" decoding="async">
 			<?php endif; ?>
 			<div class="post-hero__overlay" aria-hidden="true"></div>
 			<div class="container">

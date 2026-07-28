@@ -70,3 +70,6 @@ plans/
 # truth for slot→file picks the user has approved.
 tools/catalog.json
 tools/image-picker.html
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat

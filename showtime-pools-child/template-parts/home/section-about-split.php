@@ -10,6 +10,14 @@ defined( 'ABSPATH' ) || exit;
 // Homepage About section photo. Its own slot (Site Images → "Homepage About
 // section photo") so it is independent from the /about/ page background.
 $img = function_exists( 'showtime_image' ) ? showtime_image( 'about_split', 1200 ) : '';
+
+// Informative editorial photo, not a decorative background: it sits in a
+// <figure> with its own caption. Any alt the owner sets on the uploaded
+// attachment wins; the fallback below describes the shipped default image and
+// adds visual context the adjacent heading/caption do not already provide.
+$img_alt = function_exists( 'showtime_image_alt' )
+	? showtime_image_alt( 'about_split', __( 'Modern two-story home with a rectangular backyard pool, lounge chairs, and a covered patio seating area', 'showtime-pools' ) )
+	: '';
 ?>
 <section class="about-split" data-reveal>
 	<div class="container">
@@ -17,7 +25,7 @@ $img = function_exists( 'showtime_image' ) ? showtime_image( 'about_split', 1200
 
 			<figure class="about-split__media">
 				<?php if ( $img ) : ?>
-					<img src="<?php echo esc_url( $img ); ?>" alt="" loading="lazy" decoding="async" width="1000" height="1200">
+					<img src="<?php echo esc_url( $img ); ?>" alt="<?php echo esc_attr( $img_alt ); ?>" loading="lazy" decoding="async" width="1000" height="1200">
 				<?php endif; ?>
 				<figcaption class="about-split__caption">
 					<span><?php esc_html_e( 'Sherman Oaks · since 2003', 'showtime-pools' ); ?></span>
