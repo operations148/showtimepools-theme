@@ -93,6 +93,39 @@ foreach ( $pages_to_check as $p => $label ) {
 	( 1 === $t && 1 === $d && 1 === $c && 1 === $ro && 1 === $og )
 		? ok( "$label: exactly one title/description/canonical/robots/og:url" )
 		: bad( "$label: title=$t desc=$d canonical=$c robots=$ro og:url=$og (each must be 1)" );
+
+	// --- P0-2: per-page OG image, alt, and exact-or-absent dimensions ---
+	$n_img  = $count( $r['body'], '#property=["\']og:image["\'](?!:)#i' );
+	$n_alt  = $count( $r['body'], '#property=["\']og:image:alt["\']#i' );
+	$n_tw   = $count( $r['body'], '#name=["\']twitter:image["\'](?!:)#i' );
+	$n_twa  = $count( $r['body'], '#name=["\']twitter:image:alt["\']#i' );
+	( 1 === $n_img && 1 === $n_alt && 1 === $n_tw && 1 === $n_twa )
+		? ok( "$label: exactly one og:image/og:image:alt/twitter:image/twitter:image:alt" )
+		: bad( "$label: og:image=$n_img og:image:alt=$n_alt twitter:image=$n_tw twitter:image:alt=$n_twa (each must be 1)" );
+
+	// og:image and twitter:image must reference the SAME resolved asset.
+	preg_match( '#property=["\']og:image["\']\s+content=["\']([^"\']+)#i', $r['body'], $mi );
+	preg_match( '#name=["\']twitter:image["\']\s+content=["\']([^"\']+)#i', $r['body'], $mt );
+	$og_url = $mi[1] ?? ''; $tw_url = $mt[1] ?? '';
+	( '' !== $og_url && $og_url === $tw_url )
+		? ok( "$label: twitter:image matches og:image" )
+		: bad( "$label: og:image and twitter:image differ" );
+
+	// Alt must be non-empty.
+	preg_match( '#property=["\']og:image:alt["\']\s+content=["\']([^"\']*)#i', $r['body'], $ma );
+	'' !== trim( $ma[1] ?? '' )
+		? ok( "$label: og:image:alt non-empty" )
+		: bad( "$label: og:image:alt is empty" );
+
+	// Dimensions: both present or both absent — never a half pair, never 1200x675.
+	$n_w = $count( $r['body'], '#property=["\']og:image:width["\']#i' );
+	$n_h = $count( $r['body'], '#property=["\']og:image:height["\']#i' );
+	preg_match( '#og:image:width["\']\s+content=["\'](\d+)#i', $r['body'], $mw );
+	preg_match( '#og:image:height["\']\s+content=["\'](\d+)#i', $r['body'], $mh );
+	$stale = ( '1200' === ( $mw[1] ?? '' ) && '675' === ( $mh[1] ?? '' ) );
+	( $n_w === $n_h && $n_w <= 1 && ! $stale )
+		? ok( "$label: og image dimensions exact-or-absent" . ( $n_w ? " ({$mw[1]}x{$mh[1]})" : ' (absent)' ) )
+		: bad( "$label: bad dimensions w=$n_w h=$n_h" . ( $stale ? ' (stale hardcoded 1200x675)' : '' ) );
 }
 
 /* --- HTML sitemap (Calabasas is covered in the loop above) --- */

@@ -231,22 +231,191 @@ function showtime_seo_description(): string {
 }
 
 /**
- * Open Graph image. Hero image for the homepage; per-page image when
- * available, otherwise the brand default.
+ * Resolve a bundled image slot for SOCIAL sharing.
+ *
+ * The visible hero (showtime_image()'s own pick, usually WebP) is always the
+ * baseline identity. A same-named JPEG/PNG sibling is substituted ONLY when it
+ * is VERIFIED to be the same photo: same basename (i.e. the same slot) AND
+ * identical pixel dimensions to the visible hero. A same-named file at
+ * different dimensions is a different crop — proven live on 4 of 9 area
+ * heroes, where the ".jpg" is a portrait 960x1280 crop and the on-page ".webp"
+ * is a landscape 1200x896 crop of what is visually a different framing. Never
+ * substitute on filename existence alone; when unverified, the exact visible
+ * hero URL is returned even though it is WebP.
+ *
+ * Media Library / ACF overrides and remote (Unsplash) URLs are returned exactly
+ * as showtime_image() resolved them; only bundled files are ever re-pointed.
+ *
+ * @param string $slot Image slot, e.g. 'service_pool-repairs-plumbing'.
+ * @return array{url:string,width:int,height:int}
+ */
+function showtime_og_slot_image( string $slot ): array {
+	if ( ! function_exists( 'showtime_image' ) ) {
+		return array( 'url' => '', 'width' => 0, 'height' => 0 );
+	}
+
+	$url = (string) showtime_image( $slot, 1200 );
+	if ( '' === $url ) {
+		return array( 'url' => '', 'width' => 0, 'height' => 0 );
+	}
+	$dims = showtime_og_image_dimensions( $url );
+
+	$bundled_prefix = SHOWTIME_CHILD_URI . '/assets/img/';
+	if ( 0 === strpos( $url, $bundled_prefix ) && $dims['width'] > 0 ) {
+		$order = (array) apply_filters( 'showtime/og/format_priority', array( 'jpg', 'jpeg', 'png' ), $slot );
+		foreach ( $order as $ext ) {
+			$candidate = "{$slot}.{$ext}";
+			if ( ! file_exists( SHOWTIME_CHILD_DIR . "/assets/img/{$candidate}" ) ) {
+				continue;
+			}
+			$cand_dims = showtime_og_image_dimensions( $bundled_prefix . $candidate );
+			if ( $cand_dims['width'] === $dims['width'] && $cand_dims['height'] === $dims['height'] ) {
+				return array_merge( array( 'url' => $bundled_prefix . $candidate ), $cand_dims );
+			}
+		}
+	}
+
+	return array_merge( array( 'url' => $url ), $dims );
+}
+
+/**
+ * Exact pixel dimensions for an image URL, or zeros when they cannot be read.
+ *
+ * Only local, theme-bundled files are measured (a header-only getimagesize()
+ * read, memoized per request). Remote URLs are never fetched, so callers get
+ * 0/0 and must omit the dimension tags rather than guess — emitting wrong or
+ * partial dimensions is worse than emitting none.
+ *
+ * @return array{width:int,height:int}
+ */
+function showtime_og_image_dimensions( string $url ): array {
+	static $cache = array();
+
+	if ( isset( $cache[ $url ] ) ) {
+		return $cache[ $url ];
+	}
+
+	$dims           = array( 'width' => 0, 'height' => 0 );
+	$bundled_prefix = SHOWTIME_CHILD_URI . '/assets/img/';
+
+	if ( 0 === strpos( $url, $bundled_prefix ) ) {
+		$path = SHOWTIME_CHILD_DIR . '/assets/img/' . basename( wp_parse_url( $url, PHP_URL_PATH ) ?: '' );
+		if ( is_readable( $path ) ) {
+			$size = @getimagesize( $path ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- non-image/corrupt file must degrade to "no dimensions", not warn.
+			if ( is_array( $size ) && ! empty( $size[0] ) && ! empty( $size[1] ) ) {
+				$dims = array( 'width' => (int) $size[0], 'height' => (int) $size[1] );
+			}
+		}
+	}
+
+	$cache[ $url ] = $dims;
+	return $dims;
+}
+
+/**
+ * Open Graph image for the current request, with dimensions and alt text.
+ *
+ * Priority for singular views:
+ *   1. A real featured image (unchanged from the previous behaviour).
+ *   2. The page's own hero slot — service_{slug} on page-service.php,
+ *      area_{slug} on page-area.php — resolved through the shared,
+ *      template-gated showtime_registry_slug() introduced in P0-1. The template
+ *      gate means an unrelated page cannot inherit a service/area image just by
+ *      sharing a slug.
+ *   3. The lifestyle_main brand default.
+ *
+ * @return array{url:string,width:int,height:int,alt:string}
+ */
+function showtime_og_image_data(): array {
+	$fallback = array(
+		'url'    => function_exists( 'showtime_image' ) ? '' : SHOWTIME_CHILD_URI . '/assets/img/logo.png',
+		'width'  => 0,
+		'height' => 0,
+		'alt'    => (string) apply_filters( 'showtime/business/name', 'Showtime Pools' ),
+	);
+
+	if ( ! function_exists( 'showtime_image' ) ) {
+		return $fallback;
+	}
+
+	if ( is_front_page() ) {
+		return array_merge( showtime_og_slot_image( 'hero' ), array( 'alt' => $fallback['alt'] ) );
+	}
+
+	if ( is_singular() ) {
+		$id = (int) get_the_ID();
+
+		// 1. Featured image wins, exactly as before.
+		$thumb_id = get_post_thumbnail_id( $id );
+		if ( $thumb_id ) {
+			$src = wp_get_attachment_image_src( $thumb_id, 'large' );
+			if ( is_array( $src ) && ! empty( $src[0] ) ) {
+				$alt = trim( (string) get_post_meta( $thumb_id, '_wp_attachment_image_alt', true ) );
+				return array(
+					'url'    => (string) $src[0],
+					'width'  => (int) ( $src[1] ?? 0 ),
+					'height' => (int) ( $src[2] ?? 0 ),
+					'alt'    => '' !== $alt ? $alt : wp_strip_all_tags( get_the_title( $id ) ),
+				);
+			}
+		}
+
+		// 2. Per-page hero slot, via the shared template-gated resolver.
+		if ( function_exists( 'showtime_registry_slug' ) ) {
+			$svc_slug = showtime_registry_slug( $id, '_showtime_service_slug', 'page-service.php' );
+			if ( '' !== $svc_slug && class_exists( '\\Showtime\\Services' ) ) {
+				$svc = \Showtime\Services::get( $svc_slug );
+				if ( $svc ) {
+					$img = showtime_og_slot_image( 'service_' . $svc_slug );
+					if ( '' !== $img['url'] ) {
+						// Mirrors the visible hero alt in
+						// template-parts/service/section-hero.php.
+						$img['alt'] = sprintf(
+							/* translators: %s: service name */
+							__( '%s by Showtime Pools in Los Angeles', 'showtime-pools' ),
+							(string) ( $svc['title'] ?? get_the_title( $id ) )
+						);
+						return $img;
+					}
+				}
+			}
+
+			$area_slug = showtime_registry_slug( $id, '_showtime_area_slug', 'page-area.php' );
+			if ( '' !== $area_slug && class_exists( '\\Showtime\\Areas' ) ) {
+				$area = \Showtime\Areas::get( $area_slug );
+				if ( $area ) {
+					$img = showtime_og_slot_image( 'area_' . $area_slug );
+					if ( '' !== $img['url'] ) {
+						// Mirrors the visible hero alt in page-area.php.
+						$img['alt'] = sprintf(
+							/* translators: %s: neighborhood */
+							__( 'Pool service in %s, Los Angeles', 'showtime-pools' ),
+							(string) ( $area['name'] ?? get_the_title( $id ) )
+						);
+						return $img;
+					}
+				}
+			}
+		}
+
+		// 3. Brand default.
+		return array_merge(
+			showtime_og_slot_image( 'lifestyle_main' ),
+			array( 'alt' => wp_strip_all_tags( get_the_title( $id ) ) ?: $fallback['alt'] )
+		);
+	}
+
+	// Archives, search, 404: a real, resolvable asset.
+	return array_merge( showtime_og_slot_image( 'hero' ), array( 'alt' => $fallback['alt'] ) );
+}
+
+/**
+ * Open Graph image URL. Thin wrapper kept for backward compatibility — callers
+ * that only need the URL are unaffected by the structured resolver above.
  */
 function showtime_og_image(): string {
-	if ( function_exists( 'showtime_image' ) ) {
-		if ( is_front_page() ) { return showtime_image( 'hero', 1200 ); }
-		if ( is_singular() ) {
-			$thumb = get_the_post_thumbnail_url( get_the_ID(), 'large' );
-			if ( $thumb ) { return $thumb; }
-			return showtime_image( 'lifestyle_main', 1200 );
-		}
-		// Archives, search, 404: fall back to the hero image (a real, resolvable
-		// asset) rather than a hardcoded path that may not exist.
-		return showtime_image( 'hero', 1200 );
-	}
-	return SHOWTIME_CHILD_URI . '/assets/img/logo.png';
+	$data = showtime_og_image_data();
+	return (string) $data['url'];
 }
 
 /**
@@ -362,9 +531,10 @@ add_action(
 		// Search Atlas OTTO applies its edits client-side via JS, so this
 		// output is what crawlers that skip JS (GPTBot, ClaudeBot,
 		// PerplexityBot) actually read.
-		$title = showtime_seo_title();
-		$desc  = showtime_seo_description();
-		$image = showtime_og_image();
+		$title  = showtime_seo_title();
+		$desc   = showtime_seo_description();
+		$og_img = showtime_og_image_data();
+		$image  = (string) $og_img['url'];
 
 		echo '<link rel="canonical" href="' . esc_url( $canonical ) . '">' . "
 ";
@@ -387,12 +557,23 @@ add_action(
 ";
 		echo '<meta property="og:url" content="' . esc_url( $canonical ) . '">' . "
 ";
-		echo '<meta property="og:image" content="' . esc_url( $image ) . '">' . "
+		if ( '' !== $image ) {
+			echo '<meta property="og:image" content="' . esc_url( $image ) . '">' . "
 ";
-		echo '<meta property="og:image:width" content="1200">' . "
+			if ( '' !== (string) $og_img['alt'] ) {
+				echo '<meta property="og:image:alt" content="' . esc_attr( (string) $og_img['alt'] ) . '">' . "
 ";
-		echo '<meta property="og:image:height" content="675">' . "
+			}
+			// Exact dimensions or none at all — never a guess, never a half
+			// pair, and never the previous hardcoded 1200x675 (which matched
+			// none of the real assets).
+			if ( $og_img['width'] > 0 && $og_img['height'] > 0 ) {
+				echo '<meta property="og:image:width" content="' . (int) $og_img['width'] . '">' . "
 ";
+				echo '<meta property="og:image:height" content="' . (int) $og_img['height'] . '">' . "
+";
+			}
+		}
 
 		// Twitter Card
 		echo '<meta name="twitter:card" content="summary_large_image">' . "
@@ -401,8 +582,14 @@ add_action(
 ";
 		echo '<meta name="twitter:description" content="' . esc_attr( $desc ) . '">' . "
 ";
-		echo '<meta name="twitter:image" content="' . esc_url( $image ) . '">' . "
+		if ( '' !== $image ) {
+			echo '<meta name="twitter:image" content="' . esc_url( $image ) . '">' . "
 ";
+			if ( '' !== (string) $og_img['alt'] ) {
+				echo '<meta name="twitter:image:alt" content="' . esc_attr( (string) $og_img['alt'] ) . '">' . "
+";
+			}
+		}
 		echo '<meta name="twitter:site" content="@showtime_pools">' . "
 ";
 
