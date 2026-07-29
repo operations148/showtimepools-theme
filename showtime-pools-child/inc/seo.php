@@ -198,14 +198,20 @@ function showtime_seo_description(): string {
 		$excerpt = get_post_field( 'post_excerpt', get_the_ID() );
 		if ( $excerpt ) { return wp_trim_words( $excerpt, 36, '…' ); }
 
-		// Service registry fallback
-		$svc_slug = (string) get_post_meta( get_the_ID(), '_showtime_service_slug', true );
+		// Service registry fallback. Uses the shared resolver so this path has
+		// exactly the same meta-first / template-gated-post_name priority as
+		// showtime_seo_context() — the two can no longer drift.
+		$svc_slug = function_exists( 'showtime_registry_slug' )
+			? showtime_registry_slug( (int) get_the_ID(), '_showtime_service_slug', 'page-service.php' )
+			: (string) get_post_meta( get_the_ID(), '_showtime_service_slug', true );
 		if ( $svc_slug && class_exists( '\\Showtime\\Services' ) ) {
 			$svc = \Showtime\Services::get( $svc_slug );
 			if ( $svc && ! empty( $svc['summary'] ) ) { return wp_trim_words( (string) $svc['summary'], 36, '…' ); }
 		}
 
-		$area_slug = (string) get_post_meta( get_the_ID(), '_showtime_area_slug', true );
+		$area_slug = function_exists( 'showtime_registry_slug' )
+			? showtime_registry_slug( (int) get_the_ID(), '_showtime_area_slug', 'page-area.php' )
+			: (string) get_post_meta( get_the_ID(), '_showtime_area_slug', true );
 		if ( $area_slug && class_exists( '\\Showtime\\Areas' ) ) {
 			$area = \Showtime\Areas::get( $area_slug );
 			if ( $area && ! empty( $area['lead'] ) ) { return wp_trim_words( (string) $area['lead'], 36, '…' ); }

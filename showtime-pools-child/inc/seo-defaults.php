@@ -14,6 +14,42 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
+ * Resolve a registry slug for a page, using the SAME priority order the page
+ * templates use so the <head> and the visible body can never disagree:
+ *
+ *   1. The `$meta_key` post meta (authoritative — written by the seeder).
+ *   2. The post_name, but ONLY when the page actually uses `$template`.
+ *   3. '' — not a registry-backed page.
+ *
+ * The template gate in step 2 is deliberate and load-bearing: without it, any
+ * unrelated page whose slug happened to match a registry entry (e.g. a page
+ * literally named "pool-repairs-plumbing") would silently inherit that entry's
+ * title and meta description. get_page_template_slug() is used rather than
+ * is_page_template() because it takes an explicit post ID, so it is correct
+ * outside the main query and directly unit-testable.
+ *
+ * @param int    $post_id  Page ID.
+ * @param string $meta_key e.g. '_showtime_service_slug'.
+ * @param string $template e.g. 'page-service.php'.
+ */
+function showtime_registry_slug( int $post_id, string $meta_key, string $template ): string {
+	if ( $post_id <= 0 ) {
+		return '';
+	}
+
+	$slug = (string) get_post_meta( $post_id, $meta_key, true );
+	if ( '' !== $slug ) {
+		return $slug;
+	}
+
+	if ( $template !== (string) get_page_template_slug( $post_id ) ) {
+		return '';
+	}
+
+	return (string) get_post_field( 'post_name', $post_id );
+}
+
+/**
  * Resolve the current page's registry SEO context.
  *
  * @return array{type:string,h1:string,keyword:string,intro:string,title:string,meta:string}|null
@@ -25,8 +61,10 @@ function showtime_seo_context() {
 
 	$id = get_queried_object_id();
 
-	// Service single.
-	$service_slug = (string) get_post_meta( $id, '_showtime_service_slug', true );
+	// Service single. Meta first, then a template-gated post_name fallback —
+	// mirrors page-service.php so a service page missing its post meta still
+	// gets the registry title/description instead of the sitewide default.
+	$service_slug = showtime_registry_slug( $id, '_showtime_service_slug', 'page-service.php' );
 	if ( '' !== $service_slug && class_exists( '\\Showtime\\Services' ) ) {
 		$svc = \Showtime\Services::get( $service_slug );
 		if ( $svc ) {
@@ -41,8 +79,8 @@ function showtime_seo_context() {
 		}
 	}
 
-	// Area single.
-	$area_slug = (string) get_post_meta( $id, '_showtime_area_slug', true );
+	// Area single. Same meta-first, template-gated fallback as page-area.php.
+	$area_slug = showtime_registry_slug( $id, '_showtime_area_slug', 'page-area.php' );
 	if ( '' !== $area_slug && class_exists( '\\Showtime\\Areas' ) ) {
 		$area = \Showtime\Areas::get( $area_slug );
 		if ( $area ) {
