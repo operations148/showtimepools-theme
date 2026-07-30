@@ -726,6 +726,78 @@ details[open] .faq__chevron { transform: rotate(180deg); }
 	font-size: var(--fs-lg);
 }
 
+/* ─── Server-rendered curated reviews (P0-3) ─────────────────────── */
+/* Plain HTML in the initial response so no-JS crawlers read real review
+   text. Sits above the lazy Trustindex widget; main.js hides it (via the
+   [hidden] attribute) only once the live widget has actually hydrated, so
+   the same reviews are never shown twice. */
+.reviews-static {
+	display: grid;
+	gap: var(--sp-4);
+	grid-template-columns: 1fr;
+	margin-bottom: var(--sp-6);
+}
+@media (min-width: 700px) {
+	.reviews-static { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 1000px) {
+	.reviews-static { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+	/* Compact sits on hub/area pages under other content — one row only. */
+	.reviews-static--compact { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+/* [hidden] must win over the grid display above. */
+.reviews-static[hidden] { display: none; }
+
+.review-card {
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-3);
+	padding: var(--sp-5);
+	background: var(--c-surface-2);
+	border: 1px solid var(--c-border);
+	border-radius: var(--r-lg);
+	min-width: 0; /* let long words wrap instead of forcing overflow */
+}
+.review-card__quote {
+	margin: 0;
+	/* Optional rating/date live in the footer, so a card missing either one
+	   keeps the same top alignment — no layout shift between cards. */
+	flex: 1 1 auto;
+}
+.review-card__quote p {
+	margin: 0;
+	color: var(--c-ink-700);
+	font-size: var(--fs-base);
+	line-height: 1.7;
+	overflow-wrap: anywhere;
+}
+.review-card__meta {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: var(--sp-2) var(--sp-3);
+}
+.review-card__author {
+	font-style: normal;
+	font-weight: var(--fw-semibold);
+	color: var(--c-ink);
+}
+.review-card__author a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.review-card__author a:hover { color: var(--c-link-hover); }
+.review-card__author a:focus-visible {
+	outline: 3px solid var(--c-focus-ring);
+	outline-offset: 2px;
+	border-radius: 3px;
+}
+.review-card__stars {
+	color: var(--c-amber-400);
+	letter-spacing: .06em;
+}
+.review-card__date {
+	color: var(--c-text-muted);
+	font-size: var(--fs-sm);
+}
+
 /* ─── Featured projects + project card (sitewide) ────────────────── */
 /* Used on homepage section-05, /projects/, services-hub, area pages. */
 .featured-projects { padding: clamp(4rem, 7vw, 7rem) 0; }

@@ -208,6 +208,82 @@
 		// needed approach as the popup iframe — the live pull is unchanged.
 		const lazyReviews = document.querySelectorAll('[data-trustindex-lazy]');
 		if (lazyReviews.length) {
+			// P0-3: a server-rendered curated block sits above the widget so
+			// no-JS crawlers see real review text. It must stay visible until
+			// the live widget has genuinely hydrated — mounting alone is not
+			// proof, since Trustindex parks its own markup in a hidden
+			// <pre><template> that stays invisible if its loader never runs.
+			// Only real, *visible* review items count as success.
+			const hasVisibleReviews = (holder) => {
+				const items = holder.querySelectorAll(
+					'.ti-review-item, [class*="ti-review-item"]'
+				);
+				for (let i = 0; i < items.length; i++) {
+					const el = items[i];
+					// offsetParent is null for anything display:none (or an
+					// ancestor that is), which is exactly the un-hydrated state.
+					if (el.offsetParent !== null && el.textContent.trim().length > 0) {
+						return true;
+					}
+				}
+				return false;
+			};
+
+			// The curated block this widget would replace, if any. Scoped to the
+			// widget's own stack so multiple instances never touch each other.
+			const staticFor = (container) => {
+				const stack = container.closest('[data-reviews-stack]');
+				return stack ? stack.querySelector('[data-reviews-static]') : null;
+			};
+
+			// Hide the static block from sight AND from the accessibility tree
+			// so the same reviews aren't announced twice. Never removed from
+			// the DOM — if the widget is later torn down, this can come back.
+			const retireStatic = (staticBlock) => {
+				if (!staticBlock || staticBlock.hidden) return;
+				staticBlock.hidden = true;
+				staticBlock.setAttribute('aria-hidden', 'true');
+			};
+
+			// Watch a mounted widget for successful hydration. Gives up after a
+			// bounded window; on give-up the static block simply stays put.
+			const watchHydration = (container, holder) => {
+				const staticBlock = staticFor(container);
+				// No curated block on this page (the common case until reviews
+				// are curated) — there is nothing to retire, so don't spin an
+				// observer and a poll timer for ten seconds to no purpose.
+				if (!staticBlock) return;
+
+				if (hasVisibleReviews(holder)) {
+					retireStatic(staticBlock);
+					return;
+				}
+				let settled = false;
+				const finish = () => {
+					if (settled) return;
+					settled = true;
+					if (obs) obs.disconnect();
+					clearInterval(poll);
+					clearTimeout(bail);
+				};
+				const check = () => {
+					if (settled) return;
+					if (hasVisibleReviews(holder)) {
+						retireStatic(staticBlock);
+						finish();
+					}
+				};
+				const obs =
+					'MutationObserver' in window
+						? new MutationObserver(check)
+						: null;
+				if (obs) obs.observe(holder, { childList: true, subtree: true });
+				// Trustindex can swap content without mutating `holder` itself
+				// (e.g. unhiding via style), so poll as a safety net too.
+				const poll = setInterval(check, 400);
+				const bail = setTimeout(finish, 10000);
+			};
+
 			const mountReviews = (container) => {
 				if (container.dataset.mounted) return;
 				const tpl = container.querySelector('template[data-trustindex-markup]');
@@ -226,6 +302,7 @@
 					if (old.textContent) s.textContent = old.textContent;
 					old.parentNode.replaceChild(s, old);
 				});
+				watchHydration(container, holder);
 			};
 
 			if ('IntersectionObserver' in window) {

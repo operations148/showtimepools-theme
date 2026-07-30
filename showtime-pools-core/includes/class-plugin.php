@@ -42,6 +42,7 @@ final class Plugin {
 			( new Admin\ContentPage() )->register();
 			( new Admin\PageSeeder() )->register();
 			( new Admin\ToolsPage() )->register();
+			( new Admin\ReviewsPage() )->register();
 		}
 
 		// Seeder hooks (WP-CLI + admin-post) need to register on every request,
