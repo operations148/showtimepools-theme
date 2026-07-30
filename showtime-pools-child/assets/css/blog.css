@@ -629,39 +629,195 @@
 /* Section headers reused. */
 .proj-single__head { margin-bottom: var(--sp-7); max-width: 720px; }
 
-/* Before / After comparison */
-.proj-single__compare { padding: var(--sp-10) 0; background: var(--c-paper); }
-.proj-compare-grid {
+/* ── Before / After project comparison ──────────────────────────────
+   Two states from one markup tree:
+     1. No JS  — side-by-side labelled figures (the server-rendered default).
+     2. .is-slider — JS promotes a compatible pair to a draggable overlay.
+   Both photographs are in the initial HTML either way. */
+.proj-compare { padding: var(--sp-10) 0; background: var(--c-paper); }
+.proj-compare__head { max-width: 760px; margin-bottom: var(--sp-7); }
+.proj-compare__eyebrow { color: var(--c-aqua-700); }
+.proj-compare__summary {
+	margin-top: var(--sp-4);
+	color: var(--c-text-muted);
+	font-size: 1.0625rem;
+	line-height: 1.7;
+	max-width: 68ch;
+}
+
+/* 1. Default: side by side. */
+.proj-compare__media {
 	display: grid;
 	grid-template-columns: 1fr;
 	gap: var(--sp-5);
 }
 @media (min-width: 768px) {
-	.proj-compare-grid { grid-template-columns: 1fr 1fr; gap: var(--sp-6); }
-	.proj-compare-grid--single { grid-template-columns: minmax(0, 720px); justify-content: center; }
+	.proj-compare__media { grid-template-columns: 1fr 1fr; gap: var(--sp-6); }
 }
-.proj-compare-grid__item {
+.proj-compare__frame {
+	position: relative;
 	margin: 0;
 	background: var(--c-bg-pure);
-	border-radius: 14px;
-	overflow: hidden;
 	border: 1px solid var(--c-border);
+	border-radius: 16px;
+	overflow: hidden;
 }
-.proj-compare-grid__item img {
+/* Fixed 16:9 for both frames regardless of source dimensions — portrait
+   originals would otherwise drive the section metres tall. object-fit
+   crops to the box; landscape source photography fills it without loss. */
+.proj-compare__frame img {
+	display: block;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 16 / 9;
+	object-fit: cover;
+}
+.proj-compare__label {
+	position: absolute;
+	top: var(--sp-3);
+	left: var(--sp-3);
+	padding: 6px 12px;
+	border-radius: 999px;
+	background: rgba(11, 23, 51, 0.78);
+	color: #fff;
+	font-size: .7rem;
+	font-weight: 700;
+	letter-spacing: .14em;
+	text-transform: uppercase;
+	backdrop-filter: blur(6px);
+}
+
+/* 2. Slider mode (JS-added class only). */
+.proj-compare__media.is-slider {
+	position: relative;
+	display: block;
+	aspect-ratio: 16 / 9;
+	border: 1px solid var(--c-border);
+	border-radius: 16px;
+	overflow: hidden;
+	background: var(--c-bg-pure);
+	touch-action: pan-y;
+}
+.proj-compare__media.is-slider .proj-compare__frame {
+	position: absolute;
+	inset: 0;
+	margin: 0;
+	border: 0;
+	border-radius: 0;
+	overflow: hidden;
+}
+.proj-compare__media.is-slider .proj-compare__frame img {
 	width: 100%;
 	height: 100%;
-	aspect-ratio: 4 / 3;
-	object-fit: cover;
-	display: block;
+	aspect-ratio: auto;
 }
-.proj-compare-grid__item figcaption {
-	padding: var(--sp-3) var(--sp-4);
-	font-size: .8rem;
-	font-weight: 600;
-	letter-spacing: .12em;
+/* The AFTER frame is clipped from the left edge to the handle position. */
+.proj-compare__media.is-slider .proj-compare__frame--after {
+	clip-path: inset(0 0 0 var(--proj-compare-pos, 50%));
+}
+.proj-compare__media.is-slider .proj-compare__label { z-index: 3; }
+.proj-compare__media.is-slider .proj-compare__frame--after .proj-compare__label {
+	left: auto;
+	right: var(--sp-3);
+}
+
+/* Divider + handle: presentational, driven by the range input below. */
+.proj-compare__divider {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: var(--proj-compare-pos, 50%);
+	width: 2px;
+	background: #fff;
+	box-shadow: 0 0 0 1px rgba(11, 23, 51, 0.18);
+	transform: translateX(-1px);
+	z-index: 4;
+	pointer-events: none;
+}
+.proj-compare__divider::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 44px;
+	height: 44px;
+	transform: translate(-50%, -50%);
+	border-radius: 50%;
+	background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%231E5DFF' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 6 3 12l6 6M15 6l6 6-6 6'/%3E%3C/svg%3E") center/22px no-repeat;
+	box-shadow: 0 6px 18px -6px rgba(11, 23, 51, 0.45);
+}
+
+/* The real control: a range input laid over the image, kept operable by
+   mouse, touch and keyboard. Opacity 0 — never display:none, which would
+   remove it from the accessibility tree and kill keyboard access. */
+.proj-compare__range {
+	position: absolute;
+	inset: 0;
+	z-index: 5;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	opacity: 0;
+	cursor: ew-resize;
+	appearance: none;
+	background: transparent;
+}
+.proj-compare__range::-webkit-slider-thumb { appearance: none; width: 44px; height: 44px; }
+.proj-compare__range::-moz-range-thumb { width: 44px; height: 44px; border: 0; opacity: 0; }
+.proj-compare__range:focus-visible { outline: none; }
+.proj-compare__range:focus-visible ~ .proj-compare__divider::after {
+	outline: 3px solid var(--c-aqua-500);
+	outline-offset: 3px;
+}
+
+/* Facts row */
+.proj-compare__facts {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--sp-4);
+	margin: var(--sp-7) 0 0;
+	padding: var(--sp-6);
+	background: var(--c-bg-pure);
+	border: 1px solid var(--c-border);
+	border-radius: 16px;
+}
+@media (min-width: 720px) {
+	.proj-compare__facts { grid-template-columns: repeat(3, 1fr); gap: var(--sp-6); }
+}
+.proj-compare__fact dt {
+	font-size: .7rem;
+	font-weight: 700;
+	letter-spacing: .14em;
 	text-transform: uppercase;
+	color: var(--c-aqua-700);
+	margin-bottom: 6px;
+}
+.proj-compare__fact dd {
+	margin: 0;
+	color: var(--c-text);
+	line-height: 1.6;
+}
+
+.proj-compare__links {
+	margin: var(--sp-6) 0 0;
 	color: var(--c-text-muted);
-	border-top: 1px solid var(--c-border);
+	line-height: 1.7;
+}
+.proj-compare__links a {
+	color: var(--c-link);
+	font-weight: 600;
+	text-underline-offset: 3px;
+}
+.proj-compare__links a:hover { color: var(--c-link-hover); }
+.proj-compare__links a:focus-visible {
+	outline: 3px solid var(--c-focus-ring);
+	outline-offset: 2px;
+	border-radius: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.proj-compare__media.is-slider .proj-compare__frame--after,
+	.proj-compare__divider { transition: none !important; }
 }
 
 /* Gallery */

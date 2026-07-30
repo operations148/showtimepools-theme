@@ -206,31 +206,106 @@ while ( have_posts() ) :
 	<?php endif; ?>
 
 	<?php
-	// Before / After comparison.
-	$has_before = is_array( $before_img ) && ! empty( $before_img['url'] );
-	$has_after  = is_array( $after_img )  && ! empty( $after_img['url'] );
-	if ( $has_before || $has_after ) :
+	// Before / After comparison. Returns null unless BOTH photographs and the
+	// written copy resolve, so a partial record renders nothing at all.
+	$compare = function_exists( 'showtime_project_compare' ) ? showtime_project_compare( $pid ) : null;
+	if ( null !== $compare ) :
+		$cmp_id = 'proj-compare-' . $pid;
+		$facts  = array_filter(
+			array(
+				__( 'Before', 'showtime-pools' )         => $compare['before_condition'],
+				__( 'Work completed', 'showtime-pools' ) => $compare['work_completed'],
+				__( 'Result', 'showtime-pools' )         => $compare['completed_result'],
+			),
+			static fn( $v ) => '' !== $v
+		);
 	?>
-		<section class="proj-single__compare" data-reveal>
+		<section class="proj-compare" data-reveal aria-labelledby="<?php echo esc_attr( $cmp_id ); ?>-h">
 			<div class="container">
-				<header class="proj-single__head">
-					<span class="eyebrow"><?php esc_html_e( 'Before / After', 'showtime-pools' ); ?></span>
-					<h2 class="balance"><?php esc_html_e( 'The transformation.', 'showtime-pools' ); ?></h2>
+				<header class="proj-compare__head">
+					<span class="eyebrow proj-compare__eyebrow"><?php echo esc_html( $compare['eyebrow'] ); ?></span>
+					<h2 id="<?php echo esc_attr( $cmp_id ); ?>-h" class="balance"><?php echo esc_html( $compare['heading'] ); ?></h2>
+					<p class="proj-compare__summary"><?php echo esc_html( $compare['summary'] ); ?></p>
 				</header>
-				<div class="proj-compare-grid<?php echo ( $has_before && $has_after ) ? '' : ' proj-compare-grid--single'; ?>">
-					<?php if ( $has_before ) : ?>
-						<figure class="proj-compare-grid__item">
-							<img src="<?php echo esc_url( $before_img['sizes']['large'] ?? $before_img['url'] ); ?>" alt="<?php echo esc_attr( get_the_title() . ' (before)' ); ?>" loading="lazy" decoding="async">
-							<figcaption><?php esc_html_e( 'Before', 'showtime-pools' ); ?></figcaption>
+
+				<?php
+				// Both photographs ship in the initial HTML, side by side. JS may
+				// later promote this to an overlay slider; without JS it stays a
+				// perfectly usable labelled pair.
+				$media_class = 'proj-compare__media' . ( $compare['sliderable'] ? ' proj-compare__media--sliderable' : '' );
+				?>
+				<div class="<?php echo esc_attr( $media_class ); ?>"
+					id="<?php echo esc_attr( $cmp_id ); ?>"
+					<?php if ( $compare['sliderable'] ) : ?>data-proj-compare<?php endif; ?>>
+					<?php
+					foreach ( array( 'before', 'after' ) as $side ) :
+						$img   = $compare[ $side ];
+						$label = 'before' === $side
+							? __( 'Before', 'showtime-pools' )
+							: __( 'After', 'showtime-pools' );
+					?>
+						<figure class="proj-compare__frame proj-compare__frame--<?php echo esc_attr( $side ); ?>">
+							<picture>
+								<img
+									src="<?php echo esc_url( $img['url'] ); ?>"
+									<?php if ( '' !== $img['srcset'] ) : ?>
+									srcset="<?php echo esc_attr( $img['srcset'] ); ?>"
+									sizes="<?php echo esc_attr( $img['sizes'] ); ?>"
+									<?php endif; ?>
+									width="<?php echo esc_attr( (string) $img['width'] ); ?>"
+									height="<?php echo esc_attr( (string) $img['height'] ); ?>"
+									alt="<?php echo esc_attr( $img['alt'] ); ?>"
+									loading="lazy"
+									decoding="async">
+							</picture>
+							<figcaption class="proj-compare__label"><?php echo esc_html( $label ); ?></figcaption>
 						</figure>
-					<?php endif; ?>
-					<?php if ( $has_after ) : ?>
-						<figure class="proj-compare-grid__item">
-							<img src="<?php echo esc_url( $after_img['sizes']['large'] ?? $after_img['url'] ); ?>" alt="<?php echo esc_attr( get_the_title() . ' (after)' ); ?>" loading="lazy" decoding="async">
-							<figcaption><?php esc_html_e( 'After', 'showtime-pools' ); ?></figcaption>
-						</figure>
-					<?php endif; ?>
+					<?php endforeach; ?>
 				</div>
+
+				<?php if ( ! empty( $facts ) ) : ?>
+					<dl class="proj-compare__facts">
+						<?php foreach ( $facts as $k => $v ) : ?>
+							<div class="proj-compare__fact">
+								<dt><?php echo esc_html( $k ); ?></dt>
+								<dd><?php echo esc_html( $v ); ?></dd>
+							</div>
+						<?php endforeach; ?>
+					</dl>
+				<?php endif; ?>
+
+				<?php if ( ! empty( $compare['links'] ) ) : ?>
+					<p class="proj-compare__links">
+						<?php
+						$primary = $compare['links']['primary'] ?? null;
+						$second  = $compare['links']['secondary'] ?? null;
+						$area    = $compare['links']['area'] ?? null;
+
+						if ( $primary ) {
+							printf(
+								/* translators: %s: linked service name, e.g. "pool remodeling & resurfacing services" */
+								esc_html__( 'This project was delivered by our %s', 'showtime-pools' ),
+								'<a href="' . esc_url( $primary['url'] ) . '">' . esc_html( $primary['label'] ) . '</a>'
+							);
+							if ( $second ) {
+								printf(
+									/* translators: %s: linked secondary service name */
+									esc_html__( ', with %s', 'showtime-pools' ),
+									'<a href="' . esc_url( $second['url'] ) . '">' . esc_html( $second['label'] ) . '</a>'
+								);
+							}
+							echo '. ';
+						}
+						if ( $area ) {
+							printf(
+								/* translators: %s: linked service-area name, e.g. "pool services in Sherman Oaks" */
+								esc_html__( 'See all %s.', 'showtime-pools' ),
+								'<a href="' . esc_url( $area['url'] ) . '">' . esc_html( $area['label'] ) . '</a>'
+							);
+						}
+						?>
+					</p>
+				<?php endif; ?>
 			</div>
 		</section>
 	<?php endif; ?>

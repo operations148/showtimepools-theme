@@ -27,4 +27,23 @@ final class Projects {
 		}
 		return self::$cache;
 	}
+
+	/**
+	 * Look a seed entry up by slug. Mirrors Services::get() / Areas::get().
+	 *
+	 * The seeder copies scalar fields into post meta on first run, so the
+	 * registry stays the fallback for anything added to the data file
+	 * *after* seeding (the comparison block, for one) — that content would
+	 * otherwise be unreachable without re-running a one-time seeder.
+	 *
+	 * @return array<string, mixed>|null
+	 */
+	public static function get( string $slug ): ?array {
+		foreach ( self::all() as $project ) {
+			if ( ( $project['slug'] ?? '' ) === $slug ) {
+				return $project;
+			}
+		}
+		return null;
+	}
 }

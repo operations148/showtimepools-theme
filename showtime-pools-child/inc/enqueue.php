@@ -149,6 +149,13 @@ add_action(
 			wp_enqueue_style( 'showtime-interior', $uri, array( 'showtime-components' ), $ver );
 		}
 
+		// Before/After slider — single projects only. Pure progressive
+		// enhancement: the pair renders side by side without it.
+		if ( is_singular( 'project' ) ) {
+			[ $uri, $ver ] = showtime_asset( 'assets/js/project-compare.js' );
+			wp_enqueue_script( 'showtime-project-compare', $uri, array(), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );
+		}
+
 		// TOC + scroll-spy only on single posts (article body required).
 		if ( is_singular( 'post' ) ) {
 			[ $uri, $ver ] = showtime_asset( 'assets/js/blog.js' );

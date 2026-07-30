@@ -31,6 +31,18 @@ return array(
 		'value_label'      => '$28k',
 		'duration_label'   => '12 days',
 		'client_quote'     => 'Looks better than the day they finished the original build. Crew showed up at 7am, every day, no excuses.',
+		'compare'          => array(
+			'heading'          => 'Before and After: Pool Remodeling in Sherman Oaks, CA',
+			'summary'          => 'In Sherman Oaks, Showtime Pools completed a full remodel of a mid-century pool: resurfacing, waterline tile, coping, and an equipment upgrade. The work included a PebbleTec Cool Blue pebble finish, 6×6 ceramic waterline tile, new coping, and a Pentair IntelliFlo variable-speed pump paired with an IntelliCenter automation system. The crew worked the site daily from 7am through the full build. The project took 12 days, represented an investment of $28k, and was completed in September 2025.',
+			'before_condition' => 'Original mid-century surface, waterline tile, coping, and equipment pad.',
+			'work_completed'   => 'Full pebble resurface, new waterline tile and coping, plus a pump and automation swap.',
+			'completed_result' => 'PebbleTec Cool Blue finish with 6×6 ceramic tile and IntelliCenter-controlled equipment.',
+			'before_alt'       => 'Sherman Oaks mid-century pool before remodeling, showing the original surface and waterline tile.',
+			'after_alt'        => 'The same Sherman Oaks pool after resurfacing in PebbleTec Cool Blue with new ceramic waterline tile and coping.',
+			'primary_service'  => 'pool-remodeling-resurfacing',
+			'secondary_service'=> 'tile-coping-plaster-decking',
+			'area'             => 'sherman-oaks',
+		),
 	),
 
 	array(
@@ -44,6 +56,18 @@ return array(
 		'value_label'      => '$142k',
 		'duration_label'   => '10 weeks',
 		'client_quote'     => 'Steve handled everything. Permits, three trades, the inspector: we never made a single phone call.',
+		'compare'          => array(
+			'heading'          => 'Before and After: Custom Pool Construction in Encino, CA',
+			'summary'          => 'In Encino, Showtime Pools built a new gunite pool and spa from an undeveloped yard. The work included a vanishing edge, custom 1×1 glass mosaic waterline tile, a PebbleTec Aqua White finish, full hardscape, an outdoor kitchen, and a fire bowl. Showtime pulled the permits and coordinated all three trades and the inspector directly. The project took 10 weeks, represented an investment of $142k, and was completed in July 2025.',
+			'before_condition' => 'Undeveloped yard with no existing pool.',
+			'work_completed'   => 'New gunite pool and spa, vanishing edge, hardscape, outdoor kitchen, and fire features.',
+			'completed_result' => 'PebbleTec Aqua White pool and spa with glass mosaic waterline and full outdoor living build.',
+			'before_alt'       => 'Encino yard before construction, graded and staked out ahead of the new pool build.',
+			'after_alt'        => 'The completed Encino gunite pool and spa with vanishing edge, glass mosaic waterline, and surrounding hardscape.',
+			'primary_service'  => 'custom-pool-design-construction',
+			'secondary_service'=> '',
+			'area'             => 'encino',
+		),
 	),
 
 	array(
@@ -57,6 +81,18 @@ return array(
 		'value_label'      => '$8.6k',
 		'duration_label'   => '3 days',
 		'client_quote'     => 'They actually pulled the old equipment and recycled it. The pad looks like a magazine spread now.',
+		'compare'          => array(
+			'heading'          => 'Before and After: Pool Equipment and Automation Upgrade in Studio City, CA',
+			'summary'          => 'In Studio City, Showtime Pools replaced an aging equipment pad and left the existing pebble surface untouched. The work included a Pentair IntelliCenter automation system, a salt chlorine cell, a variable-speed pump, and a Raypak heater swap. The old equipment was pulled off site and recycled rather than sent to landfill. The project took 3 days, represented an investment of $8.6k, and was completed in November 2025.',
+			'before_condition' => 'Aging equipment pad with end-of-life pump, heater, and controls.',
+			'work_completed'   => 'Full pad rebuild: automation, variable-speed pump, salt cell, and heater replacement.',
+			'completed_result' => 'IntelliCenter-automated pad running a variable-speed pump, salt cell, and Raypak heater.',
+			'before_alt'       => 'Studio City pool equipment pad before the upgrade, with the original pump and heater in place.',
+			'after_alt'        => 'The rebuilt Studio City equipment pad with a variable-speed pump, salt cell, and IntelliCenter automation.',
+			'primary_service'  => 'equipment-installation-upgrades',
+			'secondary_service'=> 'smart-pool-automation',
+			'area'             => 'studio-city',
+		),
 	),
 
 	array(
@@ -70,6 +106,18 @@ return array(
 		'value_label'      => '$22k',
 		'duration_label'   => '8 days',
 		'client_quote'     => 'It’s the only thing in the backyard our daughter actually compliments. That is the highest praise possible.',
+		'compare'          => array(
+			'heading'          => 'Before and After: Spa Renovation in Beverly Hills, CA',
+			'summary'          => 'In Beverly Hills, Showtime Pools renovated an existing spa down to the shell. The work included hand-cut Italian glass mosaic tile, new jets, and color-tuned LED lighting on a programmable color loop. The surrounding pool was left in place, so the renovation stayed contained entirely to the spa. The project took 8 days, represented an investment of $22k, and was completed in August 2025.',
+			'before_condition' => 'Existing spa stripped back to the shell before re-tiling.',
+			'work_completed'   => 'Re-tiled in hand-cut Italian glass mosaic, new jets, and LED lighting installed.',
+			'completed_result' => 'Italian glass mosaic spa with new jets and a color-tuned LED loop.',
+			'before_alt'       => 'Beverly Hills spa stripped to the bare shell before re-tiling, with tools staged on the deck.',
+			'after_alt'        => 'The finished Beverly Hills spa lined with hand-cut Italian glass mosaic tile and new jets.',
+			'primary_service'  => 'spa-installation-renovations',
+			'secondary_service'=> 'tile-coping-plaster-decking',
+			'area'             => 'beverly-hills',
+		),
 	),
 
 	array(
@@ -83,6 +131,18 @@ return array(
 		'value_label'      => '$36k',
 		'duration_label'   => '14 days',
 		'client_quote'     => 'Quote came back with three options. Most companies give you one. We picked the middle one with zero buyer’s remorse.',
+		'compare'          => array(
+			'heading'          => 'Before and After: Pool Resurfacing in Tarzana, CA',
+			'summary'          => 'In Tarzana, Showtime Pools resurfaced an existing pool and added a sunshelf. The work included a PebbleTec Caribbean Blue finish, a new sunshelf, new bullnose coping, and repointing of the existing travertine deck. The job was quoted as three costed options rather than a single take-it-or-leave-it figure. The project took 14 days, represented an investment of $36k, and was completed in June 2025.',
+			'before_condition' => 'Pool due for resurfacing, no sunshelf, and travertine decking needing repointing.',
+			'work_completed'   => 'Pebble resurface, sunshelf addition, new bullnose coping, and deck repointing.',
+			'completed_result' => 'PebbleTec Caribbean Blue finish with a new sunshelf and repointed travertine deck.',
+			'before_alt'       => 'Tarzana pool before resurfacing, showing the worn interior finish and existing travertine deck.',
+			'after_alt'        => 'The Tarzana pool after resurfacing in PebbleTec Caribbean Blue with a new sunshelf and bullnose coping.',
+			'primary_service'  => 'pool-remodeling-resurfacing',
+			'secondary_service'=> 'tile-coping-plaster-decking',
+			'area'             => 'tarzana',
+		),
 	),
 
 	array(
@@ -96,6 +156,18 @@ return array(
 		'value_label'      => '$12.4k',
 		'duration_label'   => '6 days',
 		'client_quote'     => 'They told us the plaster had another five years. Saved us $20k by not selling us a resurface we didn’t need.',
+		'compare'          => array(
+			'heading'          => 'Before and After: Pool Tile and Coping Upgrade in Woodland Hills, CA',
+			'summary'          => 'In Woodland Hills, Showtime Pools replaced 30-year-old waterline tile and coping without touching the plaster. The work included 6×6 porcelain waterline tile and new cantilever coping. The existing plaster was inspected, judged to have roughly five years of service left, and deliberately kept rather than resurfaced. The project took 6 days, represented an investment of $12.4k, and was completed in May 2025.',
+			'before_condition' => '30-year-old waterline tile and coping; existing plaster still serviceable.',
+			'work_completed'   => 'Waterline tile and coping replaced. No resurfacing performed.',
+			'completed_result' => '6×6 porcelain waterline tile and cantilever coping, with the original plaster retained.',
+			'before_alt'       => 'Woodland Hills pool before the upgrade, showing dated waterline tile and worn coping.',
+			'after_alt'        => 'The same Woodland Hills pool with new 6×6 porcelain waterline tile and cantilever coping.',
+			'primary_service'  => 'tile-coping-plaster-decking',
+			'secondary_service'=> '',
+			'area'             => 'woodland-hills',
+		),
 	),
 
 	array(
