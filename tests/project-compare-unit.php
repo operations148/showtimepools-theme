@@ -100,11 +100,29 @@ foreach ( $slugs as $s ) {
    asserts real production behaviour, not the dev stand-ins. --- */
 remove_all_filters( 'showtime/project/compare_images' );
 
+// Projects that ship a verified bundled pair in the registry resolve from the
+// code-first assets; every other project must still fail closed. Derived from
+// the registry rather than hardcoded, so adding a future pair updates this.
+$with_assets = array();
+foreach ( array_keys( $ids ) as $s ) {
+	$entry = class_exists( '\Showtime\Projects' ) ? \Showtime\Projects::get( $s ) : null;
+	$cmp   = $entry['compare'] ?? array();
+	if ( ! empty( $cmp['before_asset'] ) && ! empty( $cmp['after_asset'] ) ) {
+		$with_assets[] = $s;
+	}
+}
+
 foreach ( $ids as $s => $pid ) {
 	$r = showtime_project_compare( $pid );
-	null === $r
-		? ok( "9. $s: no imagery -> returns null (fails closed)" )
-		: bad( "9. $s: returned data with no imagery present" );
+	if ( in_array( $s, $with_assets, true ) ) {
+		( null !== $r )
+			? ok( "9. $s: bundled comparison pair resolves with no WordPress imagery" )
+			: bad( "9. $s: declares bundled assets but resolved null" );
+	} else {
+		( null === $r )
+			? ok( "9. $s: no imagery and no bundled pair -> returns null (fails closed)" )
+			: bad( "9. $s: returned data with no imagery present" );
+	}
 }
 
 /* Half a pair is still not a pair. */
@@ -121,12 +139,111 @@ $r = showtime_project_compare( reset( $ids ) );
 remove_filter( 'showtime/project/compare_images', $f_half2, 10 );
 null === $r ? ok( '9c. after-only pair -> null' ) : bad( '9c. after-only pair rendered' );
 
-/* A path that does not exist must be rejected, not guessed at. */
-$f_bogus = $half( $img_dir . 'does-not-exist.webp', $img_dir . 'also-missing.webp' );
-add_filter( 'showtime/project/compare_images', $f_bogus, 10, 0 );
-$r = showtime_project_compare( reset( $ids ) );
-remove_filter( 'showtime/project/compare_images', $f_bogus, 10 );
-null === $r ? ok( '9d. unreadable files -> null (no guessed dimensions)' ) : bad( '9d. unreadable files accepted' );
+/* A path that does not exist must be rejected, not guessed at. Asserted on the
+   image normalizer itself: it is the single guard responsible, and testing it
+   directly stays deterministic no matter which projects ship bundled assets. */
+$unreadable = array(
+	$img_dir . 'does-not-exist.webp',
+	$img_dir . 'projects/comparisons/not-a-real-file.webp',
+	'/nowhere/at/all.jpg',
+);
+$all_null = true;
+foreach ( $unreadable as $p ) {
+	if ( null !== showtime_project_compare_image( $p, 'alt' ) ) { $all_null = false; }
+}
+$all_null
+	? ok( '9d. unreadable file paths -> null (no guessed dimensions)' )
+	: bad( '9d. an unreadable path produced an image' );
+
+/* A readable file with no determinable dimensions must also be refused. */
+$fake = $img_dir . 'projects/comparisons/.not-an-image-tmp';
+file_put_contents( $fake, 'this is definitely not an image' );
+$r_fake = showtime_project_compare_image( $fake, 'alt' );
+@unlink( $fake );
+null === $r_fake
+	? ok( '9e. readable non-image -> null (dimensions never invented)' )
+	: bad( '9e. non-image file accepted as an image' );
+
+/* The bundled fallback needs BOTH files; a half-declared pair must not render. */
+$half_decl = showtime_project_compare_image( $img_dir . 'projects/comparisons/missing-half.webp', 'alt' );
+null === $half_decl
+	? ok( '9f. a missing bundled file yields null, so a pair can never be half-resolved' )
+	: bad( '9f. missing bundled file resolved' );
+
+/* --- Bundled comparison image registry (real project photographs). --- */
+echo "\n== BUNDLED COMPARISON IMAGE REGISTRY ==\n";
+$asset_dir = get_stylesheet_directory() . '/assets/img/projects/comparisons/';
+$seen_sums = array();
+$seen_files = array();
+
+foreach ( $with_assets as $s ) {
+	$cmp = ( \Showtime\Projects::get( $s ) )['compare'];
+	$b   = $asset_dir . $cmp['before_asset'];
+	$a   = $asset_dir . $cmp['after_asset'];
+
+	// Files exist and are readable.
+	( is_readable( $b ) && is_readable( $a ) )
+		? ok( "img. $s: both bundled files exist" )
+		: bad( "img. $s: missing bundled file(s)" );
+	if ( ! is_readable( $b ) || ! is_readable( $a ) ) { continue; }
+
+	// Valid image MIME + real dimensions.
+	$bi = @getimagesize( $b );
+	$ai = @getimagesize( $a );
+	( is_array( $bi ) && is_array( $ai )
+		&& 0 === strpos( (string) $bi['mime'], 'image/' )
+		&& 0 === strpos( (string) $ai['mime'], 'image/' ) )
+		? ok( "img. $s: valid image MIME ({$bi['mime']}) with real dimensions" )
+		: bad( "img. $s: not a valid image" );
+
+	// Pair is not identical, and no file is reused across projects.
+	$bs = hash_file( 'sha256', $b );
+	$as = hash_file( 'sha256', $a );
+	( $bs !== $as ) ? ok( "img. $s: before and after are different images" ) : bad( "img. $s: before == after" );
+	foreach ( array( $bs, $as ) as $sum ) {
+		isset( $seen_sums[ $sum ] )
+			? bad( "img. $s: image reused from {$seen_sums[ $sum ]}" )
+			: null;
+		$seen_sums[ $sum ] = $s;
+	}
+	foreach ( array( $cmp['before_asset'], $cmp['after_asset'] ) as $fn ) {
+		if ( isset( $seen_files[ $fn ] ) ) { bad( "img. $s: filename reused" ); }
+		$seen_files[ $fn ] = $s;
+		// Production-safe filename.
+		( $fn === strtolower( $fn ) && ! preg_match( '/[\s()]/', $fn ) )
+			? null
+			: bad( "img. $s: unsafe production filename '$fn'" );
+	}
+
+	// Correct before/after ordering + slug association encoded in the name.
+	( false !== strpos( $cmp['before_asset'], $s . '-before' )
+		&& false !== strpos( $cmp['after_asset'], $s . '-after' ) )
+		? ok( "img. $s: filenames encode correct slug and before/after order" )
+		: bad( "img. $s: filename/slug or ordering mismatch" );
+
+	// Truthful, non-empty alt text that is not just the heading.
+	$balt = trim( (string) ( $cmp['before_alt'] ?? '' ) );
+	$aalt = trim( (string) ( $cmp['after_alt'] ?? '' ) );
+	( '' !== $balt && '' !== $aalt && $balt !== $aalt
+		&& 0 !== strcasecmp( $balt, (string) ( $cmp['heading'] ?? '' ) ) )
+		? ok( "img. $s: distinct non-empty alt text on both images" )
+		: bad( "img. $s: weak or duplicated alt text" );
+}
+
+( 6 === count( $ids ) ) ? ok( 'img. exactly six project mappings present' ) : bad( 'img. project count != 6' );
+( count( $seen_files ) === count( $with_assets ) * 2 )
+	? ok( 'img. exactly two unique image files per asset-backed project (' . count( $seen_files ) . ' files / ' . count( $with_assets ) . ' projects)' )
+	: bad( 'img. image-per-project count wrong' );
+
+// No remote or placeholder source may appear in the registry.
+$registry_blob = wp_json_encode( \Showtime\Projects::all() );
+$remote_hits = array();
+foreach ( array( 'picsum', 'unsplash', 'placehold', 'http://', 'https://' ) as $needle ) {
+	if ( false !== stripos( $registry_blob, $needle ) ) { $remote_hits[] = $needle; }
+}
+empty( $remote_hits )
+	? ok( 'img. no remote/placeholder image source in the project registry' )
+	: bad( 'img. remote/placeholder source found: ' . implode( ', ', $remote_hits ) );
 
 /* --- With a valid pair injected: structure, links, dimensions. --- */
 $f_ok = $half( $fixture['before'], $fixture['after'] );

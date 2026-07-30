@@ -42,6 +42,11 @@ if ( post_type_exists( 'project' ) ) {
 		$image = '';
 		if ( has_post_thumbnail( $pid ) ) {
 			$image = (string) get_the_post_thumbnail_url( $pid, 'large' );
+		} elseif ( function_exists( 'showtime_project_compare_asset_url' )
+			&& '' !== showtime_project_compare_asset_url( (string) get_post_field( 'post_name', $pid ) ) ) {
+			// The project's own finished ("after") photograph, so the card shows
+			// the real completed work rather than a generic stock slot.
+			$image = showtime_project_compare_asset_url( (string) get_post_field( 'post_name', $pid ) );
 		} elseif ( function_exists( 'showtime_image' ) ) {
 			$image = showtime_image( $slot, 1024 );
 		}

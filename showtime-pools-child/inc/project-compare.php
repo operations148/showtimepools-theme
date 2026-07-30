@@ -159,6 +159,30 @@ function showtime_project_compare_date( string $ym ): string {
 }
 
 /**
+ * Public URL of a project's bundled comparison photograph, or '' if none.
+ *
+ * Lets card listings show the real finished project instead of a generic
+ * stock slot, reading the same registry keys the comparison section uses so
+ * there is only one place to declare a project's photography.
+ *
+ * @param string $slug Project slug.
+ * @param string $side 'after' (default) or 'before'.
+ */
+function showtime_project_compare_asset_url( string $slug, string $side = 'after' ): string {
+	if ( ! class_exists( '\Showtime\Projects' ) || ! defined( 'SHOWTIME_CHILD_DIR' ) ) {
+		return '';
+	}
+	$entry = \Showtime\Projects::get( $slug );
+	$key   = ( 'before' === $side ? 'before_asset' : 'after_asset' );
+	$file  = $entry['compare'][ $key ] ?? '';
+	if ( ! is_string( $file ) || '' === $file ) {
+		return '';
+	}
+	$path = SHOWTIME_CHILD_DIR . '/assets/img/projects/comparisons/' . basename( $file );
+	return is_readable( $path ) ? showtime_project_compare_local_url( $path ) : '';
+}
+
+/**
  * Assemble everything the comparison section needs, or null if it cannot
  * render truthfully.
  *
@@ -205,6 +229,26 @@ function showtime_project_compare( int $pid ): ?array {
 
 	$before = showtime_project_compare_image( $raw['before'] ?? null, $before_alt );
 	$after  = showtime_project_compare_image( $raw['after'] ?? null, $after_alt );
+
+	// Code-first fallback: bundled comparison photographs declared in the
+	// project registry. Applied ONLY when neither WordPress image resolved, so
+	// an uploaded pair always wins and a pair is never half CMS / half bundled.
+	// Both files must exist and be readable, or nothing is used — a one-sided
+	// pair still fails closed below.
+	if ( null === $before && null === $after ) {
+		$b_file = $field( 'before_asset' );
+		$a_file = $field( 'after_asset' );
+		if ( '' !== $b_file && '' !== $a_file && defined( 'SHOWTIME_CHILD_DIR' ) ) {
+			$dir = SHOWTIME_CHILD_DIR . '/assets/img/projects/comparisons/';
+			// basename() keeps a registry typo from walking outside the folder.
+			$b_path = $dir . basename( $b_file );
+			$a_path = $dir . basename( $a_file );
+			if ( is_readable( $b_path ) && is_readable( $a_path ) ) {
+				$before = showtime_project_compare_image( $b_path, $before_alt );
+				$after  = showtime_project_compare_image( $a_path, $after_alt );
+			}
+		}
+	}
 
 	// Fail closed — a one-sided pair is not a before/after.
 	if ( null === $before || null === $after ) {

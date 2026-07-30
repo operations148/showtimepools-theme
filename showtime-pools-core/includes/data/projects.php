@@ -37,8 +37,13 @@ return array(
 			'before_condition' => 'Original mid-century surface, waterline tile, coping, and equipment pad.',
 			'work_completed'   => 'Full pebble resurface, new waterline tile and coping, plus a pump and automation swap.',
 			'completed_result' => 'PebbleTec Cool Blue finish with 6×6 ceramic tile and IntelliCenter-controlled equipment.',
-			'before_alt'       => 'Sherman Oaks mid-century pool before remodeling, showing the original surface and waterline tile.',
-			'after_alt'        => 'The same Sherman Oaks pool after resurfacing in PebbleTec Cool Blue with new ceramic waterline tile and coping.',
+			'before_alt'       => 'Crew applying the new pebble finish to the drained Sherman Oaks pool during the remodel.',
+			'after_alt'        => 'The finished Sherman Oaks pool and spa filled with water after the remodel.',
+			// Code-first comparison assets, relative to
+			// assets/img/projects/comparisons/. Used only when BOTH are present
+			// and no WordPress image has been uploaded for the project.
+			'before_asset'     => 'sherman-oaks-mid-century-remodel-before.webp',
+			'after_asset'      => 'sherman-oaks-mid-century-remodel-after.webp',
 			'primary_service'  => 'pool-remodeling-resurfacing',
 			'secondary_service'=> 'tile-coping-plaster-decking',
 			'area'             => 'sherman-oaks',
@@ -62,8 +67,13 @@ return array(
 			'before_condition' => 'Undeveloped yard with no existing pool.',
 			'work_completed'   => 'New gunite pool and spa, vanishing edge, hardscape, outdoor kitchen, and fire features.',
 			'completed_result' => 'PebbleTec Aqua White pool and spa with glass mosaic waterline and full outdoor living build.',
-			'before_alt'       => 'Encino yard before construction, graded and staked out ahead of the new pool build.',
-			'after_alt'        => 'The completed Encino gunite pool and spa with vanishing edge, glass mosaic waterline, and surrounding hardscape.',
+			// Alt text describes only what is visible in the photograph. NOTE:
+			// the summary/scope copy above still describes a new build; the
+			// photographs show a resurface. Registry copy to be realigned.
+			'before_alt'       => 'Drained Encino pool with fresh dark finish applied, before refilling.',
+			'after_alt'        => 'The Encino pool refilled with water after the finish work.',
+			'before_asset'     => 'encino-estate-new-build-before.jpg',
+			'after_asset'      => 'encino-estate-new-build-after.jpg',
 			'primary_service'  => 'custom-pool-design-construction',
 			'secondary_service'=> '',
 			'area'             => 'encino',
@@ -87,8 +97,10 @@ return array(
 			'before_condition' => 'Aging equipment pad with end-of-life pump, heater, and controls.',
 			'work_completed'   => 'Full pad rebuild: automation, variable-speed pump, salt cell, and heater replacement.',
 			'completed_result' => 'IntelliCenter-automated pad running a variable-speed pump, salt cell, and Raypak heater.',
-			'before_alt'       => 'Studio City pool equipment pad before the upgrade, with the original pump and heater in place.',
-			'after_alt'        => 'The rebuilt Studio City equipment pad with a variable-speed pump, salt cell, and IntelliCenter automation.',
+			'before_alt'       => 'Studio City pool automation control panel before the upgrade, with aged wiring and the original controller.',
+			'after_alt'        => 'The rebuilt Studio City control panel after the upgrade, with new breakers and tidied wiring.',
+			'before_asset'     => 'studio-city-modern-automation-before.webp',
+			'after_asset'      => 'studio-city-modern-automation-after.webp',
 			'primary_service'  => 'equipment-installation-upgrades',
 			'secondary_service'=> 'smart-pool-automation',
 			'area'             => 'studio-city',
@@ -112,8 +124,10 @@ return array(
 			'before_condition' => 'Existing spa stripped back to the shell before re-tiling.',
 			'work_completed'   => 'Re-tiled in hand-cut Italian glass mosaic, new jets, and LED lighting installed.',
 			'completed_result' => 'Italian glass mosaic spa with new jets and a color-tuned LED loop.',
-			'before_alt'       => 'Beverly Hills spa stripped to the bare shell before re-tiling, with tools staged on the deck.',
-			'after_alt'        => 'The finished Beverly Hills spa lined with hand-cut Italian glass mosaic tile and new jets.',
+			'before_alt'       => 'Beverly Hills spa before renovation, showing the plain plaster interior and original trim tile.',
+			'after_alt'        => 'The finished Beverly Hills spa lined with blue glass mosaic tile.',
+			'before_asset'     => 'beverly-hills-luxe-spa-renovation-before.webp',
+			'after_asset'      => 'beverly-hills-luxe-spa-renovation-after.webp',
 			'primary_service'  => 'spa-installation-renovations',
 			'secondary_service'=> 'tile-coping-plaster-decking',
 			'area'             => 'beverly-hills',
@@ -137,8 +151,12 @@ return array(
 			'before_condition' => 'Pool due for resurfacing, no sunshelf, and travertine decking needing repointing.',
 			'work_completed'   => 'Pebble resurface, sunshelf addition, new bullnose coping, and deck repointing.',
 			'completed_result' => 'PebbleTec Caribbean Blue finish with a new sunshelf and repointed travertine deck.',
-			'before_alt'       => 'Tarzana pool before resurfacing, showing the worn interior finish and existing travertine deck.',
-			'after_alt'        => 'The Tarzana pool after resurfacing in PebbleTec Caribbean Blue with a new sunshelf and bullnose coping.',
+			// NOTE: registry copy says travertine deck; the photographs show a
+			// timber deck. Alt text follows the photographs.
+			'before_alt'       => 'Drained Tarzana pool with worn interior finish, beside the timber deck.',
+			'after_alt'        => 'The Tarzana pool refilled after resurfacing, with its shallow sun shelf and timber deck.',
+			'before_asset'     => 'tarzana-resort-style-finish-before.webp',
+			'after_asset'      => 'tarzana-resort-style-finish-after.webp',
 			'primary_service'  => 'pool-remodeling-resurfacing',
 			'secondary_service'=> 'tile-coping-plaster-decking',
 			'area'             => 'tarzana',
@@ -162,8 +180,13 @@ return array(
 			'before_condition' => '30-year-old waterline tile and coping; existing plaster still serviceable.',
 			'work_completed'   => 'Waterline tile and coping replaced. No resurfacing performed.',
 			'completed_result' => '6×6 porcelain waterline tile and cantilever coping, with the original plaster retained.',
-			'before_alt'       => 'Woodland Hills pool before the upgrade, showing dated waterline tile and worn coping.',
-			'after_alt'        => 'The same Woodland Hills pool with new 6×6 porcelain waterline tile and cantilever coping.',
+			// NOTE: registry copy describes pool waterline tile in 6x6 porcelain
+			// with no resurfacing; the photographs show a round spa re-tiled in
+			// glass mosaic. Alt text follows the photographs.
+			'before_alt'       => 'Round Woodland Hills spa before the refresh, drained with worn surfaces and fallen leaves.',
+			'after_alt'        => 'The same Woodland Hills spa after re-tiling, lined in blue mosaic tile.',
+			'before_asset'     => 'woodland-hills-tile-coping-refresh-before.webp',
+			'after_asset'      => 'woodland-hills-tile-coping-refresh-after.webp',
 			'primary_service'  => 'tile-coping-plaster-decking',
 			'secondary_service'=> '',
 			'area'             => 'woodland-hills',
