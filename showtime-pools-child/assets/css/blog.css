@@ -485,15 +485,17 @@
    Single Project (portfolio template — independent of blog single)
    ========================================================================= */
 
-/* Hero — Poolax 2-column light layout. Copy LEFT, photo RIGHT in soft
-   blue circle backdrop. Mirrors the homepage hero treatment for brand
-   consistency. (Phase G rebuild — was dark-overlay full-bleed.) */
+/* Hero — full-bleed project photo, same dark-overlay treatment as every
+   other interior hero (.area-hero / .int-hero--photo): photo fills the
+   section, a diagonal navy veil sits over it for text contrast, copy is a
+   single column on top. Keeps the project template visually consistent with
+   about/areas/inspections instead of its own one-off light 2-column layout. */
 .proj-single { background: var(--c-bg); }
-.proj-single__hero--poolax {
+.proj-single__hero {
 	position: relative;
 	overflow: hidden;
-	background: linear-gradient(180deg, #FFFFFF 0%, var(--c-paper) 60%, #FFFFFF 100%);
-	color: var(--c-ink);
+	background: var(--c-ink);
+	color: #fff;
 	/* Full-screen interior hero (viewport minus header) — see .int-hero. */
 	min-height: calc(100vh - var(--header-h));
 	min-height: calc(100dvh - var(--header-h));
@@ -502,40 +504,42 @@
 	flex-direction: column;
 	justify-content: center;
 }
-.proj-single__hero-bg {
-	position: absolute;
-	inset: 0;
-	pointer-events: none;
-	background:
-		radial-gradient(70% 60% at 85% 25%, rgba(30,93,255,0.06) 0%, transparent 70%),
-		radial-gradient(45% 35% at 12% 80%, rgba(30,93,255,0.04) 0%, transparent 70%);
+.proj-single__hero-photo {
+	position: absolute; inset: 0;
+	width: 100%; height: 100%;
+	object-fit: cover;
+	z-index: 0;
+	transform: scale(1.04);
+	animation: stp-ken-burns-int 26s var(--ease-in-out) infinite alternate;
 }
-.proj-single__hero--poolax > .container { position: relative; z-index: 1; }
+.proj-single__hero::before {
+	content: '';
+	position: absolute; inset: 0;
+	background:
+		linear-gradient(95deg, rgba(11, 23, 51, 0.82) 0%, rgba(11, 23, 51, 0.58) 45%, rgba(11, 23, 51, 0.28) 100%),
+		linear-gradient(180deg, rgba(11, 23, 51, 0.12) 0%, rgba(11, 23, 51, 0.32) 100%);
+	z-index: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+	.proj-single__hero-photo { animation: none; }
+}
+.proj-single__hero > .container { position: relative; z-index: 2; }
 
 .proj-single__crumbs {
-	color: var(--c-text-muted);
-	margin-bottom: var(--sp-5);
+	color: rgba(255,255,255,0.7);
+	margin-bottom: var(--sp-6);
 	font-size: .85rem;
 }
-.proj-single__crumbs a { color: var(--c-aqua-700); text-decoration: none; }
-.proj-single__crumbs a:hover { color: var(--c-aqua-500); }
-.proj-single__crumbs [aria-current="page"] { color: var(--c-ink); font-weight: 600; }
+.proj-single__crumbs a { color: rgba(255,255,255,0.85); text-decoration: none; }
+.proj-single__crumbs a:hover { color: #fff; }
+.proj-single__crumbs [aria-current="page"] { color: #fff; font-weight: 600; }
 
-.proj-single__hero-grid {
-	display: grid;
-	grid-template-columns: 1fr;
-	gap: var(--sp-8);
-	align-items: center;
-}
-@media (min-width: 960px) {
-	.proj-single__hero-grid { grid-template-columns: 1.05fr 1fr; gap: clamp(2rem, 5vw, 5rem); }
-}
-
-.proj-single__hero-text { max-width: 620px; }
+.proj-single__hero-inner { max-width: 56rem; }
 
 .proj-single__pill {
 	display: inline-block;
-	background: var(--c-aqua-500);
+	background: rgba(255,255,255,0.18);
+	backdrop-filter: blur(8px);
 	color: #fff;
 	font-size: .72rem;
 	font-weight: 700;
@@ -544,7 +548,6 @@
 	padding: .45em .95em;
 	border-radius: 999px;
 	margin-bottom: var(--sp-4);
-	box-shadow: 0 10px 20px -8px rgba(30,93,255,.45);
 }
 .proj-single__title {
 	font-family: var(--ff-display);
@@ -552,43 +555,15 @@
 	font-size: clamp(2rem, 1.4rem + 3vw, 3.4rem);
 	line-height: 1.08;
 	letter-spacing: -.02em;
-	color: var(--c-ink);
+	color: #fff;
 	margin: 0 0 var(--sp-4);
 }
 .proj-single__lede {
 	font-size: clamp(1rem, .95rem + .25vw, 1.12rem);
 	line-height: 1.55;
 	max-width: 56ch;
-	color: var(--c-text-muted);
+	color: rgba(255,255,255,0.85);
 	margin: 0;
-}
-
-.proj-single__hero-visual {
-	position: relative;
-	aspect-ratio: 1 / 1;
-	max-width: 520px;
-	margin: 0 auto;
-	width: 100%;
-}
-.proj-single__hero-circle { display: none; } /* removed — replaced by blob shape on photo */
-
-.proj-single__hero-photo {
-	position: absolute;
-	inset: 6%;
-	border-radius: 26px;
-	overflow: hidden;
-	box-shadow: 0 28px 60px -24px rgba(11,23,51,0.22);
-	background: var(--c-aqua-100);
-}
-/* Organic blob shape — asymmetric border-radius, no circle background */
-.proj-single__hero-photo--blob {
-	border-radius: 62% 38% 46% 54% / 54% 44% 56% 46%;
-}
-.proj-single__hero-photo img {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-	display: block;
 }
 
 /* Meta strip — sits flush under hero, off-white surface. */

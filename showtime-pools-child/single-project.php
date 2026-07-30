@@ -136,8 +136,10 @@ while ( have_posts() ) :
 ?>
 <main id="primary" class="site-main proj-single">
 
-	<section class="proj-single__hero proj-single__hero--poolax" data-reveal>
-		<div class="proj-single__hero-bg" aria-hidden="true"></div>
+	<section class="proj-single__hero" data-reveal>
+		<?php if ( $hero_img ) : ?>
+			<img class="proj-single__hero-photo" src="<?php echo esc_url( $hero_img ); ?>" alt="<?php echo esc_attr( get_the_title( $pid ) ); ?>" loading="eager" fetchpriority="high" decoding="async">
+		<?php endif; ?>
 		<div class="container">
 			<nav class="breadcrumbs proj-single__crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'showtime-pools' ); ?>">
 				<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'showtime-pools' ); ?></a>
@@ -146,24 +148,15 @@ while ( have_posts() ) :
 				<span class="breadcrumbs__sep">/</span>
 				<span aria-current="page"><?php echo esc_html( get_the_title( $pid ) ); ?></span>
 			</nav>
-			<div class="proj-single__hero-grid">
-				<div class="proj-single__hero-text">
-					<?php if ( '' !== $neighborhood ) : ?>
-						<span class="proj-single__pill"><?php echo esc_html( $neighborhood ); ?></span>
-					<?php endif; ?>
-					<h1 class="proj-single__title balance"><?php the_title(); ?></h1>
-					<?php $lede = wp_strip_all_tags( get_the_excerpt( $pid ) );
-					if ( '' !== $lede ) : ?>
-						<p class="proj-single__lede"><?php echo esc_html( $lede ); ?></p>
-					<?php endif; ?>
-				</div>
-				<div class="proj-single__hero-visual" aria-hidden="true">
-					<?php if ( $hero_img ) : ?>
-						<div class="proj-single__hero-photo proj-single__hero-photo--blob">
-							<img src="<?php echo esc_url( $hero_img ); ?>" alt="" loading="eager" fetchpriority="high" decoding="async">
-						</div>
-					<?php endif; ?>
-				</div>
+			<div class="proj-single__hero-inner">
+				<?php if ( '' !== $neighborhood ) : ?>
+					<span class="proj-single__pill"><?php echo esc_html( $neighborhood ); ?></span>
+				<?php endif; ?>
+				<h1 class="proj-single__title balance"><?php the_title(); ?></h1>
+				<?php $lede = wp_strip_all_tags( get_the_excerpt( $pid ) );
+				if ( '' !== $lede ) : ?>
+					<p class="proj-single__lede"><?php echo esc_html( $lede ); ?></p>
+				<?php endif; ?>
 			</div>
 		</div>
 	</section>
