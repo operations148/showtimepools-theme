@@ -834,3 +834,69 @@ add_action( 'save_post_page', function ( int $post_id ): void {
 		update_post_meta( $post_id, 'legal_body', wp_kses_post( wp_unslash( $_POST['legal_body'] ) ) );
 	}
 } );
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PROJECT — investment & timeline captions
+//
+// The `project` CPT gets its meta from the ACF group in
+// acf-json/group_project_meta.json, which defines `duration_label` and
+// `value_label` but NOT the two fields below. single-project.php reads them to
+// separate the CAPTION from the FIGURE, so a researched range can publish as
+// "Typical investment for similar projects — $14,000–$30,000" instead of
+// sitting under a bare "Investment" heading that would imply an actual
+// contract price. Without this box those two keys would be readable but not
+// editable, so the frontend feature would be unreachable for an administrator.
+//
+// Deliberately registers ONLY the two fields ACF does not already provide —
+// re-rendering `duration_label` / `value_label` here would give the same meta
+// key two inputs on one screen and let whichever saved last clobber the other.
+// Both keys stay optional: left blank, the template behaves exactly as before.
+// ─────────────────────────────────────────────────────────────────────────────
+
+add_action( 'add_meta_boxes', function () {
+	add_meta_box(
+		'showtime_project_estimate_fields',
+		__( 'Project — Investment & Timeline figures', 'showtime-pools' ),
+		'showtime_project_estimate_meta_box',
+		'project',
+		'normal',
+		'default'
+	);
+} );
+
+function showtime_project_estimate_meta_box( WP_Post $post ): void {
+	wp_nonce_field( 'showtime_project_estimate_save', 'showtime_project_estimate_nonce' );
+
+	echo '<p style="color:#555;margin:0 0 12px;">' . esc_html__(
+		'Optional. Use these when the figure is a researched range rather than a confirmed contract value. Enter the caption in the ACF "Value label" / "Duration label" fields above (for example "Typical investment for similar projects"), and the figure here. Leave both blank to keep the current behaviour.',
+		'showtime-pools'
+	) . '</p>';
+
+	showtime_meta_field( 'value',          'Investment figure (e.g. $14,000–$30,000) — pairs with the ACF "Value label"', $post->ID );
+	showtime_meta_field( 'duration_value', 'Timeline figure (e.g. 1–3 weeks) — pairs with the ACF "Duration label"',      $post->ID );
+}
+
+add_action( 'save_post_project', function ( int $post_id ): void {
+	if (
+		! isset( $_POST['showtime_project_estimate_nonce'] ) ||
+		! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['showtime_project_estimate_nonce'] ) ), 'showtime_project_estimate_save' ) ||
+		( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ||
+		! current_user_can( 'edit_post', $post_id )
+	) {
+		return;
+	}
+
+	foreach ( array( 'value', 'duration_value' ) as $key ) {
+		if ( ! isset( $_POST[ $key ] ) ) {
+			continue;
+		}
+		$clean = sanitize_text_field( wp_unslash( $_POST[ $key ] ) );
+		// Blank stays blank: remove the row rather than storing an empty
+		// string, so the template's "is it set?" check keeps failing closed.
+		if ( '' === trim( $clean ) ) {
+			delete_post_meta( $post_id, $key );
+		} else {
+			update_post_meta( $post_id, $key, $clean );
+		}
+	}
+} );

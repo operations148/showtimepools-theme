@@ -279,6 +279,113 @@ $renderers = glob( get_stylesheet_directory() . '/single-project*.php' ) ?: arra
 	? ok( 'img. exactly one project template (no per-project forks)' )
 	: bad( 'img. ' . count( $renderers ) . ' project templates found' );
 
+/* ── Truth-safe copy: retired claims must not reappear in the registry ──
+   Each of these was contradicted by, or unsupported by, the project
+   photographs during the truth-first audit. They are asserted against the
+   whole compare block (heading + summary + before/work/result + alt text). */
+echo "\n== TRUTH-SAFE PROJECT COPY ==\n";
+$retired = array(
+	'sherman-oaks-mid-century-remodel'   => array( 'mid-century', 'PebbleTec', 'Cool Blue', '6×6', 'ceramic', 'new coping', 'IntelliFlo', 'IntelliCenter', 'equipment pad', '$28k', '12 days', 'September 2025' ),
+	'encino-estate-new-build'            => array( 'new gunite', 'undeveloped', 'vanishing edge', 'outdoor kitchen', 'fire bowl', 'fire features', 'hardscape', 'PebbleTec', 'Aqua White', 'glass mosaic', '$142k', '10 weeks', 'July 2025', 'permits' ),
+	'studio-city-modern-automation'      => array( 'Pentair', 'IntelliCenter', 'variable-speed', 'salt cell', 'salt chlorine', 'Raypak', 'heater', 'pad rebuild', 'recycled', 'pebble', '$8.6k', '3 days', 'November 2025' ),
+	'beverly-hills-luxe-spa-renovation'  => array( 'hand-cut', 'Italian', 'glass', 'LED', 'color loop', 'color-tuned', 'new jets', 'stripped', '$22k', '8 days', 'August 2025' ),
+	'tarzana-resort-style-finish'        => array( 'PebbleTec', 'Caribbean Blue', 'sunshelf', 'sun shelf', 'bullnose', 'travertine', 'repointing', '$36k', '14 days', 'June 2025' ),
+	'woodland-hills-tile-coping-refresh' => array( '6×6', 'porcelain', 'cantilever', 'no resurfacing', '30-year-old', 'plaster', '$12.4k', '6 days', 'May 2025' ),
+);
+// Only human-readable copy is checked. Asset filenames and service/area slugs
+// are excluded: they encode the URL slug, which this phase deliberately does
+// not change, so "sherman-oaks-mid-century-remodel-before.webp" is not a claim.
+$copy_keys = array( 'heading', 'summary', 'before_condition', 'work_completed', 'completed_result', 'before_alt', 'after_alt' );
+foreach ( $retired as $slug => $terms ) {
+	$cmp   = ( \Showtime\Projects::get( $slug ) )['compare'] ?? array();
+	$parts = array();
+	foreach ( $copy_keys as $k ) {
+		if ( isset( $cmp[ $k ] ) && is_string( $cmp[ $k ] ) ) { $parts[] = $cmp[ $k ]; }
+	}
+	$blob = implode( ' ', $parts );
+	$hits = array();
+	foreach ( $terms as $t ) {
+		// Word-boundary match, so "LED" does not fire inside "tiled" and
+		// "pebble" does not fire inside "pebbled".
+		$re = '/(?<![\p{L}\d])' . preg_quote( $t, '/' ) . '(?![\p{L}\d])/iu';
+		if ( preg_match( $re, $blob ) ) { $hits[] = $t; }
+	}
+	empty( $hits )
+		? ok( "truth. $slug: no retired/unverified claims in comparison copy" )
+		: bad( "truth. $slug: retired claim(s) still present: " . implode( ', ', $hits ) );
+}
+
+/* No price, duration or completion date may appear in the code-owned copy —
+   those belong to owner-verified WordPress fields, not the registry. */
+foreach ( array_keys( $retired ) as $slug ) {
+	$cmp  = ( \Showtime\Projects::get( $slug ) )['compare'] ?? array();
+	$blob = implode( ' ', array_filter( $cmp, 'is_string' ) );
+	$bad_pattern = preg_match( '/\$[\d,]+k?\b/i', $blob )                       // prices
+		|| preg_match( '/\b\d+\s*(day|days|week|weeks|month|months)\b/i', $blob ) // durations
+		|| preg_match( '/\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+20\d\d\b/', $blob ); // dates
+	$bad_pattern
+		? bad( "truth. $slug: comparison copy contains a price, duration or date" )
+		: ok( "truth. $slug: no price, duration or date in comparison copy" );
+}
+
+/* Every project must still resolve a service and area link after the
+   reclassifications (Encino -> resurfacing, Woodland Hills -> spa). */
+$expect_service = array(
+	'sherman-oaks-mid-century-remodel'   => 'pool-remodeling-resurfacing',
+	'encino-estate-new-build'            => 'pool-remodeling-resurfacing',
+	'studio-city-modern-automation'      => 'equipment-installation-upgrades',
+	'beverly-hills-luxe-spa-renovation'  => 'spa-installation-renovations',
+	'tarzana-resort-style-finish'        => 'pool-remodeling-resurfacing',
+	'woodland-hills-tile-coping-refresh' => 'spa-installation-renovations',
+);
+foreach ( $expect_service as $slug => $svc ) {
+	$cmp = ( \Showtime\Projects::get( $slug ) )['compare'] ?? array();
+	( ( $cmp['primary_service'] ?? '' ) === $svc && null !== \Showtime\Services::get( $svc ) )
+		? ok( "truth. $slug: primary service is $svc (registered)" )
+		: bad( "truth. $slug: primary service is '" . ( $cmp['primary_service'] ?? '' ) . "', expected $svc" );
+}
+
+/* ── Admin editability of the estimate fields ──────────────────────────
+   single-project.php reads `value` and `duration_value`. If nothing renders
+   an input and saves them, the feature is unreachable for an administrator,
+   so assert the whole path: registration hook, renderer, nonce, capability
+   gate, sanitisation, and blank-means-blank. */
+echo "\n== PROJECT ESTIMATE FIELDS — ADMIN SUPPORT ==\n";
+function_exists( 'showtime_project_estimate_meta_box' )
+	? ok( 'admin. estimate meta box renderer is defined' )
+	: bad( 'admin. renderer missing — `value`/`duration_value` are not editable' );
+
+if ( function_exists( 'showtime_project_estimate_meta_box' ) ) {
+	$probe = get_page_by_path( 'tarzana-resort-style-finish', OBJECT, 'project' );
+	ob_start();
+	showtime_project_estimate_meta_box( $probe );
+	$box = (string) ob_get_clean();
+	( false !== strpos( $box, 'name="value"' ) && false !== strpos( $box, 'name="duration_value"' ) )
+		? ok( 'admin. both estimate inputs render' )
+		: bad( 'admin. an estimate input is missing from the box' );
+	( false !== strpos( $box, 'showtime_project_estimate_nonce' ) )
+		? ok( 'admin. nonce field present in the box' )
+		: bad( 'admin. no nonce field' );
+
+	// Save handler must be wired to the project post type only.
+	( has_action( 'save_post_project' ) )
+		? ok( 'admin. save handler bound to save_post_project' )
+		: bad( 'admin. no save_post_project handler' );
+
+	// A POST without the nonce must not write anything.
+	$before_val = get_post_meta( $probe->ID, 'value', true );
+	$_POST      = array( 'value' => 'UNAUTHORIZED' );
+	do_action( 'save_post_project', $probe->ID );
+	$_POST      = array();
+	( get_post_meta( $probe->ID, 'value', true ) === $before_val )
+		? ok( 'admin. save without a valid nonce is rejected' )
+		: bad( 'admin. nonce-less save wrote to post meta' );
+}
+
+/* The template must not fall back to a bare "Investment"/"Duration" caption
+   once a caption field is supplied, and must never leak an estimate into
+   structured data. Both are asserted against the rendered page below. */
+
 // No remote or placeholder source may appear in the registry.
 $registry_blob = wp_json_encode( \Showtime\Projects::all() );
 $remote_hits = array();
@@ -348,11 +455,13 @@ foreach ( $ids as $s => $pid ) {
 	$generic = array_filter( $labels, static fn( $l ) => in_array( $l, array( 'click here', 'here', 'read more', 'learn more' ), true ) );
 	$generic ? bad( "8b. $s: generic anchor text" ) : ok( "8b. $s: anchors descriptive" );
 
-	// Summary length budget (60-100 words). Counted on whitespace, the way a
-	// reader counts: str_word_count() drops numerals and hyphenates such as
-	// "6x6", "30-year-old" and "$12.4k", undercounting compliant copy.
+	// Summary length budget: the approved AEO answer-paragraph target of
+	// 40-70 words. Counted on whitespace, the way a reader counts —
+	// str_word_count() drops numerals and hyphenates, undercounting copy.
+	// Long enough to answer "what changed?" on its own, short enough that it
+	// cannot be padded back out with unverifiable specifics.
 	$w = count( preg_split( '/\s+/', trim( wp_strip_all_tags( (string) $r['summary'] ) ), -1, PREG_SPLIT_NO_EMPTY ) );
-	( $w >= 60 && $w <= 100 ) ? ok( "8c. $s: summary $w words (60-100)" ) : bad( "8c. $s: summary $w words, outside 60-100" );
+	( $w >= 40 && $w <= 70 ) ? ok( "8c. $s: summary $w words (40-70)" ) : bad( "8c. $s: summary $w words, outside 40-70" );
 }
 
 /* Woodland Hills must never be described as a resurface. */

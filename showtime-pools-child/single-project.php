@@ -162,12 +162,32 @@ while ( have_posts() ) :
 	</section>
 
 	<?php
+	// Optional owner-supplied captions. When `duration_value` / `value` are
+	// set, the matching `duration_label` / `value_label` field becomes the
+	// CAPTION and the new field supplies the figure. That lets a researched
+	// range publish as "Typical investment for similar projects — $14,000-
+	// $30,000" instead of sitting under a bare "Investment" heading, which
+	// would imply an actual contract price. With the new fields empty the
+	// behaviour is unchanged, so nothing breaks before they are filled in.
+	$duration_value = (string) $proj_field( 'duration_value', $pid );
+	$value_amount   = (string) $proj_field( 'value', $pid );
+
+	$duration_caption = ( '' !== $duration_value && '' !== $duration )
+		? $duration
+		: __( 'Duration', 'showtime-pools' );
+	$duration_display = '' !== $duration_value ? $duration_value : $duration;
+
+	$value_caption = ( '' !== $value_amount && '' !== $value_label )
+		? $value_label
+		: __( 'Investment', 'showtime-pools' );
+	$value_display = '' !== $value_amount ? $value_amount : $value_label;
+
 	$meta_rows = array(
 		array( 'k' => __( 'Neighborhood', 'showtime-pools' ), 'v' => $neighborhood ),
 		array( 'k' => __( 'Finish', 'showtime-pools' ),       'v' => $finish ),
 		array( 'k' => __( 'Scope', 'showtime-pools' ),        'v' => $scope ),
-		array( 'k' => __( 'Duration', 'showtime-pools' ),     'v' => $duration ),
-		array( 'k' => __( 'Investment', 'showtime-pools' ),   'v' => $value_label ),
+		array( 'k' => $duration_caption,                      'v' => $duration_display ),
+		array( 'k' => $value_caption,                         'v' => $value_display ),
 		array( 'k' => __( 'Completed', 'showtime-pools' ),    'v' => $completion ),
 	);
 	$meta_rows = array_filter( $meta_rows, static fn( $r ) => '' !== $r['v'] );
