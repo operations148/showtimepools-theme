@@ -72,8 +72,8 @@ return array(
 			// photographs show a resurface. Registry copy to be realigned.
 			'before_alt'       => 'Drained Encino pool with fresh dark finish applied, before refilling.',
 			'after_alt'        => 'The Encino pool refilled with water after the finish work.',
-			'before_asset'     => 'encino-estate-new-build-before.jpg',
-			'after_asset'      => 'encino-estate-new-build-after.jpg',
+			'before_asset'     => 'encino-estate-new-build-before.webp',
+			'after_asset'      => 'encino-estate-new-build-after.webp',
 			'primary_service'  => 'custom-pool-design-construction',
 			'secondary_service'=> '',
 			'area'             => 'encino',

@@ -637,15 +637,21 @@
 	border-radius: 16px;
 	overflow: hidden;
 }
-/* Fixed 16:9 for both frames regardless of source dimensions — portrait
-   originals would otherwise drive the section metres tall. object-fit
-   crops to the box; landscape source photography fills it without loss. */
+/* Fixed 16:9 frame for both sides regardless of source dimensions, so the
+   section height is stable and identical on every project page.
+   `contain` (not `cover`) because the supplied photography is 43:24
+   (1.7917) — 0.78% wider than 16:9. `cover` would silently crop ~11px of
+   width off each frame; `contain` shows every pixel and instead leaves a
+   ~0.4%-of-height letterbox band top and bottom, filled with the card
+   surface colour so it reads as the frame, not as a gap. Both sides share
+   one ratio, so they letterbox identically and the divider stays aligned. */
 .proj-compare__frame img {
 	display: block;
 	width: 100%;
 	height: auto;
 	aspect-ratio: 16 / 9;
-	object-fit: cover;
+	object-fit: contain;
+	background: var(--c-bg-pure);
 }
 .proj-compare__label {
 	position: absolute;

@@ -228,12 +228,56 @@ foreach ( $with_assets as $s ) {
 		&& 0 !== strcasecmp( $balt, (string) ( $cmp['heading'] ?? '' ) ) )
 		? ok( "img. $s: distinct non-empty alt text on both images" )
 		: bad( "img. $s: weak or duplicated alt text" );
+
+	// Both photographs must be LANDSCAPE. The shared frame is 16:9; a portrait
+	// source would either letterbox enormously or force a crop.
+	( $bi[0] > $bi[1] && $ai[0] > $ai[1] )
+		? ok( "img. $s: both images are landscape ({$bi[0]}x{$bi[1]}, {$ai[0]}x{$ai[1]})" )
+		: bad( "img. $s: a source image is portrait/square" );
+
+	// before and after must share one aspect ratio, or they letterbox by
+	// different amounts inside the shared frame and the divider stops lining up.
+	$ar_b = $bi[0] / $bi[1];
+	$ar_a = $ai[0] / $ai[1];
+	( abs( $ar_b - $ar_a ) < 0.001 )
+		? ok( "img. $s: before/after share one aspect ratio (" . number_format( $ar_b, 4 ) . ') so the divider stays aligned' )
+		: bad( "img. $s: aspect ratios differ (" . number_format( $ar_b, 4 ) . ' vs ' . number_format( $ar_a, 4 ) . ')' );
+
+	// The frame is 16:9 with object-fit:contain. Anything WIDER than 16:9 is
+	// letterboxed (safe, nothing lost). Anything much taller would waste height.
+	// Guard the ratio stays in a sane band so a wildly-shaped source is caught.
+	( $ar_b >= 1.70 && $ar_b <= 1.90 )
+		? ok( "img. $s: aspect ratio within the 16:9 frame's safe band" )
+		: bad( "img. $s: aspect ratio " . number_format( $ar_b, 4 ) . ' is outside 1.70-1.90' );
 }
 
 ( 6 === count( $ids ) ) ? ok( 'img. exactly six project mappings present' ) : bad( 'img. project count != 6' );
 ( count( $seen_files ) === count( $with_assets ) * 2 )
 	? ok( 'img. exactly two unique image files per asset-backed project (' . count( $seen_files ) . ' files / ' . count( $with_assets ) . ' projects)' )
 	: bad( 'img. image-per-project count wrong' );
+
+/* The shared frame must CONTAIN (never crop) the photography, and must be
+   16:9 in both side-by-side and slider modes. Asserted against the single
+   stylesheet so a future switch back to `cover` — which would silently crop
+   the 43:24 sources — fails here rather than in production. */
+$css = (string) file_get_contents( get_stylesheet_directory() . '/assets/css/blog.css' );
+preg_match( '#\.proj-compare__frame img\s*\{([^}]*)\}#', $css, $fm );
+$frame_css = $fm[1] ?? '';
+( false !== strpos( $frame_css, 'object-fit: contain' ) )
+	? ok( 'img. shared frame uses object-fit:contain (no silent cropping)' )
+	: bad( 'img. shared frame is not object-fit:contain — sources would be cropped' );
+( false !== strpos( $frame_css, 'aspect-ratio: 16 / 9' ) )
+	? ok( 'img. shared frame is 16:9' )
+	: bad( 'img. shared frame is not 16:9' );
+( preg_match( '#\.proj-compare__media\.is-slider\s*\{[^}]*aspect-ratio:\s*16\s*/\s*9#', $css ) )
+	? ok( 'img. slider mode is 16:9 too (same frame in both modes)' )
+	: bad( 'img. slider mode is not 16:9' );
+
+/* Exactly one shared implementation — no per-project template/CSS/JS forks. */
+$renderers = glob( get_stylesheet_directory() . '/single-project*.php' ) ?: array();
+( 1 === count( $renderers ) )
+	? ok( 'img. exactly one project template (no per-project forks)' )
+	: bad( 'img. ' . count( $renderers ) . ' project templates found' );
 
 // No remote or placeholder source may appear in the registry.
 $registry_blob = wp_json_encode( \Showtime\Projects::all() );
