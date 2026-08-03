@@ -1,22 +1,19 @@
 <?php
 /**
- * Before / After comparison data for the `project` CPT.
+ * Project resolver + before/after comparison data for the `project` CPT.
  *
- * Resolution order, per field family:
- *   images — ACF `before_image` / `after_image` on the post (CONTENT, set by
- *            the owner in wp-admin). Nothing else. There is deliberately no
- *            code-side image fallback: substituting a photo from another
- *            project or a service page would publish a false claim about the
- *            work shown. The `showtime/project/compare_images` filter exists
- *            so a LOCAL preview harness can inject stand-ins without that
- *            substitution ever shipping in theme code.
- *   copy   — post meta first (owner-editable), then the seed registry entry
- *            in showtime-pools-core/includes/data/projects.php. The registry
- *            is the fallback because the one-time seeder has already run:
- *            anything added to the data file afterwards never reached post
- *            meta and would otherwise be unreachable.
- *   links  — resolved through \Showtime\Services and \Showtime\Areas. Never
- *            hardcoded URLs, so a slug rename cannot orphan a link.
+ * showtime_project_data() is THE shared resolver. For a project with a
+ * `managed => true` entry in showtime-pools-core/includes/data/projects.php,
+ * it returns the registry data and WordPress post meta is never consulted —
+ * every surface (archive, single page, related cards, homepage strip,
+ * before/after, OG/Twitter, CreativeWork) reads through this one function.
+ *
+ * Unmanaged/legacy posts (no matching managed entry) return null here. A
+ * couple of call sites keep a historical post-meta fallback so those old seed
+ * rows still render something if hit directly, but showtime_unmanaged_project_ids()
+ * below keeps them out of every discovery surface, both sitemaps, and search
+ * indexing — their copy was written once by the one-time seeder and never
+ * passed the truth-safety review the managed registry enforces.
  *
  * Fails closed: showtime_project_compare() returns null unless BOTH images
  * resolve to a usable URL with real pixel dimensions. Callers render nothing
@@ -159,163 +156,242 @@ function showtime_project_compare_date( string $ym ): string {
 }
 
 /**
- * Public URL of a project's bundled comparison photograph, or '' if none.
+ * THE shared project resolver.
  *
- * Lets card listings show the real finished project instead of a generic
- * stock slot, reading the same registry keys the comparison section uses so
- * there is only one place to declare a project's photography.
+ * Accepts a project post ID **or** slug and returns the normalized registry
+ * entry, or null when the project is not code-managed.
  *
- * @param string $slug Project slug.
- * @param string $side 'after' (default) or 'before'.
+ * Registry data wins UNCONDITIONALLY for managed projects: WordPress post meta
+ * is never consulted, so a stale seeded value can no longer leak onto any
+ * surface. The `project` post exists purely as a routing shell (permalink,
+ * published status, sitemap inclusion, WP_Query compatibility).
+ *
+ * Every project surface reads through this one function: archive cards, the
+ * single page, related cards, the homepage strip, the before/after comparison,
+ * Open Graph / Twitter metadata and CreativeWork.
+ *
+ * @param int|string $post_id_or_slug Project post ID or slug.
+ * @return array<string,mixed>|null   Normalized entry, or null if unmanaged.
+ */
+function showtime_project_data( $post_id_or_slug ): ?array {
+	static $cache = array();
+
+	if ( is_numeric( $post_id_or_slug ) ) {
+		$pid = (int) $post_id_or_slug;
+		if ( $pid < 1 || 'project' !== get_post_type( $pid ) ) {
+			return null;
+		}
+		$slug = (string) get_post_field( 'post_name', $pid );
+	} else {
+		$slug = sanitize_title( (string) $post_id_or_slug );
+		$pid  = 0;
+	}
+	if ( '' === $slug ) {
+		return null;
+	}
+	if ( isset( $cache[ $slug ] ) ) {
+		$hit = $cache[ $slug ];
+		if ( is_array( $hit ) && $pid > 0 ) {
+			$hit['post_id'] = $pid;
+		}
+		return $hit;
+	}
+
+	$entry = class_exists( 'Showtime\Projects' ) ? \Showtime\Projects::get( $slug ) : null;
+	if ( ! is_array( $entry ) || empty( $entry['managed'] ) ) {
+		$cache[ $slug ] = null;
+		return null; // Legacy/unmanaged row — the old post-meta path still applies.
+	}
+
+	$str = static function ( $k ) use ( $entry ) {
+		return isset( $entry[ $k ] ) ? trim( (string) $entry[ $k ] ) : '';
+	};
+
+	$asset = static function ( string $file ): string {
+		if ( '' === $file || ! defined( 'SHOWTIME_CHILD_DIR' ) ) {
+			return '';
+		}
+		$path = SHOWTIME_CHILD_DIR . '/assets/img/projects/comparisons/' . basename( $file );
+		return is_readable( $path ) ? showtime_project_compare_local_url( $path ) : '';
+	};
+
+	$data = array(
+		'slug'               => $slug,
+		'post_id'            => $pid,
+		'managed'            => true,
+		'title'              => $str( 'title' ),
+		'excerpt'            => $str( 'excerpt' ),
+		'neighborhood'       => $str( 'neighborhood' ),
+		'finish'             => $str( 'finish' ),
+		'scope'              => $str( 'scope' ),
+		'timeline'           => $str( 'timeline' ),
+		'investment'         => $str( 'investment' ),
+		'completion_date'    => $str( 'completion_date' ),
+		'client_quote'       => $str( 'client_quote' ),
+		'hero_image'         => $asset( $str( 'hero_image' ) ),
+		'hero_alt'           => $str( 'hero_alt' ),
+		'before_image'       => $asset( $str( 'before_image' ) ),
+		'before_alt'         => $str( 'before_alt' ),
+		'after_image'        => $asset( $str( 'after_image' ) ),
+		'after_alt'          => $str( 'after_alt' ),
+		'comparison_heading' => $str( 'comparison_heading' ),
+		'comparison_summary' => $str( 'comparison_summary' ),
+		'before_condition'   => $str( 'before_condition' ),
+		'work_completed'     => $str( 'work_completed' ),
+		'completed_result'   => $str( 'completed_result' ),
+		'service_url'        => $str( 'service_url' ),
+		'area_url'           => $str( 'area_url' ),
+		'seo_title'          => $str( 'seo_title' ),
+		'meta_description'   => $str( 'meta_description' ),
+		'og_image'           => $asset( $str( 'og_image' ) ),
+	);
+
+	$cache[ $slug ] = $data;
+	return $data;
+}
+
+/**
+ * Post IDs of published `project` posts that have NO managed registry entry.
+ *
+ * These are historical seed rows (the "Legacy seed rows" block at the bottom
+ * of projects.php) whose prices, durations, material names and client quotes
+ * were written once by the one-time seeder and never passed the truth-safety
+ * review the six managed projects now go through. They are never deleted,
+ * unpublished or renamed — the standing rule for existing project posts — but
+ * every discovery surface, both sitemaps, and the robots-noindex check consult
+ * this list so that content stays unadvertised rather than repeat unverified
+ * claims. A project only needs a `managed => true` registry entry to leave
+ * this list; no other action required.
+ *
+ * @return int[]
+ */
+function showtime_unmanaged_project_ids(): array {
+	static $ids = null;
+	if ( null !== $ids ) {
+		return $ids;
+	}
+	$ids = array();
+	if ( ! post_type_exists( 'project' ) ) {
+		return $ids;
+	}
+	$posts = get_posts(
+		array(
+			'post_type'      => 'project',
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+			'no_found_rows'  => true,
+			'fields'         => 'ids',
+		)
+	);
+	foreach ( $posts as $post_id ) {
+		if ( null === showtime_project_data( (int) $post_id ) ) {
+			$ids[] = (int) $post_id;
+		}
+	}
+	return $ids;
+}
+
+/**
+ * Fixed display labels for the meta strip.
+ *
+ * Legacy `duration_label` / `value_label` are retired as headings. An estimate
+ * always publishes under "Typical investment" so it can never read as a
+ * confirmed contract price. A blank optional value omits the entire row —
+ * there is deliberately no fallback to a seeded database value.
+ *
+ * @return array<int,array{k:string,v:string}>
+ */
+function showtime_project_meta_rows( array $p ): array {
+	$rows = array(
+		array( 'k' => __( 'Neighborhood', 'showtime-pools' ),       'v' => $p['neighborhood'] ?? '' ),
+		array( 'k' => __( 'Finish', 'showtime-pools' ),             'v' => $p['finish'] ?? '' ),
+		array( 'k' => __( 'Scope', 'showtime-pools' ),              'v' => $p['scope'] ?? '' ),
+		array( 'k' => __( 'Typical timeline', 'showtime-pools' ),   'v' => $p['timeline'] ?? '' ),
+		array( 'k' => __( 'Typical investment', 'showtime-pools' ), 'v' => $p['investment'] ?? '' ),
+		array( 'k' => __( 'Completed', 'showtime-pools' ),          'v' => $p['completion_date'] ?? '' ),
+	);
+	return array_values(
+		array_filter(
+			$rows,
+			static function ( $r ) {
+				return '' !== trim( (string) $r['v'] );
+			}
+		)
+	);
+}
+
+/**
+ * Public URL of a managed project's bundled photograph.
+ *
+ * @param string $side 'after' (default), 'before' or 'hero'.
  */
 function showtime_project_compare_asset_url( string $slug, string $side = 'after' ): string {
-	if ( ! class_exists( '\Showtime\Projects' ) || ! defined( 'SHOWTIME_CHILD_DIR' ) ) {
+	$p = showtime_project_data( $slug );
+	if ( null === $p ) {
 		return '';
 	}
-	$entry = \Showtime\Projects::get( $slug );
-	$key   = ( 'before' === $side ? 'before_asset' : 'after_asset' );
-	$file  = $entry['compare'][ $key ] ?? '';
-	if ( ! is_string( $file ) || '' === $file ) {
-		return '';
-	}
-	$path = SHOWTIME_CHILD_DIR . '/assets/img/projects/comparisons/' . basename( $file );
-	return is_readable( $path ) ? showtime_project_compare_local_url( $path ) : '';
+	$key = 'before' === $side ? 'before_image' : ( 'hero' === $side ? 'hero_image' : 'after_image' );
+	return (string) ( $p[ $key ] ?? '' );
 }
 
 /**
  * Assemble everything the comparison section needs, or null if it cannot
- * render truthfully.
+ * render truthfully. Reads exclusively through showtime_project_data().
  *
  * @return array<string, mixed>|null
  */
 function showtime_project_compare( int $pid ): ?array {
-	if ( $pid < 1 || 'project' !== get_post_type( $pid ) ) {
+	$p = showtime_project_data( $pid );
+	if ( null === $p ) {
 		return null;
 	}
 
-	$slug     = (string) get_post_field( 'post_name', $pid );
-	$registry = class_exists( '\Showtime\Projects' ) ? \Showtime\Projects::get( $slug ) : null;
-	$cmp      = is_array( $registry ) && isset( $registry['compare'] ) && is_array( $registry['compare'] )
-		? $registry['compare']
-		: array();
-
-	// Copy: post meta wins, registry fills in.
-	$field = static function ( string $key ) use ( $pid, $cmp ) {
-		$v = get_post_meta( $pid, $key, true );
-		if ( is_string( $v ) && '' !== trim( $v ) ) {
-			return trim( $v );
-		}
-		return isset( $cmp[ $key ] ) ? (string) $cmp[ $key ] : '';
-	};
-
-	$before_alt = $field( 'before_alt' );
-	$after_alt  = $field( 'after_alt' );
-
-	// Images: ACF only. The filter is the sole injection point and is used by
-	// the local preview harness; nothing in the theme hooks it.
-	$raw = array(
-		'before' => function_exists( 'get_field' ) ? get_field( 'before_image', $pid ) : null,
-		'after'  => function_exists( 'get_field' ) ? get_field( 'after_image', $pid ) : null,
-	);
-
-	/**
-	 * Filter the raw before/after image values for a project.
-	 *
-	 * @param array  $raw  array{before:mixed, after:mixed}
-	 * @param int    $pid  Project post ID.
-	 * @param string $slug Project slug.
-	 */
-	$raw = (array) apply_filters( 'showtime/project/compare_images', $raw, $pid, $slug );
-
-	$before = showtime_project_compare_image( $raw['before'] ?? null, $before_alt );
-	$after  = showtime_project_compare_image( $raw['after'] ?? null, $after_alt );
-
-	// Code-first fallback: bundled comparison photographs declared in the
-	// project registry. Applied ONLY when neither WordPress image resolved, so
-	// an uploaded pair always wins and a pair is never half CMS / half bundled.
-	// Both files must exist and be readable, or nothing is used — a one-sided
-	// pair still fails closed below.
-	if ( null === $before && null === $after ) {
-		$b_file = $field( 'before_asset' );
-		$a_file = $field( 'after_asset' );
-		if ( '' !== $b_file && '' !== $a_file && defined( 'SHOWTIME_CHILD_DIR' ) ) {
-			$dir = SHOWTIME_CHILD_DIR . '/assets/img/projects/comparisons/';
-			// basename() keeps a registry typo from walking outside the folder.
-			$b_path = $dir . basename( $b_file );
-			$a_path = $dir . basename( $a_file );
-			if ( is_readable( $b_path ) && is_readable( $a_path ) ) {
-				$before = showtime_project_compare_image( $b_path, $before_alt );
-				$after  = showtime_project_compare_image( $a_path, $after_alt );
-			}
-		}
-	}
+	$before = showtime_project_compare_image( $p['before_image'], $p['before_alt'] );
+	$after  = showtime_project_compare_image( $p['after_image'], $p['after_alt'] );
 
 	// Fail closed — a one-sided pair is not a before/after.
 	if ( null === $before || null === $after ) {
 		return null;
 	}
-
-	$heading = $field( 'comparison_heading' ) ?: $field( 'heading' );
-	$summary = $field( 'comparison_summary' ) ?: $field( 'summary' );
-	if ( '' === $heading || '' === $summary ) {
+	if ( '' === $p['comparison_heading'] || '' === $p['comparison_summary'] ) {
 		return null;
 	}
 
-	// Links resolved through the registries — never hardcoded URLs.
-	$links = array();
-	$svc_slug = $field( 'primary_service' );
-	if ( '' !== $svc_slug && class_exists( '\Showtime\Services' ) ) {
+	$links    = array();
+	$svc_slug = trim( (string) preg_replace( '#^/services/#', '', $p['service_url'] ), '/' );
+	if ( '' !== $svc_slug && class_exists( 'Showtime\Services' ) ) {
 		$svc = \Showtime\Services::get( $svc_slug );
 		if ( $svc ) {
 			$links['primary'] = array(
-				'url'   => home_url( '/services/' . $svc_slug . '/' ),
+				'url'   => home_url( $p['service_url'] ),
 				'label' => strtolower( (string) $svc['title'] ) . ' services',
 			);
 		}
 	}
-	$sec_slug = $field( 'secondary_service' );
-	if ( '' !== $sec_slug && class_exists( '\Showtime\Services' ) ) {
-		$sec = \Showtime\Services::get( $sec_slug );
-		if ( $sec ) {
-			$links['secondary'] = array(
-				'url'   => home_url( '/services/' . $sec_slug . '/' ),
-				'label' => strtolower( (string) $sec['title'] ),
-			);
-		}
-	}
-	$area_slug = $field( 'area' );
-	if ( '' !== $area_slug && class_exists( '\Showtime\Areas' ) ) {
+	$area_slug = trim( (string) preg_replace( '#^/service-areas/#', '', $p['area_url'] ), '/' );
+	if ( '' !== $area_slug && class_exists( 'Showtime\Areas' ) ) {
 		$area = \Showtime\Areas::get( $area_slug );
 		if ( $area ) {
 			$links['area'] = array(
-				'url'   => home_url( '/service-areas/' . $area_slug . '/' ),
+				'url'   => home_url( $p['area_url'] ),
 				'label' => 'pool services in ' . (string) $area['name'],
 			);
 		}
 	}
 
-	// Neighborhood for the eyebrow: post meta, then registry.
-	$neighborhood = (string) get_post_meta( $pid, 'neighborhood', true );
-	if ( '' === $neighborhood && is_array( $registry ) ) {
-		$neighborhood = (string) ( $registry['neighborhood'] ?? '' );
-	}
-
-	// A slider overlay only makes sense when both frames share a shape.
-	$ar_before  = $before['width'] / $before['height'];
-	$ar_after   = $after['width'] / $after['height'];
-	$sliderable = abs( $ar_before - $ar_after ) <= 0.02;
+	$sliderable = abs( ( $before['width'] / $before['height'] ) - ( $after['width'] / $after['height'] ) ) <= 0.02;
 
 	return array(
-		'heading'          => $heading,
-		'summary'          => $summary,
-		'eyebrow'          => '' !== $neighborhood
-			? sprintf( 'Real project · %s', $neighborhood )
+		'heading'          => $p['comparison_heading'],
+		'summary'          => $p['comparison_summary'],
+		'eyebrow'          => '' !== $p['neighborhood']
+			? sprintf( 'Real project · %s', $p['neighborhood'] )
 			: 'Real project',
 		'before'           => $before,
 		'after'            => $after,
-		'before_condition' => $field( 'before_condition' ),
-		'work_completed'   => $field( 'work_completed' ),
-		'completed_result' => $field( 'completed_result' ),
+		'before_condition' => $p['before_condition'],
+		'work_completed'   => $p['work_completed'],
+		'completed_result' => $p['completed_result'],
 		'links'            => $links,
 		'sliderable'       => $sliderable,
 	);

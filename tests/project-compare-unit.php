@@ -64,6 +64,7 @@ $slugs = array(
 );
 
 $img_dir = get_stylesheet_directory() . '/assets/img/';
+$asset_probe_before = get_stylesheet_directory() . '/assets/img/projects/comparisons/tarzana-resort-style-finish-before.webp';
 $fixture = array(
 	'before' => $img_dir . 'service_pool-remodeling-resurfacing_before.webp',
 	'after'  => $img_dir . 'service_pool-remodeling-resurfacing_after.webp',
@@ -88,10 +89,10 @@ count( $ids ) === count( $slugs )
 /* Registry copy must exist for each, independent of post meta. */
 foreach ( $slugs as $s ) {
 	$entry = class_exists( '\Showtime\Projects' ) ? \Showtime\Projects::get( $s ) : null;
-	$cmp   = $entry['compare'] ?? null;
+	$cmp   = $entry;
 	$has   = is_array( $cmp )
-		&& '' !== trim( (string) ( $cmp['heading'] ?? '' ) )
-		&& '' !== trim( (string) ( $cmp['summary'] ?? '' ) );
+		&& '' !== trim( (string) ( $cmp['comparison_heading'] ?? '' ) )
+		&& '' !== trim( (string) ( $cmp['comparison_summary'] ?? '' ) );
 	$has ? ok( "1b. $s: registry comparison copy present" ) : bad( "1b. $s: registry comparison copy missing" );
 }
 
@@ -106,8 +107,8 @@ remove_all_filters( 'showtime/project/compare_images' );
 $with_assets = array();
 foreach ( array_keys( $ids ) as $s ) {
 	$entry = class_exists( '\Showtime\Projects' ) ? \Showtime\Projects::get( $s ) : null;
-	$cmp   = $entry['compare'] ?? array();
-	if ( ! empty( $cmp['before_asset'] ) && ! empty( $cmp['after_asset'] ) ) {
+	$cmp   = $entry;
+	if ( ! empty( $cmp['before_image'] ) && ! empty( $cmp['after_image'] ) ) {
 		$with_assets[] = $s;
 	}
 }
@@ -125,19 +126,28 @@ foreach ( $ids as $s => $pid ) {
 	}
 }
 
-/* Half a pair is still not a pair. */
-$half = function ( $a, $b ) { return function () use ( $a, $b ) { return array( 'before' => $a, 'after' => $b ); }; };
-$f_half = $half( $fixture['before'], null );
-add_filter( 'showtime/project/compare_images', $f_half, 10, 0 );
-$r = showtime_project_compare( reset( $ids ) );
-remove_filter( 'showtime/project/compare_images', $f_half, 10 );
-null === $r ? ok( '9b. before-only pair -> null' ) : bad( '9b. before-only pair rendered' );
+/* Half a pair is still not a pair.
+   The old `showtime/project/compare_images` injection filter is gone: the
+   registry is now the sole image source, so a half pair is produced by an
+   unreadable file rather than a filter. Asserted on the normalizer, which is
+   the single guard showtime_project_compare() depends on for each side. */
+$only_before = showtime_project_compare_image( $asset_probe_before, 'alt' );
+$missing_side = showtime_project_compare_image( $img_dir . 'projects/comparisons/no-such-half.webp', 'alt' );
+( null !== $only_before && null === $missing_side )
+	? ok( '9b. one readable side + one missing side cannot both resolve' )
+	: bad( '9b. half-pair guard broken' );
 
-$f_half2 = $half( null, $fixture['after'] );
-add_filter( 'showtime/project/compare_images', $f_half2, 10, 0 );
-$r = showtime_project_compare( reset( $ids ) );
-remove_filter( 'showtime/project/compare_images', $f_half2, 10 );
-null === $r ? ok( '9c. after-only pair -> null' ) : bad( '9c. after-only pair rendered' );
+/* And the section itself fails closed when either side cannot resolve. */
+$probe_slug = 'tarzana-resort-style-finish';
+$probe_dir  = get_stylesheet_directory() . '/assets/img/projects/comparisons/';
+$probe_file = $probe_dir . 'tarzana-resort-style-finish-after.webp';
+$probe_bak  = $probe_file . '.testbak';
+rename( $probe_file, $probe_bak );
+$r_missing = showtime_project_compare( $ids[ $probe_slug ] );
+rename( $probe_bak, $probe_file );
+null === $r_missing
+	? ok( '9c. missing after-image -> whole section fails closed' )
+	: bad( '9c. section rendered with a missing after-image' );
 
 /* A path that does not exist must be rejected, not guessed at. Asserted on the
    image normalizer itself: it is the single guard responsible, and testing it
@@ -177,9 +187,9 @@ $seen_sums = array();
 $seen_files = array();
 
 foreach ( $with_assets as $s ) {
-	$cmp = ( \Showtime\Projects::get( $s ) )['compare'];
-	$b   = $asset_dir . $cmp['before_asset'];
-	$a   = $asset_dir . $cmp['after_asset'];
+	$cmp = ( \Showtime\Projects::get( $s ) );
+	$b   = $asset_dir . $cmp['before_image'];
+	$a   = $asset_dir . $cmp['after_image'];
 
 	// Files exist and are readable.
 	( is_readable( $b ) && is_readable( $a ) )
@@ -206,7 +216,7 @@ foreach ( $with_assets as $s ) {
 			: null;
 		$seen_sums[ $sum ] = $s;
 	}
-	foreach ( array( $cmp['before_asset'], $cmp['after_asset'] ) as $fn ) {
+	foreach ( array( $cmp['before_image'], $cmp['after_image'] ) as $fn ) {
 		if ( isset( $seen_files[ $fn ] ) ) { bad( "img. $s: filename reused" ); }
 		$seen_files[ $fn ] = $s;
 		// Production-safe filename.
@@ -216,8 +226,8 @@ foreach ( $with_assets as $s ) {
 	}
 
 	// Correct before/after ordering + slug association encoded in the name.
-	( false !== strpos( $cmp['before_asset'], $s . '-before' )
-		&& false !== strpos( $cmp['after_asset'], $s . '-after' ) )
+	( false !== strpos( $cmp['before_image'], $s . '-before' )
+		&& false !== strpos( $cmp['after_image'], $s . '-after' ) )
 		? ok( "img. $s: filenames encode correct slug and before/after order" )
 		: bad( "img. $s: filename/slug or ordering mismatch" );
 
@@ -297,7 +307,7 @@ $retired = array(
 // not change, so "sherman-oaks-mid-century-remodel-before.webp" is not a claim.
 $copy_keys = array( 'heading', 'summary', 'before_condition', 'work_completed', 'completed_result', 'before_alt', 'after_alt' );
 foreach ( $retired as $slug => $terms ) {
-	$cmp   = ( \Showtime\Projects::get( $slug ) )['compare'] ?? array();
+	$cmp   = ( \Showtime\Projects::get( $slug ) ) ?? array();
 	$parts = array();
 	foreach ( $copy_keys as $k ) {
 		if ( isset( $cmp[ $k ] ) && is_string( $cmp[ $k ] ) ) { $parts[] = $cmp[ $k ]; }
@@ -315,11 +325,22 @@ foreach ( $retired as $slug => $terms ) {
 		: bad( "truth. $slug: retired claim(s) still present: " . implode( ', ', $hits ) );
 }
 
-/* No price, duration or completion date may appear in the code-owned copy —
-   those belong to owner-verified WordPress fields, not the registry. */
+/* No price, duration or completion date may appear in the narrative copy.
+   Scoped to the prose fields only: `timeline` and `investment` are dedicated
+   registry fields that legitimately hold a range and are rendered under the
+   fixed "Typical timeline" / "Typical investment" labels, so scanning the whole
+   flat entry would flag them by design. */
 foreach ( array_keys( $retired ) as $slug ) {
-	$cmp  = ( \Showtime\Projects::get( $slug ) )['compare'] ?? array();
-	$blob = implode( ' ', array_filter( $cmp, 'is_string' ) );
+	$cmp  = ( \Showtime\Projects::get( $slug ) ) ?? array();
+	$blob = implode(
+		' ',
+		array_map(
+			static function ( $k ) use ( $cmp ) {
+				return isset( $cmp[ $k ] ) && is_string( $cmp[ $k ] ) ? $cmp[ $k ] : '';
+			},
+			array( 'title', 'excerpt', 'comparison_heading', 'comparison_summary', 'before_condition', 'work_completed', 'completed_result', 'before_alt', 'after_alt', 'hero_alt', 'seo_title', 'meta_description' )
+		)
+	);
 	$bad_pattern = preg_match( '/\$[\d,]+k?\b/i', $blob )                       // prices
 		|| preg_match( '/\b\d+\s*(day|days|week|weeks|month|months)\b/i', $blob ) // durations
 		|| preg_match( '/\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+20\d\d\b/', $blob ); // dates
@@ -331,56 +352,59 @@ foreach ( array_keys( $retired ) as $slug ) {
 /* Every project must still resolve a service and area link after the
    reclassifications (Encino -> resurfacing, Woodland Hills -> spa). */
 $expect_service = array(
-	'sherman-oaks-mid-century-remodel'   => 'pool-remodeling-resurfacing',
-	'encino-estate-new-build'            => 'pool-remodeling-resurfacing',
-	'studio-city-modern-automation'      => 'equipment-installation-upgrades',
-	'beverly-hills-luxe-spa-renovation'  => 'spa-installation-renovations',
-	'tarzana-resort-style-finish'        => 'pool-remodeling-resurfacing',
-	'woodland-hills-tile-coping-refresh' => 'spa-installation-renovations',
+	'sherman-oaks-mid-century-remodel'   => '/services/pool-remodeling-resurfacing/',
+	'encino-estate-new-build'            => '/services/pool-remodeling-resurfacing/',
+	'studio-city-modern-automation'      => '/services/equipment-installation-upgrades/',
+	'beverly-hills-luxe-spa-renovation'  => '/services/spa-installation-renovations/',
+	'tarzana-resort-style-finish'        => '/services/pool-remodeling-resurfacing/',
+	'woodland-hills-tile-coping-refresh' => '/services/spa-installation-renovations/',
 );
 foreach ( $expect_service as $slug => $svc ) {
-	$cmp = ( \Showtime\Projects::get( $slug ) )['compare'] ?? array();
-	( ( $cmp['primary_service'] ?? '' ) === $svc && null !== \Showtime\Services::get( $svc ) )
+	$cmp = ( \Showtime\Projects::get( $slug ) ) ?? array();
+	$svc_slug = trim( (string) preg_replace( '#^/services/#', '', $svc ), '/' );
+	( ( $cmp['service_url'] ?? '' ) === $svc && null !== \Showtime\Services::get( $svc_slug ) )
 		? ok( "truth. $slug: primary service is $svc (registered)" )
-		: bad( "truth. $slug: primary service is '" . ( $cmp['primary_service'] ?? '' ) . "', expected $svc" );
+		: bad( "truth. $slug: primary service is '" . ( $cmp['service_url'] ?? '' ) . "', expected $svc" );
 }
 
-/* ── Admin editability of the estimate fields ──────────────────────────
-   single-project.php reads `value` and `duration_value`. If nothing renders
-   an input and saves them, the feature is unreachable for an administrator,
-   so assert the whole path: registration hook, renderer, nonce, capability
-   gate, sanitisation, and blank-means-blank. */
-echo "\n== PROJECT ESTIMATE FIELDS — ADMIN SUPPORT ==\n";
-function_exists( 'showtime_project_estimate_meta_box' )
-	? ok( 'admin. estimate meta box renderer is defined' )
-	: bad( 'admin. renderer missing — `value`/`duration_value` are not editable' );
+/* ── Admin is READ-ONLY for managed projects ───────────────────────────
+   Project content is owned by the code registry, so the editor must expose a
+   notice and NO editable project-data field. An editable Timeline/Investment
+   box would compete with the registry and silently diverge from the frontend. */
+echo "\n== PROJECT ADMIN — READ-ONLY CODE-MANAGEMENT NOTICE ==\n";
+function_exists( 'showtime_project_code_managed_meta_box' )
+	? ok( 'admin. read-only code-management notice is defined' )
+	: bad( 'admin. code-management notice missing' );
 
-if ( function_exists( 'showtime_project_estimate_meta_box' ) ) {
+! function_exists( 'showtime_project_estimate_meta_box' )
+	? ok( 'admin. old editable estimate box removed' )
+	: bad( 'admin. an editable estimate box still competes with the registry' );
+
+if ( function_exists( 'showtime_project_code_managed_meta_box' ) ) {
 	$probe = get_page_by_path( 'tarzana-resort-style-finish', OBJECT, 'project' );
 	ob_start();
-	showtime_project_estimate_meta_box( $probe );
+	showtime_project_code_managed_meta_box( $probe );
 	$box = (string) ob_get_clean();
-	( false !== strpos( $box, 'name="value"' ) && false !== strpos( $box, 'name="duration_value"' ) )
-		? ok( 'admin. both estimate inputs render' )
-		: bad( 'admin. an estimate input is missing from the box' );
-	( false !== strpos( $box, 'showtime_project_estimate_nonce' ) )
-		? ok( 'admin. nonce field present in the box' )
-		: bad( 'admin. no nonce field' );
 
-	// Save handler must be wired to the project post type only.
-	( has_action( 'save_post_project' ) )
-		? ok( 'admin. save handler bound to save_post_project' )
-		: bad( 'admin. no save_post_project handler' );
-
-	// A POST without the nonce must not write anything.
-	$before_val = get_post_meta( $probe->ID, 'value', true );
-	$_POST      = array( 'value' => 'UNAUTHORIZED' );
-	do_action( 'save_post_project', $probe->ID );
-	$_POST      = array();
-	( get_post_meta( $probe->ID, 'value', true ) === $before_val )
-		? ok( 'admin. save without a valid nonce is rejected' )
-		: bad( 'admin. nonce-less save wrote to post meta' );
+	( false !== strpos( $box, 'managed in the Showtime Pools code registry' ) )
+		? ok( 'admin. notice names the code registry as the source of truth' )
+		: bad( 'admin. notice text missing' );
+	( false !== strpos( $box, 'projects.php' ) )
+		? ok( 'admin. notice points at the registry file' )
+		: bad( 'admin. notice does not name the file to edit' );
+	( false === strpos( $box, '<input' ) && false === strpos( $box, '<textarea' ) )
+		? ok( 'admin. notice contains no editable input' )
+		: bad( 'admin. notice still renders an editable field' );
+	( false === strpos( $box, 'nonce' ) )
+		? ok( 'admin. no save path (read-only, nothing to nonce)' )
+		: bad( 'admin. a nonce implies a writable field' );
 }
+
+/* No save_post_project writer may remain for project data. */
+$writes = has_action( 'save_post_project' );
+( false === $writes )
+	? ok( 'admin. no save_post_project writer — post meta cannot shadow the registry' )
+	: bad( 'admin. a save_post_project handler is still registered' );
 
 /* The template must not fall back to a bare "Investment"/"Duration" caption
    once a caption field is supplied, and must never leak an estimate into
@@ -396,11 +420,8 @@ empty( $remote_hits )
 	? ok( 'img. no remote/placeholder image source in the project registry' )
 	: bad( 'img. remote/placeholder source found: ' . implode( ', ', $remote_hits ) );
 
-/* --- With a valid pair injected: structure, links, dimensions. --- */
-$f_ok = $half( $fixture['before'], $fixture['after'] );
-add_filter( 'showtime/project/compare_images', $f_ok, 10, 0 );
-
-$real = @getimagesize( $fixture['before'] );
+/* --- Structure, links, dimensions. The registry supplies the images, so no
+   injection is needed: every managed project resolves a real pair. --- */
 foreach ( $ids as $s => $pid ) {
 	$r = showtime_project_compare( $pid );
 	if ( ! is_array( $r ) ) {
@@ -423,9 +444,12 @@ foreach ( $ids as $s => $pid ) {
 	$spam ? bad( "5b. $s: alt text contains marketing language" ) : ok( "5b. $s: alt text free of marketing language" );
 
 	// 6. Dimensions accurate against the real file.
-	$dim_ok = is_array( $real )
-		&& (int) $r['before']['width'] === (int) $real[0]
-		&& (int) $r['before']['height'] === (int) $real[1];
+	// Compare against THIS project's own registry image, not a shared fixture.
+	$real_file = get_stylesheet_directory() . '/assets/img/projects/comparisons/' . $s . '-before.webp';
+	$real_dim  = @getimagesize( $real_file );
+	$dim_ok    = is_array( $real_dim )
+		&& (int) $r['before']['width'] === (int) $real_dim[0]
+		&& (int) $r['before']['height'] === (int) $real_dim[1];
 	$dim_ok ? ok( "6. $s: width/height match the actual file" ) : bad( "6. $s: dimensions wrong" );
 
 	// 7. Exactly one primary service link, resolved through the registry.
@@ -474,7 +498,6 @@ if ( is_array( $wh ) ) {
 	$bad_claim ? bad( '8d. Woodland Hills described as a resurface' ) : ok( '8d. Woodland Hills not described as a resurface' );
 }
 
-remove_filter( 'showtime/project/compare_images', $f_ok, 10 );
 
 /* --- Rendered markup, server-side, no JavaScript. --- */
 echo "\n== PROJECT BEFORE/AFTER — server-rendered markup ==\n";
@@ -543,12 +566,17 @@ foreach ( $slugs as $s ) {
 			? ok( "6e. $s: visible Before/After labels" )
 			: bad( "6e. $s: Before/After labels missing" );
 
-		// Section placement: after the facts strip, before the testimonial.
-		$p_meta = strpos( $body, 'proj-single__meta' );
-		$p_cmp  = strpos( $body, '<section class="proj-compare"' );
+		// Section placement: after the facts strip and, when a testimonial is
+		// present, before it. Client quotes are blank for managed projects, so
+		// the quote section is legitimately absent — only assert the order that
+		// actually exists rather than requiring a section we deliberately omit.
+		$p_meta  = strpos( $body, 'proj-single__meta' );
+		$p_cmp   = strpos( $body, '<section class="proj-compare"' );
 		$p_quote = strpos( $body, 'proj-single__quote' );
-		( false !== $p_meta && false !== $p_cmp && false !== $p_quote && $p_meta < $p_cmp && $p_cmp < $p_quote )
-			? ok( "2b. $s: placed after facts, before testimonial" )
+		$ordered = ( false !== $p_meta && false !== $p_cmp && $p_meta < $p_cmp )
+			&& ( false === $p_quote || $p_cmp < $p_quote );
+		$ordered
+			? ok( "2b. $s: placed after facts" . ( false === $p_quote ? ' (no testimonial — correctly omitted)' : ', before testimonial' ) )
 			: bad( "2b. $s: wrong section order" );
 	} else {
 		bad( "2. $s: $has_section comparison sections (must be 0 or 1)" );
@@ -574,6 +602,107 @@ foreach ( $slugs as $s ) {
 
 	// 14. P0-3 review widget behaviour unchanged (project pages never mounted it).
 	ok( "14. $s: reviews widget untouched (" . $count( $body, '#data-trustindex-lazy#' ) . ' instances)' );
+}
+
+echo "\n== PROJECT REGISTRY — legacy/unmanaged posts orphaned from public surfaces ==\n";
+
+/*
+ * The two legacy seed rows below carry no `managed` entry in projects.php.
+ * Their post meta (written once by the one-time seeder) still holds
+ * unverified prices, durations, materials and client quotes, so they must
+ * never be discoverable — even though the posts themselves stay published
+ * (never deleted, unpublished or renamed; that is the standing rule for
+ * existing project posts). See showtime_unmanaged_project_ids().
+ */
+$legacy = array(
+	'sherman-oaks-outdoor-living-build'  => 'Sherman Oaks outdoor living build',
+	'encino-custom-design-water-feature' => 'Encino custom design with water feature',
+);
+
+/* 15. showtime_unmanaged_project_ids() finds exactly these two, by slug. */
+if ( function_exists( 'showtime_unmanaged_project_ids' ) ) {
+	$unmanaged_slugs = array();
+	foreach ( showtime_unmanaged_project_ids() as $uid ) {
+		$unmanaged_slugs[] = get_post_field( 'post_name', $uid );
+	}
+	sort( $unmanaged_slugs );
+	$expected = array_keys( $legacy );
+	sort( $expected );
+	$unmanaged_slugs === $expected
+		? ok( '15. showtime_unmanaged_project_ids() resolves exactly the two legacy slugs' )
+		: bad( '15. showtime_unmanaged_project_ids() returned: ' . implode( ', ', $unmanaged_slugs ) );
+} else {
+	bad( '15. showtime_unmanaged_project_ids() not loaded' );
+}
+
+/* 16. Archive + homepage never render either legacy title or slug. */
+$archive_body = fetch_body( "$base/projects/" );
+$home_body    = fetch_body( "$base/" );
+foreach ( array( 'archive (/projects/)' => $archive_body, 'homepage' => $home_body ) as $where => $body ) {
+	$leaked = array();
+	foreach ( $legacy as $slug => $title ) {
+		if ( '' !== $body && ( false !== strpos( $body, $title ) || false !== strpos( $body, $slug ) ) ) {
+			$leaked[] = $slug;
+		}
+	}
+	( '' !== $body && empty( $leaked ) )
+		? ok( "16. $where: no legacy project title/slug present" )
+		: bad( "16. $where: leaked " . ( $body ? implode( ', ', $leaked ) : '(empty response)' ) );
+}
+
+/* 17. Archive shows exactly the six managed cards — never more, never fewer,
+ * regardless of menu_order. */
+$card_count = $count( $archive_body, '#class="proj-card"#' );
+6 === $card_count
+	? ok( '17. archive renders exactly 6 project cards' )
+	: bad( "17. archive renders $card_count project cards (expected 6)" );
+
+/* 18. Related cards on a managed single never surface a legacy post. Real
+ * collision, not hypothetical: the managed Sherman Oaks post still carries
+ * its original `neighborhood: Sherman Oaks` post meta from the one-time
+ * seed, which otherwise meta_query-matches the legacy
+ * sherman-oaks-outdoor-living-build post under the same neighborhood. */
+$so_body = '';
+if ( isset( $ids['sherman-oaks-mid-century-remodel'] ) ) {
+	$so_body = fetch_body( "$base/projects/sherman-oaks-mid-century-remodel/" );
+	$leaked  = ( false !== strpos( $so_body, 'outdoor living build' ) )
+		|| ( false !== strpos( $so_body, 'sherman-oaks-outdoor-living-build' ) );
+	( '' !== $so_body && ! $leaked )
+		? ok( '18. Sherman Oaks related cards exclude the same-neighborhood legacy post' )
+		: bad( '18. Sherman Oaks related cards leaked the legacy outdoor-living-build post' );
+}
+
+/* 19. XML sitemap lists the six managed projects and neither legacy slug. */
+$sitemap_xml = fetch_body( "$base/wp-sitemap-posts-project-1.xml" );
+$xml_ok      = '' !== $sitemap_xml;
+foreach ( $slugs as $s ) {
+	$xml_ok = $xml_ok && ( false !== strpos( $sitemap_xml, "/projects/$s/" ) );
+}
+foreach ( $legacy as $slug => $title ) {
+	$xml_ok = $xml_ok && ( false === strpos( $sitemap_xml, "/projects/$slug/" ) );
+}
+$xml_ok
+	? ok( '19. XML project sitemap lists the six managed projects and no legacy slug' )
+	: bad( '19. XML project sitemap mismatch' );
+
+/* 20. Direct legacy URLs stay live (200, never deleted/unpublished) but
+ * carry noindex — reachable only by a direct/bookmarked link, never
+ * advertised or indexed. */
+foreach ( $legacy as $slug => $title ) {
+	$body    = fetch_body( "$base/projects/$slug/" );
+	$noindex = false !== stripos( $body, "robots' content='noindex, follow" )
+		|| false !== stripos( $body, 'robots" content="noindex, follow' );
+	( '' !== $body && $noindex )
+		? ok( "20. $slug: still live, but robots noindex,follow" )
+		: bad( "20. $slug: expected a live page with noindex,follow robots meta" );
+}
+
+/* 21. Managed singles are unaffected by the orphaning fix — still index,follow. */
+if ( '' !== $so_body ) {
+	$indexable = false !== stripos( $so_body, 'index, follow' ) && false === stripos( $so_body, 'noindex' );
+	$indexable
+		? ok( '21. managed project single stays index,follow (unaffected by the orphaning fix)' )
+		: bad( '21. managed project single lost its index,follow robots directive' );
 }
 
 echo "\n== RESULT ==\n  pass: $pass   fail: $fail\n";

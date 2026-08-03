@@ -45,6 +45,10 @@ final class Plugin {
 			( new Admin\ReviewsPage() )->register();
 		}
 
+		// Project routing-shell sync (WP-CLI only). The registry is authoritative
+		// for content; this only reconciles the posts that provide permalinks.
+		( new Cli\ProjectsSync() )->register();
+
 		// Seeder hooks (WP-CLI + admin-post) need to register on every request,
 		// not only inside is_admin() — admin-post.php fires before is_admin()
 		// resolves to true for non-page requests.

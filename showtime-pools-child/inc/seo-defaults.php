@@ -61,6 +61,24 @@ function showtime_seo_context() {
 
 	$id = get_queried_object_id();
 
+	// Code-managed project. The registry owns the SEO title, meta description
+	// and the visible H1/intro, so every managed project page gets a unique,
+	// truth-checked pair without touching WordPress post meta. Runs before the
+	// service/area lookups because a project is never also a service page.
+	if ( is_singular( 'project' ) && function_exists( 'showtime_project_data' ) ) {
+		$proj = showtime_project_data( $id );
+		if ( null !== $proj ) {
+			return array(
+				'type'    => 'project',
+				'h1'      => $proj['title'],
+				'keyword' => '',
+				'intro'   => $proj['excerpt'],
+				'title'   => $proj['seo_title'],
+				'meta'    => $proj['meta_description'],
+			);
+		}
+	}
+
 	// Service single. Meta first, then a template-gated post_name fallback —
 	// mirrors page-service.php so a service page missing its post meta still
 	// gets the registry title/description instead of the sitewide default.

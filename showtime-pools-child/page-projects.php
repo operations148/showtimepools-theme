@@ -25,6 +25,10 @@ $gradients = array(
 
 $projects = array();
 if ( post_type_exists( 'project' ) ) {
+	// Unmanaged/legacy posts are excluded at the query level — never shown here
+	// regardless of menu_order — because their copy predates the truth-safety
+	// review the managed registry enforces. See showtime_unmanaged_project_ids().
+	$unmanaged = function_exists( 'showtime_unmanaged_project_ids' ) ? showtime_unmanaged_project_ids() : array();
 	$q = new WP_Query(
 		array(
 			'post_type'      => 'project',
@@ -32,54 +36,89 @@ if ( post_type_exists( 'project' ) ) {
 			'orderby'        => 'menu_order',
 			'order'          => 'ASC',
 			'no_found_rows'  => true,
+			'post__not_in'   => $unmanaged,
 		)
 	);
 	$i = 0;
 	while ( $q->have_posts() ) :
 		$q->the_post();
-		$pid  = get_the_ID();
-		$slot = apply_filters( 'showtime/image/slot_for_project', 'project_1', (int) $pid );
-		$image = '';
-		if ( has_post_thumbnail( $pid ) ) {
-			$image = (string) get_the_post_thumbnail_url( $pid, 'large' );
-		} elseif ( function_exists( 'showtime_project_compare_asset_url' )
-			&& '' !== showtime_project_compare_asset_url( (string) get_post_field( 'post_name', $pid ) ) ) {
-			// The project's own finished ("after") photograph, so the card shows
-			// the real completed work rather than a generic stock slot.
-			$image = showtime_project_compare_asset_url( (string) get_post_field( 'post_name', $pid ) );
-		} elseif ( function_exists( 'showtime_image' ) ) {
-			$image = showtime_image( $slot, 1024 );
+		$pid = get_the_ID();
+
+		// Same resolver as the single page and related cards, so the archive can
+		// never drift from them. Previously this read `duration_label` /
+		// `value_label` post meta directly while the single page read
+		// `duration_value` / `value` — different keys, hence the desync.
+		$d = function_exists( 'showtime_project_data' ) ? showtime_project_data( $pid ) : null;
+
+		if ( null !== $d ) {
+			$projects[] = array(
+				'image'        => $d['hero_image'],
+				'image_alt'    => $d['hero_alt'],
+				'title'        => $d['title'],
+				'href'         => get_permalink(),
+				'neighborhood' => $d['neighborhood'],
+				'scope'        => $d['scope'],
+				'finish'       => $d['finish'],
+				'duration'     => $d['timeline'],
+				'value'        => $d['investment'],
+				'gradient'     => $gradients[ $i++ % count( $gradients ) ],
+			);
+		} else {
+			// Legacy/unmanaged project — historical post-meta path.
+			$slot  = apply_filters( 'showtime/image/slot_for_project', 'project_1', (int) $pid );
+			$image = has_post_thumbnail( $pid )
+				? (string) get_the_post_thumbnail_url( $pid, 'large' )
+				: ( function_exists( 'showtime_image' ) ? showtime_image( $slot, 1024 ) : '' );
+			$pm = static function ( string $k, int $id ): string {
+				$v = function_exists( 'get_field' ) ? get_field( $k, $id ) : null;
+				if ( null === $v || '' === $v ) { $v = get_post_meta( $id, $k, true ); }
+				return (string) $v;
+			};
+			$projects[] = array(
+				'image'        => $image,
+				'image_alt'    => '',
+				'title'        => get_the_title(),
+				'href'         => get_permalink(),
+				'neighborhood' => $pm( 'neighborhood', (int) $pid ),
+				'scope'        => $pm( 'scope', (int) $pid ),
+				'finish'       => $pm( 'finish', (int) $pid ),
+				'duration'     => '',
+				'value'        => '',
+				'gradient'     => $gradients[ $i++ % count( $gradients ) ],
+			);
 		}
-		$pm = static function ( string $k, int $id ): string {
-			$v = function_exists( 'get_field' ) ? get_field( $k, $id ) : null;
-			if ( null === $v || '' === $v ) { $v = get_post_meta( $id, $k, true ); }
-			return (string) $v;
-		};
-		$projects[] = array(
-			'image'        => $image,
-			'title'        => get_the_title(),
-			'href'         => get_permalink(),
-			'neighborhood' => $pm( 'neighborhood', (int) $pid ),
-			'scope'        => $pm( 'scope', (int) $pid ),
-			'finish'       => $pm( 'finish', (int) $pid ),
-			'duration'     => $pm( 'duration_label', (int) $pid ),
-			'value'        => $pm( 'value_label', (int) $pid ),
-			'gradient'     => $gradients[ $i++ % count( $gradients ) ],
-		);
 	endwhile;
 	wp_reset_postdata();
 }
 
-// Soft fallback so the page never renders empty if the seeder hasn't run.
-if ( empty( $projects ) ) {
-	$projects = apply_filters(
-		'showtime/projects_grid',
-		array(
-			array( 'image' => function_exists('showtime_image') ? showtime_image('project_1', 1024) : '', 'title' => 'Sherman Oaks mid-century remodel', 'href' => home_url('/projects/'), 'neighborhood' => 'Sherman Oaks',  'scope' => 'Resurface · Tile · Coping · Equipment', 'finish' => 'PebbleTec Cool Blue', 'duration' => '12 days', 'value' => '$28k',  'gradient' => $gradients[0] ),
-			array( 'image' => function_exists('showtime_image') ? showtime_image('project_2', 1024) : '', 'title' => 'Encino estate new construction',   'href' => home_url('/projects/'), 'neighborhood' => 'Encino',        'scope' => 'New build · Hardscape · Fire features', 'finish' => 'PebbleTec Aqua White', 'duration' => '10 weeks', 'value' => '$142k', 'gradient' => $gradients[1] ),
-			array( 'image' => function_exists('showtime_image') ? showtime_image('project_3', 1024) : '', 'title' => 'Studio City equipment overhaul',   'href' => home_url('/projects/'), 'neighborhood' => 'Studio City',   'scope' => 'Automation · Pump · Salt · Heater',     'finish' => 'Equipment only', 'duration' => '3 days', 'value' => '$8.6k', 'gradient' => $gradients[2] ),
-		)
-	);
+// Fallback when no routing posts exist yet: build the grid straight from the
+// code registry. The previous hardcoded array carried retired claims
+// (PebbleTec, "$28k", "$142k", "New build · Hardscape · Fire features") and
+// could publish them whenever the query came back empty — removed entirely.
+if ( empty( $projects ) && class_exists( 'Showtime\Projects' ) && function_exists( 'showtime_project_data' ) ) {
+	$i = 0;
+	foreach ( \Showtime\Projects::all() as $entry ) {
+		if ( empty( $entry['managed'] ) ) {
+			continue;
+		}
+		$d = showtime_project_data( (string) $entry['slug'] );
+		if ( null === $d ) {
+			continue;
+		}
+		$projects[] = array(
+			'image'        => $d['hero_image'],
+			'image_alt'    => $d['hero_alt'],
+			'title'        => $d['title'],
+			'href'         => home_url( '/projects/' . $d['slug'] . '/' ),
+			'neighborhood' => $d['neighborhood'],
+			'scope'        => $d['scope'],
+			'finish'       => $d['finish'],
+			'duration'     => $d['timeline'],
+			'value'        => $d['investment'],
+			'gradient'     => $gradients[ $i++ % count( $gradients ) ],
+		);
+	}
+	$projects = apply_filters( 'showtime/projects_grid', $projects );
 }
 // ── Native WP fields (edit via WP Admin → Pages → Projects → Update) ────────
 $pid          = get_the_ID();
@@ -125,7 +164,7 @@ if ( '' === $hero_lead )    { $hero_lead    = 'A full interactive map with photo
 					<<?php echo esc_html( $tag ); ?> class="proj-card"<?php if ( '#' !== $href ) : ?> href="<?php echo esc_url( $href ); ?>"<?php endif; ?>>
 						<div class="proj-card__media" style="background:<?php echo esc_attr( $p['gradient'] ); ?>">
 							<?php if ( ! empty( $p['image'] ) ) : ?>
-								<img class="proj-card__media-img" src="<?php echo esc_url( $p['image'] ); ?>" alt="" loading="lazy" decoding="async">
+								<img class="proj-card__media-img" src="<?php echo esc_url( $p['image'] ); ?>" alt="<?php echo esc_attr( $p['image_alt'] ?? '' ); ?>" loading="lazy" decoding="async">
 							<?php endif; ?>
 							<?php if ( ! empty( $p['neighborhood'] ) ) : ?>
 								<span class="proj-card__neighborhood"><?php echo esc_html( $p['neighborhood'] ); ?></span>
@@ -136,8 +175,8 @@ if ( '' === $hero_lead )    { $hero_lead    = 'A full interactive map with photo
 							<dl class="proj-card__meta">
 								<?php if ( ! empty( $p['scope'] ) ) : ?><div><dt><?php esc_html_e( 'Scope', 'showtime-pools' ); ?></dt><dd><?php echo esc_html( $p['scope'] ); ?></dd></div><?php endif; ?>
 								<?php if ( ! empty( $p['finish'] ) ) : ?><div><dt><?php esc_html_e( 'Finish', 'showtime-pools' ); ?></dt><dd><?php echo esc_html( $p['finish'] ); ?></dd></div><?php endif; ?>
-								<?php if ( ! empty( $p['duration'] ) ) : ?><div><dt><?php esc_html_e( 'Duration', 'showtime-pools' ); ?></dt><dd><?php echo esc_html( $p['duration'] ); ?></dd></div><?php endif; ?>
-								<?php if ( ! empty( $p['value'] ) ) : ?><div><dt><?php esc_html_e( 'Investment', 'showtime-pools' ); ?></dt><dd><?php echo esc_html( $p['value'] ); ?></dd></div><?php endif; ?>
+								<?php if ( ! empty( $p['duration'] ) ) : ?><div><dt><?php esc_html_e( 'Typical timeline', 'showtime-pools' ); ?></dt><dd><?php echo esc_html( $p['duration'] ); ?></dd></div><?php endif; ?>
+								<?php if ( ! empty( $p['value'] ) ) : ?><div><dt><?php esc_html_e( 'Typical investment', 'showtime-pools' ); ?></dt><dd><?php echo esc_html( $p['value'] ); ?></dd></div><?php endif; ?>
 							</dl>
 						</div>
 					</<?php echo esc_html( $tag ); ?>>

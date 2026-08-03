@@ -356,6 +356,21 @@ add_filter(
 add_filter(
 	'wp_sitemaps_posts_query_args',
 	function ( array $args, string $post_type ): array {
+		if ( 'project' === $post_type ) {
+			// Legacy seed rows with no managed registry entry (see
+			// showtime_unmanaged_project_ids()) carry unverified prices,
+			// durations and testimonials from the one-time seeder. Never
+			// deleted or unpublished — only kept off the sitemap until they
+			// either gain a registry entry or are edited by the owner.
+			if ( function_exists( 'showtime_unmanaged_project_ids' ) ) {
+				$ids = showtime_unmanaged_project_ids();
+				if ( $ids ) {
+					$args['post__not_in'] = array_merge( (array) ( $args['post__not_in'] ?? array() ), $ids );
+				}
+			}
+			return $args;
+		}
+
 		if ( 'page' !== $post_type || ! function_exists( 'showtime_noindex_page_templates' ) ) {
 			return $args;
 		}

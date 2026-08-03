@@ -93,6 +93,14 @@ function showtime_seo_should_noindex(): bool {
 			return (bool) apply_filters( 'showtime/seo/noindex', true );
 		}
 	}
+	if ( is_singular( 'project' ) && function_exists( 'showtime_unmanaged_project_ids' ) ) {
+		// Legacy seed rows with no managed registry entry: unverified
+		// seeder-era prices/durations/testimonials, so the direct URL stays
+		// live (never deleted or unpublished) but out of the index.
+		if ( in_array( get_queried_object_id(), showtime_unmanaged_project_ids(), true ) ) {
+			return (bool) apply_filters( 'showtime/seo/noindex', true );
+		}
+	}
 	if ( is_category() ) {
 		$term = get_queried_object();
 		if ( $term instanceof WP_Term && in_array( $term->slug, showtime_noindex_term_slugs(), true ) ) {
@@ -344,6 +352,23 @@ function showtime_og_image_data(): array {
 
 	if ( is_singular() ) {
 		$id = (int) get_the_ID();
+
+		// 0. Code-managed project: the registry owns the social image, so every
+		// project shares one unique og_image across og:image and twitter:image.
+		if ( is_singular( 'project' ) && function_exists( 'showtime_project_data' ) ) {
+			$proj = showtime_project_data( $id );
+			if ( null !== $proj && '' !== $proj['og_image'] ) {
+				$dims = function_exists( 'showtime_project_compare_local_path' )
+					? @getimagesize( showtime_project_compare_local_path( $proj['og_image'] ) )
+					: false;
+				return array(
+					'url'    => $proj['og_image'],
+					'width'  => is_array( $dims ) ? (int) $dims[0] : 0,
+					'height' => is_array( $dims ) ? (int) $dims[1] : 0,
+					'alt'    => '' !== $proj['hero_alt'] ? $proj['hero_alt'] : $proj['title'],
+				);
+			}
+		}
 
 		// 1. Featured image wins, exactly as before.
 		$thumb_id = get_post_thumbnail_id( $id );

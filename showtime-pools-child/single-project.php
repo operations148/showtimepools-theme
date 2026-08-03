@@ -25,42 +25,63 @@ while ( have_posts() ) :
 	the_post();
 	$pid = get_the_ID();
 
-	// Pull every project field. ACF JSON auto-sync requires an admin
-	// visit to register the field group, so until then `get_field()`
-	// returns null for unregistered keys. The post meta written by the
-	// seeder lives at the same keys, so fall back to `get_post_meta()`
-	// for the scalar fields. Image / repeater fields stay ACF-only —
-	// they're only meaningful once the user has uploaded media via WP
-	// admin (which by definition means ACF is loaded).
-	$proj_field = static function ( string $key, int $pid ) {
-		$v = function_exists( 'get_field' ) ? get_field( $key, $pid ) : null;
-		if ( null === $v || '' === $v ) {
-			$v = get_post_meta( $pid, $key, true );
-		}
-		return $v;
-	};
+	// ── Code-managed project data ────────────────────────────────────────
+	// showtime_project_data() is THE resolver. For a managed project it returns
+	// the registry entry and WordPress post meta is never consulted, so a stale
+	// seeded value cannot leak onto the page. Unmanaged/legacy projects keep the
+	// historical post-meta path in the else branch.
+	$proj = function_exists( 'showtime_project_data' ) ? showtime_project_data( $pid ) : null;
 
-	$neighborhood = (string) $proj_field( 'neighborhood', $pid );
-	$finish       = (string) $proj_field( 'finish', $pid );
-	$scope        = (string) $proj_field( 'scope', $pid );
-	$value_label  = (string) $proj_field( 'value_label', $pid );
-	$duration     = (string) $proj_field( 'duration_label', $pid );
-	$completion   = (string) $proj_field( 'completion_date', $pid );
-	$client_quote = (string) $proj_field( 'client_quote', $pid );
-	$client_name  = (string) $proj_field( 'client_name', $pid );
-	$before_img   = function_exists( 'get_field' ) ? get_field( 'before_image', $pid ) : null;
-	$after_img    = function_exists( 'get_field' ) ? get_field( 'after_image', $pid ) : null;
-	$gallery      = function_exists( 'get_field' ) ? get_field( 'gallery', $pid ) : null;
+	if ( null !== $proj ) {
+		$neighborhood = $proj['neighborhood'];
+		$finish       = $proj['finish'];
+		$scope        = $proj['scope'];
+		$completion   = $proj['completion_date'];
+		$client_quote = $proj['client_quote'];
+		$client_name  = '';
+		$proj_title   = '' !== $proj['title'] ? $proj['title'] : get_the_title( $pid );
+		$proj_lede    = $proj['excerpt'];
+		$hero_img     = $proj['hero_image'];
+		$hero_alt     = $proj['hero_alt'];
+		$meta_rows    = showtime_project_meta_rows( $proj );
+		$gallery      = null;
+	} else {
+		$proj_field = static function ( string $key, int $pid ) {
+			$v = function_exists( 'get_field' ) ? get_field( $key, $pid ) : null;
+			if ( null === $v || '' === $v ) {
+				$v = get_post_meta( $pid, $key, true );
+			}
+			return $v;
+		};
+		$neighborhood = (string) $proj_field( 'neighborhood', $pid );
+		$finish       = (string) $proj_field( 'finish', $pid );
+		$scope        = (string) $proj_field( 'scope', $pid );
+		$completion   = (string) $proj_field( 'completion_date', $pid );
+		$client_quote = (string) $proj_field( 'client_quote', $pid );
+		$client_name  = (string) $proj_field( 'client_name', $pid );
+		$proj_title   = get_the_title( $pid );
+		$proj_lede    = wp_strip_all_tags( get_the_excerpt( $pid ) );
+		$hero_alt     = '';
+		$gallery      = function_exists( 'get_field' ) ? get_field( 'gallery', $pid ) : null;
 
-	// Resolve hero image: featured image → ACF after_image → bundled project_<order> photo.
-	$slot      = apply_filters( 'showtime/image/slot_for_project', 'project_1', (int) $pid );
-	$hero_img  = '';
-	if ( has_post_thumbnail( $pid ) ) {
-		$hero_img = (string) get_the_post_thumbnail_url( $pid, 'full' );
-	} elseif ( is_array( $after_img ) && ! empty( $after_img['url'] ) ) {
-		$hero_img = (string) ( $after_img['sizes']['large'] ?? $after_img['url'] );
-	} elseif ( function_exists( 'showtime_image' ) ) {
-		$hero_img = showtime_image( $slot, 1920 );
+		$slot     = apply_filters( 'showtime/image/slot_for_project', 'project_1', (int) $pid );
+		$hero_img = has_post_thumbnail( $pid )
+			? (string) get_the_post_thumbnail_url( $pid, 'full' )
+			: ( function_exists( 'showtime_image' ) ? showtime_image( $slot, 1920 ) : '' );
+
+		$meta_rows = array_values(
+			array_filter(
+				array(
+					array( 'k' => __( 'Neighborhood', 'showtime-pools' ), 'v' => $neighborhood ),
+					array( 'k' => __( 'Finish', 'showtime-pools' ),       'v' => $finish ),
+					array( 'k' => __( 'Scope', 'showtime-pools' ),        'v' => $scope ),
+					array( 'k' => __( 'Completed', 'showtime-pools' ),    'v' => $completion ),
+				),
+				static function ( $r ) {
+					return '' !== trim( (string) $r['v'] );
+				}
+			)
+		);
 	}
 
 	// JSON-LD: CreativeWork + BreadcrumbList. No Article schema.
@@ -68,9 +89,9 @@ while ( have_posts() ) :
 		'@context'        => 'https://schema.org',
 		'@type'           => 'CreativeWork',
 		'@id'             => get_permalink( $pid ) . '#project',
-		'name'            => get_the_title( $pid ),
-		'headline'        => get_the_title( $pid ),
-		'description'     => wp_strip_all_tags( get_the_excerpt( $pid ) ),
+		'name'            => $proj_title,
+		'headline'        => $proj_title,
+		'description'     => $proj_lede,
 		'image'           => $hero_img,
 		'datePublished'   => get_the_date( 'c', $pid ),
 		'dateModified'    => get_the_modified_date( 'c', $pid ),
@@ -93,16 +114,22 @@ while ( have_posts() ) :
 		'itemListElement' => array(
 			array( '@type' => 'ListItem', 'position' => 1, 'name' => 'Home',     'item' => home_url( '/' ) ),
 			array( '@type' => 'ListItem', 'position' => 2, 'name' => 'Projects', 'item' => home_url( '/projects/' ) ),
-			array( '@type' => 'ListItem', 'position' => 3, 'name' => get_the_title( $pid ), 'item' => get_permalink( $pid ) ),
+			array( '@type' => 'ListItem', 'position' => 3, 'name' => $proj_title, 'item' => get_permalink( $pid ) ),
 		),
 	);
 
 	// Related projects — prefer same neighborhood, else 3 most recent siblings.
-	$related = array();
+	// Unmanaged/legacy posts are excluded from both queries below: their
+	// `neighborhood` post meta (written once by the one-time seeder) can still
+	// match a managed project's own leftover meta row, which would otherwise
+	// surface unverified copy as a "related project". See
+	// showtime_unmanaged_project_ids().
+	$unmanaged = function_exists( 'showtime_unmanaged_project_ids' ) ? showtime_unmanaged_project_ids() : array();
+	$related   = array();
 	$base_args = array(
 		'post_type'      => 'project',
 		'posts_per_page' => 3,
-		'post__not_in'   => array( $pid ),
+		'post__not_in'   => array_merge( array( $pid ), $unmanaged ),
 		'orderby'        => 'rand',
 		'no_found_rows'  => true,
 	);
@@ -138,7 +165,7 @@ while ( have_posts() ) :
 
 	<section class="proj-single__hero" data-reveal>
 		<?php if ( $hero_img ) : ?>
-			<img class="proj-single__hero-photo" src="<?php echo esc_url( $hero_img ); ?>" alt="<?php echo esc_attr( get_the_title( $pid ) ); ?>" loading="eager" fetchpriority="high" decoding="async">
+			<img class="proj-single__hero-photo" src="<?php echo esc_url( $hero_img ); ?>" alt="<?php echo esc_attr( '' !== $hero_alt ? $hero_alt : $proj_title ); ?>" loading="eager" fetchpriority="high" decoding="async">
 		<?php endif; ?>
 		<div class="container">
 			<nav class="breadcrumbs proj-single__crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'showtime-pools' ); ?>">
@@ -146,51 +173,25 @@ while ( have_posts() ) :
 				<span class="breadcrumbs__sep">/</span>
 				<a href="<?php echo esc_url( home_url( '/projects/' ) ); ?>"><?php esc_html_e( 'Projects', 'showtime-pools' ); ?></a>
 				<span class="breadcrumbs__sep">/</span>
-				<span aria-current="page"><?php echo esc_html( get_the_title( $pid ) ); ?></span>
+				<span aria-current="page"><?php echo esc_html( $proj_title ); ?></span>
 			</nav>
 			<div class="proj-single__hero-inner">
 				<?php if ( '' !== $neighborhood ) : ?>
 					<span class="proj-single__pill"><?php echo esc_html( $neighborhood ); ?></span>
 				<?php endif; ?>
-				<h1 class="proj-single__title balance"><?php the_title(); ?></h1>
-				<?php $lede = wp_strip_all_tags( get_the_excerpt( $pid ) );
-				if ( '' !== $lede ) : ?>
-					<p class="proj-single__lede"><?php echo esc_html( $lede ); ?></p>
+				<h1 class="proj-single__title balance"><?php echo esc_html( $proj_title ); ?></h1>
+				<?php if ( '' !== $proj_lede ) : ?>
+					<p class="proj-single__lede"><?php echo esc_html( $proj_lede ); ?></p>
 				<?php endif; ?>
 			</div>
 		</div>
 	</section>
 
 	<?php
-	// Optional owner-supplied captions. When `duration_value` / `value` are
-	// set, the matching `duration_label` / `value_label` field becomes the
-	// CAPTION and the new field supplies the figure. That lets a researched
-	// range publish as "Typical investment for similar projects — $14,000-
-	// $30,000" instead of sitting under a bare "Investment" heading, which
-	// would imply an actual contract price. With the new fields empty the
-	// behaviour is unchanged, so nothing breaks before they are filled in.
-	$duration_value = (string) $proj_field( 'duration_value', $pid );
-	$value_amount   = (string) $proj_field( 'value', $pid );
-
-	$duration_caption = ( '' !== $duration_value && '' !== $duration )
-		? $duration
-		: __( 'Duration', 'showtime-pools' );
-	$duration_display = '' !== $duration_value ? $duration_value : $duration;
-
-	$value_caption = ( '' !== $value_amount && '' !== $value_label )
-		? $value_label
-		: __( 'Investment', 'showtime-pools' );
-	$value_display = '' !== $value_amount ? $value_amount : $value_label;
-
-	$meta_rows = array(
-		array( 'k' => __( 'Neighborhood', 'showtime-pools' ), 'v' => $neighborhood ),
-		array( 'k' => __( 'Finish', 'showtime-pools' ),       'v' => $finish ),
-		array( 'k' => __( 'Scope', 'showtime-pools' ),        'v' => $scope ),
-		array( 'k' => $duration_caption,                      'v' => $duration_display ),
-		array( 'k' => $value_caption,                         'v' => $value_display ),
-		array( 'k' => __( 'Completed', 'showtime-pools' ),    'v' => $completion ),
-	);
-	$meta_rows = array_filter( $meta_rows, static fn( $r ) => '' !== $r['v'] );
+	// $meta_rows is built above by showtime_project_meta_rows() for managed
+	// projects (fixed labels: Neighborhood, Finish, Scope, Typical timeline,
+	// Typical investment, Completed) and by the legacy branch otherwise. Blank
+	// optional values are already dropped, so an empty set hides the strip.
 	if ( ! empty( $meta_rows ) ) :
 	?>
 	<section class="proj-single__meta" data-reveal>
@@ -389,26 +390,35 @@ while ( have_posts() ) :
 					);
 					$i = 0;
 					foreach ( $related as $rid ) :
+						// Same resolver as every other surface. The old code called
+						// get_field() with no fallback, so with ACF absent these
+						// were always empty and related cards rendered blank.
+						$r_data   = function_exists( 'showtime_project_data' ) ? showtime_project_data( $rid ) : null;
 						$r_slot   = apply_filters( 'showtime/image/slot_for_project', 'project_1', (int) $rid );
-						$r_image  = has_post_thumbnail( $rid )
-							? (string) get_the_post_thumbnail_url( $rid, 'large' )
-							: ( function_exists( 'showtime_image' ) ? showtime_image( $r_slot, 1024 ) : '' );
-						$r_neigh  = function_exists( 'get_field' ) ? (string) get_field( 'neighborhood', $rid ) : '';
-						$r_scope  = function_exists( 'get_field' ) ? (string) get_field( 'scope', $rid ) : '';
-						$r_finish = function_exists( 'get_field' ) ? (string) get_field( 'finish', $rid ) : '';
+						$r_title  = $r_data['title'] ?? get_the_title( $rid );
+						$r_neigh  = $r_data['neighborhood'] ?? '';
+						$r_scope  = $r_data['scope'] ?? '';
+						$r_finish = $r_data['finish'] ?? '';
+						$r_alt    = $r_data['hero_alt'] ?? '';
+						$r_image  = $r_data['hero_image'] ?? '';
+						if ( '' === $r_image ) {
+							$r_image = has_post_thumbnail( $rid )
+								? (string) get_the_post_thumbnail_url( $rid, 'large' )
+								: ( function_exists( 'showtime_image' ) ? showtime_image( $r_slot, 1024 ) : '' );
+						}
 						$gr       = $gradients[ $i++ % count( $gradients ) ];
 					?>
 						<a class="proj-card" href="<?php echo esc_url( get_permalink( $rid ) ); ?>">
 							<div class="proj-card__media" style="background:<?php echo esc_attr( $gr ); ?>">
 								<?php if ( $r_image ) : ?>
-									<img class="proj-card__media-img" src="<?php echo esc_url( $r_image ); ?>" alt="" loading="lazy" decoding="async">
+									<img class="proj-card__media-img" src="<?php echo esc_url( $r_image ); ?>" alt="<?php echo esc_attr( $r_alt ); ?>" loading="lazy" decoding="async">
 								<?php endif; ?>
 								<?php if ( $r_neigh ) : ?>
 									<span class="proj-card__neighborhood"><?php echo esc_html( $r_neigh ); ?></span>
 								<?php endif; ?>
 							</div>
 							<div class="proj-card__body">
-								<h3 class="proj-card__title"><?php echo esc_html( get_the_title( $rid ) ); ?></h3>
+								<h3 class="proj-card__title"><?php echo esc_html( $r_title ); ?></h3>
 								<dl class="proj-card__meta">
 									<?php if ( $r_scope ) : ?><div><dt><?php esc_html_e( 'Scope', 'showtime-pools' ); ?></dt><dd><?php echo esc_html( $r_scope ); ?></dd></div><?php endif; ?>
 									<?php if ( $r_finish ) : ?><div><dt><?php esc_html_e( 'Finish', 'showtime-pools' ); ?></dt><dd><?php echo esc_html( $r_finish ); ?></dd></div><?php endif; ?>
