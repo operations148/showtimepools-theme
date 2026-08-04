@@ -357,13 +357,13 @@ add_filter(
 	'wp_sitemaps_posts_query_args',
 	function ( array $args, string $post_type ): array {
 		if ( 'project' === $post_type ) {
-			// Legacy seed rows with no managed registry entry (see
-			// showtime_unmanaged_project_ids()) carry unverified prices,
-			// durations and testimonials from the one-time seeder. Never
-			// deleted or unpublished — only kept off the sitemap until they
-			// either gain a registry entry or are edited by the owner.
-			if ( function_exists( 'showtime_unmanaged_project_ids' ) ) {
-				$ids = showtime_unmanaged_project_ids();
+			// Two populations are kept out of the sitemap, never deleted or
+			// unpublished (see showtime_project_ids_hidden_from_discovery()):
+			// legacy seed rows carrying unverified seeder-era prices and
+			// testimonials, and "Coming soon" placeholders that have no
+			// project content yet. Both return once they carry verified data.
+			if ( function_exists( 'showtime_project_ids_hidden_from_discovery' ) ) {
+				$ids = showtime_project_ids_hidden_from_discovery();
 				if ( $ids ) {
 					$args['post__not_in'] = array_merge( (array) ( $args['post__not_in'] ?? array() ), $ids );
 				}

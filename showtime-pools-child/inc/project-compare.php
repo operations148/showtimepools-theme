@@ -219,6 +219,12 @@ function showtime_project_data( $post_id_or_slug ): ?array {
 		'slug'               => $slug,
 		'post_id'            => $pid,
 		'managed'            => true,
+		// Placeholder ("Coming soon") projects are code-managed and DO render on
+		// the archive, but they assert no verified work: no scope, finish,
+		// timeline, investment, date, testimonial or photograph. Consumers use
+		// these two keys to keep them out of discovery surfaces and schema.
+		'is_coming_soon'     => ! empty( $entry['is_coming_soon'] ),
+		'status'             => '' !== $str( 'status' ) ? $str( 'status' ) : 'verified',
 		'title'              => $str( 'title' ),
 		'excerpt'            => $str( 'excerpt' ),
 		'neighborhood'       => $str( 'neighborhood' ),
@@ -292,6 +298,153 @@ function showtime_unmanaged_project_ids(): array {
 }
 
 /**
+ * Whether a resolved project entry is an unverified "Coming soon" placeholder.
+ *
+ * @param array<string,mixed>|null $p Result of showtime_project_data().
+ */
+function showtime_project_is_placeholder( ?array $p ): bool {
+	return is_array( $p ) && ! empty( $p['is_coming_soon'] );
+}
+
+/**
+ * Post IDs of published `project` posts backing a placeholder registry entry.
+ *
+ * These are code-managed and intentionally visible on the /projects/ archive,
+ * but they must never be advertised as completed work — see
+ * showtime_project_ids_hidden_from_discovery().
+ *
+ * @return int[]
+ */
+function showtime_placeholder_project_ids(): array {
+	static $ids = null;
+	if ( null !== $ids ) {
+		return $ids;
+	}
+	$ids = array();
+	if ( ! post_type_exists( 'project' ) ) {
+		return $ids;
+	}
+	$posts = get_posts(
+		array(
+			'post_type'      => 'project',
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+			'no_found_rows'  => true,
+			'fields'         => 'ids',
+		)
+	);
+	foreach ( $posts as $post_id ) {
+		if ( showtime_project_is_placeholder( showtime_project_data( (int) $post_id ) ) ) {
+			$ids[] = (int) $post_id;
+		}
+	}
+	return $ids;
+}
+
+/**
+ * Every project post that must stay out of discovery surfaces: the XML and HTML
+ * sitemaps, the homepage strip, related-project cards, and search indexing.
+ *
+ * Two distinct populations, same treatment, different reasons:
+ *   - Legacy seed rows (showtime_unmanaged_project_ids()) carry unverified
+ *     seeder-era prices and testimonials.
+ *   - Placeholders (showtime_placeholder_project_ids()) carry no project
+ *     content at all yet.
+ *
+ * Neither is ever deleted, unpublished or renamed. The /projects/ archive is
+ * deliberately NOT driven off this list: it renders placeholders (so the
+ * service-area footprint is visible) while still excluding legacy rows.
+ *
+ * @return int[]
+ */
+function showtime_project_ids_hidden_from_discovery(): array {
+	return array_values(
+		array_unique(
+			array_merge(
+				showtime_unmanaged_project_ids(),
+				showtime_placeholder_project_ids()
+			)
+		)
+	);
+}
+
+/**
+ * Permalink for a managed project, whether or not its routing post exists yet.
+ *
+ * Falls back to the canonical /projects/{slug}/ path so the archive can render
+ * a complete, linked card set before `wp showtime projects sync --apply` has
+ * created the routing shells.
+ */
+function showtime_project_permalink( string $slug ): string {
+	$post = get_page_by_path( $slug, OBJECT, 'project' );
+	if ( $post instanceof \WP_Post ) {
+		$url = get_permalink( $post );
+		if ( is_string( $url ) && '' !== $url ) {
+			return $url;
+		}
+	}
+	return home_url( '/projects/' . $slug . '/' );
+}
+
+/**
+ * Every managed project as a render-ready card, in registry order.
+ *
+ * THE source for the archive grid. Reads the registry through the shared
+ * resolver, so a card can never disagree with its own project page. Legacy
+ * unmanaged rows are excluded by construction (the resolver returns null).
+ *
+ * @return array<int,array<string,mixed>>
+ */
+function showtime_project_cards(): array {
+	if ( ! class_exists( 'Showtime\Projects' ) ) {
+		return array();
+	}
+	$cards = array();
+	foreach ( \Showtime\Projects::all() as $entry ) {
+		if ( empty( $entry['managed'] ) ) {
+			continue;
+		}
+		$d = showtime_project_data( (string) $entry['slug'] );
+		if ( null === $d ) {
+			continue;
+		}
+		$cards[] = array(
+			'slug'           => $d['slug'],
+			'title'          => $d['title'],
+			'href'           => showtime_project_permalink( $d['slug'] ),
+			'neighborhood'   => $d['neighborhood'],
+			'scope'          => $d['scope'],
+			'finish'         => $d['finish'],
+			'duration'       => $d['timeline'],
+			'value'          => $d['investment'],
+			'image'          => $d['hero_image'],
+			'image_alt'      => $d['hero_alt'],
+			'is_coming_soon' => ! empty( $d['is_coming_soon'] ),
+			'status'         => $d['status'],
+		);
+	}
+	return $cards;
+}
+
+/**
+ * The archive card set grouped into slides of six.
+ *
+ * 14 managed projects chunk to 6 / 6 / 2. The grouping is derived, not
+ * hardcoded: adding or promoting a project re-chunks automatically, and a
+ * trailing partial slide is centred by the template rather than padded with
+ * empty cards.
+ *
+ * @return array<int,array<int,array<string,mixed>>>
+ */
+function showtime_project_slides( int $per_slide = 6 ): array {
+	$cards = showtime_project_cards();
+	if ( empty( $cards ) ) {
+		return array();
+	}
+	return array_chunk( $cards, max( 1, $per_slide ) );
+}
+
+/**
  * Fixed display labels for the meta strip.
  *
  * Legacy `duration_label` / `value_label` are retired as headings. An estimate
@@ -343,6 +496,13 @@ function showtime_project_compare_asset_url( string $slug, string $side = 'after
 function showtime_project_compare( int $pid ): ?array {
 	$p = showtime_project_data( $pid );
 	if ( null === $p ) {
+		return null;
+	}
+
+	// A placeholder has no photographs yet. The image checks below would already
+	// fail closed on the blank paths; this makes the intent explicit so the
+	// comparison section can never appear before BOTH real images are supplied.
+	if ( showtime_project_is_placeholder( $p ) ) {
 		return null;
 	}
 

@@ -93,11 +93,12 @@ function showtime_seo_should_noindex(): bool {
 			return (bool) apply_filters( 'showtime/seo/noindex', true );
 		}
 	}
-	if ( is_singular( 'project' ) && function_exists( 'showtime_unmanaged_project_ids' ) ) {
-		// Legacy seed rows with no managed registry entry: unverified
-		// seeder-era prices/durations/testimonials, so the direct URL stays
-		// live (never deleted or unpublished) but out of the index.
-		if ( in_array( get_queried_object_id(), showtime_unmanaged_project_ids(), true ) ) {
+	if ( is_singular( 'project' ) && function_exists( 'showtime_project_ids_hidden_from_discovery' ) ) {
+		// Legacy seed rows (unverified seeder-era prices/testimonials) and
+		// "Coming soon" placeholders (no project content yet). Both keep a live,
+		// self-canonical URL — never deleted or unpublished — but stay out of
+		// the index until they carry verified content.
+		if ( in_array( get_queried_object_id(), showtime_project_ids_hidden_from_discovery(), true ) ) {
 			return (bool) apply_filters( 'showtime/seo/noindex', true );
 		}
 	}

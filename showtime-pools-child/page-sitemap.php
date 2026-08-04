@@ -94,9 +94,9 @@ if ( class_exists( '\\Showtime\\Areas' ) ) {
 // ── Projects (CPT) + Articles (posts): published only ───────────────────────
 $project_links = array();
 if ( post_type_exists( 'project' ) ) {
-	// Unmanaged/legacy posts (showtime_unmanaged_project_ids()) are excluded
-	// for the same reason as the XML sitemap: unverified seeder-era copy.
-	$unmanaged_project_ids = function_exists( 'showtime_unmanaged_project_ids' ) ? showtime_unmanaged_project_ids() : array();
+	// Legacy seed rows and "Coming soon" placeholders are excluded for the same
+	// reason as the XML sitemap: neither carries verified project content.
+	$unmanaged_project_ids = function_exists( 'showtime_project_ids_hidden_from_discovery' ) ? showtime_project_ids_hidden_from_discovery() : array();
 	foreach ( get_posts( array( 'post_type' => 'project', 'post_status' => 'publish', 'posts_per_page' => -1, 'orderby' => 'menu_order date', 'order' => 'ASC', 'no_found_rows' => true, 'post__not_in' => $unmanaged_project_ids ) ) as $pr ) {
 		$project_links[] = array( 'title' => get_the_title( $pr->ID ), 'url' => get_permalink( $pr->ID ) );
 	}

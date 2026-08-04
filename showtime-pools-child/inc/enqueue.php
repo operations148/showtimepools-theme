@@ -149,6 +149,14 @@ add_action(
 			wp_enqueue_style( 'showtime-interior', $uri, array( 'showtime-components' ), $ver );
 		}
 
+		// Projects archive slider — pure progressive enhancement. Every card is
+		// server-rendered; this only paginates them. Without it the CSS leaves
+		// all slides stacked as a readable grid.
+		if ( is_page_template( 'page-projects.php' ) ) {
+			[ $uri, $ver ] = showtime_asset( 'assets/js/project-slider.js' );
+			wp_enqueue_script( 'showtime-project-slider', $uri, array(), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );
+		}
+
 		// Before/After slider — single projects only. Pure progressive
 		// enhancement: the pair renders side by side without it.
 		if ( is_singular( 'project' ) ) {

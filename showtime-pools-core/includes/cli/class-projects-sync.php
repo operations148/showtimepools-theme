@@ -155,6 +155,17 @@ final class ProjectsSync {
 			}
 			$titles[ $title ] = true;
 
+			// Placeholders are validated on the OPPOSITE contract: a verified
+			// project must prove its claims, a placeholder must make none. The
+			// checks below (images, alt text, service/area links, investment
+			// range, comparison copy) all describe verified work, so requiring
+			// them here would force exactly the fabrication this registry
+			// exists to prevent.
+			if ( ! empty( $e['is_coming_soon'] ) ) {
+				$this->validate_placeholder( $e, $tag );
+				continue;
+			}
+
 			// Internal link targets must resolve in the registries.
 			$svc = trim( (string) preg_replace( '#^/services/#', '', (string) ( $e['service_url'] ?? '' ) ), '/' );
 			if ( '' === $svc || ! class_exists( 'Showtime\Services' ) || null === \Showtime\Services::get( $svc ) ) {
@@ -232,6 +243,66 @@ final class ProjectsSync {
 				if ( false !== strpos( $blob, $needle ) ) {
 					$this->errors[] = "$tag: contains review/rating data ($needle).";
 				}
+			}
+		}
+	}
+
+	/**
+	 * Validate a "Coming soon" placeholder.
+	 *
+	 * The contract is inverted: instead of proving its claims, a placeholder
+	 * must prove it makes none. Every field that would describe real work has to
+	 * be either blank or the literal "Coming soon" — a stray price, date,
+	 * testimonial or photograph here would publish an unverified claim under a
+	 * heading that looks verified.
+	 *
+	 * @param array<string,mixed> $e   Registry entry.
+	 * @param string              $tag Slug for error messages.
+	 */
+	private function validate_placeholder( array $e, string $tag ): void {
+		if ( 'coming_soon' !== (string) ( $e['status'] ?? '' ) ) {
+			$this->errors[] = "$tag: placeholder must set status => 'coming_soon'.";
+		}
+
+		if ( '' === trim( (string) ( $e['neighborhood'] ?? '' ) ) ) {
+			$this->errors[] = "$tag: neighborhood is required.";
+		}
+		if ( '' === trim( (string) ( $e['excerpt'] ?? '' ) ) ) {
+			$this->errors[] = "$tag: excerpt is required.";
+		}
+
+		// Must carry NO imagery — a placeholder may never borrow another
+		// project's photograph.
+		foreach ( array( 'hero_image', 'before_image', 'after_image', 'og_image' ) as $key ) {
+			if ( '' !== trim( (string) ( $e[ $key ] ?? '' ) ) ) {
+				$this->errors[] = "$tag: $key must be blank on a placeholder (got \"{$e[ $key ]}\").";
+			}
+		}
+
+		// Must carry NO completion date, testimonial, or comparison copy.
+		foreach ( array( 'completion_date', 'client_quote', 'comparison_heading', 'comparison_summary', 'before_condition', 'work_completed', 'completed_result' ) as $key ) {
+			if ( '' !== trim( (string) ( $e[ $key ] ?? '' ) ) ) {
+				$this->errors[] = "$tag: $key must be blank until the project is verified.";
+			}
+		}
+
+		// The four displayed fact fields must read exactly "Coming soon" — never
+		// a number, a range, a currency figure or an empty label.
+		foreach ( array( 'scope', 'finish', 'timeline', 'investment' ) as $key ) {
+			$val = trim( (string) ( $e[ $key ] ?? '' ) );
+			if ( 'Coming soon' !== $val ) {
+				$this->errors[] = "$tag: $key must be exactly \"Coming soon\" on a placeholder (got \"$val\").";
+			}
+		}
+
+		// Belt and braces: no currency or duration figure anywhere in the entry.
+		$blob = strtolower( (string) wp_json_encode( $e ) );
+		if ( preg_match( '/\$\s?[\d,]/', $blob ) ) {
+			$this->errors[] = "$tag: placeholder must not contain a price figure.";
+		}
+		foreach ( array( 'aggregaterating', 'ratingvalue', 'reviewcount', '"review"' ) as $needle ) {
+			if ( false !== strpos( $blob, $needle ) ) {
+				$this->errors[] = "$tag: contains review/rating data ($needle).";
 			}
 		}
 	}

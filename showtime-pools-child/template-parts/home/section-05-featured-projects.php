@@ -12,9 +12,10 @@ defined( 'ABSPATH' ) || exit;
 $projects = array();
 
 if ( post_type_exists( 'project' ) ) {
-	// Unmanaged/legacy posts are excluded at the query level — never featured
-	// here regardless of menu_order. See showtime_unmanaged_project_ids().
-	$unmanaged = function_exists( 'showtime_unmanaged_project_ids' ) ? showtime_unmanaged_project_ids() : array();
+	// The homepage strip features VERIFIED work only. Legacy seed rows and
+	// "Coming soon" placeholders are excluded at the query level, regardless of
+	// menu_order. See showtime_project_ids_hidden_from_discovery().
+	$unmanaged = function_exists( 'showtime_project_ids_hidden_from_discovery' ) ? showtime_project_ids_hidden_from_discovery() : array();
 	$q = new WP_Query(
 		array(
 			'post_type'      => 'project',

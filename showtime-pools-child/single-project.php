@@ -85,7 +85,16 @@ while ( have_posts() ) :
 	}
 
 	// JSON-LD: CreativeWork + BreadcrumbList. No Article schema.
-	$creative_work = array(
+	//
+	// A "Coming soon" placeholder emits NO CreativeWork at all. The type asserts
+	// that a created work exists, and its required-in-practice fields (image,
+	// about, locationCreated, datePublished) would describe work that has not
+	// been verified. The BreadcrumbList below is safe — it only describes site
+	// structure — so placeholders still get navigational schema and nothing more.
+	$is_placeholder = function_exists( 'showtime_project_is_placeholder' )
+		&& showtime_project_is_placeholder( $proj );
+
+	$creative_work = $is_placeholder ? null : array(
 		'@context'        => 'https://schema.org',
 		'@type'           => 'CreativeWork',
 		'@id'             => get_permalink( $pid ) . '#project',
@@ -119,12 +128,12 @@ while ( have_posts() ) :
 	);
 
 	// Related projects — prefer same neighborhood, else 3 most recent siblings.
-	// Unmanaged/legacy posts are excluded from both queries below: their
-	// `neighborhood` post meta (written once by the one-time seeder) can still
-	// match a managed project's own leftover meta row, which would otherwise
-	// surface unverified copy as a "related project". See
-	// showtime_unmanaged_project_ids().
-	$unmanaged = function_exists( 'showtime_unmanaged_project_ids' ) ? showtime_unmanaged_project_ids() : array();
+	// Related cards present COMPLETED work, so two populations are excluded from
+	// both queries below: legacy seed rows (their seeder-written `neighborhood`
+	// meta can still match a managed project's own leftover meta row, which
+	// would surface unverified copy as a "related project") and "Coming soon"
+	// placeholders. See showtime_project_ids_hidden_from_discovery().
+	$unmanaged = function_exists( 'showtime_project_ids_hidden_from_discovery' ) ? showtime_project_ids_hidden_from_discovery() : array();
 	$related   = array();
 	$base_args = array(
 		'post_type'      => 'project',
@@ -206,6 +215,18 @@ while ( have_posts() ) :
 			</dl>
 		</div>
 	</section>
+	<?php endif; ?>
+
+	<?php if ( $is_placeholder ) : ?>
+		<section class="int-section proj-single__notice" data-reveal>
+			<div class="container">
+				<p class="proj-notice">
+					<strong><?php esc_html_e( 'Coming soon.', 'showtime-pools' ); ?></strong>
+					<?php esc_html_e( 'This project is not documented yet. Verified details and photographs are being prepared, and nothing on this page describes completed work.', 'showtime-pools' ); ?>
+					<a href="<?php echo esc_url( home_url( '/projects/' ) ); ?>"><?php esc_html_e( 'See our completed projects', 'showtime-pools' ); ?></a>
+				</p>
+			</div>
+		</section>
 	<?php endif; ?>
 
 	<?php $content = apply_filters( 'the_content', get_the_content() );
@@ -433,7 +454,9 @@ while ( have_posts() ) :
 
 </main>
 
+<?php if ( null !== $creative_work ) : ?>
 <script type="application/ld+json"><?php echo wp_json_encode( $creative_work, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ); ?></script>
+<?php endif; ?>
 <script type="application/ld+json"><?php echo wp_json_encode( $breadcrumb, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ); ?></script>
 <?php endwhile;
 

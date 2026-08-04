@@ -1101,3 +1101,192 @@
 }
 .sitemap-group__list a:hover,
 .sitemap-group__list a:focus-visible { color: var(--c-brand-600); text-decoration: underline; }
+
+/* ─── Projects archive slider ─────────────────────────────────────────
+   Progressive enhancement. The BASE styles (no `.is-enhanced`) stack every
+   slide vertically as a normal readable grid, so with JavaScript disabled or
+   failed all 14 project cards remain visible, linked and keyboard reachable —
+   nothing is hidden behind display:none or an inert <template>.
+   slider.js adds `.is-enhanced`, which turns the track into a horizontal
+   transform strip and reveals the nav. */
+
+.proj-slider { position: relative; }
+
+/* Slides stacked (no-JS / pre-enhancement). */
+.proj-slider__slide + .proj-slider__slide { margin-top: var(--sp-6); }
+
+/* Enhanced: one slide visible at a time. `overflow: hidden` on the viewport is
+   what prevents the off-screen slides from creating horizontal page overflow. */
+.proj-slider.is-enhanced .proj-slider__viewport {
+	/* Clips the off-screen slides exactly at the container edge. Deliberately
+	   NO negative-margin/padding "breathing room" trick: that widens the
+	   viewport and lets a sliver of the adjacent slide show through. Focus
+	   rings are kept inset instead (see below), so nothing is clipped. */
+	overflow: hidden;
+}
+/* Inset focus ring: renders inside the card box, so the outermost card in a
+   slide can never have its outline sheared off by the viewport clip. */
+.proj-slider.is-enhanced .proj-card:focus-visible {
+	outline: 3px solid var(--c-focus-ring);
+	outline-offset: -3px;
+}
+.proj-slider.is-enhanced .proj-slider__track {
+	display: flex;
+	align-items: flex-start;
+	will-change: transform;
+	transition: transform 460ms var(--ease-out);
+}
+.proj-slider.is-enhanced .proj-slider__slide {
+	flex: 0 0 100%;
+	min-width: 0; /* lets the inner grid shrink instead of forcing overflow */
+	margin-top: 0;
+}
+
+/* Cards on a trailing partial slide keep the EXACT width they have in the
+   3-column grid: one column = (100% - 2 gaps) / 3. Two of those plus one gap
+   are then centred as a group, so the left and right space is equal. No
+   invisible filler elements are used. */
+.proj-slider__grid--center {
+	grid-template-columns: repeat(2, calc((100% - (2 * var(--sp-6))) / 3));
+	justify-content: center;
+}
+
+/* Nav: hidden until enhanced (the `hidden` attribute is removed by JS). */
+.proj-slider__nav {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--sp-4);
+	margin-top: var(--sp-6);
+}
+.proj-slider__nav[hidden] { display: none; }
+
+.proj-slider__arrow {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;   /* 44px minimum touch target */
+	height: 44px;
+	border-radius: 50%;
+	border: 1px solid var(--c-border-strong);
+	background: var(--c-bg-pure);
+	color: var(--c-ink-900);
+	cursor: pointer;
+	transition: transform var(--dur-base) var(--ease-out),
+	            background-color var(--dur-base) var(--ease-out),
+	            border-color var(--dur-base) var(--ease-out);
+}
+.proj-slider__arrow:hover:not(:disabled) {
+	background: var(--c-aqua-50);
+	border-color: var(--c-aqua-300);
+	transform: translateY(-1px);
+}
+.proj-slider__arrow:active:not(:disabled) { transform: translateY(0) scale(0.96); }
+.proj-slider__arrow:focus-visible {
+	outline: 3px solid var(--c-focus-ring);
+	outline-offset: 2px;
+}
+.proj-slider__arrow:disabled { opacity: 0.35; cursor: default; }
+
+.proj-slider__dots { display: flex; align-items: center; gap: var(--sp-2); }
+.proj-slider__dot {
+	/* 44x44 hit area, small visible dot — pointer target without a huge dot. */
+	position: relative;
+	width: 44px; height: 44px;
+	padding: 0;
+	border: 0;
+	background: none;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+.proj-slider__dot-hit {
+	display: block;
+	width: 9px; height: 9px;
+	border-radius: 50%;
+	background: var(--c-border-strong);
+	transition: background-color var(--dur-base) var(--ease-out),
+	            transform var(--dur-base) var(--ease-out);
+}
+.proj-slider__dot:hover .proj-slider__dot-hit { background: var(--c-aqua-300); }
+.proj-slider__dot.is-active .proj-slider__dot-hit {
+	background: var(--c-aqua-500);
+	transform: scale(1.5);
+}
+.proj-slider__dot:focus-visible {
+	outline: 3px solid var(--c-focus-ring);
+	outline-offset: -6px;
+	border-radius: 50%;
+}
+
+/* ─── "Coming soon" placeholder card ──────────────────────────────────
+   CSS-only branded art in the Showtime light-blue system. No stock photo, no
+   external image, and never another project's photograph. */
+.proj-card__media--placeholder {
+	display: grid;
+	place-items: center;
+	background:
+		radial-gradient(120% 120% at 50% 0%, var(--c-aqua-100) 0%, var(--c-aqua-50) 55%, #FFFFFF 100%) !important;
+	border-bottom: 1px solid var(--c-border);
+}
+.proj-card__media--placeholder::after { display: none; } /* drop the photo scrim */
+
+.proj-card__coming {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--sp-2);
+	color: var(--c-aqua-700);
+	text-align: center;
+	padding: var(--sp-4);
+}
+.proj-card__coming-icon { opacity: 0.75; }
+.proj-card__coming-text {
+	font-size: var(--fs-xs);
+	font-weight: var(--fw-medium);
+	letter-spacing: var(--ls-wide);
+	text-transform: uppercase;
+}
+
+/* "Coming Soon" chip, mirroring the neighborhood pill on the opposite corner. */
+.proj-card__status {
+	position: absolute;
+	right: var(--sp-4);
+	bottom: var(--sp-4);
+	background: var(--c-aqua-500);
+	color: #FFFFFF;
+	font-size: var(--fs-xs);
+	font-weight: var(--fw-semibold);
+	letter-spacing: var(--ls-wide);
+	text-transform: uppercase;
+	padding: 4px 10px;
+	border-radius: 999px;
+}
+
+/* Placeholder cards are not yet real work — keep the photo zoom off. */
+.proj-card--placeholder:hover .proj-card__media-img { transform: none; }
+
+/* Respect reduced motion: no slide animation, no hover lift. */
+@media (prefers-reduced-motion: reduce) {
+	.proj-slider.is-enhanced .proj-slider__track { transition: none; }
+	.proj-slider__arrow,
+	.proj-slider__dot-hit { transition: none; }
+	.proj-slider__arrow:hover:not(:disabled) { transform: none; }
+}
+
+/* Tablet: the grid already collapses to 2 columns at <=1000px, so a partial
+   slide centres against a 2-column track instead. */
+@media (max-width: 1000px) {
+	.proj-slider__grid--center {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		justify-content: stretch;
+	}
+}
+
+/* Mobile: cards stack one per row inside each slide; slide grouping is
+   unchanged, so the same 6 / 6 / 2 groups simply become taller. */
+@media (max-width: 640px) {
+	.proj-slider__grid--center { grid-template-columns: 1fr; }
+	.proj-slider__nav { gap: var(--sp-2); }
+}
