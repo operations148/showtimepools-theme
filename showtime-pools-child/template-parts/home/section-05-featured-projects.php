@@ -9,122 +9,41 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// The homepage strip stays CURATED and is derived from the code registry, not
+// from WP_Query.
+//
+// This is deliberate. Routing shells created by `wp showtime projects sync`
+// carry menu_order 0, while the six original verified projects carry
+// menu_order 1-6. A query ordered by menu_order would therefore promote the
+// newest routing posts to the front of the homepage the moment they became
+// indexable, silently replacing the featured set. Reading the registry in file
+// order makes the selection deterministic and independent of the database.
+//
+// Only fully verified projects are eligible here: anything still flagged
+// `is_coming_soon` is skipped, so a placeholder can never be featured.
 $projects = array();
 
-if ( post_type_exists( 'project' ) ) {
-	// The homepage strip features VERIFIED work only. Legacy seed rows and
-	// "Coming soon" placeholders are excluded at the query level, regardless of
-	// menu_order. See showtime_project_ids_hidden_from_discovery().
-	$unmanaged = function_exists( 'showtime_project_ids_hidden_from_discovery' ) ? showtime_project_ids_hidden_from_discovery() : array();
-	$q = new WP_Query(
-		array(
-			'post_type'      => 'project',
-			'posts_per_page' => 3,
-			'orderby'        => 'menu_order',
-			'order'          => 'ASC',
-			'no_found_rows'  => true,
-			'post__not_in'   => $unmanaged,
-		)
+if ( function_exists( 'showtime_project_cards' ) ) {
+	$grads = array(
+		'linear-gradient(135deg,#1F2F3A 0%,#5C8A9E 100%)',
+		'linear-gradient(135deg,#314A58 0%,#88A4B6 100%)',
+		'linear-gradient(135deg,#3F6072 0%,#6E94A9 100%)',
 	);
-	if ( $q->have_posts() ) {
-		while ( $q->have_posts() ) {
-			$q->the_post();
-			$pid = get_the_ID();
-
-			// Same resolver as the archive, single page and related cards.
-			$d = function_exists( 'showtime_project_data' ) ? showtime_project_data( $pid ) : null;
-
-			if ( null !== $d ) {
-				$projects[] = array(
-					'title'        => $d['title'],
-					'href'         => get_permalink(),
-					'neighborhood' => $d['neighborhood'],
-					'scope'        => $d['scope'],
-					'finish'       => $d['finish'],
-					'duration'     => $d['timeline'],
-					'value'        => $d['investment'],
-					'image'        => $d['hero_image'],
-					'image_alt'    => $d['hero_alt'],
-					'gradient'     => 'linear-gradient(135deg,#1F2F3A 0%,#5C8A9E 100%)',
-				);
-				continue;
-			}
-
-			// Legacy/unmanaged project — historical post-meta path.
-			$slot      = apply_filters( 'showtime/image/slot_for_project', 'project_1', (int) $pid );
-			$image     = '';
-			$image_alt = '';
-			if ( has_post_thumbnail( $pid ) ) {
-				$image     = (string) get_the_post_thumbnail_url( $pid, 'large' );
-				$image_alt = (string) get_post_meta( get_post_thumbnail_id( $pid ), '_wp_attachment_image_alt', true );
-			} elseif ( function_exists( 'showtime_image' ) ) {
-				$image = showtime_image( $slot, 1024 );
-			}
-			$pm = static function ( string $k, int $id ): string {
-				$v = function_exists( 'get_field' ) ? get_field( $k, $id ) : null;
-				if ( null === $v || '' === $v ) { $v = get_post_meta( $id, $k, true ); }
-				return (string) $v;
-			};
-			$nb = $pm( 'neighborhood', (int) $pid );
-			if ( '' === $image_alt ) {
-				$image_alt = '' !== $nb
-					? sprintf( /* translators: %s: neighborhood */ __( 'Completed pool project in %s', 'showtime-pools' ), $nb )
-					: get_the_title();
-			}
-			$projects[] = array(
-				'title'        => get_the_title(),
-				'href'         => get_permalink(),
-				'neighborhood' => $nb,
-				'scope'        => $pm( 'scope', (int) $pid ),
-				'finish'       => $pm( 'finish', (int) $pid ),
-				'duration'     => '',
-				'value'        => '',
-				'image'        => $image,
-				'image_alt'    => $image_alt,
-				'gradient'     => 'linear-gradient(135deg,#1F2F3A 0%,#5C8A9E 100%)',
-			);
+	$n = 0;
+	foreach ( showtime_project_cards() as $card ) {
+		if ( $n >= 3 ) {
+			break;
 		}
-		wp_reset_postdata();
+		if ( ! empty( $card['is_coming_soon'] ) ) {
+			continue;
+		}
+		$card['gradient'] = $grads[ $n % 3 ];
+		$projects[]       = $card;
+		$n++;
 	}
 }
 
-if ( empty( $projects ) ) {
-	// Registry-driven fallback when no routing posts exist yet. The previous
-	// hardcoded array published retired claims (PebbleTec, "$28k", "$142k",
-	// "New build · Hardscape · Fire features") whenever the query came back
-	// empty — removed entirely.
-	if ( class_exists( 'Showtime\Projects' ) && function_exists( 'showtime_project_data' ) ) {
-		$grads = array(
-			'linear-gradient(135deg,#1F2F3A 0%,#5C8A9E 100%)',
-			'linear-gradient(135deg,#314A58 0%,#88A4B6 100%)',
-			'linear-gradient(135deg,#3F6072 0%,#6E94A9 100%)',
-		);
-		$n = 0;
-		foreach ( \Showtime\Projects::all() as $entry ) {
-			if ( empty( $entry['managed'] ) || $n >= 3 ) {
-				continue;
-			}
-			$d = showtime_project_data( (string) $entry['slug'] );
-			if ( null === $d ) {
-				continue;
-			}
-			$projects[] = array(
-				'title'        => $d['title'],
-				'neighborhood' => $d['neighborhood'],
-				'scope'        => $d['scope'],
-				'duration'     => $d['timeline'],
-				'value'        => $d['investment'],
-				'finish'       => $d['finish'],
-				'image'        => $d['hero_image'],
-				'image_alt'    => $d['hero_alt'],
-				'gradient'     => $grads[ $n % 3 ],
-				'href'         => home_url( '/projects/' . $d['slug'] . '/' ),
-			);
-			$n++;
-		}
-	}
-	$projects = apply_filters( 'showtime/home_featured_projects', $projects );
-}
+$projects = apply_filters( 'showtime/home_featured_projects', $projects );
 ?>
 <section class="featured-projects" data-reveal>
 	<div class="container">

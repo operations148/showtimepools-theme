@@ -499,13 +499,11 @@ function showtime_project_compare( int $pid ): ?array {
 		return null;
 	}
 
-	// A placeholder has no photographs yet. The image checks below would already
-	// fail closed on the blank paths; this makes the intent explicit so the
-	// comparison section can never appear before BOTH real images are supplied.
-	if ( showtime_project_is_placeholder( $p ) ) {
-		return null;
-	}
-
+	// A "Coming soon" project may now carry its own verified photographs. The
+	// comparison is allowed only when BOTH resolve to readable images with real
+	// pixel dimensions — the checks below do exactly that and return null
+	// otherwise, so a project with one image, no images, or an unreadable file
+	// still renders no comparison at all.
 	$before = showtime_project_compare_image( $p['before_image'], $p['before_alt'] );
 	$after  = showtime_project_compare_image( $p['after_image'], $p['after_alt'] );
 

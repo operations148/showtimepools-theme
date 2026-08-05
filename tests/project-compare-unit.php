@@ -650,12 +650,13 @@ foreach ( array( 'archive (/projects/)' => $archive_body, 'homepage' => $home_bo
 		: bad( "16. $where: leaked " . ( $body ? implode( ', ', $leaked ) : '(empty response)' ) );
 }
 
-/* 17. Archive shows exactly the six managed cards — never more, never fewer,
- * regardless of menu_order. */
-$card_count = $count( $archive_body, '#class="proj-card"#' );
-6 === $card_count
-	? ok( '17. archive renders exactly 6 project cards' )
-	: bad( "17. archive renders $card_count project cards (expected 6)" );
+/* 17. The archive now carries all 14 managed projects — 13 published plus the
+ * one remaining Coming Soon placeholder — grouped 6 / 6 / 2 by the slider.
+ * Counted on the opening tag so the placeholder modifier class is included. */
+$card_count = $count( $archive_body, '#<(?:a|article) class="proj-card#' );
+14 === $card_count
+	? ok( '17. archive renders exactly 14 project cards' )
+	: bad( "17. archive renders $card_count project cards (expected 14)" );
 
 /* 18. Related cards on a managed single never surface a legacy post. Real
  * collision, not hypothetical: the managed Sherman Oaks post still carries

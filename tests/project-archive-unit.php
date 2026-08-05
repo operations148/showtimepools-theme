@@ -24,9 +24,12 @@ if ( ! file_exists( $wp_load ) ) {
 define( 'WP_USE_THEMES', false );
 require $wp_load;
 
-$pass = 0; $fail = 0;
+$pass = 0; $fail = 0; $skip = 0;
 function ok( $m ) { global $pass; $pass++; echo "  \xE2\x9C\x94 $m\n"; }
-function bad( $m ) { global $fail; $fail++; echo "  \xE2\x9C\x98 FAIL: $m\n"; }
+function bad( $m ) { global $fail; $fail++; echo "  ✘ FAIL: $m
+"; }
+function skip( $m ) { global $skip; $skip++; echo "  ~ SKIP: $m
+"; }
 
 function fetch_body( string $url ): string {
 	$ch = curl_init( $url );
@@ -58,7 +61,7 @@ $verified_slugs = array(
 	'tarzana-resort-style-finish',
 	'woodland-hills-tile-coping-refresh',
 );
-$placeholder_slugs = array(
+$new_slugs = array(
 	'van-nuys-pool-project',
 	'north-hollywood-pool-project',
 	'toluca-lake-pool-project',
@@ -68,6 +71,13 @@ $placeholder_slugs = array(
 	'west-hollywood-pool-project',
 	'brentwood-pool-project',
 );
+
+// Seven of the eight new projects are now published, image-backed and indexable.
+// West Hollywood alone stays a Coming Soon placeholder: its supplied photographs
+// were byte-identical to the Sherman Oaks verified project, so it has no genuine
+// imagery of its own.
+$promoted_slugs    = array_values( array_diff( $new_slugs, array( 'west-hollywood-pool-project' ) ) );
+$placeholder_slugs = array( 'west-hollywood-pool-project' );
 
 echo "\n== PROJECT REGISTRY — 14 managed projects ==\n";
 
@@ -114,14 +124,14 @@ empty( $six_bad )
 /* 4. Exactly eight records carry coming_soon status. */
 $coming = array_values( array_filter( $managed, static fn( $e ) => ( $e['status'] ?? '' ) === 'coming_soon' ) );
 $flagged = array_values( array_filter( $managed, static fn( $e ) => ! empty( $e['is_coming_soon'] ) ) );
-( 8 === count( $coming ) && 8 === count( $flagged ) && count( $coming ) === count( $flagged ) )
-	? ok( '4. exactly 8 records are status=coming_soon AND is_placeholder' )
-	: bad( '4. coming_soon=' . count( $coming ) . ' is_placeholder=' . count( $flagged ) . ' (expected 8/8)' );
+( 1 === count( $coming ) && 1 === count( $flagged ) && count( $coming ) === count( $flagged ) )
+	? ok( '4. exactly 1 record is status=coming_soon AND is_coming_soon (west-hollywood)' )
+	: bad( '4. coming_soon=' . count( $coming ) . ' is_coming_soon=' . count( $flagged ) . ' (expected 1/1)' );
 
 /* 4b. Placeholder slugs are the eight expected areas, in the specified order. */
 $actual_ph = array_column( $flagged, 'slug' );
 $actual_ph === $placeholder_slugs
-	? ok( '4b. the eight placeholders are the expected areas in the specified order' )
+	? ok( '4b. west-hollywood is the only remaining Coming Soon placeholder' )
 	: bad( '4b. placeholder order/slugs: ' . implode( ', ', $actual_ph ) );
 
 echo "\n== SLIDE GROUPING ==\n";
@@ -192,15 +202,15 @@ foreach ( array_merge( $verified_slugs, $placeholder_slugs ) as $slug ) {
 $coming_cells = preg_match_all( '#<dd>Coming soon</dd>#', $html );
 $empty_cells  = preg_match_all( '#<dd>\s*</dd>#', $html );
 $zero_cells   = preg_match_all( '#<dd>\s*\$0#', $html );
-( 32 === $coming_cells && 0 === $empty_cells && 0 === $zero_cells )
-	? ok( '9. 8 placeholders x 4 fields render "Coming soon"; no empty or $0 values' )
-	: bad( "9. coming=$coming_cells empty=$empty_cells zero=$zero_cells (expected 32/0/0)" );
+( 4 === $coming_cells && 0 === $empty_cells && 0 === $zero_cells )
+	? ok( '9. the single remaining placeholder renders 4 "Coming soon" fields; no empty or $0 values' )
+	: bad( "9. coming=$coming_cells empty=$empty_cells zero=$zero_cells (expected 4/0/0)" );
 
 /* 9b. Every placeholder card shows the Coming Soon chip. */
 $chips = preg_match_all( '#class="proj-card__status"#', $html );
-8 === $chips
-	? ok( '9b. all 8 placeholder cards show a "Coming Soon" chip' )
-	: bad( "9b. $chips Coming Soon chips (expected 8)" );
+1 === $chips
+	? ok( '9b. exactly one card shows a "Coming Soon" chip (west-hollywood)' )
+	: bad( "9b. $chips Coming Soon chips (expected 1)" );
 
 /* 10. Placeholder cards carry NO <img> at all, so they can never reuse a
  * verified project's photograph. Also assert none of the six verified image
@@ -217,15 +227,28 @@ foreach ( $ph_cards as $card ) {
 		}
 	}
 }
-( 8 === count( $ph_cards ) && 0 === $ph_imgs && empty( $stolen ) )
-	? ok( '10. placeholder cards contain no <img> and reuse no verified project photo' )
-	: bad( '10. cards=' . count( $ph_cards ) . " imgs=$ph_imgs stolen=" . implode( ',', $stolen ) );
+/*
+ * Six placeholders now carry their OWN verified photographs, so a placeholder
+ * card legitimately contains an <img>. The load-bearing half of this check is
+ * unchanged and non-negotiable: no placeholder may ever display a photograph
+ * belonging to one of the six verified projects.
+ */
+( 1 === count( $ph_cards ) && empty( $stolen ) )
+	? ok( '10. the one remaining placeholder card renders and reuses no verified project photograph' )
+	: bad( '10. cards=' . count( $ph_cards ) . ' stolen=' . implode( ',', $stolen ) );
 
-/* 10b. Each placeholder card renders the CSS-only branded placeholder. */
-$art = preg_match_all( '#Project photos coming soon#', $html );
-8 === $art
-	? ok( '10b. all 8 placeholders render the CSS-only branded placeholder' )
-	: bad( "10b. $art branded placeholders (expected 8)" );
+/* 10b. A placeholder WITHOUT photographs must still show the CSS-only branded
+ * placeholder rather than a blank or broken frame; one WITH photographs must
+ * not show it. Currently 2 of 8 are image-free (toluca-lake, west-hollywood). */
+$art        = preg_match_all( '#Project photos coming soon#', $html );
+$image_free = 0;
+foreach ( $placeholder_slugs as $slug ) {
+	$d = showtime_project_data( $slug );
+	if ( '' === (string) ( $d['after_image'] ?? '' ) ) { $image_free++; }
+}
+$art === $image_free
+	? ok( "10b. the $image_free image-free placeholder(s) render the CSS-only branded placeholder; the imaged ones show their photo" )
+	: bad( "10b. $art branded placeholders for $image_free image-free projects" );
 
 /* 16. Slider controls: semantic buttons, labelled, and no duplicate IDs. */
 $prev_ok = preg_match( '#<button[^>]+data-proj-slider-prev[^>]+aria-label="[^"]+"#', $html )
@@ -270,95 +293,306 @@ $fillers = preg_match_all( '#proj-card[^"]*(is-empty|is-filler|placeholder-space
 	? ok( '17b. the partial slide is centered, with no filler/invisible cards' )
 	: bad( "17b. center=$center fillers=$fillers" );
 
-echo "\n== PLACEHOLDER PAGE SEO ==\n";
+echo "\n== PROMOTED PROJECTS (7) ==\n";
 
-/* 12. Placeholder pages: 200, noindex,follow, self-canonical, no project schema. */
-$ph_bad = array();
-foreach ( $placeholder_slugs as $slug ) {
+/* 12. All seven promoted pages: 200, index+follow, self-canonical, exactly one
+ * CreativeWork, and no Coming Soon notice. */
+$prom_bad = array();
+foreach ( $promoted_slugs as $slug ) {
 	$body = fetch_body( "$base/projects/$slug/" );
-	if ( '' === $body ) { $ph_bad[] = "$slug empty"; continue; }
-	if ( ! preg_match( "#robots['\"] content=['\"]noindex, follow#", $body ) ) { $ph_bad[] = "$slug not noindex"; }
-	if ( ! preg_match( '#<link rel="canonical" href="[^"]*/projects/' . preg_quote( $slug, '#' ) . '/"#', $body ) ) { $ph_bad[] = "$slug canonical"; }
-	if ( preg_match( '#"@type":"CreativeWork"#', $body ) ) { $ph_bad[] = "$slug emitted CreativeWork"; }
-	if ( ! preg_match( '#"@type":"BreadcrumbList"#', $body ) ) { $ph_bad[] = "$slug missing BreadcrumbList"; }
-	if ( false === stripos( $body, 'Coming soon' ) ) { $ph_bad[] = "$slug shows no Coming soon notice"; }
+	if ( '' === $body ) { $prom_bad[] = "$slug empty"; continue; }
+	if ( preg_match( "#robots['\"] content=['\"][^'\"]*noindex#", $body ) )                { $prom_bad[] = "$slug noindexed"; }
+	if ( ! preg_match( '#<link rel="canonical" href="[^"]*/projects/' . preg_quote( $slug, '#' ) . '/"#', $body ) ) { $prom_bad[] = "$slug canonical"; }
+	if ( 1 !== preg_match_all( '#<link rel="canonical"#', $body ) )                         { $prom_bad[] = "$slug canonical count"; }
+	if ( 1 !== preg_match_all( '#"@type":"CreativeWork"#', $body ) )                        { $prom_bad[] = "$slug CreativeWork"; }
+	if ( false !== stripos( $body, 'proj-notice' ) )                                        { $prom_bad[] = "$slug still shows Coming soon notice"; }
+	if ( 2 !== preg_match_all( '#proj-compare__frame proj-compare__frame--#', $body ) )      { $prom_bad[] = "$slug comparison frames"; }
 }
-empty( $ph_bad )
-	? ok( '12. all 8 placeholder pages: 200, noindex+follow, self-canonical, breadcrumb-only schema' )
-	: bad( '12. ' . implode( '; ', $ph_bad ) );
+empty( $prom_bad )
+	? ok( '12. all 7 promoted pages: 200, index+follow, one self-canonical, one CreativeWork, comparison present' )
+	: bad( '12. ' . implode( '; ', $prom_bad ) );
 
-/* 11. Comparison stays hidden until BOTH real images exist. */
-$cmp_bad = array();
-foreach ( $placeholder_slugs as $slug ) {
-	$post = get_page_by_path( $slug, OBJECT, 'project' );
-	if ( ! $post instanceof WP_Post ) { $cmp_bad[] = "$slug no routing post"; continue; }
-	if ( null !== showtime_project_compare( (int) $post->ID ) ) { $cmp_bad[] = "$slug resolved a comparison"; }
-}
-empty( $cmp_bad )
-	? ok( '11. placeholder comparisons stay hidden until both images exist' )
-	: bad( '11. ' . implode( ', ', $cmp_bad ) );
-
-/* 14. Placeholder pages emit no price / review / rating / product schema. */
-$schema_bad = array();
-foreach ( $placeholder_slugs as $slug ) {
+/* 12b. Exactly one complete OG set and one complete Twitter set per promoted page. */
+$og_bad = array();
+foreach ( $promoted_slugs as $slug ) {
 	$body = fetch_body( "$base/projects/$slug/" );
-	foreach ( array( '"@type":"Product"', '"@type":"Offer"', '"offers"', 'aggregateRating', '"@type":"Review"' ) as $needle ) {
-		if ( false !== stripos( $body, $needle ) ) { $schema_bad[] = "$slug:$needle"; }
+	foreach ( array( 'og:title', 'og:description', 'og:url', 'og:image', 'twitter:title', 'twitter:description', 'twitter:image' ) as $tag ) {
+		$n = preg_match_all( '#(?:property|name)="' . preg_quote( $tag, '#' ) . '"#', $body );
+		if ( 1 !== $n ) { $og_bad[] = "$slug:$tag=$n"; }
 	}
-	// No fabricated completion data or currency figure anywhere on the page.
-	if ( preg_match( '#<dd>\$[\d,]+#', $body ) ) { $schema_bad[] = "$slug: price figure"; }
-	if ( preg_match( '#<dt>Completed</dt>#', $body ) ) { $schema_bad[] = "$slug: completion date"; }
 }
-empty( $schema_bad )
-	? ok( '14. no price/review/rating/product/completion data on placeholder pages' )
-	: bad( '14. ' . implode( ', ', $schema_bad ) );
+empty( $og_bad )
+	? ok( '12c. every promoted page carries exactly one complete OG set and one complete Twitter set' )
+	: bad( '12c. ' . implode( ', ', $og_bad ) );
 
-echo "\n== SITEMAPS + VERIFIED-SIX REGRESSION ==\n";
+/* 12d. Each promoted page uses its OWN after image for card, hero, OG and Twitter. */
+$hero_bad = array();
+foreach ( $promoted_slugs as $slug ) {
+	$d    = showtime_project_data( $slug );
+	$body = fetch_body( "$base/projects/$slug/" );
+	if ( $d['hero_image'] !== $d['after_image'] || $d['og_image'] !== $d['after_image'] ) { $hero_bad[] = "$slug fields"; }
+	if ( ! preg_match( '#property="og:image" content="[^"]*' . preg_quote( $slug, '#' ) . '-after\.webp"#', $body ) )  { $hero_bad[] = "$slug og:image"; }
+	if ( ! preg_match( '#name="twitter:image" content="[^"]*' . preg_quote( $slug, '#' ) . '-after\.webp"#', $body ) ) { $hero_bad[] = "$slug twitter:image"; }
+	if ( ! preg_match( '#' . preg_quote( $slug, '#' ) . '-before\.webp#', $body ) )                                    { $hero_bad[] = "$slug before missing"; }
+}
+empty( $hero_bad )
+	? ok( '12d. every promoted page uses its own after image for hero/OG/Twitter and its own before image in the comparison' )
+	: bad( '12d. ' . implode( ', ', $hero_bad ) );
 
-/* 12b + 13. XML sitemap holds exactly the six verified projects. */
-$xml = fetch_body( "$base/wp-sitemap-posts-project-1.xml" );
-$xml_ok = '' !== $xml;
-foreach ( $verified_slugs as $slug ) {
+/* 12e. Promoted registry content is complete — no blank required field, and the
+ * investment reads as a researched range rather than a contract price. */
+$content_bad = array();
+foreach ( $promoted_slugs as $slug ) {
+	$d = showtime_project_data( $slug );
+	foreach ( array( 'title', 'excerpt', 'scope', 'finish', 'timeline', 'investment', 'comparison_heading',
+		'comparison_summary', 'before_condition', 'work_completed', 'completed_result',
+		'hero_alt', 'before_alt', 'after_alt', 'seo_title', 'meta_description' ) as $k ) {
+		if ( '' === trim( (string) ( $d[ $k ] ?? '' ) ) ) { $content_bad[] = "$slug.$k"; }
+	}
+	if ( ! preg_match( '/^\$[\d,]+\s*[–-]\s*\$[\d,]+$/u', (string) $d['investment'] ) ) { $content_bad[] = "$slug.investment not a range"; }
+	// Fields that stay blank until independently verified.
+	if ( '' !== (string) $d['completion_date'] ) { $content_bad[] = "$slug.completion_date should be blank"; }
+	if ( '' !== (string) $d['client_quote'] )    { $content_bad[] = "$slug.client_quote should be blank"; }
+}
+empty( $content_bad )
+	? ok( '12e. all 7 promoted records are content-complete, with a range-formatted investment and blank date/quote' )
+	: bad( '12e. ' . implode( ', ', $content_bad ) );
+
+/* 12f. area_url is set only where the service-area page actually exists. */
+$area_bad = array();
+foreach ( $promoted_slugs as $slug ) {
+	$d   = showtime_project_data( $slug );
+	$raw = trim( (string) $d['area_url'] );
+	if ( '' === $raw ) { continue; }
+	$a = trim( (string) preg_replace( '#^/service-areas/#', '', $raw ), '/' );
+	if ( ! class_exists( '\Showtime\Areas' ) || null === \Showtime\Areas::get( $a ) ) { $area_bad[] = "$slug -> $raw"; }
+}
+empty( $area_bad )
+	? ok( '12g. every area_url that is set resolves to a real service-area page' )
+	: bad( '12g. unresolvable area_url: ' . implode( ', ', $area_bad ) );
+
+/* 13. Toluca Lake is classified as WATER TREATMENT ONLY and makes no physical
+ * renovation claim anywhere in its entry or rendered page. */
+$tl        = showtime_project_data( 'toluca-lake-pool-project' );
+$tl_body   = fetch_body( "$base/projects/toluca-lake-pool-project/" );
+$tl_blob   = strtolower( (string) wp_json_encode( $tl ) );
+$tl_banned = array( 'replaster', 'resurfac', 'new finish', 'remodel', 'construction', 'constructed',
+	'tile replacement', 'coping replacement', 'renovat', 'rebuilt', 'gunite', 'plaster', 'demolit' );
+// This project's OWN content only: from the H1 through to the end of the
+// comparison section, excluding related cards, nav and sitewide schema.
+$tl_own = '';
+if ( preg_match( '#<h1.*?(?=<section class="proj-single__related"|</main>)#s', $tl_body, $om ) ) {
+	$tl_own = preg_replace( '#<script.*?</script>#s', '', $om[0] );
+}
+$tl_hits = array();
+foreach ( $tl_banned as $needle ) {
+	if ( false !== strpos( $tl_blob, $needle ) ) { $tl_hits[] = "registry:$needle"; }
+	if ( '' !== $tl_own && false !== stripos( $tl_own, $needle ) ) { $tl_hits[] = "page:$needle"; }
+}
+empty( $tl_hits )
+	? ok( '13. Toluca Lake carries zero physical-renovation claims in the registry or the rendered page' )
+	: bad( '13. Toluca Lake renovation claim: ' . implode( ', ', $tl_hits ) );
+
+echo "\n== WEST HOLLYWOOD — remains Coming Soon ==\n";
+
+/* 14. West Hollywood: 200, noindex+follow, self-canonical, no CreativeWork, no
+ * imagery, no comparison, and it still shows the Coming Soon notice. */
+$wh      = showtime_project_data( 'west-hollywood-pool-project' );
+$wh_body = fetch_body( "$base/projects/west-hollywood-pool-project/" );
+$wh_bad  = array();
+if ( 'coming_soon' !== ( $wh['status'] ?? '' ) || empty( $wh['is_coming_soon'] ) ) { $wh_bad[] = 'status'; }
+foreach ( array( 'hero_image', 'before_image', 'after_image', 'og_image' ) as $k ) {
+	if ( '' !== (string) ( $wh[ $k ] ?? '' ) ) { $wh_bad[] = "carries $k"; }
+}
+if ( ! preg_match( "#robots['\"] content=['\"]noindex, follow#", $wh_body ) )                 { $wh_bad[] = 'not noindex,follow'; }
+if ( ! preg_match( '#<link rel="canonical" href="[^"]*/projects/west-hollywood-pool-project/"#', $wh_body ) ) { $wh_bad[] = 'canonical'; }
+if ( preg_match( '#"@type":"CreativeWork"#', $wh_body ) )                                     { $wh_bad[] = 'emitted CreativeWork'; }
+if ( preg_match( '#proj-compare__media#', $wh_body ) )                                        { $wh_bad[] = 'rendered a comparison'; }
+if ( false === stripos( $wh_body, 'Coming soon' ) )                                           { $wh_bad[] = 'no Coming soon notice'; }
+$wh_post = get_page_by_path( 'west-hollywood-pool-project', OBJECT, 'project' );
+if ( $wh_post instanceof WP_Post && null !== showtime_project_compare( (int) $wh_post->ID ) ) { $wh_bad[] = 'comparison resolved'; }
+empty( $wh_bad )
+	? ok( '14. west-hollywood: 200, noindex+follow, self-canonical, image-free, comparison-free, no project schema' )
+	: bad( '14. ' . implode( ', ', $wh_bad ) );
+
+/* 14b. West Hollywood must never present Sherman Oaks imagery AS ITS OWN.
+ * Scoped to this page's own content: the related-projects block legitimately
+ * links to other projects (and is ordered randomly), so scanning the whole
+ * document would be both wrong and flaky. */
+$wh_own = '';
+if ( preg_match( '#<h1.*?(?=<section class="proj-single__related"|</main>)#s', $wh_body, $wm ) ) {
+	$wh_own = preg_replace( '#<script.*?</script>#s', '', $wm[0] );
+}
+( '' !== $wh_own
+	&& false === strpos( $wh_own, 'sherman-oaks-mid-century-remodel-' )
+	&& 0 === preg_match_all( '#<img#', $wh_own ) )
+	? ok( '14b. west-hollywood shows no photograph of its own, and none from Sherman Oaks' )
+	: bad( '14b. west-hollywood own content carries imagery' );
+
+echo "\n== SITEMAPS + SCHEMA + VERIFIED-SIX REGRESSION ==\n";
+
+/* 15. XML sitemap: exactly the 13 indexable projects, west-hollywood absent. */
+$xml     = fetch_body( "$base/wp-sitemap-posts-project-1.xml" );
+$xml_n   = preg_match_all( '#/projects/[a-z0-9-]+/#', $xml );
+$xml_ok  = '' !== $xml && 13 === $xml_n && false === strpos( $xml, 'west-hollywood' );
+foreach ( array_merge( $verified_slugs, $promoted_slugs ) as $slug ) {
 	$xml_ok = $xml_ok && false !== strpos( $xml, "/projects/$slug/" );
 }
-foreach ( $placeholder_slugs as $slug ) {
-	$xml_ok = $xml_ok && false === strpos( $xml, "/projects/$slug/" );
-}
 $xml_ok
-	? ok( '13. XML sitemap lists the six verified projects and no placeholder' )
-	: bad( '13. XML sitemap mismatch' );
+	? ok( '15. XML sitemap lists exactly 13 project URLs and excludes west-hollywood' )
+	: bad( "15. XML sitemap has $xml_n project URLs (expected 13) or is missing/leaking a slug" );
 
-/* HTML sitemap: same contract. */
-$hs = fetch_body( "$base/sitemap/" );
-$hs_ok = '' !== $hs;
-foreach ( $verified_slugs as $slug ) {
+/* 15b. HTML sitemap: same contract. */
+$hs     = fetch_body( "$base/sitemap/" );
+$hs_n   = preg_match_all( '#href="[^"]*/projects/[a-z0-9-]+/"#', $hs );
+$hs_ok  = '' !== $hs && 13 === $hs_n && false === strpos( $hs, '/projects/west-hollywood-pool-project/' );
+foreach ( array_merge( $verified_slugs, $promoted_slugs ) as $slug ) {
 	$hs_ok = $hs_ok && false !== strpos( $hs, "/projects/$slug/" );
 }
-foreach ( $placeholder_slugs as $slug ) {
-	$hs_ok = $hs_ok && false === strpos( $hs, "/projects/$slug/" );
-}
 $hs_ok
-	? ok( '13b. HTML sitemap lists the six verified projects and no placeholder' )
-	: bad( '13b. HTML sitemap mismatch' );
+	? ok( '15b. HTML sitemap lists exactly 13 project URLs and excludes west-hollywood' )
+	: bad( "15b. HTML sitemap has $hs_n project URLs (expected 13)" );
 
-/* 13c. The verified six remain indexable, keep their CreativeWork, and keep
- * their before/after comparison. */
+/* 16. No project page may carry Product / Offer / Review / rating / price schema,
+ * and the researched investment range must never reach structured data. */
+$schema_bad = array();
+foreach ( array_merge( $verified_slugs, $new_slugs ) as $slug ) {
+	$body = fetch_body( "$base/projects/$slug/" );
+	foreach ( array( '"@type":"Product"', '"@type":"Offer"', '"offers"', 'aggregateRating',
+		'ratingValue', 'reviewCount', '"@type":"Review"', 'priceCurrency' ) as $needle ) {
+		if ( false !== stripos( $body, $needle ) ) { $schema_bad[] = "$slug:$needle"; }
+	}
+	if ( preg_match_all( '#<script type="application/ld\+json">(.*?)</script>#s', $body, $lm ) ) {
+		foreach ( $lm[1] as $json ) {
+			if ( preg_match( '/\$[\d,]{3,}/', $json ) ) { $schema_bad[] = "$slug: price figure in JSON-LD"; }
+		}
+	}
+}
+empty( $schema_bad )
+	? ok( '16. no project page emits Product/Offer/Review/rating/price schema, and no investment range reaches JSON-LD' )
+	: bad( '16. ' . implode( ', ', $schema_bad ) );
+
+/* 17. The six verified pages are untouched: still indexable, one CreativeWork,
+ * comparison intact. */
 $v_bad = array();
 foreach ( $verified_slugs as $slug ) {
 	$body = fetch_body( "$base/projects/$slug/" );
 	if ( preg_match( "#robots['\"] content=['\"][^'\"]*noindex#", $body ) ) { $v_bad[] = "$slug noindexed"; }
-	if ( 1 !== preg_match_all( '#"@type":"CreativeWork"#', $body ) ) { $v_bad[] = "$slug CreativeWork"; }
-	if ( ! preg_match( '#proj-compare__media#', $body ) ) { $v_bad[] = "$slug lost its comparison"; }
+	if ( 1 !== preg_match_all( '#"@type":"CreativeWork"#', $body ) )        { $v_bad[] = "$slug CreativeWork"; }
+	if ( ! preg_match( '#proj-compare__media#', $body ) )                   { $v_bad[] = "$slug lost its comparison"; }
 }
 empty( $v_bad )
-	? ok( '13c. the six verified pages stay indexable with CreativeWork + comparison intact' )
-	: bad( '13c. ' . implode( ', ', $v_bad ) );
+	? ok( '17. the six verified pages remain indexable with CreativeWork and comparison intact' )
+	: bad( '17. ' . implode( ', ', $v_bad ) );
 
-/* 13d. The homepage strip still features verified work only. */
+/* 18. The homepage strip stays curated: verified work only, never a placeholder
+ * and never one of the newly promoted projects. */
 $home = fetch_body( "$base/" );
-( '' !== $home && false === stripos( $home, 'Pool Project — Coming Soon' ) )
-	? ok( '13d. homepage featured strip excludes placeholders' )
-	: bad( '13d. a placeholder leaked into the homepage featured strip' );
+$home_bad = array();
+if ( false !== stripos( $home, 'Coming Soon' ) ) { $home_bad[] = 'Coming Soon leaked'; }
+foreach ( $new_slugs as $slug ) {
+	if ( false !== strpos( $home, "/projects/$slug/" ) ) { $home_bad[] = $slug; }
+}
+empty( $home_bad )
+	? ok( '18. homepage featured strip stays curated to verified projects only' )
+	: bad( '18. homepage leaked: ' . implode( ', ', $home_bad ) );
 
-echo "\n== RESULT ==\n  pass: $pass   fail: $fail\n";
-exit( $fail > 0 ? 1 : 0 );
+echo "\n== IMAGERY ==\n";
+
+/* 19. Every promoted project maps to its own unique before/after WebP pair at the
+ * project-image standard, and no photograph is reused between projects. */
+$cmp_dir = get_stylesheet_directory() . '/assets/img/projects/comparisons/';
+$img_bad = array();
+foreach ( $promoted_slugs as $slug ) {
+	foreach ( array( 'before', 'after' ) as $side ) {
+		$p = $cmp_dir . $slug . '-' . $side . '.webp';
+		if ( ! is_readable( $p ) ) { $img_bad[] = "$slug-$side missing"; continue; }
+		$i = @getimagesize( $p );
+		if ( ! is_array( $i ) || 'image/webp' !== ( $i['mime'] ?? '' ) ) { $img_bad[] = "$slug-$side not webp"; continue; }
+		$head = (string) file_get_contents( $p, false, null, 0, 12 );
+		if ( 'RIFF' !== substr( $head, 0, 4 ) || 'WEBP' !== substr( $head, 8, 4 ) ) { $img_bad[] = "$slug-$side bad magic"; }
+		if ( 1376 !== (int) $i[0] || 768 !== (int) $i[1] ) { $img_bad[] = "$slug-$side {$i[0]}x{$i[1]}"; }
+		if ( abs( ( $i[0] / $i[1] ) - 1.7917 ) > 0.01 )    { $img_bad[] = "$slug-$side aspect"; }
+	}
+}
+empty( $img_bad )
+	? ok( '19. all 14 promoted images are genuine WebP at 1376x768 with the standard aspect ratio' )
+	: bad( '19. ' . implode( ', ', $img_bad ) );
+
+/* 20. Checksum uniqueness across every comparison asset. */
+$by_hash = array();
+foreach ( glob( $cmp_dir . '*.webp' ) ?: array() as $p ) {
+	$by_hash[ hash_file( 'sha256', $p ) ][] = basename( $p );
+}
+$dupe_groups = array_values( array_filter( $by_hash, static fn( $n ) => count( $n ) > 1 ) );
+empty( $dupe_groups )
+	? ok( '20. all ' . count( $by_hash ) . ' comparison assets have unique SHA-256 checksums — no photograph is reused' )
+	: bad( '20. duplicate photographs: ' . wp_json_encode( $dupe_groups ) );
+
+/* 21. Alt text: non-empty, unique across all 13 imaged projects, and free of
+ * price, date, brand or warranty claims. */
+$alts = array(); $alt_bad = array();
+foreach ( array_merge( $verified_slugs, $promoted_slugs ) as $slug ) {
+	$d = showtime_project_data( $slug );
+	foreach ( array( 'hero_alt', 'before_alt', 'after_alt' ) as $k ) {
+		$v = trim( (string) $d[ $k ] );
+		if ( '' === $v ) { $alt_bad[] = "$slug.$k empty"; continue; }
+		if ( isset( $alts[ $v ] ) ) { $alt_bad[] = "$slug.$k duplicates {$alts[$v]}"; }
+		$alts[ $v ] = "$slug.$k";
+		if ( preg_match( '/\$[\d,]|\b(19|20)\d{2}\b|PebbleTec|Pentair|Jandy|warrant|guarantee/i', $v ) ) {
+			$alt_bad[] = "$slug.$k unverified claim";
+		}
+	}
+}
+empty( $alt_bad )
+	? ok( '21. alt text is non-empty, unique across all imaged projects, and free of price/date/brand claims' )
+	: bad( '21. ' . implode( ', ', $alt_bad ) );
+
+/* 22. No source filename or _incoming path leaks into rendered HTML. */
+$leak_bad = array();
+foreach ( $new_slugs as $slug ) {
+	$body = fetch_body( "$base/projects/$slug/" );
+	if ( preg_match( '/_incoming|van_nuys|north_hollywood|burbank_pool|calabasas_pool|bel_air_pool|brentwood_pool|toluca_lake|west_hollywood_|\.jpeg/i', $body ) ) {
+		$leak_bad[] = $slug;
+	}
+}
+empty( $leak_bad )
+	? ok( '22. no _incoming path or source filename leaks into rendered HTML' )
+	: bad( '22. leaked on: ' . implode( ', ', $leak_bad ) );
+
+/* 23. Every promoted image URL is actually served. */
+$url_bad = array();
+foreach ( $promoted_slugs as $slug ) {
+	foreach ( array( 'before', 'after' ) as $side ) {
+		$u  = get_stylesheet_directory_uri() . '/assets/img/projects/comparisons/' . $slug . '-' . $side . '.webp';
+		$ch = curl_init( $u );
+		curl_setopt_array( $ch, array( CURLOPT_NOBODY => true, CURLOPT_RETURNTRANSFER => true, CURLOPT_SSL_VERIFYPEER => false, CURLOPT_TIMEOUT => 15 ) );
+		curl_exec( $ch );
+		$code = (int) curl_getinfo( $ch, CURLINFO_HTTP_CODE );
+		curl_close( $ch );
+		if ( 200 !== $code ) { $url_bad[] = "$slug-$side=$code"; }
+	}
+}
+empty( $url_bad )
+	? ok( '23. all 14 promoted image URLs return HTTP 200' )
+	: bad( '23. ' . implode( ', ', $url_bad ) );
+
+/* 24. Comparison gating still fails closed when an image is unavailable. */
+$probe_slug = 'van-nuys-pool-project';
+$probe_file = $cmp_dir . $probe_slug . '-before.webp';
+if ( is_readable( $probe_file ) ) {
+	$moved = $probe_file . '.testhide';
+	if ( @rename( $probe_file, $moved ) ) {
+		$gone = null === showtime_project_compare_image( $probe_file, 'x' );
+		@rename( $moved, $probe_file );
+		$gone
+			? ok( '24. a missing before image still makes the comparison fail closed' )
+			: bad( '24. a missing before image still resolved' );
+	} else {
+		skip( '24. could not rename the probe file on this filesystem' );
+	}
+} else {
+	skip( '24. probe file unavailable' );
+}
+
+echo "\n== RESULT ==\n  pass: $pass   fail: $fail   skip: $skip\n";

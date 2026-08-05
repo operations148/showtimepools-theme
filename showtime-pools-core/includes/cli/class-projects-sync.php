@@ -171,9 +171,17 @@ final class ProjectsSync {
 			if ( '' === $svc || ! class_exists( 'Showtime\Services' ) || null === \Showtime\Services::get( $svc ) ) {
 				$this->errors[] = "$tag: service_url does not resolve to a registered service.";
 			}
-			$area = trim( (string) preg_replace( '#^/service-areas/#', '', (string) ( $e['area_url'] ?? '' ) ), '/' );
-			if ( '' === $area || ! class_exists( 'Showtime\Areas' ) || null === \Showtime\Areas::get( $area ) ) {
-				$this->errors[] = "$tag: area_url does not resolve to a registered service area.";
+			// area_url is OPTIONAL: several neighbourhoods we photograph work in
+			// have no service-area page of their own (Van Nuys, North Hollywood,
+			// Toluca Lake, Burbank, Brentwood). Linking a project to an area page
+			// that does not exist would be worse than not linking it at all. When
+			// one IS supplied it still has to resolve.
+			$area_raw = trim( (string) ( $e['area_url'] ?? '' ) );
+			if ( '' !== $area_raw ) {
+				$area = trim( (string) preg_replace( '#^/service-areas/#', '', $area_raw ), '/' );
+				if ( '' === $area || ! class_exists( 'Showtime\Areas' ) || null === \Showtime\Areas::get( $area ) ) {
+					$this->errors[] = "$tag: area_url does not resolve to a registered service area.";
+				}
 			}
 
 			// Images: present, readable, landscape, distinct, never reused.
@@ -271,16 +279,45 @@ final class ProjectsSync {
 			$this->errors[] = "$tag: excerpt is required.";
 		}
 
-		// Must carry NO imagery — a placeholder may never borrow another
-		// project's photograph.
+		// Imagery is OPTIONAL on a placeholder, but all-or-nothing: a project
+		// either has its own verified before/after pair or no photographs at
+		// all. A half-populated pair would render a one-sided "comparison".
+		$imgs = array();
 		foreach ( array( 'hero_image', 'before_image', 'after_image', 'og_image' ) as $key ) {
-			if ( '' !== trim( (string) ( $e[ $key ] ?? '' ) ) ) {
-				$this->errors[] = "$tag: $key must be blank on a placeholder (got \"{$e[ $key ]}\").";
+			$imgs[ $key ] = trim( (string) ( $e[ $key ] ?? '' ) );
+		}
+		$filled = array_filter( $imgs );
+		if ( ! empty( $filled ) && count( $filled ) !== count( $imgs ) ) {
+			$this->errors[] = "$tag: imagery must be all four fields or none (got " . count( $filled ) . '/4).';
+		}
+		if ( ! empty( $filled ) ) {
+			// The card and hero must show this project's OWN after image, and
+			// before/after must be two different photographs.
+			if ( $imgs['hero_image'] !== $imgs['after_image'] || $imgs['og_image'] !== $imgs['after_image'] ) {
+				$this->errors[] = "$tag: hero_image and og_image must both be the project's after image.";
+			}
+			if ( $imgs['before_image'] === $imgs['after_image'] ) {
+				$this->errors[] = "$tag: before and after are the same file.";
+			}
+			// Comparison copy becomes REQUIRED once photographs exist, so a
+			// rendered comparison is never unlabelled.
+			foreach ( array( 'comparison_heading', 'comparison_summary', 'before_alt', 'after_alt', 'hero_alt' ) as $key ) {
+				if ( '' === trim( (string) ( $e[ $key ] ?? '' ) ) ) {
+					$this->errors[] = "$tag: $key is required once photographs are supplied.";
+				}
+			}
+		} else {
+			// No photographs yet -> no comparison copy either.
+			foreach ( array( 'comparison_heading', 'comparison_summary', 'before_condition', 'work_completed', 'completed_result' ) as $key ) {
+				if ( '' !== trim( (string) ( $e[ $key ] ?? '' ) ) ) {
+					$this->errors[] = "$tag: $key must be blank until photographs are supplied.";
+				}
 			}
 		}
 
-		// Must carry NO completion date, testimonial, or comparison copy.
-		foreach ( array( 'completion_date', 'client_quote', 'comparison_heading', 'comparison_summary', 'before_condition', 'work_completed', 'completed_result' ) as $key ) {
+		// A completion date or testimonial is a claim about finished work and
+		// stays forbidden while the project is still "Coming soon", images or not.
+		foreach ( array( 'completion_date', 'client_quote' ) as $key ) {
 			if ( '' !== trim( (string) ( $e[ $key ] ?? '' ) ) ) {
 				$this->errors[] = "$tag: $key must be blank until the project is verified.";
 			}
