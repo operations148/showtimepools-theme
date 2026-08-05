@@ -71,6 +71,11 @@ final class Plugin {
 		// Integrations.
 		( new Integrations\FluentForms() )->register();
 
+		// GoHighLevel Live Chat widget (official LeadConnector embed). Prints
+		// once in wp_footer on public HTML pages only; the class is the single
+		// source of truth for the widget ID and both loader URLs.
+		( new Integrations\ChatWidget() )->register();
+
 		// CPTs (Phase C — Project CPT for /projects/ + future Mapbox).
 		// The CPT registers `public => true`, so WP core's /wp-sitemap.xml
 		// includes it automatically; no sitemap filter needed.

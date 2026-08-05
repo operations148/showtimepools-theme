@@ -416,7 +416,15 @@ body.is-drawer-open .site-header__menu-toggle .site-header__menu-toggle-bar {
 .mobile-drawer {
 	position: fixed;
 	inset: 0;
-	z-index: 9999;
+	/* Above the GoHighLevel chat widget.
+	   The widget is a full-page floating element that stacks itself at
+	   z-index 99999999, which put its launcher and greeting bubble on top of
+	   this full-screen menu and covered the "Projects" / "Service Areas" links
+	   on mobile. This drawer is a modal takeover, so it has to win.
+	   Only OUR element is restyled here — nothing inside the third-party
+	   widget's shadow DOM or iframe is touched, so the vendor stays free to
+	   change its internals. See tests/chat-widget-unit.php. */
+	z-index: 100000000;
 	background: var(--c-ink);
 	color: var(--c-text-invert);
 	opacity: 0;
