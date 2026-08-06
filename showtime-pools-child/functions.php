@@ -167,6 +167,7 @@ define('SHOWTIME_CHILD_URI', get_stylesheet_directory_uri());
 
 require_once SHOWTIME_CHILD_DIR . '/inc/code-first.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/theme-setup.php';
+require_once SHOWTIME_CHILD_DIR . '/inc/hero-header.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/enqueue.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/blocksy-overrides.php';
 require_once SHOWTIME_CHILD_DIR . '/inc/security.php';

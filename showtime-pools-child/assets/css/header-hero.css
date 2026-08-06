@@ -1,0 +1,85 @@
+/*
+ * header-hero.css — the hero side of the sitewide overlaid-header treatment.
+ *
+ * header.css owns the bar itself (fixed positioning, the two visual states,
+ * the --nav-* colour set). This sheet owns the geometry the rest of the page
+ * needs so that bar can float on top of it, and nothing else. It is loaded
+ * last so it can adjust the hero rules that live in home / interior / service
+ * / contact / blog CSS without any of them knowing about the header.
+ *
+ * ONE idea, applied uniformly: the header used to occupy --stp-header-h of
+ * document flow. It no longer does. Every box that sat directly beneath it
+ * absorbs exactly that height back — a hero grows by it, a page without a
+ * hero reserves it as body padding. Because the amount given up and the
+ * amount taken back are the same custom property, nothing on any page moves
+ * a single pixel: the fold, the section boundaries and the footer all land
+ * where they did before.
+ *
+ * There is no per-URL or per-template selector anywhere in this file. The
+ * only switch is body.has-hero, set once server-side in inc/hero-header.php
+ * from the template WordPress actually resolved.
+ */
+
+/* ─── Pages WITHOUT a hero ──────────────────────────────────────────
+   Nothing full-bleed to sit on, so the header keeps its frosted state
+   (header.css base) and the document simply starts below it. */
+body.no-hero {
+	padding-top: var(--stp-header-h);
+}
+
+/* ─── Pages WITH a hero ─────────────────────────────────────────────
+   Every genuine hero in the theme. Each one already declares its own
+   --stp-hero-pad-top next to its own padding rule, so the family rhythm
+   stays owned by the family; all this does is add the header height on top
+   so hero content can never slide under the logo, nav or CTA. */
+body.has-hero .home-hero,
+body.has-hero .int-hero,
+body.has-hero .area-hero,
+body.has-hero .svc-hero,
+body.has-hero .contact-hero,
+body.has-hero .iframe-hero,
+body.has-hero .proj-single__hero,
+body.has-hero .post-hero {
+	padding-top: calc(var(--stp-hero-pad-top) + var(--stp-header-h));
+}
+
+/* These heroes were sized "one full screen minus the solid header", so that
+   hero + header filled exactly one page. With the header overlaying, the
+   hero owns that page on its own — same rendered fold, same bottom edge. */
+body.has-hero .int-hero,
+body.has-hero .area-hero,
+body.has-hero .svc-hero,
+body.has-hero .contact-hero,
+body.has-hero .iframe-hero,
+body.has-hero .proj-single__hero,
+body.has-hero .post-hero {
+	min-height: 100vh;
+	min-height: 100dvh;
+}
+
+/* The home hero is not viewport-height — it has its own clamp scale, which
+   it publishes as --stp-hero-min-h. Same principle, expressed against that
+   value instead of the viewport. */
+body.has-hero .home-hero {
+	min-height: calc(var(--stp-hero-min-h) + var(--stp-header-h));
+}
+
+/* ─── Light heroes ──────────────────────────────────────────────────
+   Every hero variant currently shipped is dark (brand gradient, ink, or a
+   photograph under a heavy navy veil), so white nav over the contrast scrim
+   is correct sitewide and this rule is unused today. It exists so that a
+   light or solid-pale hero added later opts into the navy nav treatment by
+   declaring one class on the section, rather than by growing a per-page
+   override: add `has-hero--light` to the body via the
+   `showtime/hero_templates` neighbourhood in inc/hero-header.php. */
+body.has-hero--light .site-header[data-scrolled="false"] {
+	--nav-fg:           var(--c-ink);
+	--nav-fg-soft:      var(--c-text-muted);
+	--nav-fg-hover:     var(--c-aqua-700);
+	--nav-accent:       var(--c-aqua-700);
+	--nav-hairline:     var(--c-border);
+	--nav-cta-bg:       var(--c-ink);
+	--nav-cta-fg:       #fff;
+	--nav-cta-bg-hover: var(--c-aqua-700);
+}
+body.has-hero--light .site-header[data-scrolled="false"]::before { opacity: 0; }

@@ -1,33 +1,183 @@
 /*
- * Site header — single-bar layout, sticky, opinionated.
+ * Site header — single-bar layout, viewport-fixed, opinionated.
  *
  * Layout: logo left  |  centered nav  |  phone + CTA + mobile toggle right.
- * Drops the old utility-bar entirely. Sticky from page load with subtle
- * elevation on scroll. Mobile collapses nav into a drawer.
+ * Fixed from page load: transparent over a hero at the top of the page,
+ * frosted translucent white once scrolled and on every page without a hero.
+ * Mobile collapses nav into a drawer. See inc/hero-header.php for how the
+ * two states are selected, and header-hero.css for the hero-side geometry.
  */
 
-/* SENIOR DESIGN DECISION: header is SOLID on every page including home.
-   Previous transparent-over-hero treatment caused (1) "blurry" perception
-   from backdrop-filter + busy photo, (2) low contrast on white-on-photo
-   nav text, (3) cross-page inconsistency. A solid header reads sharp,
-   matches Brikly's reference, and lets the hero stand on its own below. */
+/* Effective header height — ONE property, read by the header bar itself,
+   by the contrast scrim, by the hero safe-padding in header-hero.css and by
+   the flow reservation for pages without a hero. Nothing in the codebase is
+   allowed to hardcode the number, so the overlay geometry can never drift
+   from the rendered bar. Desktop, tablet and mobile deliberately resolve to
+   the same 84px: the logo lockup is 82px tall down to 540px and 66px below
+   it, and holding one height keeps every page free of layout shift. Override
+   per breakpoint here if that ever changes. */
+:root { --stp-header-h: var(--header-h); }
+
+/* Effective WordPress admin-bar height, as a single custom property so the
+   fixed header and the contrast scrim can never disagree about it. Core
+   serves 32px at ≥783px and 46px below that. 0px when logged out, which is
+   every public visitor — the rules below are an admin-only concern. */
+:root { --stp-admin-bar-h: 0px; }
+body.admin-bar { --stp-admin-bar-h: 32px; }
+@media screen and (max-width: 782px) {
+	body.admin-bar { --stp-admin-bar-h: 46px; }
+}
+
+/* ≤600px core stops pinning #wpadminbar and switches it to position:absolute,
+   so it scrolls away with the document instead of staying at the top. That
+   breaks the assumption the padding-top reservation is built on: once the bar
+   has gone, the space held for it inside the header is nothing but an empty
+   frosted band sitting above the logo and hamburger.
+
+   So at this width the bar height is carried as an OFFSET rather than as
+   padding. The header keeps its true 84px height and full opaque surface at
+   all times; it merely starts 46px down so it clears the admin bar at rest,
+   then docks flush to the viewport top the moment the page moves — which is
+   also the moment the admin bar leaves. `top` is deliberately left out of the
+   transition list so it snaps rather than animating a layout property. */
+@media screen and (max-width: 600px) {
+	body.admin-bar { --stp-admin-bar-h: 0px; }
+	body.admin-bar .site-header { top: 46px; }
+	body.admin-bar .site-header[data-scrolled="true"] { top: 0; }
+}
+
+/* ─── Sitewide header: one bar, two states ──────────────────────────
+   The header is viewport-fixed on every public page and never sits in the
+   document flow, so a hero can run full-bleed underneath it to the top of
+   the viewport. Which of the two states it starts in is decided server-side
+   in inc/hero-header.php and published as body.has-hero / body.no-hero:
+
+     STATE 1  top of a hero page   — fully transparent, white nav, dark
+                                     contrast scrim across the header band
+                                     only (::before, below).
+     STATE 2  scrolled, or any     — frosted translucent white, navy nav,
+              page without a hero    hairline + very restrained shadow.
+
+   Opacity lives on background-color ONLY. The header container is never
+   given `opacity`, so the logo, links, icons, dropdowns and CTA always
+   paint at 100%.
+
+   Every colour the two states disagree about is routed through the --nav-*
+   custom properties declared here, so a state flip is one variable block
+   rather than a parallel set of selectors. */
 .site-header {
-	position: sticky;
+	position: fixed;
 	top: 0;
+	left: 0;
+	right: 0;
 	z-index: var(--z-sticky);
-	background: var(--c-bg-pure);
+
+	/* WordPress admin bar. Core already pushes the document down with
+	   html{margin-top}, so the flow content starts below the bar on its
+	   own. A viewport-fixed header does not get that, so it pads its own
+	   box by the same amount instead: header content then lands exactly
+	   where the flow content starts, and neither one overlaps the bar.
+	   Resolves to 0px for logged-out visitors. */
+	padding-top: var(--stp-admin-bar-h, 0px);
+
+	/* State 2 is the base: it is the safe, readable one, so it is also
+	   what any context that never runs the scroll script inherits. */
+	background-color: rgba(255, 255, 255, 0.72);
+	-webkit-backdrop-filter: blur(16px) saturate(140%);
+	backdrop-filter: blur(16px) saturate(140%);
+	border-bottom: 1px solid var(--c-border);
+	box-shadow: 0 1px 2px rgba(11, 23, 51, 0.05);
+
+	--nav-fg:           var(--c-ink);
+	--nav-fg-soft:      var(--c-text-muted);
+	--nav-fg-hover:     var(--c-aqua-700);
+	--nav-accent:       var(--c-aqua-700);
+	--nav-hairline:     var(--c-border);
+	--nav-cta-bg:       var(--c-ink);
+	--nav-cta-fg:       #fff;
+	--nav-cta-bg-hover: var(--c-aqua-700);
+
+	transition:
+		background-color 200ms var(--ease-out),
+		border-color 200ms var(--ease-out),
+		box-shadow 200ms var(--ease-out);
+}
+
+/* STATE 1 — top of a page that owns a hero. */
+body.has-hero .site-header[data-scrolled="false"] {
+	background-color: transparent;
 	-webkit-backdrop-filter: none;
 	backdrop-filter: none;
-	border-bottom: 1px solid var(--c-border);
-	transition: box-shadow var(--dur-base) var(--ease-out);
+	border-bottom-color: transparent;
+	box-shadow: none;
+
+	--nav-fg:           #fff;
+	--nav-fg-soft:      rgba(255, 255, 255, 0.72);
+	--nav-fg-hover:     #fff;
+	--nav-accent:       #fff;
+	--nav-hairline:     rgba(255, 255, 255, 0.38);
+	--nav-cta-bg:       #fff;
+	--nav-cta-fg:       var(--c-ink);
+	--nav-cta-bg-hover: rgba(255, 255, 255, 0.86);
 }
 
-.site-header[data-scrolled="true"] {
-	box-shadow: 0 8px 24px rgba(10,10,10,0.06);
+/* Contrast scrim. Nav readability must not depend on how bright a given
+   photograph happens to be, so state 1 lays a controlled dark gradient
+   across the header band and fades it out below — the rest of the hero is
+   never dimmed. It is painted inside the header (so it is above the hero
+   media) but beneath .site-header__bar (so it never dims the logo, links
+   or CTA themselves). */
+.site-header::before {
+	content: '';
+	position: absolute;
+	inset: 0 0 auto 0;
+	/* Twice the bar height: the first half sits behind the bar and holds
+	   near-full strength, the second half fades to nothing so the hero is
+	   untouched from ~168px down. The strength is not a taste decision — it
+	   is the alpha at which white text clears 4.5:1 against the worst case
+	   this scrim can ever be laid over, a pure #fff photograph. Measured
+	   over a forced-white hero: 6.4:1. See tests/header-hero-unit.php. */
+	height: calc((var(--stp-header-h) + var(--stp-admin-bar-h, 0px)) * 2);
+	background: linear-gradient(
+		180deg,
+		rgba(11, 23, 51, 0.72) 0%,
+		rgba(11, 23, 51, 0.68) 50%,
+		rgba(11, 23, 51, 0.28) 74%,
+		rgba(11, 23, 51, 0) 100%
+	);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 200ms var(--ease-out);
+}
+body.has-hero .site-header[data-scrolled="false"]::before { opacity: 1; }
+
+/* While the full-screen drawer is open the header must read reliably no
+   matter what is behind it or how far the page is scrolled. */
+body.is-drawer-open .site-header {
+	background-color: rgba(255, 255, 255, 0.92);
+	border-bottom-color: var(--c-border);
+
+	--nav-fg:           var(--c-ink);
+	--nav-fg-soft:      var(--c-text-muted);
+	--nav-fg-hover:     var(--c-aqua-700);
+	--nav-accent:       var(--c-aqua-700);
+	--nav-hairline:     var(--c-border);
+	--nav-cta-bg:       var(--c-ink);
+	--nav-cta-fg:       #fff;
+	--nav-cta-bg-hover: var(--c-aqua-700);
+}
+body.is-drawer-open .site-header::before { opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+	.site-header,
+	.site-header::before { transition: none; }
 }
 
+/* Bar sits above the scrim inside the header's stacking context. */
 .site-header__bar {
-	min-height: var(--header-h);
+	position: relative;
+	z-index: 1;
+	min-height: var(--stp-header-h);
 	display: flex;
 	align-items: center;
 }
@@ -46,7 +196,7 @@
 	align-items: center;
 	text-decoration: none;
 	flex-shrink: 0;
-	color: var(--c-ink);
+	color: var(--nav-fg);
 }
 
 .site-branding .custom-logo,
@@ -63,7 +213,10 @@
 	.site-branding__logo { height: 66px; max-width: 198px; }
 }
 
-/* (Header is solid on every page now — no logo invert filter needed.) */
+/* The logo is a full-colour transparent-background emblem (bright white
+   SHOWTIME lettering, blue Pools script). It reads on both the dark hero
+   and the frosted white bar unchanged, so no invert/filter treatment is
+   applied in either state. */
 
 .site-branding__wordmark {
 	display: inline-flex;
@@ -77,12 +230,12 @@
 	font-weight: var(--fw-bold);
 	font-size: clamp(1.25rem, 1.05rem + 0.5vw, 1.5rem);
 	letter-spacing: -0.025em;
-	color: var(--c-ink);
+	color: var(--nav-fg);
 }
 .site-branding__accent {
 	font-style: normal;
 	font-weight: var(--fw-medium);
-	color: var(--c-aqua-700);
+	color: var(--nav-accent);
 	margin-left: 2px;
 }
 
@@ -92,7 +245,7 @@
 	font-weight: var(--fw-semibold);
 	letter-spacing: var(--ls-wide);
 	text-transform: uppercase;
-	color: var(--c-text-muted);
+	color: var(--nav-fg-soft);
 }
 
 /* ─── Primary nav ───────────────────────────────────────────────── */
@@ -132,7 +285,7 @@
 	font-family: var(--ff-body);
 	font-size: 0.9375rem;
 	font-weight: var(--fw-semibold);
-	color: var(--c-ink);
+	color: var(--nav-fg);
 	text-decoration: none;
 	transition: color var(--dur-fast) var(--ease-out);
 	white-space: nowrap;
@@ -151,7 +304,7 @@
 	right: var(--sp-3);
 	bottom: -2px;
 	height: 2px;
-	background: var(--c-aqua-700);
+	background: var(--nav-accent);
 	border-radius: var(--r-full);
 	transform: scaleX(0);
 	transform-origin: left center;
@@ -170,7 +323,7 @@
 .primary-nav__link:hover,
 .primary-nav__item:focus-within > .primary-nav__link,
 .primary-nav__item.is-active > .primary-nav__link {
-	color: var(--c-aqua-700);
+	color: var(--nav-fg-hover);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -285,14 +438,14 @@
 	font-family: var(--ff-body);
 	font-size: 0.875rem;
 	font-weight: var(--fw-semibold);
-	color: var(--c-ink);
+	color: var(--nav-fg);
 	text-decoration: none;
 	letter-spacing: -0.005em;
 	white-space: nowrap;
 	transition: color var(--dur-fast) var(--ease-out);
 }
-.site-header__phone svg { color: var(--c-aqua-700); flex: 0 0 auto; }
-.site-header__phone:hover { color: var(--c-aqua-700); }
+.site-header__phone svg { color: var(--nav-accent); flex: 0 0 auto; }
+.site-header__phone:hover { color: var(--nav-fg-hover); }
 
 @media (max-width: 1100px) {
 	.site-header__phone span { display: none; }
@@ -301,7 +454,7 @@
 		padding: 0;
 		display: grid; place-items: center;
 		border-radius: var(--r-full);
-		border: 1px solid var(--c-border);
+		border: 1px solid var(--nav-hairline);
 	}
 	.site-header__phone svg { width: 16px; height: 16px; }
 }
@@ -313,17 +466,20 @@
 	--_btn-px: var(--sp-5);
 	--_btn-py: 10px;
 	--_btn-fs: 0.875rem;
-	--_btn-bg:       var(--c-ink);
-	--_btn-bg-hover: var(--c-aqua-700);
-	--_btn-fg:       #fff;
+	--_btn-bg:       var(--nav-cta-bg);
+	--_btn-bg-hover: var(--nav-cta-bg-hover);
+	--_btn-fg:       var(--nav-cta-fg);
 	--_btn-border:   transparent;
 	border-radius: var(--r-full);
 	letter-spacing: 0.005em;
 	font-weight: var(--fw-semibold);
 }
-.site-header__cta:hover { color: #fff; }
+.site-header__cta:hover { color: var(--nav-cta-fg); }
 
-/* (Header is solid sitewide — no transparent-over-hero variant needed.) */
+/* The CTA keeps its pill shape, size and weight in both states; only the
+   fill/foreground pair swaps via --nav-cta-*, so it stays high-contrast
+   over a dark hero (white pill, navy label) and over the frosted bar
+   (navy pill, white label). */
 
 @media (max-width: 480px) {
 	.site-header__cta { display: none; }
@@ -350,7 +506,7 @@
 	gap: 4px;
 	border-radius: var(--r-full);
 	background: transparent;
-	border: 1px solid var(--c-border);
+	border: 1px solid var(--nav-hairline);
 	cursor: pointer;
 	-webkit-tap-highlight-color: transparent;
 	transition:
@@ -358,17 +514,27 @@
 		border-color var(--dur-fast) var(--ease-out),
 		transform var(--dur-fast) var(--ease-out);
 }
+
+/* Below the desktop-nav breakpoint the hamburger and the phone circle are
+   the only header controls left and they are driven by touch, so they take
+   the 44×44 minimum instead of the 40px pointer size. Declared after both
+   base rules so it wins on source order rather than on specificity. */
+@media (max-width: 959px) {
+	.site-header__menu-toggle,
+	.site-header__phone { width: 44px; height: 44px; }
+}
+
 /* Hover previews the engaged state — fill ink, invert bars to white.
    Better than a near-invisible warm-paper hover; gives confident
    feedback that the target is hot. */
 .site-header__menu-toggle:hover {
-	background: var(--c-ink);
-	border-color: var(--c-ink);
+	background: var(--nav-cta-bg);
+	border-color: var(--nav-cta-bg);
 }
 .site-header__menu-toggle:focus { outline: 0; }
 .site-header__menu-toggle:focus-visible {
 	outline: 0;
-	box-shadow: 0 0 0 2px var(--c-bg-pure), 0 0 0 4px var(--c-ink);
+	box-shadow: 0 0 0 2px var(--nav-cta-fg), 0 0 0 4px var(--nav-fg);
 }
 .site-header__menu-toggle:active { transform: scale(0.96); }
 
@@ -376,15 +542,15 @@
    reads as "currently engaged" — same fill as hover, continuous feel. */
 .site-header__menu-toggle[aria-expanded="true"],
 body.is-drawer-open .site-header__menu-toggle {
-	background: var(--c-ink);
-	border-color: var(--c-ink);
+	background: var(--nav-cta-bg);
+	border-color: var(--nav-cta-bg);
 }
 
 .site-header__menu-toggle-bar {
 	display: block;
 	width: 16px;
 	height: 1.5px;
-	background: var(--c-ink);
+	background: var(--nav-fg);
 	border-radius: var(--r-full);
 	transition:
 		background var(--dur-fast) var(--ease-out),
@@ -397,7 +563,7 @@ body.is-drawer-open .site-header__menu-toggle {
 .site-header__menu-toggle:hover .site-header__menu-toggle-bar,
 .site-header__menu-toggle[aria-expanded="true"] .site-header__menu-toggle-bar,
 body.is-drawer-open .site-header__menu-toggle .site-header__menu-toggle-bar {
-	background: var(--c-text-invert);
+	background: var(--nav-cta-fg);
 }
 [aria-expanded="true"] .site-header__menu-toggle-bar:nth-child(1) {
 	transform: translateY(5.5px) rotate(45deg);

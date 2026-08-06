@@ -16,7 +16,8 @@
 	   larger scale. min-height (not height) so taller content still grows. */
 	min-height: calc(100vh - var(--header-h));
 	min-height: calc(100dvh - var(--header-h));
-	padding-top: clamp(3rem, 6vw, 5rem);
+	--stp-hero-pad-top: clamp(3rem, 6vw, 5rem);
+	padding-top: var(--stp-hero-pad-top);
 	padding-bottom: clamp(3rem, 6vw, 5rem);
 	display: flex;
 	flex-direction: column;
@@ -36,7 +37,7 @@
 		var(--c-ink-900);
 }
 
-.int-hero--compact { padding-top: clamp(2.5rem, 5vw, 4rem); padding-bottom: clamp(2rem, 4vw, 3rem); }
+.int-hero--compact { --stp-hero-pad-top: clamp(2.5rem, 5vw, 4rem); padding-top: var(--stp-hero-pad-top); padding-bottom: clamp(2rem, 4vw, 3rem); }
 
 .int-hero__pattern {
 	position: absolute; inset: 0;
@@ -217,7 +218,8 @@
 	/* Full-screen interior hero (viewport minus header) — see .int-hero. */
 	min-height: calc(100vh - var(--header-h));
 	min-height: calc(100dvh - var(--header-h));
-	padding-top: clamp(3rem, 6vw, 5rem);
+	--stp-hero-pad-top: clamp(3rem, 6vw, 5rem);
+	padding-top: var(--stp-hero-pad-top);
 	padding-bottom: clamp(3rem, 6vw, 5rem);
 	display: flex;
 	flex-direction: column;

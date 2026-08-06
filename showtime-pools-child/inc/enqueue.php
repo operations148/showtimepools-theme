@@ -170,6 +170,13 @@ add_action(
 			wp_enqueue_script( 'showtime-blog', $uri, array(), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );
 		}
 
+		// Hero ↔ header geometry. Enqueued LAST of all stylesheets on purpose:
+		// it adjusts hero rules that live in home/interior/service/contact/blog
+		// CSS, all of which are queued above, and same-specificity selectors are
+		// resolved by source order. See assets/css/header-hero.css.
+		[ $uri, $ver ] = showtime_asset( 'assets/css/header-hero.css' );
+		wp_enqueue_style( 'showtime-header-hero', $uri, array( 'showtime-header' ), $ver );
+
 		// Global JS, deferred (no render-block).
 		[ $uri, $ver ] = showtime_asset( 'assets/js/main.js' );
 		wp_enqueue_script( 'showtime-main', $uri, array(), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );

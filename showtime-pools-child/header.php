@@ -15,6 +15,32 @@ defined( 'ABSPATH' ) || exit;
 	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 	<link rel="profile" href="https://gmpg.org/xfn/11">
 	<?php wp_head(); ?>
+	<?php
+	// No-JavaScript fallback. The transparent-over-hero state is only safe
+	// while something is watching the scroll position — without JS the header
+	// would stay transparent after the hero has scrolled past, putting white
+	// nav text on white page content. So when JS is off we pin the header to
+	// its readable frosted state permanently. CSS only; no inline script.
+	?>
+	<noscript>
+		<style>
+			.site-header,
+			body.has-hero .site-header[data-scrolled="false"] {
+				background-color: rgba(255, 255, 255, 0.9) !important;
+				-webkit-backdrop-filter: blur(16px) saturate(140%) !important;
+				backdrop-filter: blur(16px) saturate(140%) !important;
+				border-bottom-color: var(--c-border) !important;
+				--nav-fg: var(--c-ink) !important;
+				--nav-fg-hover: var(--c-aqua-700) !important;
+				--nav-accent: var(--c-aqua-700) !important;
+				--nav-hairline: var(--c-border) !important;
+				--nav-cta-bg: var(--c-ink) !important;
+				--nav-cta-fg: #fff !important;
+				--nav-cta-bg-hover: var(--c-aqua-700) !important;
+			}
+			body.has-hero .site-header[data-scrolled="false"]::before { opacity: 0 !important; }
+		</style>
+	</noscript>
 </head>
 
 <body <?php body_class(); ?>>
@@ -22,10 +48,12 @@ defined( 'ABSPATH' ) || exit;
 
 <a class="skip-link visually-hidden" href="#primary"><?php esc_html_e( 'Skip to content', 'showtime-pools' ); ?></a>
 
+<?php $showtime_has_hero = showtime_page_has_hero(); ?>
 <header
 	id="masthead"
 	class="site-header js-site-header"
-	data-transparent="<?php echo is_front_page() ? 'true' : 'false'; ?>"
+	data-hero="<?php echo $showtime_has_hero ? 'true' : 'false'; ?>"
+	data-scrolled="false"
 >
 	<div class="site-header__bar">
 		<div class="container site-header__inner">

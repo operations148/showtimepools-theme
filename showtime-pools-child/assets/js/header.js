@@ -1,36 +1,62 @@
 /**
- * Header behavior — sticky scroll-state, mobile drawer toggle, focus trap,
- * Escape-to-close, body-scroll lock.
+ * Header scroll state.
  *
- * Vanilla JS, deferred. Idempotent: calling init() twice is a no-op.
+ * The header is CSS-fixed and CSS-styled; the only thing this file decides is
+ * which of the two states it is in, published as data-scrolled on the header
+ * element. Everything visual — transparency, frosted background, nav colour,
+ * contrast scrim — is keyed off that one attribute in header.css.
+ *
+ * The mobile drawer (open/close, focus trap, Escape, body-scroll lock) is
+ * owned by main.js. Two click handlers on .js-mobile-toggle used to double-fire
+ * and read as flicker, so there is a single owner and this file stays out of it.
+ *
+ * Vanilla JS, deferred, no dependencies.
  */
 
 (function () {
 	'use strict';
 
-	const SCROLL_TRIGGER = 80;
+	// Flip as soon as the page has moved off the very top. Low enough that the
+	// header commits to a readable surface the instant the hero starts to slide
+	// under it, high enough to ignore sub-pixel and elastic-scroll jitter.
+	const SCROLL_TRIGGER = 20;
 
-	function initStickyState() {
+	function initScrollState() {
 		const header = document.querySelector('.js-site-header');
 		if (!header) return;
 
-		let scrolled = false;
-		const onScroll = () => {
-			const next = window.scrollY > SCROLL_TRIGGER;
-			if (next !== scrolled) {
-				scrolled = next;
-				header.dataset.scrolled = scrolled ? 'true' : 'false';
-			}
-		};
-		onScroll();
-		window.addEventListener('scroll', onScroll, { passive: true });
-	}
+		// Read once, from the server-rendered attribute, so the first frame
+		// never disagrees with the markup and there is no colour flash.
+		let scrolled = header.dataset.scrolled === 'true';
+		let ticking = false;
 
-	// (Mobile drawer open/close + focus-trap is owned by main.js — having
-	// two click handlers attached to .js-mobile-toggle was double-firing
-	// state changes (one set body.dataset.mobileOpen, the other set
-	// body.classList.is-drawer-open) and reading as flicker. Single owner
-	// in main.js, single source of truth.)
+		const apply = () => {
+			ticking = false;
+			// scrollY is a cheap read and is the only measurement taken —
+			// no getBoundingClientRect, no layout is forced on scroll.
+			const next = window.scrollY > SCROLL_TRIGGER;
+			if (next === scrolled) return;
+			scrolled = next;
+			header.dataset.scrolled = next ? 'true' : 'false';
+		};
+
+		const onScroll = () => {
+			if (ticking) return;
+			ticking = true;
+			window.requestAnimationFrame(apply);
+		};
+
+		// Sync immediately: a reload that restores a mid-page scroll position,
+		// or an in-page anchor, must land in the correct state right away.
+		apply();
+
+		window.addEventListener('scroll', onScroll, { passive: true });
+		// Height changes (orientation, dvh address-bar collapse) can move the
+		// page without a scroll event firing.
+		window.addEventListener('resize', onScroll, { passive: true });
+		// Back/forward cache restores skip DOMContentLoaded entirely.
+		window.addEventListener('pageshow', apply);
+	}
 
 	const ready = (fn) => {
 		if (document.readyState !== 'loading') return fn();
@@ -38,6 +64,6 @@
 	};
 
 	ready(() => {
-		initStickyState();
+		initScrollState();
 	});
 })();

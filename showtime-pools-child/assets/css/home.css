@@ -38,13 +38,18 @@
 	position: relative;
 	overflow: hidden;
 	color: #fff;
-	min-height: clamp(560px, 70vh, 760px);
+	/* Own scale, not viewport-height. --stp-hero-min-h is read by
+	   header-hero.css so the hero can absorb the header height the fixed
+	   bar gave back, keeping the fold on the same pixel row as before. */
+	--stp-hero-min-h: clamp(560px, 70vh, 760px);
+	min-height: var(--stp-hero-min-h);
 	display: flex;
 	align-items: center;
 	/* Match .int-hero padding rhythm exactly so the chip on home aligns
 	   to the same vertical offset as breadcrumbs + eyebrow on every
 	   other page (services, projects, shop, founder, etc.). */
-	padding-top: clamp(3rem, 7vw, 6rem);
+	--stp-hero-pad-top: clamp(3rem, 7vw, 6rem);
+	padding-top: var(--stp-hero-pad-top);
 	padding-bottom: clamp(5rem, 9vw, 7.5rem);
 }
 

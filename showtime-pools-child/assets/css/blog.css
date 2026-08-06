@@ -245,7 +245,8 @@
 	/* Full-screen interior hero (viewport minus header) — see .int-hero. */
 	min-height: calc(100vh - var(--header-h));
 	min-height: calc(100dvh - var(--header-h));
-	padding: clamp(4rem, 7vw, 6rem) 0 clamp(3.5rem, 6vw, 5rem);
+	--stp-hero-pad-top: clamp(4rem, 7vw, 6rem);
+	padding: var(--stp-hero-pad-top) 0 clamp(3.5rem, 6vw, 5rem);
 	color: #fff;
 	overflow: hidden;
 	background: var(--c-aqua-900);
@@ -499,7 +500,8 @@
 	/* Full-screen interior hero (viewport minus header) — see .int-hero. */
 	min-height: calc(100vh - var(--header-h));
 	min-height: calc(100dvh - var(--header-h));
-	padding: clamp(2.5rem, 5vw, 4.5rem) 0 clamp(3rem, 6vw, 5rem);
+	--stp-hero-pad-top: clamp(2.5rem, 5vw, 4.5rem);
+	padding: var(--stp-hero-pad-top) 0 clamp(3rem, 6vw, 5rem);
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
