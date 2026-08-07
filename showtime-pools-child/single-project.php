@@ -309,6 +309,26 @@ while ( have_posts() ) :
 					</dl>
 				<?php endif; ?>
 
+				<?php
+				// Additional project gallery — nested inside this same section,
+				// after the facts and before the closing service/area links, on
+				// the section's own background and inside its container. Renders
+				// only for a project whose registry entry configures it.
+				$gallery_pages = function_exists( 'showtime_project_gallery_pages' )
+					? showtime_project_gallery_pages( $proj )
+					: array();
+				if ( ! empty( $gallery_pages ) ) {
+					get_template_part(
+						'template-parts/project/gallery',
+						null,
+						array(
+							'pages'   => $gallery_pages,
+							'base_id' => 'proj-gallery-' . $pid,
+						)
+					);
+				}
+				?>
+
 				<?php if ( ! empty( $compare['links'] ) ) : ?>
 					<p class="proj-compare__links">
 						<?php

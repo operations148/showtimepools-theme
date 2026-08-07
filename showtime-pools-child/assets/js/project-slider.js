@@ -18,6 +18,11 @@
  *       [data-proj-slider-next]
  *     [data-proj-slider-status]         — aria-live announcement target
  *
+ * Optional [data-proj-slider-label] on the root sets the noun used in the live
+ * announcement ("Slide 2 of 3" by default, "Gallery page 2 of 2" for the
+ * project gallery). Everything else is identical, so both components share one
+ * implementation of paging, keyboard, swipe and end-state handling.
+ *
  * Interaction: prev/next buttons, dots, ArrowLeft/ArrowRight/Home/End,
  * and horizontal touch swipe. No autoplay — the slide never changes on its own.
  */
@@ -41,6 +46,7 @@
 		var status   = root.querySelector('[data-proj-slider-status]');
 		var index    = 0;
 		var total    = slides.length;
+		var label    = root.getAttribute('data-proj-slider-label') || 'Slide';
 		var supportsInert = 'inert' in HTMLElement.prototype;
 
 		// Take over layout only once we know scripting works.
@@ -93,7 +99,7 @@
 
 			// Only announce on user-driven changes, never on first paint.
 			if (announce && status) {
-				status.textContent = 'Slide ' + (index + 1) + ' of ' + total;
+				status.textContent = label + ' ' + (index + 1) + ' of ' + total;
 			}
 		}
 

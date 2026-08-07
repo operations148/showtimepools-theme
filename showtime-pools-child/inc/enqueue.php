@@ -162,6 +162,19 @@ add_action(
 		if ( is_singular( 'project' ) ) {
 			[ $uri, $ver ] = showtime_asset( 'assets/js/project-compare.js' );
 			wp_enqueue_script( 'showtime-project-compare', $uri, array(), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );
+
+			// The additional-gallery carousel reuses the archive slider's markup
+			// contract, so it reuses the same script. Loaded only on a project
+			// whose registry entry actually configures a gallery — every other
+			// project page ships neither the markup nor this request.
+			$proj_for_gallery = function_exists( 'showtime_project_data' )
+				? showtime_project_data( get_queried_object_id() )
+				: null;
+			if ( function_exists( 'showtime_project_gallery_pages' )
+				&& ! empty( showtime_project_gallery_pages( $proj_for_gallery ) ) ) {
+				[ $uri, $ver ] = showtime_asset( 'assets/js/project-slider.js' );
+				wp_enqueue_script( 'showtime-project-slider', $uri, array(), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );
+			}
 		}
 
 		// TOC + scroll-spy only on single posts (article body required).

@@ -422,6 +422,15 @@ return array(
 	),
 
 	array(
+		// Photographs supplied and verified; written project details still pending.
+		// The entry therefore stays `coming_soon` — scope/finish/timeline/investment
+		// remain exactly "Coming soon", completion_date and client_quote stay blank,
+		// and the post keeps its noindex + sitemap/schema exclusion. Per the
+		// placeholder contract in cli/class-projects-sync.php, supplying imagery
+		// makes the comparison copy and the three alt strings REQUIRED, so a
+		// rendered comparison is never unlabelled. Every string below describes
+		// only what the two photographs actually show: no manufacturer, model,
+		// material, date, duration, price or testimonial.
 		'slug'               => 'west-hollywood-pool-project',
 		'managed'            => true,
 		'status'             => 'coming_soon',
@@ -435,22 +444,36 @@ return array(
 		'investment'         => 'Coming soon',
 		'completion_date'    => '',
 		'client_quote'       => '',
-		'hero_image'         => '',
-		'hero_alt'           => '',
-		'before_image'       => '',
-		'before_alt'         => '',
-		'after_image'        => '',
-		'after_alt'          => '',
-		'comparison_heading' => '',
-		'comparison_summary' => '',
-		'before_condition'   => '',
-		'work_completed'     => '',
-		'completed_result'   => '',
+		'hero_image'         => 'west-hollywood-pool-project-after.webp',
+		'hero_alt'           => 'A new pool pump with a digital control panel installed on a West Hollywood equipment pad.',
+		'before_image'       => 'west-hollywood-pool-project-before.webp',
+		'before_alt'         => 'An ageing pool pump on a concrete equipment pad in West Hollywood, connected to weathered grey and white PVC plumbing against a textured terracotta wall.',
+		'after_image'        => 'west-hollywood-pool-project-after.webp',
+		'after_alt'          => 'The same West Hollywood equipment pad after the work, with a new pool pump and digital control panel connected to new grey PVC plumbing.',
+		'comparison_heading' => 'Before and After: Pool Pump Replacement in West Hollywood, CA',
+		'comparison_summary' => 'In West Hollywood, Showtime Pools replaced an ageing pool pump on an existing equipment pad. The photographs show the original pump and its weathered PVC manifold before the work, and a new pump with a digital control panel connected to new PVC plumbing afterwards, with the surrounding wall and concrete pad left as found.',
+		'before_condition'   => 'Ageing pool pump on the equipment pad, connected to weathered PVC plumbing.',
+		'work_completed'     => 'Pump replaced and reconnected with new PVC plumbing on the existing pad.',
+		'completed_result'   => 'A new pool pump with a digital control panel running on the same equipment pad.',
 		'service_url'        => '',
 		'area_url'           => '',
 		'seo_title'          => 'West Hollywood Pool Project — Coming Soon | Showtime Pools',
 		'meta_description'   => 'Verified project details and photos for this West Hollywood pool project are being prepared.',
-		'og_image'           => '',
+		'og_image'           => 'west-hollywood-pool-project-after.webp',
+
+		// Additional project gallery. Four slots, all awaiting owner photography.
+		// A slot renders a real <figure><img> only once BOTH `image` (a file in
+		// assets/img/projects/comparisons/) and `alt` are supplied and `status`
+		// is 'ready'; until then it renders a non-image "Coming soon" card with
+		// no <img>, no src and no invented alt or caption. See
+		// showtime_project_gallery() — a malformed slot fails the whole gallery
+		// closed rather than rendering something untrue.
+		'additional_gallery' => array(
+			array( 'status' => 'coming_soon', 'image' => '', 'alt' => '', 'caption' => '' ),
+			array( 'status' => 'coming_soon', 'image' => '', 'alt' => '', 'caption' => '' ),
+			array( 'status' => 'coming_soon', 'image' => '', 'alt' => '', 'caption' => '' ),
+			array( 'status' => 'coming_soon', 'image' => '', 'alt' => '', 'caption' => '' ),
+		),
 	),
 
 	array(

@@ -250,10 +250,133 @@ function showtime_project_data( $post_id_or_slug ): ?array {
 		'seo_title'          => $str( 'seo_title' ),
 		'meta_description'   => $str( 'meta_description' ),
 		'og_image'           => $asset( $str( 'og_image' ) ),
+		// Raw gallery config, carried through untouched. Normalizing and
+		// validating it is showtime_project_gallery()'s job, so a malformed
+		// value can never reach a template by accident.
+		'additional_gallery' => isset( $entry['additional_gallery'] ) && is_array( $entry['additional_gallery'] )
+			? $entry['additional_gallery']
+			: array(),
 	);
 
 	$cache[ $slug ] = $data;
 	return $data;
+}
+
+/**
+ * How many gallery cards share one carousel page.
+ *
+ * The gallery is a grouped carousel, not a free-scrolling track: a page always
+ * shows a full set. The slot count must therefore divide evenly by this, which
+ * showtime_project_gallery() enforces.
+ */
+const SHOWTIME_PROJECT_GALLERY_PER_PAGE = 2;
+
+/**
+ * Normalized "additional project gallery" slots for a project, or [] for none.
+ *
+ * Data-driven and opt-in: a project renders a gallery only because its registry
+ * entry configures one. No slug is hardcoded anywhere in the component, so
+ * enabling this for another project is purely a registry edit.
+ *
+ * FAILS CLOSED, as a whole. Any malformed slot discards the ENTIRE gallery
+ * rather than rendering a partial or untruthful one:
+ *   - the value must be a non-empty list of arrays;
+ *   - the slot count must divide evenly into full carousel pages;
+ *   - `status` must be exactly 'coming_soon' or 'ready';
+ *   - a 'ready' slot must carry BOTH a readable local comparison asset and
+ *     non-empty alt text — a real photograph is never published unlabelled;
+ *   - a 'coming_soon' slot must carry NO image, alt or caption, so a pending
+ *     slot can never smuggle in invented copy.
+ *
+ * @param array<string,mixed>|null $p Result of showtime_project_data().
+ * @return array<int,array{status:string,url:string,width:int,height:int,alt:string,caption:string}>
+ */
+function showtime_project_gallery( ?array $p ): array {
+	if ( ! is_array( $p ) || empty( $p['additional_gallery'] ) || ! is_array( $p['additional_gallery'] ) ) {
+		return array();
+	}
+	$raw = $p['additional_gallery'];
+
+	// Must be a plain list, not an associative map.
+	if ( array_keys( $raw ) !== range( 0, count( $raw ) - 1 ) ) {
+		return array();
+	}
+	if ( 0 !== count( $raw ) % SHOWTIME_PROJECT_GALLERY_PER_PAGE ) {
+		return array();
+	}
+
+	$out = array();
+	foreach ( $raw as $slot ) {
+		if ( ! is_array( $slot ) ) {
+			return array();
+		}
+		$status  = trim( (string) ( $slot['status'] ?? '' ) );
+		$image   = trim( (string) ( $slot['image'] ?? '' ) );
+		$alt     = trim( (string) ( $slot['alt'] ?? '' ) );
+		$caption = trim( (string) ( $slot['caption'] ?? '' ) );
+
+		if ( 'coming_soon' === $status ) {
+			// A pending slot asserts nothing at all.
+			if ( '' !== $image || '' !== $alt || '' !== $caption ) {
+				return array();
+			}
+			$out[] = array(
+				'status'  => 'coming_soon',
+				'url'     => '',
+				'width'   => 0,
+				'height'  => 0,
+				'alt'     => '',
+				'caption' => '',
+			);
+			continue;
+		}
+
+		if ( 'ready' !== $status ) {
+			return array();
+		}
+		if ( '' === $image || '' === $alt ) {
+			return array();
+		}
+		// Must be a real, readable, locally bundled project asset with real
+		// pixel dimensions — never a remote URL and never a guessed size.
+		if ( ! defined( 'SHOWTIME_CHILD_DIR' ) ) {
+			return array();
+		}
+		$path = SHOWTIME_CHILD_DIR . '/assets/img/projects/comparisons/' . basename( $image );
+		if ( ! is_readable( $path ) ) {
+			return array();
+		}
+		$size = @getimagesize( $path );
+		if ( ! is_array( $size ) || (int) $size[0] < 1 || (int) $size[1] < 1 ) {
+			return array();
+		}
+		$out[] = array(
+			'status'  => 'ready',
+			'url'     => showtime_project_compare_local_url( $path ),
+			'width'   => (int) $size[0],
+			'height'  => (int) $size[1],
+			'alt'     => $alt,
+			'caption' => $caption,
+		);
+	}
+
+	return $out;
+}
+
+/**
+ * Gallery slots grouped into carousel pages of SHOWTIME_PROJECT_GALLERY_PER_PAGE.
+ *
+ * Derived, never hardcoded: four slots chunk to two pages of two. Returns []
+ * when there is nothing to render, so callers emit no markup at all.
+ *
+ * @return array<int,array<int,array<string,mixed>>>
+ */
+function showtime_project_gallery_pages( ?array $p ): array {
+	$slots = showtime_project_gallery( $p );
+	if ( empty( $slots ) ) {
+		return array();
+	}
+	return array_chunk( $slots, SHOWTIME_PROJECT_GALLERY_PER_PAGE );
 }
 
 /**

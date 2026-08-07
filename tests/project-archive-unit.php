@@ -395,39 +395,68 @@ empty( $tl_hits )
 
 echo "\n== WEST HOLLYWOOD — remains Coming Soon ==\n";
 
-/* 14. West Hollywood: 200, noindex+follow, self-canonical, no CreativeWork, no
- * imagery, no comparison, and it still shows the Coming Soon notice. */
+/* 14. West Hollywood: 200, noindex+follow, self-canonical, no CreativeWork, and
+ * it still shows the Coming Soon notice.
+ *
+ * The owner has since supplied a genuine, verified before/after pair for this
+ * project and authorised connecting it, so the imagery clauses this assertion
+ * used to carry ("must hold no hero/before/after/og image, must render no
+ * comparison") are superseded: they described the state while the only
+ * available West Hollywood files were rejected Sherman Oaks duplicates. They
+ * are replaced below by their inverse — the project must now carry its OWN
+ * four image fields and must render a comparison — which is strictly harder to
+ * satisfy. Everything the assertion actually protected is unchanged and still
+ * enforced: coming_soon status, noindex+follow, self-canonical, no CreativeWork
+ * node, and the visible Coming Soon notice. Provenance is enforced by 14b. */
 $wh      = showtime_project_data( 'west-hollywood-pool-project' );
 $wh_body = fetch_body( "$base/projects/west-hollywood-pool-project/" );
 $wh_bad  = array();
 if ( 'coming_soon' !== ( $wh['status'] ?? '' ) || empty( $wh['is_coming_soon'] ) ) { $wh_bad[] = 'status'; }
 foreach ( array( 'hero_image', 'before_image', 'after_image', 'og_image' ) as $k ) {
-	if ( '' !== (string) ( $wh[ $k ] ?? '' ) ) { $wh_bad[] = "carries $k"; }
+	$v = (string) ( $wh[ $k ] ?? '' );
+	if ( '' === $v ) { $wh_bad[] = "missing $k"; }
+	elseif ( false === strpos( $v, 'west-hollywood-pool-project-' ) ) { $wh_bad[] = "$k is not its own asset"; }
 }
+// The four displayed facts must STILL read exactly "Coming soon" — photographs
+// do not promote a project to verified.
+foreach ( array( 'scope', 'finish', 'timeline', 'investment' ) as $k ) {
+	if ( 'Coming soon' !== (string) ( $wh[ $k ] ?? '' ) ) { $wh_bad[] = "$k is no longer \"Coming soon\""; }
+}
+if ( '' !== (string) ( $wh['completion_date'] ?? '' ) || '' !== (string) ( $wh['client_quote'] ?? '' ) ) { $wh_bad[] = 'gained a completion date or testimonial'; }
 if ( ! preg_match( "#robots['\"] content=['\"]noindex, follow#", $wh_body ) )                 { $wh_bad[] = 'not noindex,follow'; }
 if ( ! preg_match( '#<link rel="canonical" href="[^"]*/projects/west-hollywood-pool-project/"#', $wh_body ) ) { $wh_bad[] = 'canonical'; }
 if ( preg_match( '#"@type":"CreativeWork"#', $wh_body ) )                                     { $wh_bad[] = 'emitted CreativeWork'; }
-if ( preg_match( '#proj-compare__media#', $wh_body ) )                                        { $wh_bad[] = 'rendered a comparison'; }
+if ( ! preg_match( '#proj-compare__media#', $wh_body ) )                                      { $wh_bad[] = 'no comparison rendered'; }
 if ( false === stripos( $wh_body, 'Coming soon' ) )                                           { $wh_bad[] = 'no Coming soon notice'; }
 $wh_post = get_page_by_path( 'west-hollywood-pool-project', OBJECT, 'project' );
-if ( $wh_post instanceof WP_Post && null !== showtime_project_compare( (int) $wh_post->ID ) ) { $wh_bad[] = 'comparison resolved'; }
+if ( $wh_post instanceof WP_Post && null === showtime_project_compare( (int) $wh_post->ID ) ) { $wh_bad[] = 'comparison did not resolve'; }
 empty( $wh_bad )
-	? ok( '14. west-hollywood: 200, noindex+follow, self-canonical, image-free, comparison-free, no project schema' )
+	? ok( '14. west-hollywood: 200, noindex+follow, self-canonical, no project schema, still Coming Soon on every displayed fact — now carrying its own verified before/after pair and rendering a comparison' )
 	: bad( '14. ' . implode( ', ', $wh_bad ) );
 
-/* 14b. West Hollywood must never present Sherman Oaks imagery AS ITS OWN.
- * Scoped to this page's own content: the related-projects block legitimately
- * links to other projects (and is ordered randomly), so scanning the whole
- * document would be both wrong and flaky. */
+/* 14b. West Hollywood must never present ANOTHER project's imagery as its own.
+ * This was previously satisfied vacuously (the page carried no photograph at
+ * all); now that it carries two, it is a live provenance check. Scoped to this
+ * page's own content: the related-projects block legitimately links to other
+ * projects (and is ordered randomly), so scanning the whole document would be
+ * both wrong and flaky. */
 $wh_own = '';
 if ( preg_match( '#<h1.*?(?=<section class="proj-single__related"|</main>)#s', $wh_body, $wm ) ) {
 	$wh_own = preg_replace( '#<script.*?</script>#s', '', $wm[0] );
 }
-( '' !== $wh_own
-	&& false === strpos( $wh_own, 'sherman-oaks-mid-century-remodel-' )
-	&& 0 === preg_match_all( '#<img#', $wh_own ) )
-	? ok( '14b. west-hollywood shows no photograph of its own, and none from Sherman Oaks' )
-	: bad( '14b. west-hollywood own content carries imagery' );
+$foreign = array();
+foreach ( \Showtime\Projects::all() as $e ) {
+	$slug = (string) ( $e['slug'] ?? '' );
+	if ( '' === $slug || 'west-hollywood-pool-project' === $slug || empty( $e['managed'] ) ) { continue; }
+	if ( false !== strpos( $wh_own, $slug . '-before.webp' ) || false !== strpos( $wh_own, $slug . '-after.webp' ) ) {
+		$foreign[] = $slug;
+	}
+}
+$own_imgs = preg_match_all( '#<img[^>]+west-hollywood-pool-project-(before|after)\.webp#', $wh_own );
+$all_imgs = preg_match_all( '#<img#', $wh_own );
+( '' !== $wh_own && empty( $foreign ) && 2 === $own_imgs && 2 === $all_imgs )
+	? ok( '14b. west-hollywood shows exactly two photographs, both its own before/after WebP — no Sherman Oaks asset and no other project\'s asset appears in its own content, and the gallery placeholders contribute no image at all' )
+	: bad( '14b. foreignAssets=' . ( $foreign ? implode( ',', $foreign ) : 'none' ) . " ownImgs=$own_imgs totalImgs=$all_imgs" );
 
 echo "\n== SITEMAPS + SCHEMA + VERIFIED-SIX REGRESSION ==\n";
 
