@@ -253,9 +253,16 @@ function showtime_project_data( $post_id_or_slug ): ?array {
 		// Raw gallery config, carried through untouched. Normalizing and
 		// validating it is showtime_project_gallery()'s job, so a malformed
 		// value can never reach a template by accident.
-		'additional_gallery' => isset( $entry['additional_gallery'] ) && is_array( $entry['additional_gallery'] )
+		//
+		// A managed project that says nothing about its gallery gets the shared
+		// default (four pending slots) — see showtime_project_gallery_default().
+		// That is what puts the gallery on all 14 project pages without copying
+		// a four-item array into fourteen registry records. A record can still
+		// override the slots to publish real photographs, or set the key to an
+		// empty array to opt out entirely.
+		'additional_gallery' => array_key_exists( 'additional_gallery', $entry ) && is_array( $entry['additional_gallery'] )
 			? $entry['additional_gallery']
-			: array(),
+			: showtime_project_gallery_default(),
 	);
 
 	$cache[ $slug ] = $data;
@@ -270,6 +277,29 @@ function showtime_project_data( $post_id_or_slug ): ?array {
  * showtime_project_gallery() enforces.
  */
 const SHOWTIME_PROJECT_GALLERY_PER_PAGE = 2;
+
+/** How many gallery slots a project shows when it has not configured its own. */
+const SHOWTIME_PROJECT_GALLERY_SLOTS = 4;
+
+/**
+ * The shared default gallery: four pending slots, asserting nothing.
+ *
+ * This is THE reason every managed project page can carry the gallery without
+ * a four-item array being pasted into every registry record. A record that
+ * omits `additional_gallery` inherits this; a record that supplies its own
+ * array overrides it slot by slot; a record that supplies an empty array opts
+ * out. Filterable so the slot count or default state can move in one place.
+ *
+ * @return array<int,array{status:string,image:string,alt:string,caption:string}>
+ */
+function showtime_project_gallery_default(): array {
+	$slots = array_fill(
+		0,
+		SHOWTIME_PROJECT_GALLERY_SLOTS,
+		array( 'status' => 'coming_soon', 'image' => '', 'alt' => '', 'caption' => '' )
+	);
+	return (array) apply_filters( 'showtime/project_gallery_default', $slots );
+}
 
 /**
  * Normalized "additional project gallery" slots for a project, or [] for none.
@@ -583,7 +613,7 @@ function showtime_project_meta_rows( array $p ): array {
 		array( 'k' => __( 'Finish', 'showtime-pools' ),             'v' => $p['finish'] ?? '' ),
 		array( 'k' => __( 'Scope', 'showtime-pools' ),              'v' => $p['scope'] ?? '' ),
 		array( 'k' => __( 'Typical timeline', 'showtime-pools' ),   'v' => $p['timeline'] ?? '' ),
-		array( 'k' => __( 'Typical investment', 'showtime-pools' ), 'v' => $p['investment'] ?? '' ),
+		array( 'k' => __( 'Typical investment for similar California projects', 'showtime-pools' ), 'v' => $p['investment'] ?? '' ),
 		array( 'k' => __( 'Completed', 'showtime-pools' ),          'v' => $p['completion_date'] ?? '' ),
 	);
 	return array_values(

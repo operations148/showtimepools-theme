@@ -72,12 +72,13 @@ $new_slugs = array(
 	'brentwood-pool-project',
 );
 
-// Seven of the eight new projects are now published, image-backed and indexable.
-// West Hollywood alone stays a Coming Soon placeholder: its supplied photographs
-// were byte-identical to the Sherman Oaks verified project, so it has no genuine
-// imagery of its own.
-$promoted_slugs    = array_values( array_diff( $new_slugs, array( 'west-hollywood-pool-project' ) ) );
-$placeholder_slugs = array( 'west-hollywood-pool-project' );
+// All eight new projects are now published, image-backed and indexable. West
+// Hollywood was the last placeholder; the owner supplied a genuine pump/equipment
+// before-and-after pair (verified unique against every other project asset), so
+// it has been promoted to a completed pump-replacement project. No placeholder
+// records remain.
+$promoted_slugs    = $new_slugs;
+$placeholder_slugs = array();
 
 echo "\n== PROJECT REGISTRY — 14 managed projects ==\n";
 
@@ -121,18 +122,25 @@ empty( $six_bad )
 	? ok( '3. the original six verified records are unchanged' )
 	: bad( '3. changed: ' . implode( ', ', $six_bad ) );
 
-/* 4. Exactly eight records carry coming_soon status. */
+/* 4. No record carries coming_soon status any more — all 14 are completed. */
 $coming = array_values( array_filter( $managed, static fn( $e ) => ( $e['status'] ?? '' ) === 'coming_soon' ) );
 $flagged = array_values( array_filter( $managed, static fn( $e ) => ! empty( $e['is_coming_soon'] ) ) );
-( 1 === count( $coming ) && 1 === count( $flagged ) && count( $coming ) === count( $flagged ) )
-	? ok( '4. exactly 1 record is status=coming_soon AND is_coming_soon (west-hollywood)' )
-	: bad( '4. coming_soon=' . count( $coming ) . ' is_coming_soon=' . count( $flagged ) . ' (expected 1/1)' );
+( 0 === count( $coming ) && 0 === count( $flagged ) )
+	? ok( '4. no record is status=coming_soon or is_coming_soon — all 14 managed projects are completed' )
+	: bad( '4. coming_soon=' . count( $coming ) . ' is_coming_soon=' . count( $flagged ) . ' (expected 0/0): ' . implode( ', ', array_column( $flagged, 'slug' ) ) );
 
-/* 4b. Placeholder slugs are the eight expected areas, in the specified order. */
-$actual_ph = array_column( $flagged, 'slug' );
-$actual_ph === $placeholder_slugs
-	? ok( '4b. west-hollywood is the only remaining Coming Soon placeholder' )
-	: bad( '4b. placeholder order/slugs: ' . implode( ', ', $actual_ph ) );
+/* 4b. Every managed record carries real, non-placeholder facts. */
+$soon_words = array();
+foreach ( $managed as $e ) {
+	foreach ( array( 'scope', 'finish', 'timeline', 'investment', 'title' ) as $k ) {
+		if ( false !== stripos( (string) ( $e[ $k ] ?? '' ), 'coming soon' ) ) {
+			$soon_words[] = $e['slug'] . '.' . $k;
+		}
+	}
+}
+empty( $soon_words )
+	? ok( '4b. no managed record has "Coming soon" left in its title, scope, finish, timeline or investment' )
+	: bad( '4b. still placeholder wording: ' . implode( ', ', $soon_words ) );
 
 echo "\n== SLIDE GROUPING ==\n";
 
@@ -198,57 +206,45 @@ foreach ( array_merge( $verified_slugs, $placeholder_slugs ) as $slug ) {
 	? ok( '8. all 14 cards link to their own project route' )
 	: bad( '8. hrefs=' . count( $hrefs ) . ' missing: ' . implode( ', ', $missing ) );
 
-/* 9. Placeholder fields display "Coming soon" — never blank, never $0. */
+/* 9. No archive card shows placeholder wording any more, and none is blank or $0. */
 $coming_cells = preg_match_all( '#<dd>Coming soon</dd>#', $html );
 $empty_cells  = preg_match_all( '#<dd>\s*</dd>#', $html );
 $zero_cells   = preg_match_all( '#<dd>\s*\$0#', $html );
-( 4 === $coming_cells && 0 === $empty_cells && 0 === $zero_cells )
-	? ok( '9. the single remaining placeholder renders 4 "Coming soon" fields; no empty or $0 values' )
-	: bad( "9. coming=$coming_cells empty=$empty_cells zero=$zero_cells (expected 4/0/0)" );
+( 0 === $coming_cells && 0 === $empty_cells && 0 === $zero_cells )
+	? ok( '9. no archive card renders a "Coming soon", empty or $0 value — all 14 show real facts' )
+	: bad( "9. coming=$coming_cells empty=$empty_cells zero=$zero_cells (expected 0/0/0)" );
 
-/* 9b. Every placeholder card shows the Coming Soon chip. */
+/* 9b. The Coming Soon chip is gone from the archive entirely. */
 $chips = preg_match_all( '#class="proj-card__status"#', $html );
-1 === $chips
-	? ok( '9b. exactly one card shows a "Coming Soon" chip (west-hollywood)' )
-	: bad( "9b. $chips Coming Soon chips (expected 1)" );
+0 === $chips
+	? ok( '9b. no card shows a "Coming Soon" chip — the archive advertises no pending project' )
+	: bad( "9b. $chips Coming Soon chips (expected 0)" );
 
-/* 10. Placeholder cards carry NO <img> at all, so they can never reuse a
- * verified project's photograph. Also assert none of the six verified image
- * filenames appears inside a placeholder card. */
+/* 10. No placeholder cards remain, and — the load-bearing, non-negotiable half
+ * of this check — no card displays a photograph belonging to another project. */
 preg_match_all( '#<(?:a|article) class="proj-card proj-card--placeholder".*?</(?:a|article)>#s', $html, $pm );
 $ph_cards = $pm[0] ?? array();
-$ph_imgs  = 0;
 $stolen   = array();
-foreach ( $ph_cards as $card ) {
-	$ph_imgs += preg_match_all( '#<img#', $card );
-	foreach ( $verified_slugs as $vs ) {
-		if ( false !== strpos( $card, $vs . '-after' ) || false !== strpos( $card, $vs . '-before' ) ) {
-			$stolen[] = $vs;
+preg_match_all( '#<(?:a|article) class="proj-card[^"]*"\s+href="[^"]*/projects/([^"/]+)/"[\s\S]*?</(?:a|article)>#', $html, $cm, PREG_SET_ORDER );
+foreach ( $cm as $card ) {
+	$own = $card[1];
+	foreach ( array_merge( $verified_slugs, $new_slugs ) as $vs ) {
+		if ( $vs === $own ) { continue; }
+		if ( false !== strpos( $card[0], $vs . '-after' ) || false !== strpos( $card[0], $vs . '-before' ) ) {
+			$stolen[] = "$own shows $vs";
 		}
 	}
 }
-/*
- * Six placeholders now carry their OWN verified photographs, so a placeholder
- * card legitimately contains an <img>. The load-bearing half of this check is
- * unchanged and non-negotiable: no placeholder may ever display a photograph
- * belonging to one of the six verified projects.
- */
-( 1 === count( $ph_cards ) && empty( $stolen ) )
-	? ok( '10. the one remaining placeholder card renders and reuses no verified project photograph' )
-	: bad( '10. cards=' . count( $ph_cards ) . ' stolen=' . implode( ',', $stolen ) );
+( 0 === count( $ph_cards ) && empty( $stolen ) )
+	? ok( '10. no placeholder cards remain, and no card displays another project\'s photograph' )
+	: bad( '10. placeholderCards=' . count( $ph_cards ) . ' stolen=' . implode( ',', $stolen ) );
 
-/* 10b. A placeholder WITHOUT photographs must still show the CSS-only branded
- * placeholder rather than a blank or broken frame; one WITH photographs must
- * not show it. Currently 2 of 8 are image-free (toluca-lake, west-hollywood). */
-$art        = preg_match_all( '#Project photos coming soon#', $html );
-$image_free = 0;
-foreach ( $placeholder_slugs as $slug ) {
-	$d = showtime_project_data( $slug );
-	if ( '' === (string) ( $d['after_image'] ?? '' ) ) { $image_free++; }
-}
-$art === $image_free
-	? ok( "10b. the $image_free image-free placeholder(s) render the CSS-only branded placeholder; the imaged ones show their photo" )
-	: bad( "10b. $art branded placeholders for $image_free image-free projects" );
+/* 10b. With no image-free projects left, the CSS-only branded placeholder frame
+ * must not appear anywhere on the archive. */
+$art = preg_match_all( '#Project photos coming soon#', $html );
+0 === $art
+	? ok( '10b. the CSS-only branded placeholder frame no longer appears — every card has its own photograph' )
+	: bad( "10b. $art branded placeholder frames still rendered (expected 0)" );
 
 /* 16. Slider controls: semantic buttons, labelled, and no duplicate IDs. */
 $prev_ok = preg_match( '#<button[^>]+data-proj-slider-prev[^>]+aria-label="[^"]+"#', $html )
@@ -411,27 +407,40 @@ echo "\n== WEST HOLLYWOOD — remains Coming Soon ==\n";
 $wh      = showtime_project_data( 'west-hollywood-pool-project' );
 $wh_body = fetch_body( "$base/projects/west-hollywood-pool-project/" );
 $wh_bad  = array();
-if ( 'coming_soon' !== ( $wh['status'] ?? '' ) || empty( $wh['is_coming_soon'] ) ) { $wh_bad[] = 'status'; }
+// PROMOTED. The owner authorised publication, so the coming_soon clauses are
+// superseded by their inverse: verified status, index+follow, a CreativeWork
+// node and real facts. Everything that guarded truthfulness is kept and
+// tightened — own imagery only, no completion date, no testimonial, no
+// fabricated service terminology, one self-referencing canonical.
+if ( 'verified' !== ( $wh['status'] ?? '' ) || ! empty( $wh['is_coming_soon'] ) ) { $wh_bad[] = 'status is not verified'; }
 foreach ( array( 'hero_image', 'before_image', 'after_image', 'og_image' ) as $k ) {
 	$v = (string) ( $wh[ $k ] ?? '' );
 	if ( '' === $v ) { $wh_bad[] = "missing $k"; }
 	elseif ( false === strpos( $v, 'west-hollywood-pool-project-' ) ) { $wh_bad[] = "$k is not its own asset"; }
 }
-// The four displayed facts must STILL read exactly "Coming soon" — photographs
-// do not promote a project to verified.
-foreach ( array( 'scope', 'finish', 'timeline', 'investment' ) as $k ) {
-	if ( 'Coming soon' !== (string) ( $wh[ $k ] ?? '' ) ) { $wh_bad[] = "$k is no longer \"Coming soon\""; }
+// Real facts now, and none of them may still read "Coming soon".
+foreach ( array( 'scope', 'finish', 'timeline', 'investment', 'title' ) as $k ) {
+	$v = (string) ( $wh[ $k ] ?? '' );
+	if ( '' === $v ) { $wh_bad[] = "$k is empty"; }
+	if ( false !== stripos( $v, 'coming soon' ) ) { $wh_bad[] = "$k still says Coming soon"; }
 }
+// Pump-replacement terminology ONLY — the photographs support nothing else.
+$wh_blob = strtolower( (string) wp_json_encode( $wh ) );
+foreach ( array( 'resurfac', 'replaster', 'remodel', 'renovat', 'tile', 'coping', 'decking', 'plaster', 'construction' ) as $w ) {
+	if ( false !== strpos( $wh_blob, $w ) ) { $wh_bad[] = "unsupported term \"$w\""; }
+}
+if ( false === stripos( $wh_blob, 'pump' ) ) { $wh_bad[] = 'no pump terminology'; }
 if ( '' !== (string) ( $wh['completion_date'] ?? '' ) || '' !== (string) ( $wh['client_quote'] ?? '' ) ) { $wh_bad[] = 'gained a completion date or testimonial'; }
-if ( ! preg_match( "#robots['\"] content=['\"]noindex, follow#", $wh_body ) )                 { $wh_bad[] = 'not noindex,follow'; }
-if ( ! preg_match( '#<link rel="canonical" href="[^"]*/projects/west-hollywood-pool-project/"#', $wh_body ) ) { $wh_bad[] = 'canonical'; }
-if ( preg_match( '#"@type":"CreativeWork"#', $wh_body ) )                                     { $wh_bad[] = 'emitted CreativeWork'; }
-if ( ! preg_match( '#proj-compare__media#', $wh_body ) )                                      { $wh_bad[] = 'no comparison rendered'; }
-if ( false === stripos( $wh_body, 'Coming soon' ) )                                           { $wh_bad[] = 'no Coming soon notice'; }
+if ( ! preg_match( "#robots['\"] content=['\"][^'\"]*index, follow#", $wh_body ) )             { $wh_bad[] = 'not index,follow'; }
+if ( preg_match( "#robots['\"] content=['\"][^'\"]*noindex#", $wh_body ) )                     { $wh_bad[] = 'still noindex'; }
+if ( 1 !== substr_count( $wh_body, '<link rel="canonical"' ) )                                 { $wh_bad[] = 'not exactly one canonical'; }
+if ( ! preg_match( '#<link rel="canonical" href="[^"]*/projects/west-hollywood-pool-project/"#', $wh_body ) ) { $wh_bad[] = 'canonical not self-referencing'; }
+if ( 1 !== preg_match_all( '#"@type":"CreativeWork"#', $wh_body ) )                            { $wh_bad[] = 'not exactly one CreativeWork node'; }
+if ( ! preg_match( '#proj-compare__media#', $wh_body ) )                                       { $wh_bad[] = 'no comparison rendered'; }
 $wh_post = get_page_by_path( 'west-hollywood-pool-project', OBJECT, 'project' );
 if ( $wh_post instanceof WP_Post && null === showtime_project_compare( (int) $wh_post->ID ) ) { $wh_bad[] = 'comparison did not resolve'; }
 empty( $wh_bad )
-	? ok( '14. west-hollywood: 200, noindex+follow, self-canonical, no project schema, still Coming Soon on every displayed fact — now carrying its own verified before/after pair and rendering a comparison' )
+	? ok( '14. west-hollywood is promoted: verified, index+follow, one self-referencing canonical, one CreativeWork node, its own before/after pair, real facts, pump-replacement terminology only, and still no completion date or testimonial' )
 	: bad( '14. ' . implode( ', ', $wh_bad ) );
 
 /* 14b. West Hollywood must never present ANOTHER project's imagery as its own.
@@ -460,27 +469,27 @@ $all_imgs = preg_match_all( '#<img#', $wh_own );
 
 echo "\n== SITEMAPS + SCHEMA + VERIFIED-SIX REGRESSION ==\n";
 
-/* 15. XML sitemap: exactly the 13 indexable projects, west-hollywood absent. */
+/* 15. XML sitemap: all 14 indexable projects, west-hollywood now included. */
 $xml     = fetch_body( "$base/wp-sitemap-posts-project-1.xml" );
 $xml_n   = preg_match_all( '#/projects/[a-z0-9-]+/#', $xml );
-$xml_ok  = '' !== $xml && 13 === $xml_n && false === strpos( $xml, 'west-hollywood' );
+$xml_ok  = '' !== $xml && 14 === $xml_n && false !== strpos( $xml, '/projects/west-hollywood-pool-project/' );
 foreach ( array_merge( $verified_slugs, $promoted_slugs ) as $slug ) {
 	$xml_ok = $xml_ok && false !== strpos( $xml, "/projects/$slug/" );
 }
 $xml_ok
-	? ok( '15. XML sitemap lists exactly 13 project URLs and excludes west-hollywood' )
-	: bad( "15. XML sitemap has $xml_n project URLs (expected 13) or is missing/leaking a slug" );
+	? ok( '15. XML sitemap lists exactly 14 project URLs, including west-hollywood, with no slug missing' )
+	: bad( "15. XML sitemap has $xml_n project URLs (expected 14) or is missing a slug" );
 
 /* 15b. HTML sitemap: same contract. */
 $hs     = fetch_body( "$base/sitemap/" );
 $hs_n   = preg_match_all( '#href="[^"]*/projects/[a-z0-9-]+/"#', $hs );
-$hs_ok  = '' !== $hs && 13 === $hs_n && false === strpos( $hs, '/projects/west-hollywood-pool-project/' );
+$hs_ok  = '' !== $hs && 14 === $hs_n && false !== strpos( $hs, '/projects/west-hollywood-pool-project/' );
 foreach ( array_merge( $verified_slugs, $promoted_slugs ) as $slug ) {
 	$hs_ok = $hs_ok && false !== strpos( $hs, "/projects/$slug/" );
 }
 $hs_ok
-	? ok( '15b. HTML sitemap lists exactly 13 project URLs and excludes west-hollywood' )
-	: bad( "15b. HTML sitemap has $hs_n project URLs (expected 13)" );
+	? ok( '15b. HTML sitemap lists exactly 14 project URLs, including west-hollywood' )
+	: bad( "15b. HTML sitemap has $hs_n project URLs (expected 14)" );
 
 /* 16. No project page may carry Product / Offer / Review / rating / price schema,
  * and the researched investment range must never reach structured data. */
@@ -532,6 +541,7 @@ echo "\n== IMAGERY ==\n";
  * project-image standard, and no photograph is reused between projects. */
 $cmp_dir = get_stylesheet_directory() . '/assets/img/projects/comparisons/';
 $img_bad = array();
+$dims    = array();
 foreach ( $promoted_slugs as $slug ) {
 	foreach ( array( 'before', 'after' ) as $side ) {
 		$p = $cmp_dir . $slug . '-' . $side . '.webp';
@@ -540,12 +550,23 @@ foreach ( $promoted_slugs as $slug ) {
 		if ( ! is_array( $i ) || 'image/webp' !== ( $i['mime'] ?? '' ) ) { $img_bad[] = "$slug-$side not webp"; continue; }
 		$head = (string) file_get_contents( $p, false, null, 0, 12 );
 		if ( 'RIFF' !== substr( $head, 0, 4 ) || 'WEBP' !== substr( $head, 8, 4 ) ) { $img_bad[] = "$slug-$side bad magic"; }
-		if ( 1376 !== (int) $i[0] || 768 !== (int) $i[1] ) { $img_bad[] = "$slug-$side {$i[0]}x{$i[1]}"; }
-		if ( abs( ( $i[0] / $i[1] ) - 1.7917 ) > 0.01 )    { $img_bad[] = "$slug-$side aspect"; }
+		// Width is the fixed project-image standard. Height is one of two
+		// documented values: 768 (43:24, the original batch) or 774 (exact
+		// 16:9, used where the source was already 16:9 and forcing 768 would
+		// have required a stretch or a crop — both forbidden). Anything else
+		// means an asset was resized outside the pipeline.
+		if ( 1376 !== (int) $i[0] )                          { $img_bad[] = "$slug-$side width {$i[0]} (expected 1376)"; }
+		if ( ! in_array( (int) $i[1], array( 768, 774 ), true ) ) { $img_bad[] = "$slug-$side height {$i[1]} (expected 768 or 774)"; }
+		if ( (int) $i[0] <= (int) $i[1] )                     { $img_bad[] = "$slug-$side not landscape"; }
+		$dims[ $slug ][ $side ] = $i[0] . 'x' . $i[1];
+	}
+	// The comparison slider only aligns when a project's two frames match.
+	if ( isset( $dims[ $slug ]['before'], $dims[ $slug ]['after'] ) && $dims[ $slug ]['before'] !== $dims[ $slug ]['after'] ) {
+		$img_bad[] = "$slug before/after dimensions differ ({$dims[$slug]['before']} vs {$dims[$slug]['after']})";
 	}
 }
 empty( $img_bad )
-	? ok( '19. all 14 promoted images are genuine WebP at 1376x768 with the standard aspect ratio' )
+	? ok( '19. all 14 projects map to genuine landscape WebP at width 1376 (height 768 or 774), with each project\'s before/after pair sharing identical dimensions' )
 	: bad( '19. ' . implode( ', ', $img_bad ) );
 
 /* 20. Checksum uniqueness across every comparison asset. */

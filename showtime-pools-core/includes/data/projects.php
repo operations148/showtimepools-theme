@@ -422,26 +422,41 @@ return array(
 	),
 
 	array(
-		// Photographs supplied and verified; written project details still pending.
-		// The entry therefore stays `coming_soon` — scope/finish/timeline/investment
-		// remain exactly "Coming soon", completion_date and client_quote stay blank,
-		// and the post keeps its noindex + sitemap/schema exclusion. Per the
-		// placeholder contract in cli/class-projects-sync.php, supplying imagery
-		// makes the comparison copy and the three alt strings REQUIRED, so a
-		// rendered comparison is never unlabelled. Every string below describes
-		// only what the two photographs actually show: no manufacturer, model,
-		// material, date, duration, price or testimonial.
+		// PROMOTED from placeholder to verified. Every claim below is limited to
+		// what the two photographs actually show: an ageing pump and weathered PVC
+		// on an existing concrete equipment pad, replaced by a new pump with a
+		// digital control interface reconnected with new PVC, wall and pad left as
+		// found. Deliberately ABSENT because nothing verifies them: pump brand,
+		// model, horsepower, variable-speed specification, warranty, permit,
+		// rebate, electrical upgrade, completion date, contract price, customer
+		// name and testimonial. This is a pump replacement only — never described
+		// as resurfacing, replastering, remodeling, tile, coping, construction,
+		// pad reconstruction, wall refinishing or concrete replacement.
+		//
+		// `investment` is a RESEARCHED CALIFORNIA MARKET RANGE, not this
+		// customer's invoice. It publishes under the fixed label "Typical
+		// investment for similar California projects" and never enters JSON-LD.
+		// Sources: HomeGuide 2026 (VS pump $800–$2,000 installed); Waterline
+		// Controls, updated 13 Jan 2026 ($900–$2,500 total, install $300–$800);
+		// Kirby's Pool Service, Los Angeles ($1,350–$1,650 installed incl. tax,
+		// labor, programming); Dog Days Pools (plumbing modifications add
+		// $150–$300; standard swap 1–3 hours). California Energy Commission
+		// Title 20 §1605.3(g)6 requires replacement dedicated-purpose pool pump
+		// motors to be variable-speed, which puts every California replacement in
+		// the variable-speed band rather than the cheaper single-speed one.
 		'slug'               => 'west-hollywood-pool-project',
 		'managed'            => true,
-		'status'             => 'coming_soon',
-		'is_coming_soon'     => true,
-		'title'              => 'West Hollywood Pool Project — Coming Soon',
-		'excerpt'            => 'Verified project details and photos are being prepared.',
+		'title'              => 'Pool Pump Replacement in West Hollywood, CA',
+		'excerpt'            => 'An ageing pool pump on a West Hollywood equipment pad was replaced and reconnected with new PVC plumbing, with the existing concrete pad and surrounding wall left in place.',
 		'neighborhood'       => 'West Hollywood',
-		'finish'             => 'Coming soon',
-		'scope'              => 'Coming soon',
-		'timeline'           => 'Coming soon',
-		'investment'         => 'Coming soon',
+		'finish'             => 'Equipment upgrade — existing equipment pad retained',
+		'scope'              => 'Pool pump replacement and PVC plumbing reconnection',
+		// One service day. The research puts the physical swap at roughly 1–3
+		// hours, so a single day is the conservative homeowner-facing figure for
+		// the work itself. Scheduling lead time and parts procurement are
+		// deliberately NOT counted as project duration — they are not work.
+		'timeline'           => '1 day',
+		'investment'         => '$1,300–$2,600',
 		'completion_date'    => '',
 		'client_quote'       => '',
 		'hero_image'         => 'west-hollywood-pool-project-after.webp',
@@ -455,25 +470,16 @@ return array(
 		'before_condition'   => 'Ageing pool pump on the equipment pad, connected to weathered PVC plumbing.',
 		'work_completed'     => 'Pump replaced and reconnected with new PVC plumbing on the existing pad.',
 		'completed_result'   => 'A new pool pump with a digital control panel running on the same equipment pad.',
-		'service_url'        => '',
-		'area_url'           => '',
-		'seo_title'          => 'West Hollywood Pool Project — Coming Soon | Showtime Pools',
-		'meta_description'   => 'Verified project details and photos for this West Hollywood pool project are being prepared.',
+		'service_url'        => '/services/equipment-installation-upgrades/',
+		'area_url'           => '/service-areas/west-hollywood/',
+		'seo_title'          => 'Pool Pump Replacement in West Hollywood, CA',
+		'meta_description'   => 'Before and after photos of a West Hollywood pool pump replacement: an ageing pump and weathered PVC reconnected with new plumbing on the existing equipment pad.',
 		'og_image'           => 'west-hollywood-pool-project-after.webp',
 
-		// Additional project gallery. Four slots, all awaiting owner photography.
-		// A slot renders a real <figure><img> only once BOTH `image` (a file in
-		// assets/img/projects/comparisons/) and `alt` are supplied and `status`
-		// is 'ready'; until then it renders a non-image "Coming soon" card with
-		// no <img>, no src and no invented alt or caption. See
-		// showtime_project_gallery() — a malformed slot fails the whole gallery
-		// closed rather than rendering something untrue.
-		'additional_gallery' => array(
-			array( 'status' => 'coming_soon', 'image' => '', 'alt' => '', 'caption' => '' ),
-			array( 'status' => 'coming_soon', 'image' => '', 'alt' => '', 'caption' => '' ),
-			array( 'status' => 'coming_soon', 'image' => '', 'alt' => '', 'caption' => '' ),
-			array( 'status' => 'coming_soon', 'image' => '', 'alt' => '', 'caption' => '' ),
-		),
+		// No `additional_gallery` key: this project inherits the shared default
+		// (four pending slots) from showtime_project_gallery_default(), exactly
+		// like the other thirteen. Supply the key here to publish real gallery
+		// photographs for this project, or set it to array() to opt out.
 	),
 
 	array(

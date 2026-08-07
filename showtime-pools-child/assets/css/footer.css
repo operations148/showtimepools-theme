@@ -266,8 +266,36 @@
 	border-top: 1px solid rgba(255, 255, 255, 0.08);
 	padding-block: clamp(0.5rem, 2vw, 1.5rem);
 }
+
+/* Shared brand row: official logo left, outlined watermark centre/right, both
+   vertically centred on one baseline. The row only grows the footer by as much
+   as the logo needs — the watermark keeps its own fluid size and simply gives
+   up the horizontal space the logo takes. */
+.footer-wordmark__row {
+	display: flex;
+	align-items: center;
+	gap: clamp(1rem, 3vw, 2.5rem);
+}
+
+.footer-brandmark {
+	flex: 0 0 auto;
+	display: inline-flex;
+	border-radius: var(--r-md);
+}
+.footer-brandmark__img {
+	display: block;
+	width: clamp(190px, 15vw, 220px);
+	height: auto;            /* intrinsic ratio preserved — never stretched */
+}
+.footer-brandmark:focus-visible {
+	outline: 3px solid var(--c-focus-ring);
+	outline-offset: 4px;
+}
+
 .footer-wordmark__text {
 	display: block;
+	flex: 1 1 auto;
+	min-width: 0;
 	width: 100%;
 	font-family: var(--ff-display);
 	font-weight: 800;
@@ -288,6 +316,17 @@
 	@media (max-width: 640px) {
 		.footer-wordmark__text { -webkit-text-stroke: 1px rgba(255, 255, 255, 0.16); }
 	}
+}
+
+/* Tablet and below: stack the official logo above the outlined wordmark, both
+   centred, with comfortable spacing and no overflow. */
+@media (max-width: 900px) {
+	.footer-wordmark__row {
+		flex-direction: column;
+		gap: clamp(0.75rem, 3vw, 1.5rem);
+	}
+	.footer-brandmark__img { width: clamp(150px, 26vw, 180px); }
+	.footer-wordmark__text { text-align: center; }
 }
 
 /* ─── Legal bar ─────────────────────────────────────────────────── */

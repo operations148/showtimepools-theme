@@ -239,8 +239,15 @@ foreach ( $others as $s => $body ) {
 	if ( preg_match( '#class="proj-gallery"#', $body ) ) { $other_with[] = $s; }
 }
 ( 1 === $wh_count ) ? ok( '11. the West Hollywood page renders exactly one gallery component' ) : bad( "11. West Hollywood rendered $wh_count galleries" );
-$other_with ? bad( '12. a non-configured project rendered a gallery — ' . implode( ', ', $other_with ) )
-	: ok( '12. all ' . count( $others ) . ' other project pages render zero gallery components and zero gallery markup' );
+// The gallery is now the shared default for EVERY managed project, so each of
+// them must render exactly one — never zero, never two.
+$wrong = array();
+foreach ( $others as $s2 => $body ) {
+	$n = preg_match_all( '#class="proj-gallery"#', $body );
+	if ( 1 !== $n ) { $wrong[] = "$s2 ($n)"; }
+}
+$wrong ? bad( '12. every managed project must render exactly one gallery — ' . implode( ', ', $wrong ) )
+	: ok( '12. all ' . ( count( $others ) + 1 ) . ' managed project pages render exactly one gallery each' );
 
 echo "\n== GALLERY STRUCTURE ==\n";
 
@@ -285,10 +292,10 @@ $current = preg_match_all( '#aria-current="true"#', $gal );
 	: bad( '27. names=' . wp_json_encode( $names ) . " ariaCurrent=$current" );
 
 // 18.
-$ratio = (bool) preg_match( '#\.proj-gallery__frame\s*\{[^}]*aspect-ratio:\s*3\s*/\s*4#s', $css );
+$ratio = (bool) preg_match( '#\.proj-gallery__frame\s*\{[^}]*aspect-ratio:\s*4\s*/\s*3#s', $css );
 $frames = preg_match_all( '#class="proj-gallery__frame"#', $gal );
 ( $ratio && 4 === $frames )
-	? ok( '18. every one of the four placeholders sits in the shared 3 / 4 portrait frame' )
+	? ok( '18. every one of the four placeholders sits in the shared 4 / 3 landscape frame' )
 	: bad( '18. cssRatio=' . var_export( $ratio, true ) . " frames=$frames" );
 
 // 19 + 20.
@@ -405,58 +412,86 @@ echo "\n== SEO / STRUCTURED DATA / SITEMAPS ==\n";
 preg_match_all( '#<script type="application/ld\+json">([\s\S]*?)</script>#', $wh_html, $ld );
 $ld_all = implode( ' ', $ld[1] ?? array() );
 $leak = array();
-foreach ( array( 'proj-gallery', 'Project photo coming soon', 'Coming soon', 'coming_soon', 'ImageObject', 'ItemList', '"Product"', '"Offer"', 'AggregateRating', 'ratingValue', 'reviewCount', '"Review"' ) as $needle ) {
+foreach ( array( 'proj-gallery', 'Project photo coming soon', 'Coming soon', 'coming_soon', 'ImageObject', 'ItemList', '"Product"', '"Offer"', 'AggregateRating', 'ratingValue', 'reviewCount', '"Review"', 'priceCurrency', '"price"', '1,300', '2,600' ) as $needle ) {
 	if ( false !== strpos( $ld_all, $needle ) ) { $leak[] = $needle; }
 }
-$creative = false !== strpos( $ld_all, 'CreativeWork' );
-( ! $leak && ! $creative )
-	? ok( '22. no gallery placeholder reaches structured data, and the placeholder project still emits no CreativeWork node — the page carries only WebSite, BreadcrumbList and the sitewide business node' )
-	: bad( '22. leaked into JSON-LD: ' . implode( ', ', $leak ) . ' creativeWork=' . var_export( $creative, true ) );
+// West Hollywood is now a verified project, so exactly ONE CreativeWork node is
+// expected. What must never appear is a gallery placeholder or the researched
+// price range.
+$creative = preg_match_all( '#"@type":"CreativeWork"#', $ld_all );
+( ! $leak && 1 === $creative )
+	? ok( '22. no gallery placeholder and no researched price figure reaches structured data; the page emits exactly one CreativeWork node and no Product, Offer, Review, rating or price schema' )
+	: bad( '22. leaked into JSON-LD: ' . implode( ', ', $leak ) . ' creativeWorkNodes=' . $creative );
 
 // 23.
 $xml  = fetch_body( home_url( '/wp-sitemap-posts-project-1.xml' ) );
 $html_map = fetch_body( home_url( '/sitemap/' ) );
-$in_xml  = false !== strpos( $xml, $WH );
-$in_html = false !== strpos( $html_map, $WH );
-( ! $in_xml && ! $in_html )
-	? ok( '23. West Hollywood and its gallery placeholders appear in neither the XML sitemap nor the HTML sitemap' )
-	: bad( '23. xml=' . var_export( $in_xml, true ) . ' html=' . var_export( $in_html, true ) );
+// West Hollywood is now a published project, so it SHOULD be listed once in each
+// sitemap alongside the other thirteen. What must still contribute no URL at all
+// is a gallery placeholder.
+$in_xml     = preg_match_all( '#<loc>[^<]*' . preg_quote( $WH, '#' ) . '/?</loc>#', $xml );
+$in_html    = substr_count( $html_map, $WH . '/"' );
+$xml_total  = preg_match_all( '#<loc>[^<]*/projects/[^<]+</loc>#', $xml );
+$html_total = preg_match_all( '#href="[^"]*/projects/[^"/]+/"#', $html_map );
+$ph_leak    = preg_match( '#proj-gallery|Project photo coming soon#', $xml . $html_map );
+( 1 === $in_xml && 1 === $in_html && 14 === $xml_total && 14 === $html_total && ! $ph_leak )
+	? ok( '23. both sitemaps list all 14 managed projects including West Hollywood exactly once, and no gallery placeholder contributes a URL' )
+	: bad( "23. whXml=$in_xml whHtml=$in_html xmlTotal=$xml_total htmlTotal=$html_total placeholderLeak=$ph_leak" );
 
-echo "\n== INDEXING AND PUBLICATION STATE UNCHANGED ==\n";
+echo "\n== PROMOTED INDEXING AND PUBLICATION STATE ==\n";
 
-$robots_ok  = (bool) preg_match( "#<meta name='robots' content='noindex, follow' />#", $wh_html );
-$still_soon = is_array( $p ) && ! empty( $p['is_coming_soon'] ) && 'coming_soon' === $p['status'];
-$facts_soon = is_array( $p )
-	&& 'Coming soon' === $p['scope'] && 'Coming soon' === $p['finish']
-	&& 'Coming soon' === $p['timeline'] && 'Coming soon' === $p['investment'];
+// PROMOTED. The project is verified and indexable now; what must still hold is
+// that it makes no unverifiable claim and keeps one self-referencing canonical.
+$robots_ok  = (bool) preg_match( "#<meta name='robots' content='[^']*index, follow[^']*' />#", $wh_html )
+	&& ! preg_match( "#content='[^']*noindex#", $wh_html );
+$promoted   = is_array( $p ) && empty( $p['is_coming_soon'] ) && 'verified' === $p['status'];
+$facts_real = is_array( $p )
+	&& 'Coming soon' !== $p['scope'] && 'Coming soon' !== $p['finish']
+	&& 'Coming soon' !== $p['timeline'] && 'Coming soon' !== $p['investment']
+	&& '' !== $p['scope'] && '' !== $p['investment'];
 $no_claims  = is_array( $p ) && '' === $p['completion_date'] && '' === $p['client_quote'];
 $published  = ( $wh_post instanceof WP_Post ) && 'publish' === $wh_post->post_status;
-$canon_ok   = false !== strpos( $wh_html, '<link rel="canonical" href="' . home_url( "/projects/$WH/" ) . '"' );
-( $robots_ok && $still_soon && $facts_soon && $no_claims && $published && $canon_ok )
-	? ok( '10c. connecting the photographs changed no indexing state: still noindex,follow — still status coming_soon — scope/finish/timeline/investment still exactly "Coming soon" — completion date and testimonial still blank — post still published — canonical unchanged' )
-	: bad( '10c. robots=' . var_export( $robots_ok, true ) . ' comingSoon=' . var_export( $still_soon, true ) . ' facts=' . var_export( $facts_soon, true ) . ' noClaims=' . var_export( $no_claims, true ) . ' published=' . var_export( $published, true ) . ' canonical=' . var_export( $canon_ok, true ) );
+$canon_ok   = 1 === substr_count( $wh_html, '<link rel="canonical"' )
+	&& false !== strpos( $wh_html, '<link rel="canonical" href="' . home_url( "/projects/$WH/" ) . '"' );
+( $robots_ok && $promoted && $facts_real && $no_claims && $published && $canon_ok )
+	? ok( '10c. West Hollywood is promoted: status verified, index+follow, real scope/finish/timeline/investment, still no completion date or testimonial, still published, exactly one self-referencing canonical' )
+	: bad( '10c. robots=' . var_export( $robots_ok, true ) . ' promoted=' . var_export( $promoted, true ) . ' facts=' . var_export( $facts_real, true ) . ' noClaims=' . var_export( $no_claims, true ) . ' published=' . var_export( $published, true ) . ' canonical=' . var_export( $canon_ok, true ) );
 
-// No price/rating anywhere in the West Hollywood registry block.
+// A researched RANGE is now expected. A single figure would read as an invoice,
+// and the range must never reach structured data.
 $wh_block = $block( $reg_now, $WH );
 $dirty = array();
-if ( preg_match( '/\$\s?[\d,]/', $wh_block ) ) { $dirty[] = 'price figure'; }
-foreach ( array( 'aggregateRating', 'ratingValue', 'reviewCount' ) as $n ) {
+$inv   = is_array( $p ) ? (string) $p['investment'] : '';
+if ( ! preg_match( '/^\$[\d,]+\s*[–-]\s*\$[\d,]+$/u', $inv ) ) { $dirty[] = "investment is not a range ('$inv')"; }
+foreach ( array( 'aggregateRating', 'ratingValue', 'reviewCount', '"review"' ) as $n ) {
 	if ( false !== stripos( $wh_block, $n ) ) { $dirty[] = $n; }
 }
-$dirty ? bad( '22b. West Hollywood registry block contains ' . implode( ', ', $dirty ) )
-	: ok( '22b. the West Hollywood registry block contains no price figure and no review or rating data' );
+if ( false === strpos( $wh_html, 'Typical investment for similar California projects' ) ) { $dirty[] = 'fixed public label missing'; }
+foreach ( array( '1,300', '2,600', 'priceCurrency', '"price"' ) as $n ) {
+	if ( false !== strpos( $ld_all, $n ) ) { $dirty[] = "$n leaked into JSON-LD"; }
+}
+$dirty ? bad( '22b. ' . implode( ', ', $dirty ) )
+	: ok( '22b. the investment is a researched range (' . $inv . ') published under the fixed label "Typical investment for similar California projects", carries no review or rating data, and never enters JSON-LD' );
 
 echo "\n== NO REGRESSION ELSEWHERE ==\n";
 
 // 33.
-$other_gallery_markup = array();
+// The gallery is a shared default now, so every managed project must carry the
+// full markup contract. What must NOT happen is it appearing on a page that is
+// not a managed project.
+$missing_markup = array();
 foreach ( $others as $s => $body ) {
 	foreach ( array( 'proj-gallery', 'More Project Highlights', 'data-proj-slider-label' ) as $needle ) {
-		if ( false !== strpos( $body, $needle ) ) { $other_gallery_markup[] = "$s:$needle"; }
+		if ( false === strpos( $body, $needle ) ) { $missing_markup[] = "$s:$needle"; }
 	}
 }
-$other_gallery_markup ? bad( '33. gallery markup leaked onto another project page — ' . implode( ', ', $other_gallery_markup ) )
-	: ok( '33. no gallery markup, heading or slider attribute appears on any of the ' . count( $others ) . ' other project pages; their registry blocks are byte-identical to HEAD (see 9)' );
+$non_project = array();
+foreach ( array( '/services/pool-repairs-plumbing/', '/service-areas/sherman-oaks/', '/about/', '/blog/', '/contact/' ) as $u ) {
+	if ( false !== strpos( fetch_body( home_url( $u ) ), 'class="proj-gallery"' ) ) { $non_project[] = $u; }
+}
+( ! $missing_markup && ! $non_project )
+	? ok( '33. all ' . ( count( $others ) + 1 ) . ' managed project pages carry the full gallery markup, and it appears on none of the 5 sampled service / area / blog / about / contact pages' )
+	: bad( '33. missing: ' . implode( ', ', $missing_markup ) . ' | leaked onto: ' . implode( ', ', $non_project ) );
 
 // 34.
 $cmp_ok = array();
@@ -479,6 +514,117 @@ $header_ok ? ok( '35. the sitewide overlaid-header behaviour still applies on th
 ( $ghl_ok && $drawer_ok )
 	? ok( '36. the GHL widget id and loader are still present and the drawer still out-stacks the chat widget' )
 	: bad( '36. ghl=' . var_export( $ghl_ok, true ) . ' drawer=' . var_export( $drawer_ok, true ) );
+
+echo "\n== GALLERY LAYOUT CONTRACT (4:3, centred, mobile stacking) ==\n";
+
+// 5. The pair is constrained and centred rather than stretched, in two equal columns.
+$layout = array(
+	'4:3 landscape frame'        => (bool) preg_match( '#\.proj-gallery__frame\s*\{[^}]*aspect-ratio:\s*4\s*/\s*3#s', $css ),
+	'pair constrained'           => (bool) preg_match( '#\.proj-gallery\s*\{[^}]*max-width:\s*860px#s', $css ),
+	'pair centred in the column' => (bool) preg_match( '#\.proj-gallery\s*\{[^}]*margin-inline:\s*auto#s', $css ),
+	'two equal desktop columns'  => (bool) preg_match( '#\.proj-gallery__grid\s*\{[^}]*grid-template-columns:\s*1fr 1fr#s', $css ),
+);
+$miss_layout = array_keys( array_filter( $layout, static fn( $v ) => ! $v ) );
+$miss_layout ? bad( '5. desktop layout — missing: ' . implode( ', ', $miss_layout ) )
+	: ok( '5. cards use a 4 / 3 landscape frame; the two-card group is constrained to 860px and centred with margin-inline:auto in two equal columns — never stretched across the full section' );
+
+// 6. Mobile stacks the active page's two cards vertically, each centred, same two-page model.
+$mobile = array(
+	'single column under 600px' => (bool) preg_match( '#@media \(max-width: 600px\)\s*\{[\s\S]*?\.proj-gallery__grid\s*\{[^}]*grid-template-columns:\s*minmax\(0, 1fr\)#s', $css ),
+	'each card centred'         => (bool) preg_match( '#@media \(max-width: 600px\)\s*\{[\s\S]*?\.proj-gallery__grid\s*\{[^}]*justify-items:\s*center#s', $css ),
+	'card width capped'         => (bool) preg_match( '#@media \(max-width: 600px\)\s*\{[\s\S]*?\.proj-gallery__cell\s*\{[^}]*max-width:\s*320px#s', $css ),
+	'ratio not overridden'      => ! preg_match( '#@media \(max-width: 600px\)\s*\{[\s\S]*?\.proj-gallery__frame\s*\{[^}]*aspect-ratio#s', $css ),
+	'pagination model intact'   => 2 === preg_match_all( '#data-proj-slider-slide="\d"#', $gal ),
+);
+$miss_mobile = array_keys( array_filter( $mobile, static fn( $v ) => ! $v ) );
+$miss_mobile ? bad( '6. mobile layout — missing: ' . implode( ', ', $miss_mobile ) )
+	: ok( '6. under 600px the active page stacks to one centred column with the card width capped, the 4:3 ratio untouched, and the same two-page pagination model' );
+
+// 7. The gallery requests no image at all, and every image elsewhere resolves.
+$broken = array();
+preg_match_all( '#<img[^>]+src="([^"]+)"#', $wh_html, $im );
+$uri = trailingslashit( get_stylesheet_directory_uri() );
+$dir = trailingslashit( get_stylesheet_directory() );
+foreach ( ( $im[1] ?? array() ) as $src ) {
+	if ( '' === trim( $src ) ) { $broken[] = 'empty src'; continue; }
+	if ( 0 === strpos( $src, $uri ) ) {
+		$path = $dir . substr( $src, strlen( $uri ) );
+		if ( ! is_readable( $path ) ) { $broken[] = basename( $src ) . ' (missing on disk)'; }
+	}
+}
+$gal_imgs   = preg_match_all( '#<img#', $gal );
+$gal_bg_url = preg_match_all( '#url\(#', $gal );
+( empty( $broken ) && 0 === $gal_imgs && 0 === $gal_bg_url )
+	? ok( '7. the gallery requests no image at all — no <img>, no CSS url(), no broken-image icon — and all ' . count( $im[1] ?? array() ) . ' images elsewhere on the page resolve to real files on disk' )
+	: bad( '7. broken: ' . implode( ', ', $broken ) . " galleryImgs=$gal_imgs galleryUrls=$gal_bg_url" );
+
+// 8. Every gallery control exposes a unique accessible name.
+preg_match_all( '#<button[^>]*class="proj-gallery__(?:arrow|dot)[^"]*"[^>]*aria-label="([^"]+)"#', $gal, $lm );
+$labels = $lm[1] ?? array();
+( 4 === count( $labels ) && count( array_unique( $labels ) ) === count( $labels ) )
+	? ok( '8. all four gallery controls expose unique accessible names: ' . implode( ' / ', $labels ) )
+	: bad( '8. labels=' . count( $labels ) . ' unique=' . count( array_unique( $labels ) ) . ' -> ' . implode( ' | ', $labels ) );
+
+echo "\n== FOOTER BRAND ROW ==\n";
+
+$home_html  = fetch_body( home_url( '/' ) );
+$footer_css = (string) file_get_contents( $child . '/assets/css/footer.css' );
+
+// 19 + 20. Exactly one linked official logo, correct alt and intrinsic size.
+$brand_n = preg_match_all( '#<a class="footer-brandmark"[^>]*href="([^"]+)"#', $home_html, $bm );
+preg_match( '#<img\s+class="footer-brandmark__img"[\s\S]*?>#', $home_html, $bi );
+$img_tag = $bi[0] ?? '';
+$attr = static function ( string $a ) use ( $img_tag ): string {
+	return preg_match( '#\b' . $a . '="([^"]*)"#', $img_tag, $m ) ? $m[1] : '';
+};
+$logo_src  = $attr( 'src' );
+$logo_path = ( '' !== $logo_src && 0 === strpos( $logo_src, $uri ) ) ? $dir . substr( $logo_src, strlen( $uri ) ) : '';
+$logo_real = '' !== $logo_path && is_readable( $logo_path );
+$logo_size = $logo_real ? @getimagesize( $logo_path ) : false;
+$lw = (int) $attr( 'width' );
+$lh = (int) $attr( 'height' );
+$fb = array();
+if ( 1 !== $brand_n )                          { $fb[] = "linked logos=$brand_n (expected 1)"; }
+if ( ( $bm[1][0] ?? '' ) !== home_url( '/' ) ) { $fb[] = 'logo does not link to the homepage'; }
+if ( 'Showtime Pools' !== $attr( 'alt' ) )     { $fb[] = 'alt is "' . $attr( 'alt' ) . '"'; }
+if ( $lw < 1 || $lh < 1 )                      { $fb[] = 'missing intrinsic width/height'; }
+if ( ! $logo_real )                            { $fb[] = 'logo file not readable on disk'; }
+if ( is_array( $logo_size ) && ( (int) $logo_size[0] !== $lw || (int) $logo_size[1] !== $lh ) ) {
+	$fb[] = "intrinsic {$lw}x{$lh} does not match the file ({$logo_size[0]}x{$logo_size[1]})";
+}
+if ( 'lazy' !== $attr( 'loading' ) )           { $fb[] = 'loading is "' . $attr( 'loading' ) . '"'; }
+if ( 'async' !== $attr( 'decoding' ) )         { $fb[] = 'decoding is "' . $attr( 'decoding' ) . '"'; }
+if ( false === strpos( $logo_src, '/assets/img/logo.' ) && false === strpos( $logo_src, '/wp-content/uploads' ) ) {
+	$fb[] = 'not the official bundled or Customizer logo';
+}
+if ( preg_match( '#\.footer-brandmark__img\s*\{[^}]*filter:#s', $footer_css ) ) {
+	$fb[] = 'a CSS colour filter is applied to the logo';
+}
+if ( ! preg_match( '#\.footer-brandmark:focus-visible\s*\{[^}]*outline#s', $footer_css ) ) {
+	$fb[] = 'no visible keyboard focus state';
+}
+$fb ? bad( '19 + 20. footer logo — ' . implode( ', ', $fb ) )
+	: ok( '19 + 20. exactly one linked official logo in the footer (' . basename( $logo_src ) . "), linking home, alt=\"Showtime Pools\", intrinsic {$lw}x{$lh} matching the file on disk, lazy + async, visible focus ring, no colour filter" );
+
+// The decorative wordmark must not swallow the focusable logo link.
+$wrapper_hidden = (bool) preg_match( '#<div class="footer-wordmark"[^>]*aria-hidden#', $home_html );
+$text_hidden    = (bool) preg_match( '#class="footer-wordmark__text" aria-hidden="true"#', $home_html );
+( ! $wrapper_hidden && $text_hidden )
+	? ok( '20b. aria-hidden sits on the decorative wordmark text only, so it adds no duplicate screen-reader output while the logo link stays reachable and focusable' )
+	: bad( '20b. wrapperHidden=' . var_export( $wrapper_hidden, true ) . ' textHidden=' . var_export( $text_hidden, true ) );
+
+// 21. Legal links and social destinations are untouched.
+$legal_missing = array();
+foreach ( array( '/privacy-policy/', '/affiliate/', '/terms/', 'wp-sitemap.xml' ) as $l ) {
+	if ( false === strpos( $home_html, $l ) ) { $legal_missing[] = $l; }
+}
+foreach ( array( 'facebook.com', 'instagram.com', 'linkedin.com', 'tiktok.com', 'youtube.com', 'share.google' ) as $s ) {
+	if ( false === strpos( $home_html, $s ) ) { $legal_missing[] = $s; }
+}
+$has_copy = (bool) preg_match( '#&copy;|©#', $home_html );
+( empty( $legal_missing ) && $has_copy )
+	? ok( '21. the copyright line, all four legal links and all six social destinations are unchanged' )
+	: bad( '21. missing: ' . implode( ', ', $legal_missing ) . ' copyright=' . var_export( $has_copy, true ) );
 
 echo "\n== RESULT ==\n";
 echo "  pass: $pass   fail: $fail   skip: $skip\n";
