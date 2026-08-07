@@ -808,10 +808,14 @@
    width and paper background and deliberately adds no band of its own —
    it should read as a continuation of the comparison, not a new block.
 
-   Grouped carousel: one page = exactly two portrait cards, at every
-   breakpoint. Mobile tightens the gap rather than dropping to one card,
-   because two-up is the approved layout. Behaviour comes from the shared
-   assets/js/project-slider.js contract; everything below is layout only.
+   Grouped carousel: one page = exactly three 4:3 landscape cards, laid out
+   on the SAME grid as the "More projects" related-project section further
+   down the page (.featured-projects__grid). Both live inside the shared
+   .container, so they share outer boundaries; the column count, column
+   width and gap below are deliberately identical to that grid — including
+   its 1000px and 640px breakpoints — so the two rows line up exactly.
+   Behaviour comes from the shared assets/js/project-slider.js contract;
+   everything below is layout only.
 
    Progressive enhancement: WITHOUT the script the track stays a plain
    stacked grid (every page, every card visible, nav still `hidden`), and
@@ -821,14 +825,9 @@
 	margin-top: var(--sp-10);
 	padding-top: var(--sp-8);
 	border-top: 1px solid var(--c-border);
-	/* The pair is constrained and CENTRED inside the project content column
-	   rather than stretched across it: two 4:3 cards spread over the full
-	   1240px container would be ~566x425 each, which reads as a separate
-	   marketing block instead of a continuation of the comparison and leaves
-	   the row unbalanced. 860px keeps two landscape cards at a comfortable
-	   ~412x309 with no dead space on either side. */
-	max-width: 860px;
-	margin-inline: auto;
+	/* No max-width and no auto margins: the gallery fills the same content
+	   column as .featured-projects__grid so their left and right edges match
+	   to the pixel. */
 }
 
 .proj-gallery__head { max-width: 640px; margin-bottom: var(--sp-6); }
@@ -864,9 +863,10 @@
 }
 
 .proj-gallery__page {
-	/* 4px of inset so card shadows and borders are never clipped by the
-	   viewport's overflow once enhanced. */
-	padding: 4px;
+	/* No inset. Any padding here would push the first and last card inward and
+	   break edge alignment with the related grid. Nothing needs bleed room:
+	   the pending cards carry a border and no resting shadow (same treatment
+	   as .proj-card), and the viewport contains no focusable element. */
 	box-sizing: border-box;
 }
 .proj-gallery.is-enhanced .proj-gallery__page { flex: 0 0 100%; min-width: 100%; }
@@ -876,8 +876,9 @@
 	margin: 0;
 	padding: 0;
 	display: grid;
-	grid-template-columns: 1fr 1fr;   /* always two-up */
-	gap: var(--sp-5);
+	/* Identical to .featured-projects__grid — same column count, same gap. */
+	grid-template-columns: repeat(3, 1fr);
+	gap: var(--sp-6);
 	align-items: start;
 }
 .proj-gallery__cell { margin: 0; min-width: 0; }
@@ -894,7 +895,8 @@
 	overflow: hidden;
 	background: var(--c-bg-pure);
 	border: 1px solid var(--c-border);
-	box-shadow: var(--sh-xs);
+	/* Border only at rest, exactly like .proj-card — nothing to clip at the
+	   viewport edge, so the first and last card can sit flush with the grid. */
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -1024,17 +1026,31 @@
 }
 
 /* Mobile: keep two-up, tighten the gap and the type instead. */
-/* Mobile: the two cards of the ACTIVE page stack vertically, each centred.
-   The two-page pagination model is unchanged — this only alters how one page
-   lays out its own two cards, so arrows, dots and swipe behave identically. */
-@media (max-width: 600px) {
-	.proj-gallery { margin-top: var(--sp-8); padding-top: var(--sp-6); }
-	.proj-gallery__grid {
-		grid-template-columns: minmax(0, 1fr);
-		gap: var(--sp-4);
-		justify-items: center;
+/* Responsive: the SAME two breakpoints .featured-projects__grid uses, so the
+   highlights and the related grid reflow together and never disagree.
+
+   1000px and below -> two columns, with the third card of the page centred on
+   its own row at one column width (the related grid simply has more cards, so
+   it fills the row; three items would otherwise leave an orphan hanging left).
+   The two-page pagination model is untouched — this only changes how ONE page
+   arranges its own three cards, so arrows, dots and swipe behave identically. */
+@media (max-width: 1000px) {
+	.proj-gallery__grid { grid-template-columns: repeat(2, 1fr); }
+	.proj-gallery__cell:nth-child(3) {
+		grid-column: 1 / -1;
+		width: calc(50% - (var(--sp-6) / 2));
+		margin-inline: auto;
 	}
-	.proj-gallery__cell { width: 100%; max-width: 320px; }
+}
+
+/* 640px and below -> one column, matching the related grid exactly: full
+   content width, no extra cap, all three cards of the active page stacked. */
+@media (max-width: 640px) {
+	.proj-gallery { margin-top: var(--sp-8); padding-top: var(--sp-6); }
+	/* Columns only — the gap stays var(--sp-6) so it still matches the
+	   related grid, which does not change its gap at this breakpoint. */
+	.proj-gallery__grid { grid-template-columns: 1fr; }
+	.proj-gallery__cell:nth-child(3) { grid-column: auto; width: auto; margin-inline: 0; }
 	.proj-gallery__frame { padding: var(--sp-3); gap: var(--sp-2); border-radius: 14px; }
 	.proj-gallery__pending-text { font-size: var(--fs-sm); }
 	.proj-gallery__badge { font-size: 0.5625rem; padding: 4px 8px; top: var(--sp-2); left: var(--sp-2); }

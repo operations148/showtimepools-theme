@@ -216,12 +216,12 @@ $fails_closed   = substr_count( $resolver, 'return array();' ) >= 8;
 // Fail-closed behaviour, exercised for real against the live resolver.
 $cases = array(
 	'not a list'              => array( 'additional_gallery' => array( 'a' => array( 'status' => 'coming_soon', 'image' => '', 'alt' => '', 'caption' => '' ) ) ),
-	'odd slot count'          => array( 'additional_gallery' => array_fill( 0, 3, array( 'status' => 'coming_soon', 'image' => '', 'alt' => '', 'caption' => '' ) ) ),
-	'unknown status'          => array( 'additional_gallery' => array_fill( 0, 2, array( 'status' => 'maybe', 'image' => '', 'alt' => '', 'caption' => '' ) ) ),
-	'pending slot with alt'   => array( 'additional_gallery' => array_fill( 0, 2, array( 'status' => 'coming_soon', 'image' => '', 'alt' => 'invented', 'caption' => '' ) ) ),
-	'ready without alt'       => array( 'additional_gallery' => array_fill( 0, 2, array( 'status' => 'ready', 'image' => "$WH-after.webp", 'alt' => '', 'caption' => '' ) ) ),
-	'ready with missing file' => array( 'additional_gallery' => array_fill( 0, 2, array( 'status' => 'ready', 'image' => 'no-such-file.webp', 'alt' => 'x', 'caption' => '' ) ) ),
-	'slot not an array'       => array( 'additional_gallery' => array( 'x', 'y' ) ),
+	'count not a whole page'  => array( 'additional_gallery' => array_fill( 0, 4, array( 'status' => 'coming_soon', 'image' => '', 'alt' => '', 'caption' => '' ) ) ),
+	'unknown status'          => array( 'additional_gallery' => array_fill( 0, 3, array( 'status' => 'maybe', 'image' => '', 'alt' => '', 'caption' => '' ) ) ),
+	'pending slot with alt'   => array( 'additional_gallery' => array_fill( 0, 3, array( 'status' => 'coming_soon', 'image' => '', 'alt' => 'invented', 'caption' => '' ) ) ),
+	'ready without alt'       => array( 'additional_gallery' => array_fill( 0, 3, array( 'status' => 'ready', 'image' => "$WH-after.webp", 'alt' => '', 'caption' => '' ) ) ),
+	'ready with missing file' => array( 'additional_gallery' => array_fill( 0, 3, array( 'status' => 'ready', 'image' => 'no-such-file.webp', 'alt' => 'x', 'caption' => '' ) ) ),
+	'slot not an array'       => array( 'additional_gallery' => array( 'x', 'y', 'z' ) ),
 );
 $leaked = array();
 foreach ( $cases as $name => $fixture ) {
@@ -229,7 +229,7 @@ foreach ( $cases as $name => $fixture ) {
 }
 $valid_ok = 2 === count( showtime_project_gallery_pages( $p ) );
 ( ! $leaked && $valid_ok )
-	? ok( '10b. all ' . count( $cases ) . ' malformed configurations (non-list, odd count, unknown status, pending-slot-with-copy, ready-without-alt, ready-with-missing-file, non-array slot) return an empty gallery, while the valid config still yields 2 pages' )
+	? ok( '10b. all ' . count( $cases ) . ' malformed configurations (non-list, count that is not a whole number of pages, unknown status, pending-slot-with-copy, ready-without-alt, ready-with-missing-file, non-array slot) return an empty gallery, while the valid six-slot config still yields 2 pages' )
 	: bad( '10b. leaked: ' . implode( ', ', $leaked ) . ' validConfigPages=' . count( showtime_project_gallery_pages( $p ) ) );
 
 // 11 + 12.
@@ -257,9 +257,9 @@ if ( preg_match( '#<div class="proj-gallery"[\s\S]*?(?=</section>)#', $wh_html, 
 // 13 + 14.
 $cells   = preg_match_all( '#class="proj-gallery__cell"#', $gal );
 $pending = preg_match_all( '#proj-gallery__card--pending#', $gal );
-( 4 === $cells && 4 === $pending )
-	? ok( '13 + 14. exactly four gallery slots render, and all four are in the pending "Coming soon" state' )
-	: bad( "13/14. cells=$cells pending=$pending (expected 4 and 4)" );
+( 6 === $cells && 6 === $pending )
+	? ok( '13 + 14. exactly six gallery slots render, and all six are in the pending "Coming soon" state' )
+	: bad( "13/14. cells=$cells pending=$pending (expected 6 and 6)" );
 
 // 15 + 16.
 $pages = preg_match_all( '#data-proj-slider-slide="(\d+)"#', $gal, $pm );
@@ -275,9 +275,9 @@ foreach ( $segments as $i => $seg ) {
 	}
 	$per_page[] = preg_match_all( '#proj-gallery__cell#', $seg );
 }
-$sizes_ok = ! empty( $per_page ) && count( array_unique( $per_page ) ) === 1 && 2 === $per_page[0];
+$sizes_ok = ! empty( $per_page ) && count( array_unique( $per_page ) ) === 1 && 3 === $per_page[0];
 ( 2 === $pages ) ? ok( '15. exactly two grouped carousel pages render' ) : bad( "15. pages=$pages" );
-$sizes_ok ? ok( '16. every page contains exactly two cards (' . implode( ' + ', $per_page ) . ')' )
+$sizes_ok ? ok( '16. every page contains exactly three cards (' . implode( ' + ', $per_page ) . ')' )
 	: bad( '16. per-page card counts: ' . implode( ',', $per_page ) );
 
 // 17 + 27.
@@ -294,8 +294,8 @@ $current = preg_match_all( '#aria-current="true"#', $gal );
 // 18.
 $ratio = (bool) preg_match( '#\.proj-gallery__frame\s*\{[^}]*aspect-ratio:\s*4\s*/\s*3#s', $css );
 $frames = preg_match_all( '#class="proj-gallery__frame"#', $gal );
-( $ratio && 4 === $frames )
-	? ok( '18. every one of the four placeholders sits in the shared 4 / 3 landscape frame' )
+( $ratio && 6 === $frames )
+	? ok( '18. every one of the six placeholders sits in the shared 4 / 3 landscape frame' )
 	: bad( '18. cssRatio=' . var_export( $ratio, true ) . " frames=$frames" );
 
 // 19 + 20.
@@ -308,18 +308,18 @@ $empty_src = preg_match_all( '#src=(""|\'\')#', $wh_html );
 // 21.
 $has_alt     = (bool) preg_match( '#\balt=#', $gal );
 $has_caption = (bool) preg_match( '#proj-gallery__caption#', $gal );
-$decor_hidden = 4 === preg_match_all( '#proj-gallery__icon" aria-hidden="true"#', $gal );
+$decor_hidden = 6 === preg_match_all( '#proj-gallery__icon" aria-hidden="true"#', $gal );
 ( ! $has_alt && ! $has_caption && $decor_hidden )
-	? ok( '21. no alt attribute and no caption exist anywhere in the pending gallery, and all four decorative icons are aria-hidden' )
+	? ok( '21. no alt attribute and no caption exist anywhere in the pending gallery, and all six decorative icons are aria-hidden' )
 	: bad( '21. alt=' . var_export( $has_alt, true ) . ' caption=' . var_export( $has_caption, true ) . ' decorHidden=' . var_export( $decor_hidden, true ) );
 
 // Wording contract.
 $wording = false !== strpos( $gal, 'More Project Highlights' )
 	&& false !== strpos( $gal, 'Additional project photos will be added soon.' )
 	&& false === stripos( $gal, 'Sample Projects We Also Built' )
-	&& 4 === preg_match_all( '#Project photo coming soon#', $gal )
-	&& 4 === preg_match_all( '#>Coming soon<#', $gal );
-$wording ? ok( '21b. the approved wording renders verbatim: heading, supporting sentence, four "Coming soon" badges and four "Project photo coming soon" lines — and the rejected heading appears nowhere' )
+	&& 6 === preg_match_all( '#Project photo coming soon#', $gal )
+	&& 6 === preg_match_all( '#>Coming soon<#', $gal );
+$wording ? ok( '21b. the approved wording renders verbatim: heading, supporting sentence, six "Coming soon" badges and six "Project photo coming soon" lines — and the rejected heading appears nowhere' )
 	: bad( '21b. wording contract not met' );
 
 echo "\n== PLACEMENT AND HEADINGS ==\n";
@@ -399,7 +399,7 @@ $nojs = array(
 	'track is a stacked grid by default' => (bool) preg_match( '#\.proj-gallery__track \{ display: grid;#', $css ),
 	'flex row only once enhanced'        => (bool) preg_match( '#\.proj-gallery\.is-enhanced \.proj-gallery__track \{\s*display: flex;#s', $css ),
 	'viewport does not clip un-enhanced' => (bool) preg_match( '#\.proj-gallery__viewport \{ overflow: visible; \}#', $css ),
-	'two columns at every width'         => (bool) preg_match( '#\.proj-gallery__grid \{[^}]*grid-template-columns: 1fr 1fr;#s', $css ),
+	'three columns like the ref grid'    => (bool) preg_match( '#\.proj-gallery__grid \{[\s\S]*?grid-template-columns: repeat\(3, 1fr\);#s', $css ),
 	'nav hidden without the script'      => $nav_hidden,
 );
 $miss31 = array_keys( array_filter( $nojs, static fn( $v ) => ! $v ) );
@@ -518,27 +518,35 @@ $header_ok ? ok( '35. the sitewide overlaid-header behaviour still applies on th
 echo "\n== GALLERY LAYOUT CONTRACT (4:3, centred, mobile stacking) ==\n";
 
 // 5. The pair is constrained and centred rather than stretched, in two equal columns.
+$ref_css = (string) file_get_contents( $child . '/assets/css/components.css' );
 $layout = array(
-	'4:3 landscape frame'        => (bool) preg_match( '#\.proj-gallery__frame\s*\{[^}]*aspect-ratio:\s*4\s*/\s*3#s', $css ),
-	'pair constrained'           => (bool) preg_match( '#\.proj-gallery\s*\{[^}]*max-width:\s*860px#s', $css ),
-	'pair centred in the column' => (bool) preg_match( '#\.proj-gallery\s*\{[^}]*margin-inline:\s*auto#s', $css ),
-	'two equal desktop columns'  => (bool) preg_match( '#\.proj-gallery__grid\s*\{[^}]*grid-template-columns:\s*1fr 1fr#s', $css ),
+	'4:3 landscape frame'          => (bool) preg_match( '#\.proj-gallery__frame\s*\{[^}]*aspect-ratio:\s*4\s*/\s*3#s', $css ),
+	'no width cap on the gallery'  => ! preg_match( '#\.proj-gallery\s*\{[^}]*max-width:#s', $css ),
+	'no auto centring margin'      => ! preg_match( '#\.proj-gallery\s*\{[^}]*margin-inline:\s*auto#s', $css ),
+	'no page inset breaking edges' => ! preg_match( '#\.proj-gallery__page\s*\{[^}]*padding:\s*\dpx#s', $css ),
+	'three equal desktop columns'  => (bool) preg_match( '#\.proj-gallery__grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(3, 1fr\)#s', $css ),
+	'same gap token as ref grid'   => (bool) preg_match( '#\.proj-gallery__grid\s*\{[\s\S]*?gap:\s*var\(--sp-6\)#s', $css )
+		&& (bool) preg_match( '#\.featured-projects__grid\s*\{[^}]*gap:\s*var\(--sp-6\)#s', $ref_css ),
+	'ref grid is three columns'    => (bool) preg_match( '#\.featured-projects__grid\s*\{[^}]*grid-template-columns:\s*repeat\(3, 1fr\)#s', $ref_css ),
 );
 $miss_layout = array_keys( array_filter( $layout, static fn( $v ) => ! $v ) );
 $miss_layout ? bad( '5. desktop layout — missing: ' . implode( ', ', $miss_layout ) )
-	: ok( '5. cards use a 4 / 3 landscape frame; the two-card group is constrained to 860px and centred with margin-inline:auto in two equal columns — never stretched across the full section' );
+	: ok( '5. the highlights grid mirrors .featured-projects__grid exactly — three equal columns, the same var(--sp-6) gap, 4/3 frames, and no width cap, auto margin or page inset that could break edge alignment' );
 
 // 6. Mobile stacks the active page's two cards vertically, each centred, same two-page model.
 $mobile = array(
-	'single column under 600px' => (bool) preg_match( '#@media \(max-width: 600px\)\s*\{[\s\S]*?\.proj-gallery__grid\s*\{[^}]*grid-template-columns:\s*minmax\(0, 1fr\)#s', $css ),
-	'each card centred'         => (bool) preg_match( '#@media \(max-width: 600px\)\s*\{[\s\S]*?\.proj-gallery__grid\s*\{[^}]*justify-items:\s*center#s', $css ),
-	'card width capped'         => (bool) preg_match( '#@media \(max-width: 600px\)\s*\{[\s\S]*?\.proj-gallery__cell\s*\{[^}]*max-width:\s*320px#s', $css ),
-	'ratio not overridden'      => ! preg_match( '#@media \(max-width: 600px\)\s*\{[\s\S]*?\.proj-gallery__frame\s*\{[^}]*aspect-ratio#s', $css ),
-	'pagination model intact'   => 2 === preg_match_all( '#data-proj-slider-slide="\d"#', $gal ),
+	'tablet 2-up at 1000px'      => (bool) preg_match( '#@media \(max-width: 1000px\)\s*\{[\s\S]*?\.proj-gallery__grid \{ grid-template-columns: repeat\(2, 1fr\); \}#s', $css ),
+	'third card centred on row 2'=> (bool) preg_match( '#@media \(max-width: 1000px\)\s*\{[\s\S]*?nth-child\(3\)\s*\{[\s\S]*?margin-inline:\s*auto#s', $css ),
+	'single column at 640px'     => (bool) preg_match( '#@media \(max-width: 640px\)\s*\{[\s\S]*?\.proj-gallery__grid \{ grid-template-columns: 1fr;#s', $css ),
+	'same breakpoints as ref'    => (bool) preg_match( '#@media \(max-width: 1000px\) \{ \.featured-projects__grid#', $ref_css )
+		&& (bool) preg_match( '#@media \(max-width: 640px\)\s+\{ \.featured-projects__grid#', $ref_css ),
+	'no mobile width cap'        => ! preg_match( '#@media \(max-width: 640px\)\s*\{[\s\S]*?\.proj-gallery__cell\s*\{[^}]*max-width:#s', $css ),
+	'ratio not overridden'       => ! preg_match( '#@media \(max-width: (1000|640)px\)\s*\{[\s\S]*?\.proj-gallery__frame\s*\{[^}]*aspect-ratio#s', $css ),
+	'pagination model intact'    => 2 === preg_match_all( '#data-proj-slider-slide="\d"#', $gal ),
 );
 $miss_mobile = array_keys( array_filter( $mobile, static fn( $v ) => ! $v ) );
-$miss_mobile ? bad( '6. mobile layout — missing: ' . implode( ', ', $miss_mobile ) )
-	: ok( '6. under 600px the active page stacks to one centred column with the card width capped, the 4:3 ratio untouched, and the same two-page pagination model' );
+$miss_mobile ? bad( '6. responsive layout — missing: ' . implode( ', ', $miss_mobile ) )
+	: ok( '6. the highlights reflow on the SAME breakpoints as the related grid — two columns at 1000px with the third card centred on its own row, one full-width column at 640px — with the 4:3 ratio untouched and the same two-page pagination model' );
 
 // 7. The gallery requests no image at all, and every image elsewhere resolves.
 $broken = array();

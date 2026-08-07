@@ -274,12 +274,13 @@ function showtime_project_data( $post_id_or_slug ): ?array {
  *
  * The gallery is a grouped carousel, not a free-scrolling track: a page always
  * shows a full set. The slot count must therefore divide evenly by this, which
- * showtime_project_gallery() enforces.
+ * showtime_project_gallery() enforces. Three per page mirrors the three-column
+ * "More projects" related grid below it, so the two rows line up exactly.
  */
-const SHOWTIME_PROJECT_GALLERY_PER_PAGE = 2;
+const SHOWTIME_PROJECT_GALLERY_PER_PAGE = 3;
 
 /** How many gallery slots a project shows when it has not configured its own. */
-const SHOWTIME_PROJECT_GALLERY_SLOTS = 4;
+const SHOWTIME_PROJECT_GALLERY_SLOTS = 6;
 
 /**
  * The shared default gallery: four pending slots, asserting nothing.
