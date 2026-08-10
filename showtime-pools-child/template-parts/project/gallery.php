@@ -41,6 +41,18 @@ if ( empty( $g_pages ) || '' === $g_base ) {
 }
 
 $g_total = count( $g_pages );
+
+// The "more photos coming" note is only true while a slot is still pending.
+// On a fully populated gallery it would be an unsupported claim about future
+// work, so it is dropped rather than shown alongside six real photographs.
+$g_pending = 0;
+foreach ( $g_pages as $g_p ) {
+	foreach ( $g_p as $g_s ) {
+		if ( 'ready' !== ( $g_s['status'] ?? '' ) ) {
+			$g_pending++;
+		}
+	}
+}
 ?>
 <div class="proj-gallery"
 	id="<?php echo esc_attr( $g_base ); ?>"
@@ -54,9 +66,11 @@ $g_total = count( $g_pages );
 		<h3 class="proj-gallery__title" id="<?php echo esc_attr( $g_base ); ?>-h">
 			<?php esc_html_e( 'More Project Highlights', 'showtime-pools' ); ?>
 		</h3>
-		<p class="proj-gallery__note">
-			<?php esc_html_e( 'Additional project photos will be added soon.', 'showtime-pools' ); ?>
-		</p>
+		<?php if ( $g_pending > 0 ) : ?>
+			<p class="proj-gallery__note">
+				<?php esc_html_e( 'Additional project photos will be added soon.', 'showtime-pools' ); ?>
+			</p>
+		<?php endif; ?>
 	</header>
 
 	<div class="proj-gallery__viewport" data-proj-slider-viewport>

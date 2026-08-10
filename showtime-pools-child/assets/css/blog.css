@@ -905,13 +905,28 @@
 	padding: var(--sp-4);
 	text-align: center;
 }
+/* `contain`, deliberately NOT `cover`: the frame is a fixed 4:3 window but the
+   photographs are not all exactly 4:3, and `cover` would crop whatever does not
+   fit — silently cutting pool edges, equipment and coping out of a real project
+   photo. `contain` fits the WHOLE frame every time, so nothing is ever cut. The
+   surface behind reads as intentional matting on the few images that are not
+   exactly 4:3; most sit within 0.5% of the frame and show no matting at all. */
 .proj-gallery__frame img {
 	position: absolute;
 	inset: 0;
 	width: 100%;
 	height: 100%;
-	object-fit: cover;
+	object-fit: contain;
+	object-position: center;
 	display: block;
+}
+/* Matting tone for a filled frame. A defined neutral, so the letterbox on the
+   few images that are not exactly 4:3 reads as intentional rather than as a
+   gap. Padding is dropped: the img is absolutely positioned, and padding here
+   would only inset the pending-slot copy, which this rule does not apply to. */
+.proj-gallery__card:not(.proj-gallery__card--pending) .proj-gallery__frame {
+	background: var(--c-gray-50);
+	padding: 0;
 }
 
 /* Pending slot — restrained, desaturated brand surface. No photograph is

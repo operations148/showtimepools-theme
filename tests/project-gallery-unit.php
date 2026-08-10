@@ -180,15 +180,46 @@ $block = static function ( string $src, string $slug ): string {
 	$end   = strpos( $src, "\n\t),", $i );
 	return false === $end ? '' : substr( $src, (int) $start, $end - (int) $start );
 };
+// Exactly these three records are authorized to gain real gallery photographs.
+// Every other record must still be byte-identical to HEAD.
+$gallery_authorized = array(
+	'sherman-oaks-mid-century-remodel',
+	'encino-estate-new-build',
+	'studio-city-modern-automation',
+);
+// Removing ONLY the added `additional_gallery` block must restore the HEAD text
+// exactly. That proves the authorized records gained a gallery and changed in no
+// other way — stricter than exempting them from the comparison.
+$strip_gallery = static function ( string $block ): string {
+	return (string) preg_replace(
+		"#\n\t\t// Real photographs.*?\n\t\t'additional_gallery' => array\(.*?\n\t\t\),#s",
+		'',
+		$block
+	);
+};
 $changed = array();
+$authorized_bad = array();
 foreach ( $other_slugs as $s ) {
 	$a = $block( $reg_head, $s );
 	$b = $block( $reg_now, $s );
 	if ( '' === $a || '' === $b ) { $changed[] = "$s (block not found)"; continue; }
+	if ( in_array( $s, $gallery_authorized, true ) ) {
+		// Must have actually gained a gallery, and must differ by nothing else.
+		if ( false === strpos( $b, "'additional_gallery' => array(" ) ) {
+			$authorized_bad[] = "$s (no gallery added)";
+		} elseif ( $strip_gallery( $b ) !== $a ) {
+			$authorized_bad[] = "$s (changed beyond the gallery block)";
+		}
+		continue;
+	}
 	if ( $a !== $b ) { $changed[] = $s; }
 }
-$changed ? bad( '9. other project records changed — ' . implode( ', ', $changed ) )
-	: ok( '9. all ' . count( $other_slugs ) . ' other managed project records are byte-identical to HEAD — only the West Hollywood block differs' );
+$unauthorized_count = count( $other_slugs ) - count( $gallery_authorized );
+( $changed || $authorized_bad )
+	? bad( '9. registry drift — unchanged-set violations: ' . ( implode( ', ', $changed ) ?: 'none' )
+		. ' | authorized-record violations: ' . ( implode( ', ', $authorized_bad ) ?: 'none' ) )
+	: ok( "9. all $unauthorized_count unauthorized managed project records are byte-identical to HEAD, and the "
+		. count( $gallery_authorized ) . ' authorized records (Sherman Oaks, Encino, Studio City) differ from HEAD by nothing but their added additional_gallery block' );
 
 $img_moved = array();
 foreach ( $other_slugs as $s ) {

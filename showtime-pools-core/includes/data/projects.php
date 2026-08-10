@@ -66,6 +66,17 @@ return array(
 		'seo_title'          => 'Pool Interior Finish Project in Sherman Oaks, CA',
 		'meta_description'   => 'See before and after photos of a Sherman Oaks pool and spa that received a new aggregate interior finish, with the existing deck and coping retained.',
 		'og_image'           => 'sherman-oaks-mid-century-remodel-after.webp',
+		// Real photographs, resolved from assets/img/projects/galleries/<slug>/.
+		// Alt text describes only what is visible in each frame; no slot claims a
+		// material, brand, date, price or before/after status. No captions.
+		'additional_gallery' => array(
+			array( 'status' => 'ready', 'image' => 'sherman-oaks-mid-century-remodel-highlight-01.webp', 'alt' => 'Sherman Oaks pool project showing a rectangular pool lit from within at dusk beside a planted garden and a covered patio.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'sherman-oaks-mid-century-remodel-highlight-02.webp', 'alt' => 'Sherman Oaks pool project showing a worker in a high-visibility vest working on the stone-clad wall of a raised circular spa.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'sherman-oaks-mid-century-remodel-highlight-03.webp', 'alt' => 'Sherman Oaks pool project showing a large inflatable float resting on artificial turf beside a tiled pool edge.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'sherman-oaks-mid-century-remodel-highlight-04.webp', 'alt' => 'Sherman Oaks pool project showing a poolside equipment set with a filter tank, pump and white plumbing lines beside an exterior wall.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'sherman-oaks-mid-century-remodel-highlight-05.webp', 'alt' => 'Sherman Oaks pool project showing a curved pool and attached spa bordered by a wood deck behind a single-story home.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'sherman-oaks-mid-century-remodel-highlight-06.webp', 'alt' => 'Sherman Oaks pool project showing pool equipment and connected plumbing surrounded by dense greenery.', 'caption' => '' ),
+		),
 	),
 
 	array(
@@ -96,6 +107,15 @@ return array(
 		'seo_title'          => 'Pool Interior Finish Renewal in Encino, CA',
 		'meta_description'   => 'Before and after photos of an existing Encino freeform pool refinished with a new dark aggregate interior, with its coping and decking retained.',
 		'og_image'           => 'encino-estate-new-build-after.webp',
+		// Real photographs, resolved from assets/img/projects/galleries/<slug>/.
+		'additional_gallery' => array(
+			array( 'status' => 'ready', 'image' => 'encino-estate-new-build-highlight-01.webp', 'alt' => 'Encino swimming pool project showing an equipment set with a filter tank, pump and white plumbing against an exterior wall.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'encino-estate-new-build-highlight-02.webp', 'alt' => 'Encino swimming pool project showing a narrow trench with newly run plumbing lines alongside a pool with a blue tile waterline.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'encino-estate-new-build-highlight-03.webp', 'alt' => 'Encino swimming pool project showing a close view of valves, a pump and a light fixture joined by white plumbing.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'encino-estate-new-build-highlight-04.webp', 'alt' => 'Encino swimming pool project showing a pool with a boulder waterfall feature and water moving across the surface.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'encino-estate-new-build-highlight-05.webp', 'alt' => 'Encino swimming pool project showing a heater, two pumps and a filter tank connected by grey plumbing at an equipment set.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'encino-estate-new-build-highlight-06.webp', 'alt' => 'Encino swimming pool project showing a clear pool edged with brick coping and a blue tile waterline beside a planted border.', 'caption' => '' ),
+		),
 	),
 
 	array(
@@ -126,6 +146,15 @@ return array(
 		'seo_title'          => 'Pool Control Panel Replacement in Studio City, CA',
 		'meta_description'   => 'Before and after photos of a Studio City pool control enclosure replaced with a new panel, refreshed breakers, relays and organized wiring.',
 		'og_image'           => 'studio-city-modern-automation-after.webp',
+		// Real photographs, resolved from assets/img/projects/galleries/<slug>/.
+		'additional_gallery' => array(
+			array( 'status' => 'ready', 'image' => 'studio-city-modern-automation-highlight-01.webp', 'alt' => 'Studio City pool project showing a rectangular pool with a boulder at one end in front of a single-story home.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'studio-city-modern-automation-highlight-02.webp', 'alt' => 'Studio City pool project showing a rectangular pool with a handrail and brick coping behind a tile-roofed home.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'studio-city-modern-automation-highlight-03.webp', 'alt' => 'Studio City pool project showing a close view of blue glass waterline tile meeting the pool coping.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'studio-city-modern-automation-highlight-04.webp', 'alt' => 'Studio City pool project showing a freeform pool and raised spa surrounded by boulders and tropical planting.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'studio-city-modern-automation-highlight-05.webp', 'alt' => 'Studio City pool project showing a wide sheet of water falling from a stone-clad raised wall into a pool beside a wood deck.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'studio-city-modern-automation-highlight-06.webp', 'alt' => 'Studio City pool project showing a stone-clad wall and freshly placed mortar forming a seat during construction.', 'caption' => '' ),
+		),
 	),
 
 	array(

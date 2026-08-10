@@ -314,10 +314,17 @@ function showtime_project_gallery_default(): array {
  *   - the value must be a non-empty list of arrays;
  *   - the slot count must divide evenly into full carousel pages;
  *   - `status` must be exactly 'coming_soon' or 'ready';
- *   - a 'ready' slot must carry BOTH a readable local comparison asset and
+ *   - a 'ready' slot must carry BOTH a readable local gallery asset and
  *     non-empty alt text — a real photograph is never published unlabelled;
  *   - a 'coming_soon' slot must carry NO image, alt or caption, so a pending
  *     slot can never smuggle in invented copy.
+ *
+ * Gallery photographs live in assets/img/projects/galleries/{slug}/, keyed by
+ * the project's OWN slug, so a record can only ever resolve its own images.
+ * One project cannot borrow — or accidentally be given — another's photograph,
+ * because the directory is derived from the project rather than from the
+ * registry value. basename() additionally strips any path, so a traversal
+ * segment in the registry can never escape that directory.
  *
  * @param array<string,mixed>|null $p Result of showtime_project_data().
  * @return array<int,array{status:string,url:string,width:int,height:int,alt:string,caption:string}>
@@ -373,7 +380,13 @@ function showtime_project_gallery( ?array $p ): array {
 		if ( ! defined( 'SHOWTIME_CHILD_DIR' ) ) {
 			return array();
 		}
-		$path = SHOWTIME_CHILD_DIR . '/assets/img/projects/comparisons/' . basename( $image );
+		// Scoped to THIS project's own gallery directory. A slot cannot name a
+		// directory, so it cannot reach another project's photographs.
+		$slug = sanitize_key( (string) ( $p['slug'] ?? '' ) );
+		if ( '' === $slug ) {
+			return array();
+		}
+		$path = SHOWTIME_CHILD_DIR . '/assets/img/projects/galleries/' . $slug . '/' . basename( $image );
 		if ( ! is_readable( $path ) ) {
 			return array();
 		}
