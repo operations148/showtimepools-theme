@@ -185,6 +185,15 @@ return array(
 		'seo_title'          => 'Spa Tile Renovation in Beverly Hills, CA',
 		'meta_description'   => 'Before and after photos of a Beverly Hills in-ground spa finished in small blue-gray mosaic tile, with the adjoining deck surface renewed.',
 		'og_image'           => 'beverly-hills-luxe-spa-renovation-after.webp',
+		// Real photographs, resolved from assets/img/projects/galleries/<slug>/.
+		'additional_gallery' => array(
+			array( 'status' => 'ready', 'image' => 'beverly-hills-luxe-spa-renovation-highlight-01.webp', 'alt' => 'Beverly Hills pool project showing two workers setting decorative tile along the wall of a drained pool below brick coping.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'beverly-hills-luxe-spa-renovation-highlight-02.webp', 'alt' => 'Beverly Hills pool project showing a close view of valves, pumps and white plumbing lines at an equipment set against a stucco wall.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'beverly-hills-luxe-spa-renovation-highlight-03.webp', 'alt' => 'Beverly Hills pool project showing a pool with a new tile band surrounded by excavated ground and open trenching during construction.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'beverly-hills-luxe-spa-renovation-highlight-04.webp', 'alt' => 'Beverly Hills pool project showing a filled freeform pool with inflatable floats on the water beside a rock edge and palm planting.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'beverly-hills-luxe-spa-renovation-highlight-05.webp', 'alt' => 'Beverly Hills pool project showing an empty pool shell with a paver deck, outdoor dining set and a hillside view beyond.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'beverly-hills-luxe-spa-renovation-highlight-06.webp', 'alt' => 'Beverly Hills pool project showing two filter tanks and connected plumbing at an equipment set beside a stucco wall.', 'caption' => '' ),
+		),
 	),
 
 	array(
@@ -215,6 +224,19 @@ return array(
 		'seo_title'          => 'Pool Resurfacing in Tarzana, CA',
 		'meta_description'   => 'Before and after photos of a Tarzana freeform pool resurfaced in a new pale aggregate finish, with its waterline band and timber deck retained.',
 		'og_image'           => 'tarzana-resort-style-finish-after.webp',
+		// Real photographs, resolved from assets/img/projects/galleries/<slug>/.
+		// Slot 06 was pending for one round: the originally supplied sixth file was
+		// byte-identical to the photograph already published as
+		// encino-estate-new-build-highlight-06. That file was never published and
+		// remains untracked; slot 06 now carries a distinct replacement photograph.
+		'additional_gallery' => array(
+			array( 'status' => 'ready', 'image' => 'tarzana-resort-style-finish-highlight-01.webp', 'alt' => 'Tarzana pool project showing a rectangular pool and attached spa bordered by a dark fence and dense hedges.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'tarzana-resort-style-finish-highlight-02.webp', 'alt' => 'Tarzana pool project showing a close view of plumbing lines, conduit and coloured wiring at a poolside equipment area.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'tarzana-resort-style-finish-highlight-03.webp', 'alt' => 'Tarzana pool project showing a close view of the aggregate interior surface and coping at the edge of a filled pool.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'tarzana-resort-style-finish-highlight-04.webp', 'alt' => 'Tarzana pool project showing a filter tank, valves and an open electrical enclosure at a poolside equipment area.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'tarzana-resort-style-finish-highlight-05.webp', 'alt' => 'Tarzana pool project showing a pool with a handrail, blue tile band and brick coping beside a metal fence and lawn.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'tarzana-resort-style-finish-highlight-06.webp', 'alt' => 'Tarzana pool project showing a filled pool and attached raised spa with a blue-green mosaic tile band below pale coping and a dark deck.', 'caption' => '' ),
+		),
 	),
 
 	array(
@@ -245,6 +267,15 @@ return array(
 		'seo_title'          => 'Spa Tile Renovation in Woodland Hills, CA',
 		'meta_description'   => 'Before and after photos of a round Woodland Hills spa tiled floor to rim in blue mosaic, with the cracked concrete surround replaced by a tiled surface.',
 		'og_image'           => 'woodland-hills-tile-coping-refresh-after.webp',
+		// Real photographs, resolved from assets/img/projects/galleries/<slug>/.
+		'additional_gallery' => array(
+			array( 'status' => 'ready', 'image' => 'woodland-hills-tile-coping-refresh-highlight-01.webp', 'alt' => 'Woodland Hills pool project showing a rectangular pool and attached spa with brick coping beside terraced planters.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'woodland-hills-tile-coping-refresh-highlight-02.webp', 'alt' => 'Woodland Hills pool project showing a rectangular pool with blue tile detail and a raised shelf beside a paver deck and loungers.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'woodland-hills-tile-coping-refresh-highlight-03.webp', 'alt' => 'Woodland Hills pool project showing a filter tank and pump connected by plumbing in a planted garden bed.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'woodland-hills-tile-coping-refresh-highlight-04.webp', 'alt' => 'Woodland Hills pool project showing a pool edged with rounded stone coping and a handrail beside a white wall.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'woodland-hills-tile-coping-refresh-highlight-05.webp', 'alt' => 'Woodland Hills pool project showing a raised circular spa with stone facing and flagstone coping spilling into the pool below.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'woodland-hills-tile-coping-refresh-highlight-06.webp', 'alt' => 'Woodland Hills pool project showing a filter with a pressure gauge and connected plumbing beside a wooden fence.', 'caption' => '' ),
+		),
 	),
 
 	// ── Placeholder projects (code-managed, NOT yet verified) ────────────

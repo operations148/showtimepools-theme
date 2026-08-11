@@ -180,9 +180,17 @@ $block = static function ( string $src, string $slug ): string {
 	$end   = strpos( $src, "\n\t),", $i );
 	return false === $end ? '' : substr( $src, (int) $start, $end - (int) $start );
 };
-// Exactly these three records are authorized to gain real gallery photographs.
-// Every other record must still be byte-identical to HEAD.
+// Exactly these three records are authorized to gain real gallery photographs in
+// the CURRENT working tree. Every other record must be byte-identical to HEAD —
+// including Sherman Oaks / Encino / Studio City, whose galleries are already
+// committed and must not shift again.
 $gallery_authorized = array(
+	'beverly-hills-luxe-spa-renovation',
+	'tarzana-resort-style-finish',
+	'woodland-hills-tile-coping-refresh',
+);
+// Already shipped: these must now match HEAD exactly, gallery block included.
+$gallery_already_shipped = array(
 	'sherman-oaks-mid-century-remodel',
 	'encino-estate-new-build',
 	'studio-city-modern-automation',
@@ -199,6 +207,7 @@ $strip_gallery = static function ( string $block ): string {
 };
 $changed = array();
 $authorized_bad = array();
+$shipped_bad = array();
 foreach ( $other_slugs as $s ) {
 	$a = $block( $reg_head, $s );
 	$b = $block( $reg_now, $s );
@@ -212,14 +221,24 @@ foreach ( $other_slugs as $s ) {
 		}
 		continue;
 	}
+	if ( in_array( $s, $gallery_already_shipped, true ) ) {
+		// Shipped galleries: byte-identical, and the gallery must still be there.
+		if ( $a !== $b ) { $shipped_bad[] = "$s (already-shipped block moved)"; }
+		elseif ( false === strpos( $b, "'additional_gallery' => array(" ) ) {
+			$shipped_bad[] = "$s (shipped gallery disappeared)";
+		}
+		continue;
+	}
 	if ( $a !== $b ) { $changed[] = $s; }
 }
-$unauthorized_count = count( $other_slugs ) - count( $gallery_authorized );
-( $changed || $authorized_bad )
+$untouched_count = count( $other_slugs ) - count( $gallery_authorized ) - count( $gallery_already_shipped );
+( $changed || $authorized_bad || $shipped_bad )
 	? bad( '9. registry drift — unchanged-set violations: ' . ( implode( ', ', $changed ) ?: 'none' )
-		. ' | authorized-record violations: ' . ( implode( ', ', $authorized_bad ) ?: 'none' ) )
-	: ok( "9. all $unauthorized_count unauthorized managed project records are byte-identical to HEAD, and the "
-		. count( $gallery_authorized ) . ' authorized records (Sherman Oaks, Encino, Studio City) differ from HEAD by nothing but their added additional_gallery block' );
+		. ' | authorized-record violations: ' . ( implode( ', ', $authorized_bad ) ?: 'none' )
+		. ' | already-shipped violations: ' . ( implode( ', ', $shipped_bad ) ?: 'none' ) )
+	: ok( "9. $untouched_count untouched managed project records are byte-identical to HEAD; the "
+		. count( $gallery_already_shipped ) . ' already-shipped galleries (Sherman Oaks, Encino, Studio City) are byte-identical to HEAD including their gallery blocks; and the '
+		. count( $gallery_authorized ) . ' authorized records (Beverly Hills, Tarzana, Woodland Hills) differ from HEAD by nothing but their added additional_gallery block' );
 
 $img_moved = array();
 foreach ( $other_slugs as $s ) {
