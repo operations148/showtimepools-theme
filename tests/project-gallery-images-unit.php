@@ -88,6 +88,7 @@ echo "== PROJECTS WITH REAL PHOTOGRAPHS ==\n";
 $EXPECT_WITH_REAL = array(
 	'sherman-oaks-mid-century-remodel', 'encino-estate-new-build', 'studio-city-modern-automation',
 	'beverly-hills-luxe-spa-renovation', 'tarzana-resort-style-finish', 'woodland-hills-tile-coping-refresh',
+	'van-nuys-pool-project', 'toluca-lake-pool-project', 'north-hollywood-pool-project',
 );
 $got = array_keys( $with_real );
 sort( $got );
@@ -347,7 +348,10 @@ foreach ( $bodies as $slug => $b ) {
 	if ( false !== stripos( $b, '_incoming' ) ) { $leaked[] = "$slug _incoming"; }
 	if ( preg_match( '#<div class="proj-gallery".*?<div class="proj-gallery__nav#s', $b, $m ) ) {
 		if ( preg_match( '#src="[^"]+\.(jpe?g|png)"#i', $m[0] ) ) { $leaked[] = "$slug non-webp img in gallery"; }
+		// Both source naming conventions: the original `*-more-projects*` files and
+		// the normalized `*-source-NN` files. Neither may ever be served.
 		if ( preg_match( '#more-projects?\d*\.(jpe?g|png)#i', $m[0] ) ) { $leaked[] = "$slug source filename in gallery"; }
+		if ( preg_match( '#-source-\d{2}\.(jpe?g|png|webp)#i', $m[0] ) ) { $leaked[] = "$slug normalized source filename in gallery"; }
 	}
 }
 $leaked
@@ -429,6 +433,29 @@ $ld_bad
 	? bad( '23. ' . implode( ', ', array_unique( $ld_bad ) ) )
 	: ok( '23. no gallery highlight photograph or galleries/ path appears in any JSON-LD block on any of the 14 project pages' );
 
+/* 23c. Every gallery derivative that is already committed must be byte-for-byte
+ * unchanged. Adding a new project's photographs must never re-encode, re-compress
+ * or otherwise disturb a gallery that has already shipped. */
+$root_dir = dirname( __DIR__ );
+$tracked  = array();
+exec( 'git -C ' . escapeshellarg( $root_dir ) . ' ls-files -- showtime-pools-child/assets/img/projects/galleries 2>&1', $tracked );
+$moved = array();
+foreach ( $tracked as $rel ) {
+	$rel = trim( $rel );
+	if ( '' === $rel || ! preg_match( '#-highlight-0[1-6]\.webp$#i', $rel ) ) { continue; }
+	$out = array();
+	exec( 'git -C ' . escapeshellarg( $root_dir ) . ' diff --name-only -- ' . escapeshellarg( $rel ) . ' 2>&1', $out );
+	if ( array_filter( array_map( 'trim', $out ) ) ) { $moved[] = basename( $rel ); }
+}
+if ( empty( $tracked ) ) {
+	skipped( '23c. previously published galleries — no tracked gallery assets found (not a git checkout?)' );
+} elseif ( $moved ) {
+	bad( '23c. already-published derivatives changed: ' . implode( ', ', $moved ) );
+} else {
+	$n_tracked = count( array_filter( $tracked, static fn( $r ) => (bool) preg_match( '#-highlight-0[1-6]\.webp$#i', trim( $r ) ) ) );
+	ok( "23c. all $n_tracked already-committed gallery derivatives are byte-for-byte unchanged — this batch added new files without disturbing any shipped gallery" );
+}
+
 /* 24. SOURCE PRESERVATION — production-safe.
  *
  * The source originals are deliberately UNTRACKED: they are working files, not
@@ -485,6 +512,27 @@ $SOURCES = array(
 	"$gal_root/woodland-hills-tile-coping-refresh/woodland-hills-more-project3.jpeg"  => '378506733cedc6d5084a0df2f081bc17eb394af61a10ca39ca266363fe178cf5',
 	"$gal_root/woodland-hills-tile-coping-refresh/woodland-hills-more-projects4.jpeg" => 'c986f5735bf3e0e6ab2fd5664e5e7e0daa83dbe3eff8dc368bde5f91b21cf8e2',
 	"$gal_root/woodland-hills-tile-coping-refresh/woodland-hills-more-projects5.jpeg" => '5d2db4d3d55db10c7bb1aa2f7de9228e2a5acfa63dbeb0fed6a9be04da6aec46',
+	// Batch 3 — Van Nuys / Toluca Lake / North Hollywood. Folder and filenames were
+	// normalized to the canonical registry slug; the encoded bytes were not touched,
+	// so these are the same photographs the owner supplied.
+	"$gal_root/van-nuys-pool-project/van-nuys-pool-project-source-01.jpg"   => '85b5a53e89025dd20e7dfee02e840b2aaf6f498c4a691b0e7867bcf044663861',
+	"$gal_root/van-nuys-pool-project/van-nuys-pool-project-source-02.jpeg"  => 'dc11e8f41036ed505d9d846ed067f4abb6c0be35753ae6410c1b65eb41974e61',
+	"$gal_root/van-nuys-pool-project/van-nuys-pool-project-source-03.jpeg"  => 'b38fd8ed583a4caa51b8c870b9a53f797de4b252ac48c7b0892651d5a27fe514',
+	"$gal_root/van-nuys-pool-project/van-nuys-pool-project-source-04.jpg"   => 'a0c480f4ee8d01e38dc66512582e1646023a449e9ecf3b064b75c19406461376',
+	"$gal_root/van-nuys-pool-project/van-nuys-pool-project-source-05.jpeg"  => '7a5ea626e1365c8c6ed637c9f3b68c9a03d9971fb930c0b07d1a84427abffbf5',
+	"$gal_root/van-nuys-pool-project/van-nuys-pool-project-source-06.jpeg"  => '1e21b2ecd7ccb5d9c7500640ea3a0a8e440e76ebd9ef4428e810776cc0e08436',
+	"$gal_root/toluca-lake-pool-project/toluca-lake-pool-project-source-01.jpeg" => '5e933dad5826b720c37160be39c0c89dd48489cc4ba1a3497dda643220eeac35',
+	"$gal_root/toluca-lake-pool-project/toluca-lake-pool-project-source-02.jpg"  => '241658d03d7e251b0b6d84c45c8274d26fd848d5fe617906438abb6e5e6beca0',
+	"$gal_root/toluca-lake-pool-project/toluca-lake-pool-project-source-03.jpeg" => 'd8fe12b406cda923c36d99b13b4255bce0397e4cb33df6ee3fc902bb40460925',
+	"$gal_root/toluca-lake-pool-project/toluca-lake-pool-project-source-04.jpeg" => '37211f8697711bc756ba74a7334507a3fb01c668cb90e76dd29a8f636a7bbc2c',
+	"$gal_root/toluca-lake-pool-project/toluca-lake-pool-project-source-05.jpeg" => 'b37939288e34ca779db11687f70e1acc6a0a68d6786b0aaccd1d8e9743a3c263',
+	"$gal_root/toluca-lake-pool-project/toluca-lake-pool-project-source-06.jpeg" => 'de456b04e9fcd1b0544797f21b32fbcf059e8a9f4b3317c43d2497572b2eb8f9',
+	"$gal_root/north-hollywood-pool-project/north-hollywood-pool-project-source-01.jpeg" => '2440c205d7442443ea35022d02ae3868c423ab35640a8f640f8879c89fc33efe',
+	"$gal_root/north-hollywood-pool-project/north-hollywood-pool-project-source-02.jpeg" => '4b763562a9856d225980dbd82ef799c16cb8fd8ca93e4f0f77cca5b01cbdcea3',
+	"$gal_root/north-hollywood-pool-project/north-hollywood-pool-project-source-03.jpeg" => 'f90043074ea4d2db2b93bc4b0275f209a3f4b3c9d1b5f79f0989ed390c5ba8a2',
+	"$gal_root/north-hollywood-pool-project/north-hollywood-pool-project-source-04.jpeg" => '7e8442bbd96430779891180d6e99db6b81d1a5e9bf77231f00130543defbff40',
+	"$gal_root/north-hollywood-pool-project/north-hollywood-pool-project-source-05.jpeg" => 'ed4a9a69619fae1fdc07878c4b7cc5fcd39a5200481461960e9813de71fb08a7',
+	"$gal_root/north-hollywood-pool-project/north-hollywood-pool-project-source-06.jpeg" => '78f80a2135a445380d46fd94c8e90822bc15e019d6b8d177125029eeda12cb88',
 );
 $present = array();
 $absent  = array();
@@ -497,6 +545,8 @@ $scan_dirs = array(
 	"$incoming/sherman_oaks", "$incoming/encino", "$incoming/studio_city",
 	"$gal_root/beverly-hills-luxe-spa-renovation", "$gal_root/tarzana-resort-style-finish",
 	"$gal_root/woodland-hills-tile-coping-refresh",
+	"$gal_root/van-nuys-pool-project", "$gal_root/toluca-lake-pool-project",
+	"$gal_root/north-hollywood-pool-project",
 );
 $on_disk = 0;
 foreach ( $scan_dirs as $d ) {
