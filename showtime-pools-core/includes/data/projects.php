@@ -329,6 +329,15 @@ return array(
 		'seo_title'          => 'Pool Filter and Equipment Replacement in Van Nuys, CA',
 		'meta_description'   => 'Before and after photos of a Van Nuys pool equipment vault refitted with a replacement cartridge filter and new PVC plumbing.',
 		'og_image'           => 'van-nuys-pool-project-after.webp',
+		// Real photographs, resolved from assets/img/projects/galleries/<slug>/.
+		'additional_gallery' => array(
+			array( 'status' => 'ready', 'image' => 'van-nuys-pool-project-highlight-01.webp', 'alt' => 'Van Nuys pool project showing a freeform pool and raised spa with a blue tile band beside a paver deck under construction.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'van-nuys-pool-project-highlight-02.webp', 'alt' => 'Van Nuys pool project showing a pool holding dark water, edged with stone coping and a handrail in front of a covered patio.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'van-nuys-pool-project-highlight-03.webp', 'alt' => 'Van Nuys pool project showing an equipment set of valves, a pump and white plumbing lines against a stucco wall.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'van-nuys-pool-project-highlight-04.webp', 'alt' => 'Van Nuys pool project showing a rectangular pool and attached spa with a vacuum hose in the water beside a metal fence.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'van-nuys-pool-project-highlight-05.webp', 'alt' => 'Van Nuys pool project showing a gloved hand setting decorative tile along a brick pool edge beside excavated ground.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'van-nuys-pool-project-highlight-06.webp', 'alt' => 'Van Nuys pool project showing a filter tank and pump joined by white plumbing in a planted garden bed.', 'caption' => '' ),
+		),
 	),
 
 	array(
@@ -359,6 +368,15 @@ return array(
 		'seo_title'          => 'Pool Tile Cleaning in North Hollywood, CA',
 		'meta_description'   => 'Before and after photos of a North Hollywood pool waterline cleaned of pale scale deposits, with the original blue tile pattern visible again.',
 		'og_image'           => 'north-hollywood-pool-project-after.webp',
+		// Real photographs, resolved from assets/img/projects/galleries/<slug>/.
+		'additional_gallery' => array(
+			array( 'status' => 'ready', 'image' => 'north-hollywood-pool-project-highlight-01.webp', 'alt' => 'North Hollywood pool project showing water falling from a stone-faced raised spa into the pool below beside a hedged patio.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'north-hollywood-pool-project-highlight-02.webp', 'alt' => 'North Hollywood pool project showing a freeform pool with clear water, a tile waterline band and brick coping.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'north-hollywood-pool-project-highlight-03.webp', 'alt' => 'North Hollywood pool project showing newly run white plumbing lines in an open trench of excavated soil.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'north-hollywood-pool-project-highlight-04.webp', 'alt' => 'North Hollywood pool project showing a rectangular pool with a bodyboard floating on the surface beside a metal fence.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'north-hollywood-pool-project-highlight-05.webp', 'alt' => 'North Hollywood pool project showing a heater and filter tank connected by valves and plumbing against a concrete wall.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'north-hollywood-pool-project-highlight-06.webp', 'alt' => 'North Hollywood pool project showing a pump and filter joined by white plumbing beside a dense hedge.', 'caption' => '' ),
+		),
 	),
 
 	array(
@@ -389,6 +407,15 @@ return array(
 		'seo_title'          => 'Pool Water Clarity Treatment in Toluca Lake, CA',
 		'meta_description'   => 'Before and after photos of a Toluca Lake pool after water treatment changed the water appearance, with the existing finish and deck retained.',
 		'og_image'           => 'toluca-lake-pool-project-after.webp',
+		// Real photographs, resolved from assets/img/projects/galleries/<slug>/.
+		'additional_gallery' => array(
+			array( 'status' => 'ready', 'image' => 'toluca-lake-pool-project-highlight-01.webp', 'alt' => 'Toluca Lake pool project showing a curved pool with wide red-toned coping and a vacuum hose in the water beside a metal fence.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'toluca-lake-pool-project-highlight-02.webp', 'alt' => 'Toluca Lake pool project showing a freeform pool with a rock waterfall feature surrounded by palms and flagstone paving.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'toluca-lake-pool-project-highlight-03.webp', 'alt' => 'Toluca Lake pool project showing a heater, valves and white plumbing beside wall-mounted electrical enclosures.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'toluca-lake-pool-project-highlight-04.webp', 'alt' => 'Toluca Lake pool project showing a freeform pool and attached spa holding green, clouded water on a flagstone deck.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'toluca-lake-pool-project-highlight-05.webp', 'alt' => 'Toluca Lake pool project showing a pump and filter tank connected by white plumbing beside a brick wall.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'toluca-lake-pool-project-highlight-06.webp', 'alt' => 'Toluca Lake pool project showing a heater and pump connected by white plumbing on bare ground.', 'caption' => '' ),
+		),
 	),
 
 	array(

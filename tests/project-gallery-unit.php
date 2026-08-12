@@ -184,16 +184,23 @@ $block = static function ( string $src, string $slug ): string {
 // the CURRENT working tree. Every other record must be byte-identical to HEAD —
 // including Sherman Oaks / Encino / Studio City, whose galleries are already
 // committed and must not shift again.
+// Nothing is authorized to change right now: every gallery has shipped, so the
+// whole registry must be byte-identical to HEAD. Add a slug here only while its
+// gallery is actively being added, then move it to the shipped list once merged.
 $gallery_authorized = array(
-	'beverly-hills-luxe-spa-renovation',
-	'tarzana-resort-style-finish',
-	'woodland-hills-tile-coping-refresh',
+	'van-nuys-pool-project',
+	'toluca-lake-pool-project',
+	'north-hollywood-pool-project',
 );
-// Already shipped: these must now match HEAD exactly, gallery block included.
+// Already shipped: these must match HEAD exactly, gallery block included. This
+// is stricter than the "authorized" path — no part of the block may move.
 $gallery_already_shipped = array(
 	'sherman-oaks-mid-century-remodel',
 	'encino-estate-new-build',
 	'studio-city-modern-automation',
+	'beverly-hills-luxe-spa-renovation',
+	'tarzana-resort-style-finish',
+	'woodland-hills-tile-coping-refresh',
 );
 // Removing ONLY the added `additional_gallery` block must restore the HEAD text
 // exactly. That proves the authorized records gained a gallery and changed in no
@@ -237,8 +244,11 @@ $untouched_count = count( $other_slugs ) - count( $gallery_authorized ) - count(
 		. ' | authorized-record violations: ' . ( implode( ', ', $authorized_bad ) ?: 'none' )
 		. ' | already-shipped violations: ' . ( implode( ', ', $shipped_bad ) ?: 'none' ) )
 	: ok( "9. $untouched_count untouched managed project records are byte-identical to HEAD; the "
-		. count( $gallery_already_shipped ) . ' already-shipped galleries (Sherman Oaks, Encino, Studio City) are byte-identical to HEAD including their gallery blocks; and the '
-		. count( $gallery_authorized ) . ' authorized records (Beverly Hills, Tarzana, Woodland Hills) differ from HEAD by nothing but their added additional_gallery block' );
+		. count( $gallery_already_shipped ) . ' already-shipped galleries (' . implode( ', ', $gallery_already_shipped )
+		. ') are byte-identical to HEAD including their gallery blocks; and the '
+		. count( $gallery_authorized ) . ' authorized records ('
+		. ( $gallery_authorized ? implode( ', ', $gallery_authorized ) : 'none' )
+		. ') differ from HEAD by nothing but their added additional_gallery block' );
 
 $img_moved = array();
 foreach ( $other_slugs as $s ) {
