@@ -89,13 +89,15 @@ $EXPECT_WITH_REAL = array(
 	'sherman-oaks-mid-century-remodel', 'encino-estate-new-build', 'studio-city-modern-automation',
 	'beverly-hills-luxe-spa-renovation', 'tarzana-resort-style-finish', 'woodland-hills-tile-coping-refresh',
 	'van-nuys-pool-project', 'toluca-lake-pool-project', 'north-hollywood-pool-project',
+	'burbank-pool-project', 'calabasas-pool-project', 'west-hollywood-pool-project',
+	'bel-air-pool-project',
 );
 $got = array_keys( $with_real );
 sort( $got );
 $want = $EXPECT_WITH_REAL;
 sort( $want );
 ( $got === $want )
-	? ok( '1. exactly the six expected managed projects publish highlight photographs: ' . implode( ', ', $want ) )
+	? ok( '1. exactly the ' . count( $want ) . ' expected managed projects publish highlight photographs: ' . implode( ', ', $want ) )
 	: bad( '1. publishing projects: ' . implode( ', ', $got ) );
 
 /* 2 + 3. Each publishing project resolves only its own files, in slot order. */
@@ -533,6 +535,33 @@ $SOURCES = array(
 	"$gal_root/north-hollywood-pool-project/north-hollywood-pool-project-source-04.jpeg" => '7e8442bbd96430779891180d6e99db6b81d1a5e9bf77231f00130543defbff40',
 	"$gal_root/north-hollywood-pool-project/north-hollywood-pool-project-source-05.jpeg" => 'ed4a9a69619fae1fdc07878c4b7cc5fcd39a5200481461960e9813de71fb08a7',
 	"$gal_root/north-hollywood-pool-project/north-hollywood-pool-project-source-06.jpeg" => '78f80a2135a445380d46fd94c8e90822bc15e019d6b8d177125029eeda12cb88',
+	// Batch 4 — Burbank / Calabasas / West Hollywood / Bel Air. Folder and file
+	// names were normalized to the canonical registry slug; the encoded bytes
+	// were never touched, so these remain the owner-supplied photographs.
+	"$gal_root/burbank-pool-project/burbank-pool-project-source-01.jpeg" => 'f89a64a7dfd3ef649137b926fa90235712a7d4c081e2b92a32768ca4346b56e0',
+	"$gal_root/burbank-pool-project/burbank-pool-project-source-02.jpeg" => '49b9d952065d6b03c8c0f7576125c63ec78eccced8c69e8c5c212fc87bd8520a',
+	"$gal_root/burbank-pool-project/burbank-pool-project-source-03.jpg"  => '4bc5cd9207b9bae7320c9a851557b5c3b80031c814c6f379ca11a4c71218e878',
+	"$gal_root/burbank-pool-project/burbank-pool-project-source-04.jpeg" => '112881856cf6dce385116fc1de73f2eafa7c9d790670a05b316f6e07c703ada9',
+	"$gal_root/burbank-pool-project/burbank-pool-project-source-05.jpeg" => '4ae7659d9425ad99c4806181580d55eec2feec9c4b7b85c78142f74936fe10b0',
+	"$gal_root/burbank-pool-project/burbank-pool-project-source-06.jpeg" => 'b94061ca8dde7d0157dee47c241bf48b67fa94ec35102c8f8064a5f63a175cf4',
+	"$gal_root/calabasas-pool-project/calabasas-pool-project-source-01.jpeg" => '8d19bbbbc2bbc712f1d6107730a70b0bf0374905e90bb7075a229a1c18acb08a',
+	"$gal_root/calabasas-pool-project/calabasas-pool-project-source-02.jpeg" => 'e5de566fa94ffdac326db4907c627843a6526503be591008f2380d66972c7e00',
+	"$gal_root/calabasas-pool-project/calabasas-pool-project-source-03.jpeg" => '55e535bd07679f7442746fa66bb05c0b17cfc381dd558e8d47c1d0be788372c0',
+	"$gal_root/calabasas-pool-project/calabasas-pool-project-source-04.jpeg" => 'c7cd9f51130b88991d1343aa8ee18b98a128200eb8f8ba192271c298a32dcc60',
+	"$gal_root/calabasas-pool-project/calabasas-pool-project-source-05.jpeg" => '99ac6f8788f25c10cbabcc8c66e7df3b164b5f8359c072054ae1db1e9b025de4',
+	"$gal_root/calabasas-pool-project/calabasas-pool-project-source-06.jpeg" => '972a30b9791823a2b22865d542d00902e7aa7552c978e683cb6ff3437eae931c',
+	"$gal_root/west-hollywood-pool-project/west-hollywood-pool-project-source-01.jpeg" => 'c6d1c1abf62811271930255cea5f613ed4332b187325c3358c40aa28da5c3b36',
+	"$gal_root/west-hollywood-pool-project/west-hollywood-pool-project-source-02.jpeg" => '916754d9c5060b47c3f58803d221ba79de33ccb3ffe5bd5fb61c84a8acbbb9d0',
+	"$gal_root/west-hollywood-pool-project/west-hollywood-pool-project-source-03.jpeg" => 'f29733e26d04675f93fc2f93c5d78777da6067a845fa4f16d0c41b7c023af43f',
+	"$gal_root/west-hollywood-pool-project/west-hollywood-pool-project-source-04.jpeg" => 'd89d628cd1d15db557eb5fbba591ed9bdc3b91875dbb41f41b615de040a1d5d2',
+	"$gal_root/west-hollywood-pool-project/west-hollywood-pool-project-source-05.jpeg" => '9d0abcd15306d2bbeaea330d1435a5e595a5b587e5d5f3444d213064aec5f024',
+	"$gal_root/west-hollywood-pool-project/west-hollywood-pool-project-source-06.jpeg" => 'be7a5b554b3e60e3fb5e547a5d0a02965aee8f4924b85699bee819c4da4816dc',
+	"$gal_root/bel-air-pool-project/bel-air-pool-project-source-01.jpeg" => 'fb6212a699baf706de9ac4ceab81007f290a7004a9f553aff5d350a7ab9d2ce3',
+	"$gal_root/bel-air-pool-project/bel-air-pool-project-source-02.jpeg" => '2b29f71b1516ac9624cccab23e858bf3c0fa15085cd2e3023d5d4abc6abd7923',
+	"$gal_root/bel-air-pool-project/bel-air-pool-project-source-03.jpeg" => '17ac7a3e8465036ed94e67a2a73317caa3d093fac60e4eaa12c3a73e160d6999',
+	"$gal_root/bel-air-pool-project/bel-air-pool-project-source-04.jpeg" => 'c11a70a700df5de57d7b0636e526aba8875f6751391c607dcba4ddebcb8a4461',
+	"$gal_root/bel-air-pool-project/bel-air-pool-project-source-05.jpeg" => '4b41bfa29516d378174ec9978d6c5e6cd4b51ba6e9c5c11a26d560ba424a8f10',
+	"$gal_root/bel-air-pool-project/bel-air-pool-project-source-06.jpeg" => '607eefda8eb2bc4370654b08ded973d2f9c4d6d7cfa7d5c8486aa5334410afc4',
 );
 $present = array();
 $absent  = array();
@@ -547,6 +576,8 @@ $scan_dirs = array(
 	"$gal_root/woodland-hills-tile-coping-refresh",
 	"$gal_root/van-nuys-pool-project", "$gal_root/toluca-lake-pool-project",
 	"$gal_root/north-hollywood-pool-project",
+	"$gal_root/burbank-pool-project", "$gal_root/calabasas-pool-project",
+	"$gal_root/west-hollywood-pool-project", "$gal_root/bel-air-pool-project",
 );
 $on_disk = 0;
 foreach ( $scan_dirs as $d ) {
