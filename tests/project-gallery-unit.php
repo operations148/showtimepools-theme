@@ -732,17 +732,30 @@ $text_hidden    = (bool) preg_match( '#class="footer-wordmark__text" aria-hidden
 	: bad( '20b. wrapperHidden=' . var_export( $wrapper_hidden, true ) . ' textHidden=' . var_export( $text_hidden, true ) );
 
 // 21. Legal links and social destinations are untouched.
+//
+// The footer's human-facing "Sitemap" link now targets the HTML sitemap at
+// /sitemap/ rather than the raw XML feed — a visitor clicking it should get a
+// readable page, not an XSL-styled document. This is STRICTER than the previous
+// wp-sitemap.xml expectation: it pins the new destination, forbids the footer
+// regressing to the XML URL, AND separately proves /wp-sitemap.xml is still
+// served for Search Console, which the old assertion never checked.
 $legal_missing = array();
-foreach ( array( '/privacy-policy/', '/affiliate/', '/terms/', 'wp-sitemap.xml' ) as $l ) {
+foreach ( array( '/privacy-policy/', '/affiliate/', '/terms/', '/sitemap/' ) as $l ) {
 	if ( false === strpos( $home_html, $l ) ) { $legal_missing[] = $l; }
 }
 foreach ( array( 'facebook.com', 'instagram.com', 'linkedin.com', 'tiktok.com', 'youtube.com', 'share.google' ) as $s ) {
 	if ( false === strpos( $home_html, $s ) ) { $legal_missing[] = $s; }
 }
 $has_copy = (bool) preg_match( '#&copy;|©#', $home_html );
-( empty( $legal_missing ) && $has_copy )
-	? ok( '21. the copyright line, all four legal links and all six social destinations are unchanged' )
-	: bad( '21. missing: ' . implode( ', ', $legal_missing ) . ' copyright=' . var_export( $has_copy, true ) );
+// The visible footer link must not point at the XML feed any more.
+$footer_xml = (bool) preg_match( '#<a[^>]+href="[^"]*wp-sitemap\.xml"#', $home_html );
+// …but the XML sitemap itself must still exist and still be XML.
+$xml_body   = fetch_body( home_url( '/wp-sitemap.xml' ) );
+$xml_ok     = ( '' !== $xml_body ) && ( false !== strpos( $xml_body, '<sitemapindex' ) || false !== strpos( $xml_body, '<urlset' ) );
+( empty( $legal_missing ) && $has_copy && ! $footer_xml && $xml_ok )
+	? ok( '21. the copyright line, all four legal links and all six social destinations are unchanged; the footer "Sitemap" link points to the HTML /sitemap/ and no longer to the XML feed, while /wp-sitemap.xml is still served as a valid XML sitemap' )
+	: bad( '21. missing: ' . implode( ', ', $legal_missing ) . ' copyright=' . var_export( $has_copy, true )
+		. ' footerStillLinksXml=' . var_export( $footer_xml, true ) . ' xmlSitemapServed=' . var_export( $xml_ok, true ) );
 
 echo "\n== RESULT ==\n";
 echo "  pass: $pass   fail: $fail   skip: $skip\n";

@@ -107,7 +107,15 @@ foreach ( get_posts( array( 'post_type' => 'post', 'post_status' => 'publish', '
 }
 ?>
 <main id="primary" class="site-main interior-page">
-	<section class="int-hero int-hero--brand" data-reveal>
+	<?php
+	/*
+	 * Compact hero, matching page-legal.php. This is an index page: a
+	 * full-viewport hero would push every link below the fold for no benefit.
+	 * `--compact` is the established interior modifier; the sitemap-scoped
+	 * min-height reset lives beside the .sitemap styles in interior.css.
+	 */
+	?>
+	<section class="int-hero int-hero--brand int-hero--compact" data-reveal>
 		<div class="int-hero__pattern" aria-hidden="true"></div>
 		<div class="container">
 			<nav class="breadcrumbs int-hero__crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'showtime-pools' ); ?>">
@@ -123,7 +131,15 @@ foreach ( get_posts( array( 'post_type' => 'post', 'post_status' => 'publish', '
 		</div>
 	</section>
 
-	<section class="int-section" data-reveal>
+	<?php
+	/*
+	 * Deliberately NOT `data-reveal`. [data-reveal] sets opacity:0 and only
+	 * main's FIRST child is exempted, so this section stayed invisible — at
+	 * full height — whenever the reveal script did not run. The link index is
+	 * the entire purpose of this page and must never depend on JavaScript.
+	 */
+	?>
+	<section class="int-section">
 		<div class="container sitemap">
 			<?php
 			$render_group( __( 'Main Pages', 'showtime-pools' ), $main_pages );

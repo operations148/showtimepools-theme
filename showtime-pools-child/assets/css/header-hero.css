@@ -57,6 +57,15 @@ body.has-hero .post-hero {
 	min-height: 100dvh;
 }
 
+/* HTML sitemap — the one interior hero that must NOT own a full page. It is a
+   link index: a viewport-tall hero pushed every group below the fold and read
+   as a blank band. Header offset above still applies, so the breadcrumb and H1
+   clear the fixed nav; only the enforced height is released. Scoped to this one
+   template — every other interior hero keeps the full-screen rhythm. */
+body.has-hero.page-template-page-sitemap .int-hero {
+	min-height: 0;
+}
+
 /* The home hero is not viewport-height — it has its own clamp scale, which
    it publishes as --stp-hero-min-h. Same principle, expressed against that
    value instead of the viewport. */
