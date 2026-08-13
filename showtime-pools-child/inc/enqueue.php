@@ -120,6 +120,11 @@ add_action(
 			'page-projects.php', 'page-reviews.php', 'page-legal.php',
 			'page-services-hub.php', 'page-shop.php', 'page-blog.php',
 				'page-affiliate.php',
+			// The HTML sitemap uses the interior hero + .sitemap-group styles, and
+			// interior.css is where --stp-hero-pad-top is declared. Without it the
+			// has-hero offset in header-hero.css resolves against an undefined
+			// custom property and the breadcrumb/H1 slide under the fixed header.
+			'page-sitemap.php',
 		);
 		$is_interior = false;
 		foreach ( $interior_templates as $tpl ) {

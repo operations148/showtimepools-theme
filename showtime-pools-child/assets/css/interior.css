@@ -1082,6 +1082,10 @@
 }
 
 /* ─── HTML sitemap (/sitemap/, page-sitemap.php) ───────────────────────── */
+/* The sitemap hero's viewport-height override lives in header-hero.css, beside
+   the body.has-hero rule it overrides — that file owns has-hero sizing and
+   loads after this one. */
+
 .sitemap {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
