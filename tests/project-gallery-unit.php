@@ -187,12 +187,7 @@ $block = static function ( string $src, string $slug ): string {
 // Nothing is authorized to change right now: every gallery has shipped, so the
 // whole registry must be byte-identical to HEAD. Add a slug here only while its
 // gallery is actively being added, then move it to the shipped list once merged.
-$gallery_authorized = array(
-	'burbank-pool-project',
-	'calabasas-pool-project',
-	'west-hollywood-pool-project',
-	'bel-air-pool-project',
-);
+$gallery_authorized = array();
 // Already shipped: these must match HEAD exactly, gallery block included. This
 // is stricter than the "authorized" path — no part of the block may move.
 $gallery_already_shipped = array(
@@ -205,6 +200,10 @@ $gallery_already_shipped = array(
 	'van-nuys-pool-project',
 	'toluca-lake-pool-project',
 	'north-hollywood-pool-project',
+	'burbank-pool-project',
+	'calabasas-pool-project',
+	'west-hollywood-pool-project',
+	'bel-air-pool-project',
 );
 // Removing ONLY the added `additional_gallery` block must restore the HEAD text
 // exactly. That proves the authorized records gained a gallery and changed in no
