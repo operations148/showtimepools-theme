@@ -446,6 +446,15 @@ return array(
 		'seo_title'          => 'Pool and Spa Construction in Burbank, CA',
 		'meta_description'   => 'Before and after photos of a Burbank pool and attached spa built from excavation through to a filled pool and finished concrete deck.',
 		'og_image'           => 'burbank-pool-project-after.webp',
+		// Real photographs, resolved from assets/img/projects/galleries/<slug>/.
+		'additional_gallery' => array(
+			array( 'status' => 'ready', 'image' => 'burbank-pool-project-highlight-01.webp', 'alt' => 'Burbank pool project showing a filter tank, heater and valves joined by plumbing at an equipment set beside a stucco wall.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'burbank-pool-project-highlight-02.webp', 'alt' => 'Burbank pool project showing a pool and raised spa edged with blue mosaic tile beside a patterned tile wall.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'burbank-pool-project-highlight-03.webp', 'alt' => 'Burbank pool project showing a row of pumps connected by white plumbing along a narrow equipment run.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'burbank-pool-project-highlight-04.webp', 'alt' => 'Burbank pool project showing a pump and filter joined by grey plumbing against a concrete wall.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'burbank-pool-project-highlight-05.webp', 'alt' => 'Burbank pool project showing a filled pool with stone-faced columns and a raised spa during site work.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'burbank-pool-project-highlight-06.webp', 'alt' => 'Burbank pool project showing an excavated pool shell with steel reinforcement and timber formwork in place.', 'caption' => '' ),
+		),
 	),
 
 	array(
@@ -476,6 +485,15 @@ return array(
 		'seo_title'          => 'Custom Pool Construction in Calabasas, CA',
 		'meta_description'   => 'Before and after photos of a custom Calabasas pool with a tiled interior, shown as an unfilled shell and again filled with its deck finished.',
 		'og_image'           => 'calabasas-pool-project-after.webp',
+		// Real photographs, resolved from assets/img/projects/galleries/<slug>/.
+		'additional_gallery' => array(
+			array( 'status' => 'ready', 'image' => 'calabasas-pool-project-highlight-01.webp', 'alt' => 'Calabasas pool project showing a heater, filter tank and two pumps connected by plumbing at an equipment set.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'calabasas-pool-project-highlight-02.webp', 'alt' => 'Calabasas pool project showing crew members applying an interior finish inside a drained pool with hoses across the deck.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'calabasas-pool-project-highlight-03.webp', 'alt' => 'Calabasas pool project showing a filter tank and pump joined by white plumbing beside a dense ivy hedge.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'calabasas-pool-project-highlight-04.webp', 'alt' => 'Calabasas pool project showing a filter and connected plumbing set on open ground beside a timber fence.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'calabasas-pool-project-highlight-05.webp', 'alt' => 'Calabasas pool project showing a drained pool with a fresh interior surface and a blue mosaic medallion on the floor.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'calabasas-pool-project-highlight-06.webp', 'alt' => 'Calabasas pool project showing fresh mortar set around a wrapped skimmer at the pool edge.', 'caption' => '' ),
+		),
 	),
 
 	array(
@@ -506,6 +524,15 @@ return array(
 		'seo_title'          => 'Swimming Pool Construction in Bel Air, CA',
 		'meta_description'   => 'Before and after photos of a Bel Air swimming pool built into an established garden, from bare concrete shell to a coped and filled pool.',
 		'og_image'           => 'bel-air-pool-project-after.webp',
+		// Real photographs, resolved from assets/img/projects/galleries/<slug>/.
+		'additional_gallery' => array(
+			array( 'status' => 'ready', 'image' => 'bel-air-pool-project-highlight-01.webp', 'alt' => 'Bel Air pool project showing a filter, heater and pumps connected by dark plumbing at an equipment set beside bamboo.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'bel-air-pool-project-highlight-02.webp', 'alt' => 'Bel Air pool project showing mosaic-tiled steps and a level pool edge under clear water.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'bel-air-pool-project-highlight-03.webp', 'alt' => 'Bel Air pool project showing a plumbing manifold with valves and gauges beneath a timber deck structure.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'bel-air-pool-project-highlight-04.webp', 'alt' => 'Bel Air pool project showing four filter cartridges standing on the deck, two soiled and two clean.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'bel-air-pool-project-highlight-05.webp', 'alt' => 'Bel Air pool project showing a pool holding dark water with a coiled hose resting on the surface.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'bel-air-pool-project-highlight-06.webp', 'alt' => 'Bel Air pool project showing a curved pool with a diving board and potted planting beside a large residence.', 'caption' => '' ),
+		),
 	),
 
 	array(
@@ -563,10 +590,17 @@ return array(
 		'meta_description'   => 'Before and after photos of a West Hollywood pool pump replacement: an ageing pump and weathered PVC reconnected with new plumbing on the existing equipment pad.',
 		'og_image'           => 'west-hollywood-pool-project-after.webp',
 
-		// No `additional_gallery` key: this project inherits the shared default
-		// (four pending slots) from showtime_project_gallery_default(), exactly
-		// like the other thirteen. Supply the key here to publish real gallery
-		// photographs for this project, or set it to array() to opt out.
+		// Real photographs, resolved from assets/img/projects/galleries/<slug>/.
+		// Gallery only: the verified scope, one-day timeline and investment band
+		// recorded above are untouched, and no slot asserts a new project fact.
+		'additional_gallery' => array(
+			array( 'status' => 'ready', 'image' => 'west-hollywood-pool-project-highlight-01.webp', 'alt' => 'West Hollywood pool project showing a close view of valves and plumbing lines at a poolside equipment set.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'west-hollywood-pool-project-highlight-02.webp', 'alt' => 'West Hollywood pool project showing a pool and attached spa holding still, reflective water, with a garden hose laid across the adjoining paved terrace.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'west-hollywood-pool-project-highlight-03.webp', 'alt' => 'West Hollywood pool project showing a heater connected by plumbing beside a timber fence.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'west-hollywood-pool-project-highlight-04.webp', 'alt' => 'West Hollywood pool project showing a filter tank and a raised heater on a stand behind an open gate.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'west-hollywood-pool-project-highlight-05.webp', 'alt' => 'West Hollywood pool project showing a rectangular pool and raised spa beside a paved terrace and planting.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'west-hollywood-pool-project-highlight-06.webp', 'alt' => 'West Hollywood pool project showing a pool holding clear blue water at dusk, with patio chairs set back from the pool edge.', 'caption' => '' ),
+		),
 	),
 
 	array(

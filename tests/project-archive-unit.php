@@ -461,11 +461,25 @@ foreach ( \Showtime\Projects::all() as $e ) {
 		$foreign[] = $slug;
 	}
 }
+// The gallery is now populated, so the old "exactly two images" count is
+// obsolete. The replacement is stronger: it pins BOTH halves independently —
+// the two pre-existing primary photographs must still be exactly two and
+// unchanged, the gallery must contribute exactly six, the page total must be
+// exactly eight, every gallery file must be this project's own canonical
+// highlight numbered 01-06, and the no-foreign-asset guard is retained verbatim.
 $own_imgs = preg_match_all( '#<img[^>]+west-hollywood-pool-project-(before|after)\.webp#', $wh_own );
 $all_imgs = preg_match_all( '#<img#', $wh_own );
-( '' !== $wh_own && empty( $foreign ) && 2 === $own_imgs && 2 === $all_imgs )
-	? ok( '14b. west-hollywood shows exactly two photographs, both its own before/after WebP — no Sherman Oaks asset and no other project\'s asset appears in its own content, and the gallery placeholders contribute no image at all' )
-	: bad( '14b. foreignAssets=' . ( $foreign ? implode( ',', $foreign ) : 'none' ) . " ownImgs=$own_imgs totalImgs=$all_imgs" );
+preg_match_all( '#<img[^>]+west-hollywood-pool-project-highlight-(\d{2})\.webp#', $wh_own, $ghm );
+$gal_nums = $ghm[1] ?? array();
+sort( $gal_nums );
+$gal_ok = ( array( '01', '02', '03', '04', '05', '06' ) === $gal_nums );
+// A highlight belonging to any other project must never appear here.
+$foreign_gal = preg_match_all( '#<img[^>]+/galleries/(?!west-hollywood-pool-project/)[^"]*-highlight-\d{2}\.webp#', $wh_own );
+( '' !== $wh_own && empty( $foreign ) && 2 === $own_imgs && 6 === count( $gal_nums ) && $gal_ok
+	&& 0 === $foreign_gal && 8 === $all_imgs )
+	? ok( '14b. west-hollywood shows exactly eight photographs — its two original before/after WebP plus its six own gallery highlights numbered 01-06 — and no Sherman Oaks asset, no other project\'s comparison asset and no other project\'s gallery highlight appears in its content' )
+	: bad( '14b. foreignAssets=' . ( $foreign ? implode( ',', $foreign ) : 'none' ) . " ownImgs=$own_imgs galleryImgs="
+		. count( $gal_nums ) . ' gallerySeq=' . wp_json_encode( $gal_nums ) . " foreignGallery=$foreign_gal totalImgs=$all_imgs" );
 
 echo "\n== SITEMAPS + SCHEMA + VERIFIED-SIX REGRESSION ==\n";
 

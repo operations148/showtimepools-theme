@@ -200,6 +200,10 @@ $gallery_already_shipped = array(
 	'van-nuys-pool-project',
 	'toluca-lake-pool-project',
 	'north-hollywood-pool-project',
+	'burbank-pool-project',
+	'calabasas-pool-project',
+	'west-hollywood-pool-project',
+	'bel-air-pool-project',
 );
 // Removing ONLY the added `additional_gallery` block must restore the HEAD text
 // exactly. That proves the authorized records gained a gallery and changed in no
@@ -313,12 +317,20 @@ echo "\n== GALLERY STRUCTURE ==\n";
 $gal = '';
 if ( preg_match( '#<div class="proj-gallery"[\s\S]*?(?=</section>)#', $wh_html, $mg ) ) { $gal = $mg[0]; }
 
-// 13 + 14.
-$cells   = preg_match_all( '#class="proj-gallery__cell"#', $gal );
-$pending = preg_match_all( '#proj-gallery__card--pending#', $gal );
-( 6 === $cells && 6 === $pending )
-	? ok( '13 + 14. exactly six gallery slots render, and all six are in the pending "Coming soon" state' )
-	: bad( "13/14. cells=$cells pending=$pending (expected 6 and 6)" );
+// 13 + 14. West Hollywood's gallery is now POPULATED with six verified project
+// photographs. The former expectation (six pending placeholders) described the
+// pre-publication state and no longer exists. The replacement is stricter: it
+// pins the exact count of real cards AND requires zero pending cards, zero
+// placeholder badges and zero placeholder captions — so a regression back to
+// placeholders, or a partially-filled gallery, both fail.
+$cells    = preg_match_all( '#class="proj-gallery__cell"#', $gal );
+$pending  = preg_match_all( '#proj-gallery__card--pending#', $gal );
+$badges   = preg_match_all( '#>Coming soon<#', $gal );
+$pend_txt = preg_match_all( '#Project photo coming soon#', $gal );
+$real     = preg_match_all( '#class="proj-gallery__card"#', $gal );
+( 6 === $cells && 0 === $pending && 0 === $badges && 0 === $pend_txt && 6 === $real )
+	? ok( '13 + 14. exactly six gallery slots render and all six are REAL photograph cards — zero pending cards, zero "Coming soon" badges and zero placeholder captions remain' )
+	: bad( "13/14. cells=$cells realCards=$real pending=$pending badges=$badges pendingText=$pend_txt (expected 6/6/0/0/0)" );
 
 // 15 + 16.
 $pages = preg_match_all( '#data-proj-slider-slide="(\d+)"#', $gal, $pm );
@@ -357,28 +369,46 @@ $frames = preg_match_all( '#class="proj-gallery__frame"#', $gal );
 	? ok( '18. every one of the six placeholders sits in the shared 4 / 3 landscape frame' )
 	: bad( '18. cssRatio=' . var_export( $ratio, true ) . " frames=$frames" );
 
-// 19 + 20.
-$imgs = preg_match_all( '#<img#', $gal );
+// 19 + 20. Formerly: the gallery emitted NO <img> at all. Now it must emit
+// exactly six, each pointing at this project's own canonical highlight file,
+// numbered 01-06 with no gaps and no repeats. The empty-src guard is retained
+// verbatim, so a blank src anywhere on the page still fails.
+$imgs      = preg_match_all( '#<img#', $gal );
 $empty_src = preg_match_all( '#src=(""|\'\')#', $wh_html );
-( 0 === $imgs && 0 === $empty_src )
-	? ok( '19 + 20. no placeholder emits an <img> element, and the page contains no empty src attribute anywhere' )
-	: bad( "19/20. imgsInGallery=$imgs emptySrcOnPage=$empty_src" );
+preg_match_all( '#<img[^>]+src="[^"]*/galleries/' . preg_quote( $WH, '#' ) . '/' . preg_quote( $WH, '#' ) . '-highlight-(\d{2})\.webp"#', $gal, $om );
+$own_nums = $om[1] ?? array();
+sort( $own_nums );
+$expect_nums = array( '01', '02', '03', '04', '05', '06' );
+( 6 === $imgs && 0 === $empty_src && $own_nums === $expect_nums )
+	? ok( '19 + 20. the gallery emits exactly six <img> elements, every src is this project\'s own galleries/' . $WH . '/ highlight file numbered 01-06 with no gap or repeat, and the page still contains no empty src attribute anywhere' )
+	: bad( "19/20. imgsInGallery=$imgs emptySrcOnPage=$empty_src ownNumbered=" . wp_json_encode( $own_nums ) );
 
-// 21.
-$has_alt     = (bool) preg_match( '#\balt=#', $gal );
+// 21. Formerly: NO alt attribute existed, because there was no image to
+// describe. Now every one of the six images must carry a non-empty, unique,
+// markup-free alt string, and no placeholder caption may remain. Stronger:
+// the old check could pass with zero images; this one cannot.
+preg_match_all( '#<img[^>]+alt="([^"]*)"#', $gal, $am );
+$alts        = array_map( 'html_entity_decode', $am[1] ?? array() );
+$non_empty   = count( array_filter( $alts, static fn( $a ) => '' !== trim( $a ) ) );
+$unique      = count( array_unique( $alts ) );
+$markup_free = count( $alts ) === count( array_filter( $alts, static fn( $a ) => $a === wp_strip_all_tags( $a ) ) );
 $has_caption = (bool) preg_match( '#proj-gallery__caption#', $gal );
-$decor_hidden = 6 === preg_match_all( '#proj-gallery__icon" aria-hidden="true"#', $gal );
-( ! $has_alt && ! $has_caption && $decor_hidden )
-	? ok( '21. no alt attribute and no caption exist anywhere in the pending gallery, and all six decorative icons are aria-hidden' )
-	: bad( '21. alt=' . var_export( $has_alt, true ) . ' caption=' . var_export( $has_caption, true ) . ' decorHidden=' . var_export( $decor_hidden, true ) );
+( 6 === count( $alts ) && 6 === $non_empty && 6 === $unique && $markup_free && ! $has_caption )
+	? ok( '21. all six gallery images carry a non-empty, unique, markup-free alt description, and no placeholder caption remains' )
+	: bad( '21. alts=' . count( $alts ) . " nonEmpty=$non_empty unique=$unique markupFree="
+		. var_export( $markup_free, true ) . ' caption=' . var_export( $has_caption, true ) );
 
-// Wording contract.
+// 21b. Wording contract. The approved heading is unchanged and the rejected
+// heading must still appear nowhere — both retained verbatim. What changed is
+// the pending copy: with every slot filled, the "will be added soon" sentence
+// and the six placeholder lines must now be ABSENT, which the component drops
+// automatically once nothing is pending.
 $wording = false !== strpos( $gal, 'More Project Highlights' )
-	&& false !== strpos( $gal, 'Additional project photos will be added soon.' )
+	&& false === strpos( $gal, 'Additional project photos will be added soon.' )
 	&& false === stripos( $gal, 'Sample Projects We Also Built' )
-	&& 6 === preg_match_all( '#Project photo coming soon#', $gal )
-	&& 6 === preg_match_all( '#>Coming soon<#', $gal );
-$wording ? ok( '21b. the approved wording renders verbatim: heading, supporting sentence, six "Coming soon" badges and six "Project photo coming soon" lines — and the rejected heading appears nowhere' )
+	&& 0 === preg_match_all( '#Project photo coming soon#', $gal )
+	&& 0 === preg_match_all( '#>Coming soon<#', $gal );
+$wording ? ok( '21b. the approved heading still renders verbatim and the rejected heading appears nowhere; with all six slots filled, the "photos will be added soon" sentence, the "Coming soon" badges and the placeholder lines are all correctly absent' )
 	: bad( '21b. wording contract not met' );
 
 echo "\n== PLACEMENT AND HEADINGS ==\n";
@@ -621,9 +651,30 @@ foreach ( ( $im[1] ?? array() ) as $src ) {
 }
 $gal_imgs   = preg_match_all( '#<img#', $gal );
 $gal_bg_url = preg_match_all( '#url\(#', $gal );
-( empty( $broken ) && 0 === $gal_imgs && 0 === $gal_bg_url )
-	? ok( '7. the gallery requests no image at all — no <img>, no CSS url(), no broken-image icon — and all ' . count( $im[1] ?? array() ) . ' images elsewhere on the page resolve to real files on disk' )
-	: bad( '7. broken: ' . implode( ', ', $broken ) . " galleryImgs=$gal_imgs galleryUrls=$gal_bg_url" );
+// Formerly: the gallery requested NO image. Now it requests exactly six, and
+// each must exist on disk, be a genuine WebP by magic number, decode with real
+// pixel dimensions, and be byte-distinct from its five siblings. The
+// broken-image and CSS-url() guards are retained verbatim.
+$gal_dir  = get_stylesheet_directory() . '/assets/img/projects/galleries/' . $WH;
+$g_bad    = array();
+$g_hashes = array();
+for ( $i = 1; $i <= 6; $i++ ) {
+	$p = sprintf( '%s/%s-highlight-%02d.webp', $gal_dir, $WH, $i );
+	if ( ! is_readable( $p ) ) { $g_bad[] = basename( $p ) . ' missing'; continue; }
+	$h = (string) file_get_contents( $p, false, null, 0, 12 );
+	if ( 12 !== strlen( $h ) || 'RIFF' !== substr( $h, 0, 4 ) || 'WEBP' !== substr( $h, 8, 4 ) ) {
+		$g_bad[] = basename( $p ) . ' not RIFF/WEBP'; continue;
+	}
+	$d = @getimagesize( $p );
+	if ( ! is_array( $d ) || $d[0] < 1 || $d[1] < 1 || IMAGETYPE_WEBP !== ( $d[2] ?? 0 ) ) {
+		$g_bad[] = basename( $p ) . ' does not decode'; continue;
+	}
+	$g_hashes[] = hash_file( 'sha256', $p );
+}
+if ( count( $g_hashes ) !== count( array_unique( $g_hashes ) ) ) { $g_bad[] = 'duplicate image within the gallery'; }
+( empty( $broken ) && empty( $g_bad ) && 6 === $gal_imgs && 0 === $gal_bg_url && 6 === count( $g_hashes ) )
+	? ok( '7. the gallery requests exactly six images, all six exist on disk as genuine decodable WebP files with unique SHA-256 hashes, no CSS url() is used, and all ' . count( $im[1] ?? array() ) . ' images on the page resolve to real files on disk' )
+	: bad( '7. broken: ' . implode( ', ', $broken ) . ' galleryFiles: ' . ( implode( ', ', $g_bad ) ?: 'ok' ) . " galleryImgs=$gal_imgs galleryUrls=$gal_bg_url" );
 
 // 8. Every gallery control exposes a unique accessible name.
 preg_match_all( '#<button[^>]*class="proj-gallery__(?:arrow|dot)[^"]*"[^>]*aria-label="([^"]+)"#', $gal, $lm );
