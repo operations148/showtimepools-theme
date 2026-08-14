@@ -1,134 +1,175 @@
 /**
- * Sitewide "Weekly Maintenance" popup (GHL form).
+ * Sitewide delayed "Get a Free Estimate" popup.
  *
- * Loaded deferred in the footer; does nothing at initial paint beyond binding
- * triggers. The GHL <iframe> + form_embed.js are injected only on first open,
- * so the popup never costs LCP or a request until the visitor sees it.
+ * Loaded deferred in the footer and enqueued exactly once (inc/popup.php), so
+ * the listeners below are bound one time per page — never per template.
  *
- * Trigger: exit-intent on desktop, 30s dwell on mobile, plus any
- * [data-open-weekly-popup] button (which always opens, ignoring suppression).
- * Dismissal suppresses re-show for 7 days via localStorage. Accessible: focus
- * trap, ESC to close, focus returned to the opener, reduced-motion aware.
+ * Behaviour
+ *   - Opens exactly 15000ms after the initial page load. Never immediately.
+ *   - Shows at most once per browser session, tracked in sessionStorage.
+ *   - Closing it, or following either CTA, records the dismissal so it cannot
+ *     reopen for the rest of that session.
+ *   - Embeds nothing: the primary CTA is a same-tab link, so the GHL booking
+ *     calendar is only ever requested after a click.
+ *
+ * Accessibility
+ *   - Focus moves into the dialog on open, is trapped while open, and returns
+ *     to whatever held it before.
+ *   - Escape, the close button and a backdrop click all dismiss it.
+ *   - Background scrolling is locked while open.
+ *   - prefers-reduced-motion suppresses the transition (handled in CSS).
  */
 
 (function () {
 	'use strict';
 
-	const popup = document.getElementById('stp-popup-weekly');
-	if (!popup) return;
+	var popup = document.getElementById('stp-estimate-popup');
+	if (!popup) { return; }
 
-	const STORE_KEY  = 'stp_popup_weekly_until';
-	const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
-	const MOBILE_MQ  = '(max-width: 768px)';
-	const DWELL_MS   = 30000;
+	var DELAY_MS  = 15000;
+	var STORE_KEY = 'stp_estimate_popup_dismissed';
+	var FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-	const dialog  = popup.querySelector('.stp-popup__dialog');
-	const embed   = popup.querySelector('[data-popup-embed]');
-	const closers = popup.querySelectorAll('[data-popup-close]');
-	const openers = document.querySelectorAll('[data-open-weekly-popup]');
-	const FOCUSABLE = 'a[href], button:not([disabled]), input, select, textarea, iframe, [tabindex]:not([tabindex="-1"])';
+	var dialog  = popup.querySelector('.stp-estimate__dialog');
+	var closers = popup.querySelectorAll('[data-estimate-close]');
+	var ctas    = popup.querySelectorAll('[data-estimate-cta]');
 
-	let injected = false;
-	let isOpen   = false;
-	let lastFocus = null;
+	var isOpen    = false;
+	var lastFocus = null;
+	var timer     = null;
 
-	function suppressed() {
+	/** Session dismissal. Storage access is guarded — Safari private mode throws. */
+	function dismissed() {
 		try {
-			const until = parseInt(localStorage.getItem(STORE_KEY) || '0', 10);
-			return until > 0 && Date.now() < until;
-		} catch (e) { return false; }
-	}
-	function suppress() {
-		try { localStorage.setItem(STORE_KEY, String(Date.now() + SEVEN_DAYS)); } catch (e) {}
-	}
-
-	function injectIframe() {
-		if (injected || !embed) return;
-		injected = true;
-		const src = embed.getAttribute('data-src');
-		if (!src) return;
-		const iframe = document.createElement('iframe');
-		iframe.src = src;
-		iframe.id = 'inline-' + (embed.getAttribute('data-form-id') || 'weekly');
-		iframe.title = embed.getAttribute('data-title') || 'Form';
-		iframe.setAttribute('scrolling', 'no');
-		iframe.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
-		embed.appendChild(iframe);
-		// GHL resize helper, loaded once, only after the iframe exists.
-		if (!document.getElementById('stp-ghl-embed-js')) {
-			const s = document.createElement('script');
-			s.id = 'stp-ghl-embed-js';
-			s.src = 'https://app.showtimepoolmechanics.com/js/form_embed.js';
-			s.async = true;
-			document.body.appendChild(s);
+			return window.sessionStorage.getItem(STORE_KEY) === '1';
+		} catch (e) {
+			return false;
 		}
 	}
 
-	function onKeydown(e) {
-		if (e.key === 'Escape') { e.preventDefault(); close(); return; }
-		if (e.key !== 'Tab' || !dialog) return;
-		const f = Array.prototype.slice
+	function recordDismissal() {
+		try {
+			window.sessionStorage.setItem(STORE_KEY, '1');
+		} catch (e) { /* storage unavailable — popup simply isn't suppressed */ }
+	}
+
+	function focusable() {
+		if (!dialog) { return []; }
+		return Array.prototype.slice
 			.call(dialog.querySelectorAll(FOCUSABLE))
-			.filter((el) => el.offsetParent !== null || el.tagName === 'IFRAME');
-		if (!f.length) return;
-		const first = f[0], last = f[f.length - 1], active = document.activeElement;
+			.filter(function (el) {
+				return el.offsetWidth > 0 || el.offsetHeight > 0 || el === document.activeElement;
+			});
+	}
+
+	function onKeydown(e) {
+		if (e.key === 'Escape' || e.key === 'Esc') {
+			e.preventDefault();
+			close();
+			return;
+		}
+		if (e.key !== 'Tab') { return; }
+
+		var f = focusable();
+		if (!f.length) { return; }
+
+		var first  = f[0];
+		var last   = f[f.length - 1];
+		var active = document.activeElement;
+
 		if (e.shiftKey && (active === first || !dialog.contains(active))) {
-			e.preventDefault(); last.focus();
+			e.preventDefault();
+			last.focus();
 		} else if (!e.shiftKey && active === last) {
-			e.preventDefault(); first.focus();
+			e.preventDefault();
+			first.focus();
 		}
 	}
 
 	function open() {
-		if (isOpen) return;
+		if (isOpen || dismissed()) { return; }
 		isOpen = true;
 		lastFocus = document.activeElement;
-		injectIframe();
+
 		popup.hidden = false;
-		// next frame so the transition runs from the hidden state
-		requestAnimationFrame(() => popup.classList.add('is-open'));
-		document.body.classList.add('stp-popup-lock');
-		const closeBtn = popup.querySelector('.stp-popup__close');
-		if (closeBtn) closeBtn.focus();
+		popup.removeAttribute('aria-hidden');
+		// Next frame, so the transition runs from the hidden state.
+		window.requestAnimationFrame(function () {
+			popup.classList.add('is-open');
+		});
+
+		document.body.classList.add('stp-estimate-lock');
 		document.addEventListener('keydown', onKeydown);
+
+		var f = focusable();
+		if (f.length) { f[0].focus(); }
 	}
 
-	function close() {
-		if (!isOpen) return;
+	/**
+	 * @param {boolean} [keepFocus] True when the visitor is navigating away via a
+	 *   CTA — returning focus then would fight the navigation.
+	 */
+	function close(keepFocus) {
+		if (!isOpen) { return; }
 		isOpen = false;
+
+		if (timer) { window.clearTimeout(timer); timer = null; }
+
 		popup.classList.remove('is-open');
-		document.body.classList.remove('stp-popup-lock');
+		document.body.classList.remove('stp-estimate-lock');
 		document.removeEventListener('keydown', onKeydown);
-		suppress();
-		let done = false;
-		const finish = () => {
-			if (done) return;
+		recordDismissal();
+
+		var done = false;
+		var finish = function () {
+			if (done) { return; }
 			done = true;
 			popup.hidden = true;
+			popup.setAttribute('aria-hidden', 'true');
 			popup.removeEventListener('transitionend', finish);
 		};
 		popup.addEventListener('transitionend', finish);
-		setTimeout(finish, 400); // fallback if no transitionend
-		if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
-	}
+		window.setTimeout(finish, 400); // fallback when no transition runs
 
-	closers.forEach((el) => el.addEventListener('click', (e) => { e.preventDefault(); close(); }));
-	// Manual openers always work, even inside the 7-day suppression window.
-	openers.forEach((el) => el.addEventListener('click', (e) => { e.preventDefault(); open(); }));
-
-	// Auto-trigger only when not suppressed.
-	if (suppressed()) return;
-
-	if (window.matchMedia && window.matchMedia(MOBILE_MQ).matches) {
-		window.setTimeout(() => { if (!suppressed()) open(); }, DWELL_MS);
-	} else {
-		const onLeave = (e) => {
-			// Pointer left through the top of the viewport → likely leaving.
-			if (e.clientY <= 0) {
-				document.removeEventListener('mouseout', onLeave);
-				if (!suppressed()) open();
+		// Focus must not be left stranded on a control that is about to be
+		// hidden. Blur whatever the dialog still holds first, then hand focus
+		// back to the opener when there is a real one to return it to (on the
+		// timed open there usually is not — the page had focus on <body>).
+		if (!keepFocus) {
+			var active = document.activeElement;
+			if (dialog && active && dialog.contains(active) && typeof active.blur === 'function') {
+				active.blur();
 			}
-		};
-		document.addEventListener('mouseout', onLeave);
+			if (lastFocus
+				&& lastFocus !== document.body
+				&& typeof lastFocus.focus === 'function'
+				&& document.contains(lastFocus)) {
+				lastFocus.focus();
+			}
+		}
 	}
+
+	Array.prototype.forEach.call(closers, function (el) {
+		el.addEventListener('click', function (e) {
+			e.preventDefault();
+			close();
+		});
+	});
+
+	// Following a CTA counts as a dismissal, but must not cancel the navigation.
+	Array.prototype.forEach.call(ctas, function (el) {
+		el.addEventListener('click', function () {
+			recordDismissal();
+			close(true);
+		});
+	});
+
+	// Already seen this session — never arm the timer.
+	if (dismissed()) { return; }
+
+	timer = window.setTimeout(open, DELAY_MS);
+
+	// Exposed for tests only: lets a spec drive the timer and inspect state
+	// without reaching into module internals.
+	popup.stpEstimate = { open: open, close: close, delay: DELAY_MS, storeKey: STORE_KEY };
 })();

@@ -82,11 +82,16 @@ if ( class_exists( '\\Showtime\\Services' ) ) {
 		$service_links[] = array( 'title' => (string) ( $svc['title'] ?? $slug ), 'url' => home_url( '/services/' . $slug . '/' ) );
 	}
 }
+// Published areas only. A registry entry is not proof the page exists — the WP
+// records are created after deploy — so an area whose page is not live yet is
+// omitted rather than listed as a 404. It appears here automatically the moment
+// it is published.
 $area_links = array();
 if ( class_exists( '\\Showtime\\Areas' ) ) {
 	foreach ( \Showtime\Areas::all() as $area ) {
 		$slug = (string) ( $area['slug'] ?? '' );
 		if ( '' === $slug ) { continue; }
+		if ( function_exists( 'showtime_area_page_is_published' ) && ! showtime_area_page_is_published( $slug ) ) { continue; }
 		$area_links[] = array( 'title' => (string) ( $area['name'] ?? $slug ), 'url' => home_url( '/service-areas/' . $slug . '/' ) );
 	}
 }

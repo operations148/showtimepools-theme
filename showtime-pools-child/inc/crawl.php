@@ -146,6 +146,11 @@ function showtime_llms_txt_body(): string {
 		if ( '' === $slug || '' === $name ) {
 			continue;
 		}
+		// Only advertise an area whose page is actually live — see
+		// showtime_area_page_is_published(). Never point a crawler at a 404.
+		if ( function_exists( 'showtime_area_page_is_published' ) && ! showtime_area_page_is_published( $slug ) ) {
+			continue;
+		}
 		$lines[] = '- [' . $name . '](' . home_url( '/service-areas/' . $slug . '/' ) . ')';
 	}
 	$lines[] = '';
@@ -261,6 +266,11 @@ function showtime_llms_full_txt_body(): string {
 			$slug = (string) ( $area['slug'] ?? '' );
 			$name = (string) ( $area['name'] ?? '' );
 			if ( '' === $slug || '' === $name ) {
+				continue;
+			}
+			// Same rule as llms.txt: an area is documented only once its page
+			// is live, so no URL published here can resolve to a 404.
+			if ( function_exists( 'showtime_area_page_is_published' ) && ! showtime_area_page_is_published( $slug ) ) {
 				continue;
 			}
 			$url = home_url( '/service-areas/' . $slug . '/' );

@@ -1296,3 +1296,40 @@
 	.proj-slider__grid--center { grid-template-columns: 1fr; }
 	.proj-slider__nav { gap: var(--sp-2); }
 }
+
+/* ── Service-area local project proof ────────────────────────────────────
+   Rendered by page-area.php for areas whose registry entry names a
+   `related_project`. Scoped to this block rather than reusing
+   .featured-projects__grid, because that grid is a three-up and a single
+   card left a two-column hole beside it. Card + supporting column here,
+   collapsing to one column on the same breakpoint the projects grid uses. */
+.area-proof__grid {
+	display: grid;
+	grid-template-columns: minmax(0, 380px) minmax(0, 1fr);
+	gap: var(--sp-8);
+	align-items: center;
+	margin-top: var(--sp-8);
+}
+
+.area-proof__aside {
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-5);
+	align-items: flex-start;
+}
+
+.area-proof__note {
+	margin: 0;
+	max-width: 46ch;
+	color: var(--c-text-muted);
+	font-size: var(--fs-lg);
+	line-height: var(--lh-relaxed);
+}
+
+@media (max-width: 860px) {
+	.area-proof__grid {
+		grid-template-columns: 1fr;
+		gap: var(--sp-6);
+	}
+	.area-proof__note { max-width: none; }
+}

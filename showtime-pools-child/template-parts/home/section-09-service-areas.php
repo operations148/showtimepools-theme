@@ -11,27 +11,35 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$areas = class_exists( '\\Showtime\\Areas' ) ? \Showtime\Areas::all() : array();
-// Show every neighborhood in the registry (matches the /service-areas/ hub).
+// The canonical 14-location card set (see inc/service-areas.php) — the same
+// list, in the same order, that the /service-areas/ hub renders.
+$areas = function_exists( 'showtime_service_area_cards' ) ? showtime_service_area_cards() : array();
 // Split across the two marquee rows: first half (rounded up) drifts one way,
-// the rest the other. Each row's set is duplicated in the markup below so the
-// loop stays seamless whatever the row count is.
+// the rest the other — 14 locations split to exactly 7 and 7. Each row's set
+// is duplicated in the markup below so the loop stays seamless whatever the
+// row count is.
 $split = (int) ceil( count( $areas ) / 2 );
 $row_1 = array_slice( $areas, 0, $split );
 $row_2 = array_slice( $areas, $split );
 
+/**
+ * One marquee card.
+ *
+ * The duplicate copy exists only to make the CSS loop seamless: it is
+ * aria-hidden, removed from the tab order, and its image alt is emptied, so
+ * assistive technology and search engines encounter each location exactly once.
+ */
 $render_card = static function ( array $area, bool $duplicate = false ): void {
-	$slug    = (string) ( $area['slug'] ?? '' );
-	$img_url = function_exists( 'showtime_image' ) ? showtime_image( 'area_' . $slug, 800 ) : '';
+	$img_url = (string) ( $area['image'] ?? '' );
 	?>
 	<a
 		class="area-card area-card--marquee"
-		href="<?php echo esc_url( home_url( '/service-areas/' . $slug . '/' ) ); ?>"
+		href="<?php echo esc_url( (string) ( $area['url'] ?? '' ) ); ?>"
 		style="--_area-grad: <?php echo esc_attr( $area['gradient'] ?? 'linear-gradient(135deg,#1F2F3A,#5C8A9E)' ); ?>"
 		<?php if ( $duplicate ) : ?>aria-hidden="true" tabindex="-1"<?php endif; ?>
 	>
-		<?php if ( $img_url ) : ?>
-			<img class="area-card__img" src="<?php echo esc_url( $img_url ); ?>" alt="<?php echo esc_attr( $duplicate ? '' : sprintf( /* translators: %s: neighborhood */ __( 'Pool service in %s', 'showtime-pools' ), (string) ( $area['name'] ?? '' ) ) ); ?>" loading="lazy" decoding="async" width="800" height="600">
+		<?php if ( '' !== $img_url ) : ?>
+			<img class="area-card__img" src="<?php echo esc_url( $img_url ); ?>" alt="<?php echo esc_attr( $duplicate ? '' : (string) ( $area['alt'] ?? '' ) ); ?>" loading="lazy" decoding="async" width="800" height="600">
 		<?php endif; ?>
 		<div class="area-card__overlay" aria-hidden="true"></div>
 		<div class="area-card__content">
@@ -40,7 +48,7 @@ $render_card = static function ( array $area, bool $duplicate = false ): void {
 				<span class="area-card__pill"><?php echo esc_html( $card_count ); ?> <?php esc_html_e( 'pools', 'showtime-pools' ); ?></span>
 			<?php endif; ?>
 			<h3 class="area-card__title"><?php echo esc_html( (string) ( $area['name'] ?? '' ) ); ?></h3>
-			<p class="area-card__sub"><?php echo esc_html( (string) ( $area['tag'] ?? '' ) ); ?></p>
+			<p class="area-card__sub"><?php echo esc_html( (string) ( $area['sub'] ?? '' ) ); ?></p>
 		</div>
 	</a>
 	<?php
@@ -53,9 +61,13 @@ $render_card = static function ( array $area, bool $duplicate = false ): void {
 				<span class="eyebrow"><?php esc_html_e( 'Where We Work', 'showtime-pools' ); ?></span>
 				<h2 class="balance">
 					<?php
+					// Count stays derived so the heading cannot go stale, but the
+					// wording no longer claims weekly-route coverage: five of the
+					// locations shown have a published project page, not a service
+					// route, and asserting "on the route" for them would be a claim.
 					printf(
 						/* translators: %s: number of service areas */
-						esc_html__( '%s neighborhoods on the route. Pick yours.', 'showtime-pools' ),
+						esc_html__( 'Explore %s Los Angeles Service Areas', 'showtime-pools' ),
 						esc_html( number_format_i18n( count( $areas ) ) )
 					);
 					?>

@@ -45,8 +45,14 @@ $_pm = static fn( string $k ) => (string) get_post_meta( $pid, $k, true );
 
 if ( '' !== $_pm( 'area_h1' ) )   { $seo_h1 = $_pm( 'area_h1' ); }
 if ( '' !== $_pm( 'area_lead' ) ) { $lead   = $_pm( 'area_lead' ); }
+// Section headings: post meta wins, then the registry, then the original
+// defaults. The registry keys let an area label these two columns for what it
+// actually lists — a services rundown rather than local-conditions claims —
+// without a second template. Areas that set neither render exactly as before.
 $area_what_common = $_pm( 'area_what_common' );
 $area_what_do     = $_pm( 'area_what_do' );
+if ( '' === $area_what_common ) { $area_what_common = (string) ( $area['what_common'] ?? '' ); }
+if ( '' === $area_what_do )     { $area_what_do     = (string) ( $area['what_do'] ?? '' ); }
 $chars       = (array)  ( $area['characteristics'] ?? array() );
 $jobs        = (array)  ( $area['common_jobs'] ?? array() );
 $streets     = (array)  ( $area['sample_streets'] ?? array() );
@@ -75,10 +81,29 @@ $schema = array(
 ?>
 <main id="primary" class="site-main interior-page">
 
-	<?php $area_hero_img = function_exists( 'showtime_image' ) ? showtime_image( 'area_' . $slug, 1600 ) : ''; ?>
+	<?php
+	// Hero photograph. An area may pin a real, already-committed theme asset via
+	// `hero_image` (+ its approved `hero_alt`); otherwise the area_<slug> image
+	// slot resolves as before. The pin exists because the slot's last-resort
+	// fallback is a random stock photo, which must never appear beneath an alt
+	// that names a location. Areas without the key are completely unaffected.
+	$area_hero_pin = (string) ( $area['hero_image'] ?? '' );
+	$area_hero_alt = (string) ( $area['hero_alt'] ?? '' );
+	$area_hero_img = '';
+	if ( '' !== $area_hero_pin && file_exists( SHOWTIME_CHILD_DIR . '/' . ltrim( $area_hero_pin, '/' ) ) ) {
+		[ $area_hero_img ] = showtime_asset( $area_hero_pin );
+	} elseif ( function_exists( 'showtime_image' ) ) {
+		$area_hero_img = showtime_image( 'area_' . $slug, 1600 );
+		$area_hero_pin = '';
+	}
+	if ( '' === $area_hero_alt ) {
+		/* translators: %s: neighborhood */
+		$area_hero_alt = sprintf( __( 'Pool service in %s, Los Angeles', 'showtime-pools' ), $name );
+	}
+	?>
 	<section class="area-hero" data-reveal style="--_area-grad: <?php echo esc_attr( $gradient ); ?>">
 		<?php if ( $area_hero_img ) : ?>
-			<img class="area-hero__photo" src="<?php echo esc_url( $area_hero_img ); ?>" <?php echo showtime_hero_srcset_attr( 'area_' . $slug ); ?> alt="<?php echo esc_attr( sprintf( /* translators: %s: neighborhood */ __( 'Pool service in %s, Los Angeles', 'showtime-pools' ), $name ) ); ?>" loading="eager" fetchpriority="high" decoding="async">
+			<img class="area-hero__photo" src="<?php echo esc_url( $area_hero_img ); ?>" <?php echo '' === $area_hero_pin ? showtime_hero_srcset_attr( 'area_' . $slug ) : ''; ?> alt="<?php echo esc_attr( $area_hero_alt ); ?>" loading="eager" fetchpriority="high" decoding="async">
 		<?php endif; ?>
 		<div class="area-hero__bg" aria-hidden="true">
 			<svg viewBox="0 0 800 400" preserveAspectRatio="none" fill="none">
@@ -187,6 +212,69 @@ $schema = array(
 			<?php endif; ?>
 		</div>
 	</section>
+
+	<?php
+	// Registry-gated local project proof. Renders only for areas whose entry
+	// names a `related_project`, so areas without the key keep their existing
+	// markup byte-for-byte. The card reuses the SAME cover image and alt text
+	// the Projects archive already shows for that project — nothing new is
+	// asserted here, and the copy stays distinct from the project page's own
+	// title so the two never compete for the same query.
+	$area_project_slug = (string) ( $area['related_project'] ?? '' );
+	$area_project      = ( '' !== $area_project_slug && function_exists( 'showtime_project_data' ) )
+		? showtime_project_data( $area_project_slug )
+		: null;
+	?>
+	<?php if ( $area_project ) : ?>
+		<section class="int-section int-section--alt" data-reveal>
+			<div class="container">
+				<span class="eyebrow"><?php esc_html_e( 'Local project', 'showtime-pools' ); ?></span>
+				<h2 class="balance">
+					<?php printf( /* translators: %s: neighborhood */ esc_html__( 'Work we have completed in %s.', 'showtime-pools' ), esc_html( $name ) ); ?>
+				</h2>
+
+				<div class="area-proof__grid">
+					<a class="proj-card" href="<?php echo esc_url( showtime_project_permalink( $area_project_slug ) ); ?>">
+						<div class="proj-card__media" style="background:<?php echo esc_attr( $gradient ); ?>">
+							<?php if ( '' !== (string) $area_project['hero_image'] ) : ?>
+								<img
+									class="proj-card__media-img"
+									src="<?php echo esc_url( (string) $area_project['hero_image'] ); ?>"
+									alt="<?php echo esc_attr( (string) $area_project['hero_alt'] ); ?>"
+									loading="lazy"
+									decoding="async"
+									width="1024"
+									height="768">
+							<?php endif; ?>
+							<span class="proj-card__neighborhood"><?php echo esc_html( (string) $area_project['neighborhood'] ); ?></span>
+						</div>
+						<div class="proj-card__body">
+							<h3 class="proj-card__title"><?php echo esc_html( (string) $area_project['title'] ); ?></h3>
+							<p class="proj-card__excerpt"><?php echo esc_html( (string) $area_project['excerpt'] ); ?></p>
+							<span class="proj-card__cta"><?php esc_html_e( 'View the project →', 'showtime-pools' ); ?></span>
+						</div>
+					</a>
+
+					<div class="area-proof__aside">
+						<p class="area-proof__note">
+							<?php
+							printf(
+								/* translators: %s: neighborhood */
+								esc_html__( 'Every photograph on this project was taken on the job in %s. Browse the full before-and-after set, or talk to us about your own pool.', 'showtime-pools' ),
+								esc_html( $name )
+							);
+							?>
+						</p>
+						<div class="cluster">
+							<a class="btn btn--primary btn--lg" href="<?php echo esc_url( showtime_booking_url() ); ?>"><?php esc_html_e( 'Book an Appointment', 'showtime-pools' ); ?></a>
+							<a class="btn btn--ghost btn--lg" href="<?php echo esc_url( home_url( '/projects/' ) ); ?>"><?php esc_html_e( 'All projects →', 'showtime-pools' ); ?></a>
+							<a class="btn btn--ghost btn--lg" href="<?php echo esc_url( home_url( '/service-areas/' ) ); ?>"><?php esc_html_e( 'All service areas →', 'showtime-pools' ); ?></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	<?php endif; ?>
 
 	<?php get_template_part( 'template-parts/home/section-08-reviews' ); ?>
 

@@ -537,13 +537,34 @@ empty( $v_bad )
 	? ok( '17. the six verified pages remain indexable with CreativeWork and comparison intact' )
 	: bad( '17. ' . implode( ', ', $v_bad ) );
 
-/* 18. The homepage strip stays curated: verified work only, never a placeholder
- * and never one of the newly promoted projects. */
+/* 18. The homepage FEATURED-PROJECTS STRIP stays curated: verified work only,
+ * never a placeholder and never one of the newly promoted projects.
+ *
+ * Scoped to the .featured-projects section rather than the whole document,
+ * because that section is what this rule protects. Other homepage sections
+ * legitimately link project pages: the service-areas carousel links the
+ * locations whose only published page IS their project page (see
+ * inc/service-areas.php). Those targets are indexable, sitemap-listed,
+ * verified records — not placeholders — so a link to them from another
+ * section is not a leak. The "Coming Soon" check stays document-wide, since
+ * a placeholder state must never appear anywhere on the homepage. */
 $home = fetch_body( "$base/" );
 $home_bad = array();
-if ( false !== stripos( $home, 'Coming Soon' ) ) { $home_bad[] = 'Coming Soon leaked'; }
-foreach ( $new_slugs as $slug ) {
-	if ( false !== strpos( $home, "/projects/$slug/" ) ) { $home_bad[] = $slug; }
+if ( false !== stripos( $home, 'Coming Soon' ) ) { $home_bad[] = 'Coming Soon leaked (document-wide)'; }
+
+if ( preg_match( '#<section class="featured-projects".*?</section>#s', $home, $fp_m ) ) {
+	$strip = $fp_m[0];
+	foreach ( $new_slugs as $slug ) {
+		if ( false !== strpos( $strip, "/projects/$slug/" ) ) { $home_bad[] = "$slug in the featured strip"; }
+	}
+	// ...and the strip must still be made of verified records only. Match link
+	// destinations, not asset paths (assets/img/projects/... is not a permalink).
+	preg_match_all( '#href="[^"]*/projects/([a-z0-9-]+)/"#', $strip, $fp_slugs );
+	foreach ( array_unique( $fp_slugs[1] ?? array() ) as $s ) {
+		if ( ! in_array( $s, $verified_slugs, true ) ) { $home_bad[] = "unverified $s in the featured strip"; }
+	}
+} else {
+	$home_bad[] = 'the featured-projects strip is missing from the homepage';
 }
 empty( $home_bad )
 	? ok( '18. homepage featured strip stays curated to verified projects only' )
