@@ -1,13 +1,17 @@
 <?php
 /**
- * Service-area registry — 8 neighborhoods, single source of truth.
+ * Service-area registry — 14 neighborhoods, single source of truth.
  *
  * Drives the homepage area grid, the /service-areas/ hub, the area landing
  * pages, the LocalBusiness `areaServed` schema, and footer cross-links.
  *
  * NOTE: each area also needs a WP page (slug = area slug, parent =
  * /service-areas/, template = page-area.php, meta _showtime_area_slug).
- * The registry alone does not create the route.
+ * The registry alone does not create the route. Because that page is a
+ * database record created after deploy, a registry entry is NOT proof the URL
+ * resolves: every surface that advertises an area URL must first ask
+ * showtime_area_page_is_published(), so a link is only ever published once its
+ * page is live. See showtime-pools-child/inc/service-areas.php.
  *
  * @package ShowtimePoolsCore
  */
@@ -287,6 +291,235 @@ return array(
 			'Diagnostics and repairs on integrated spa, water-feature, and automation systems',
 		),
 		'related_services' => array( 'pool-remodeling-resurfacing', 'smart-pool-automation' ),
+	),
+
+	// ── Project-backed areas ─────────────────────────────────────────────
+	// Added alongside the five service-area pages. Their WordPress child page
+	// under /service-areas/ is created after deploy, so every consumer that
+	// advertises an area URL routes through showtime_area_page_is_published()
+	// and omits (or falls back for) a record whose page is not live yet. See
+	// showtime-pools-child/inc/service-areas.php.
+	//
+	// TRUTH RULES, same as the project registry. These five assert only what is
+	// already verified elsewhere on the site:
+	//   - `characteristics` lists the service categories Showtime Pools offers,
+	//     drawn from the Services registry. It is NOT a claim about local soil,
+	//     housing stock or water chemistry, none of which is documented for
+	//     these cities.
+	//   - `common_jobs` describes the city's OWN completed project, exactly as
+	//     that record already states it. No other work is implied.
+	//   - `pool_count` is blank, `sample_streets` is omitted, and no `tag`,
+	//     intro or heading claims a weekly route, a schedule, a response time,
+	//     a years-in-city figure, a landmark or a coverage area.
+	//   - `lat`/`lng` are the city's public centroid, used only for the
+	//     areaServed Place in the shared Service schema. No per-city
+	//     LocalBusiness node or street address is created anywhere.
+	//   - `related_project` powers the project-proof block and reuses that
+	//     project's own cover image and approved alt text.
+
+	array(
+		'slug'        => 'van-nuys',
+		'seo_title'   => 'Pool Service in Van Nuys, CA | Showtime Pools',
+		'seo_meta'    => 'Pool service in Van Nuys: cleaning, repairs, equipment replacement, remodeling and construction. See a completed Van Nuys equipment project. Call (323) 825-2099.',
+		'name'        => 'Van Nuys',
+		'seo_h1'      => 'Pool Service in Van Nuys',
+		'seo_intro'   => 'Showtime Pools works on pools in Van Nuys. Equipment replacement is the work we have documented here: a poolside vault refitted with a new cartridge filter and fresh PVC pipework. Cleaning, repairs, remodeling and construction are all available in the area, booked through the same office that has run Showtime Pools since 2003.',
+		'tag'         => 'Service available',
+		'pool_count'  => '',
+		'gradient'    => 'linear-gradient(135deg,#1F2F3A 0%,#5C8A9E 100%)',
+		'lat'         => 34.1867,
+		'lng'         => -118.4489,
+		'zip_codes'   => array( '91401', '91405', '91406', '91411' ),
+		'lead'        => 'Showtime Pools works on pools in Van Nuys, from equipment and plumbing replacement through to cleaning, repairs and full remodels.',
+		'what_common' => 'Pool services available in Van Nuys.',
+		'characteristics' => array(
+			'Weekly pool maintenance and cleaning',
+			'Pool repairs and plumbing',
+			'Equipment installation and upgrades',
+			'Pool remodeling and resurfacing',
+			'Tile, coping, plaster and decking',
+			'Custom pool design and construction',
+		),
+		'what_do'     => 'What our Van Nuys project shows.',
+		'common_jobs' => array(
+			'A sunken poolside equipment vault holding an older filter tank, valve assembly and pipework',
+			'The filter and its associated plumbing replaced inside the existing vault',
+			'A replacement cartridge filter and new white PVC pipework fitted',
+			'Photographed before and after the work — see the full project below',
+		),
+		// Hero photograph: this city's OWN project highlight, already committed
+		// and already carrying this approved alt text on the project page. Set
+		// because the area_<slug> image slot has no bundled file for these five,
+		// and its stock fallback would put an unrelated photo under a locational
+		// alt. Areas without the key keep the slot resolver untouched.
+		'hero_image'  => 'assets/img/projects/galleries/van-nuys-pool-project/van-nuys-pool-project-highlight-04.webp',
+		'hero_alt'    => 'Van Nuys pool project showing a rectangular pool and attached spa with a vacuum hose in the water beside a metal fence.',
+		'related_project'  => 'van-nuys-pool-project',
+		'related_services' => array( 'equipment-installation-upgrades', 'pool-repairs-plumbing', 'weekly-pool-maintenance' ),
+	),
+
+	array(
+		'slug'        => 'north-hollywood',
+		'seo_title'   => 'Pool Service in North Hollywood, CA | Showtime Pools',
+		'seo_meta'    => 'Pool service in North Hollywood: tile cleaning, weekly maintenance, repairs, equipment and remodels. See a completed North Hollywood tile project. Call (323) 825-2099.',
+		'name'        => 'North Hollywood',
+		'seo_h1'      => 'Pool Service in North Hollywood',
+		'seo_intro'   => 'Showtime Pools works on pools in North Hollywood. Waterline tile cleaning is the work we have documented here: pale scale deposits lifted off a decorative blue tile band until the pattern read clearly again. Maintenance, repairs, equipment work and remodels are all available in the area.',
+		'tag'         => 'Service available',
+		'pool_count'  => '',
+		'gradient'    => 'linear-gradient(135deg,#23303B 0%,#7FA8BD 100%)',
+		'lat'         => 34.1870,
+		'lng'         => -118.3813,
+		'zip_codes'   => array( '91601', '91605', '91606' ),
+		'lead'        => 'Showtime Pools works on pools in North Hollywood, from waterline tile cleaning through to weekly maintenance, repairs and remodels.',
+		'what_common' => 'Pool services available in North Hollywood.',
+		'characteristics' => array(
+			'Pool tile cleaning',
+			'Weekly pool maintenance and cleaning',
+			'Pool repairs and plumbing',
+			'Equipment installation and upgrades',
+			'Pool remodeling and resurfacing',
+			'Tile, coping, plaster and decking',
+		),
+		'what_do'     => 'What our North Hollywood project shows.',
+		'common_jobs' => array(
+			'Waterline tile covered with heavy pale scale deposits, hiding the blue pattern beneath',
+			'The waterline tile cleaned along the pool edge',
+			'The existing tile retained throughout — nothing was replaced',
+			'Photographed before and after the work — see the full project below',
+		),
+		// Hero photograph: this city's OWN project highlight, already committed
+		// and already carrying this approved alt text on the project page. Set
+		// because the area_<slug> image slot has no bundled file for these five,
+		// and its stock fallback would put an unrelated photo under a locational
+		// alt. Areas without the key keep the slot resolver untouched.
+		'hero_image'  => 'assets/img/projects/galleries/north-hollywood-pool-project/north-hollywood-pool-project-highlight-01.webp',
+		'hero_alt'    => 'North Hollywood pool project showing water falling from a stone-faced raised spa into the pool below beside a hedged patio.',
+		'related_project'  => 'north-hollywood-pool-project',
+		'related_services' => array( 'pool-tile-cleaning', 'weekly-pool-maintenance', 'pool-repairs-plumbing' ),
+	),
+
+	array(
+		'slug'        => 'toluca-lake',
+		'seo_title'   => 'Pool Service in Toluca Lake, CA | Showtime Pools',
+		'seo_meta'    => 'Pool service in Toluca Lake: water treatment, weekly maintenance, repairs, equipment and remodels. See a completed Toluca Lake water project. Call (323) 825-2099.',
+		'name'        => 'Toluca Lake',
+		'seo_h1'      => 'Pool Service in Toluca Lake',
+		'seo_intro'   => 'Showtime Pools works on pools in Toluca Lake. Water treatment is the work we have documented here: a pool and attached spa taken from pale, clouded water to a clear deep blue with every surface left exactly as it was. Maintenance, repairs, equipment work and remodels are all available in the area.',
+		'tag'         => 'Service available',
+		'pool_count'  => '',
+		'gradient'    => 'linear-gradient(135deg,#1B2A22 0%,#6E8F77 100%)',
+		'lat'         => 34.1506,
+		'lng'         => -118.3520,
+		'zip_codes'   => array( '91602' ),
+		'lead'        => 'Showtime Pools works on pools in Toluca Lake, from water treatment and weekly maintenance through to repairs, equipment work and remodels.',
+		'what_common' => 'Pool services available in Toluca Lake.',
+		'characteristics' => array(
+			'Weekly pool maintenance and cleaning',
+			'Pool repairs and plumbing',
+			'Equipment installation and upgrades',
+			'Pool remodeling and resurfacing',
+			'Tile, coping, plaster and decking',
+			'Spa installation and renovation',
+		),
+		'what_do'     => 'What our Toluca Lake project shows.',
+		'common_jobs' => array(
+			'An existing pool and attached spa holding pale turquoise water',
+			'The pool water treated — no structural, finish, tile, coping or decking work',
+			'The same pool afterwards with the water reading deep blue',
+			'Photographed before and after the work — see the full project below',
+		),
+		// Hero photograph: this city's OWN project highlight, already committed
+		// and already carrying this approved alt text on the project page. Set
+		// because the area_<slug> image slot has no bundled file for these five,
+		// and its stock fallback would put an unrelated photo under a locational
+		// alt. Areas without the key keep the slot resolver untouched.
+		'hero_image'  => 'assets/img/projects/galleries/toluca-lake-pool-project/toluca-lake-pool-project-highlight-02.webp',
+		'hero_alt'    => 'Toluca Lake pool project showing a freeform pool with a rock waterfall feature surrounded by palms and flagstone paving.',
+		'related_project'  => 'toluca-lake-pool-project',
+		'related_services' => array( 'weekly-pool-maintenance', 'pool-repairs-plumbing', 'spa-installation-renovations' ),
+	),
+
+	array(
+		'slug'        => 'burbank',
+		'seo_title'   => 'Pool Service in Burbank, CA | Showtime Pools',
+		'seo_meta'    => 'Pool service in Burbank: new pool and spa construction, remodeling, weekly maintenance, repairs and equipment. See a completed Burbank build. Call (323) 825-2099.',
+		'name'        => 'Burbank',
+		'seo_h1'      => 'Pool Service in Burbank',
+		'seo_intro'   => 'Showtime Pools works on pools in Burbank. New construction is the work we have documented here: a backyard taken from excavation through to a finished, filled pool and attached spa with its surrounding deck. Remodeling, weekly maintenance, repairs and equipment work are all available in the area.',
+		'tag'         => 'Service available',
+		'pool_count'  => '',
+		'gradient'    => 'linear-gradient(135deg,#314A58 0%,#88A4B6 100%)',
+		'lat'         => 34.1808,
+		'lng'         => -118.3090,
+		'zip_codes'   => array( '91501', '91502', '91504', '91505', '91506' ),
+		'lead'        => 'Showtime Pools works on pools in Burbank, from new pool and spa construction through to remodels, weekly maintenance and repairs.',
+		'what_common' => 'Pool services available in Burbank.',
+		'characteristics' => array(
+			'Custom pool design and construction',
+			'Spa installation and renovation',
+			'Pool remodeling and resurfacing',
+			'Tile, coping, plaster and decking',
+			'Weekly pool maintenance and cleaning',
+			'Pool repairs and plumbing',
+		),
+		'what_do'     => 'What our Burbank project shows.',
+		'common_jobs' => array(
+			'A backyard at excavation, before the pool and spa shell were formed',
+			'A new pool and attached spa built out across the space',
+			'The finished pool filled, with its surrounding deck complete',
+			'Photographed from excavation through to completion — see the full project below',
+		),
+		// Hero photograph: this city's OWN project highlight, already committed
+		// and already carrying this approved alt text on the project page. Set
+		// because the area_<slug> image slot has no bundled file for these five,
+		// and its stock fallback would put an unrelated photo under a locational
+		// alt. Areas without the key keep the slot resolver untouched.
+		'hero_image'  => 'assets/img/projects/galleries/burbank-pool-project/burbank-pool-project-highlight-05.webp',
+		'hero_alt'    => 'Burbank pool project showing a filled pool with stone-faced columns and a raised spa during site work.',
+		'related_project'  => 'burbank-pool-project',
+		'related_services' => array( 'custom-pool-design-construction', 'spa-installation-renovations', 'pool-remodeling-resurfacing' ),
+	),
+
+	array(
+		'slug'        => 'brentwood',
+		'seo_title'   => 'Pool Service in Brentwood, CA | Showtime Pools',
+		'seo_meta'    => 'Pool service in Brentwood, Los Angeles: pool cleaning, weekly maintenance, repairs, equipment and remodels. See a completed Brentwood cleaning project. Call (323) 825-2099.',
+		'name'        => 'Brentwood',
+		'seo_h1'      => 'Pool Service in Brentwood',
+		'seo_intro'   => 'Showtime Pools works on pools in Brentwood. Pool cleaning is the work we have documented here: a naturalistic, stone-edged pool taken from dark green water to clear. Weekly maintenance, repairs, equipment work and remodels are all available in the area.',
+		'tag'         => 'Service available',
+		'pool_count'  => '',
+		'gradient'    => 'linear-gradient(135deg,#101820 0%,#6E8F77 100%)',
+		'lat'         => 34.0520,
+		'lng'         => -118.4760,
+		'zip_codes'   => array( '90049' ),
+		'lead'        => 'Showtime Pools works on pools in Brentwood, from pool cleaning and weekly maintenance through to repairs, equipment work and remodels.',
+		'what_common' => 'Pool services available in Brentwood.',
+		'characteristics' => array(
+			'Weekly pool maintenance and cleaning',
+			'Pool repairs and plumbing',
+			'Equipment installation and upgrades',
+			'Pool remodeling and resurfacing',
+			'Tile, coping, plaster and decking',
+			'Pool inspections and diagnostics',
+		),
+		'what_do'     => 'What our Brentwood project shows.',
+		'common_jobs' => array(
+			'A naturalistic pool edged with stacked stone, its water dark green',
+			'The pool cleaned and the water cleared',
+			'Clear turquoise water between the stacked-stone edges afterwards',
+			'Photographed before and after the work — see the full project below',
+		),
+		// Hero photograph: this city's OWN project highlight, already committed
+		// and already carrying this approved alt text on the project page. Set
+		// because the area_<slug> image slot has no bundled file for these five,
+		// and its stock fallback would put an unrelated photo under a locational
+		// alt. Areas without the key keep the slot resolver untouched.
+		'hero_image'  => 'assets/img/projects/galleries/brentwood-pool-project/brentwood-pool-project-highlight-01.webp',
+		'hero_alt'    => 'Brentwood pool project showing a pool with clear blue water and a floating vacuum hose, with a leaf net and pole resting on the brick deck beside a stacked-boulder rock feature.',
+		'related_project'  => 'brentwood-pool-project',
+		'related_services' => array( 'weekly-pool-maintenance', 'pool-repairs-plumbing', 'pool-inspections-diagnostics' ),
 	),
 
 );

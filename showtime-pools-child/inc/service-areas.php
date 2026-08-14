@@ -37,6 +37,74 @@ defined( 'ABSPATH' ) || exit;
 const SHOWTIME_AREA_CARD_PROJECT_SUB = 'Recent project';
 
 /**
+ * Slugs whose /service-areas/<slug>/ child page actually exists and is PUBLISHED.
+ *
+ * Theme code deploys before the WordPress page records are created, so a
+ * registry entry is never proof that its URL resolves. Every surface that
+ * advertises an area URL — the cards, the HTML sitemap, llms.txt and
+ * llms-full.txt — asks this first, so a link is published only once the page
+ * behind it is live, and a 404 is never exposed. Nothing here depends on
+ * WordPress' fuzzy 404 guessing.
+ *
+ * One query for all of them, memoized per request.
+ *
+ * @return array<string,true> Set of published area slugs, keyed by slug.
+ */
+function showtime_published_area_slugs(): array {
+	static $published = null;
+	if ( null !== $published ) {
+		return $published;
+	}
+
+	$published = array();
+
+	$parent = get_page_by_path( 'service-areas' );
+	if ( ! $parent instanceof WP_Post ) {
+		return $published;
+	}
+
+	$children = get_posts(
+		array(
+			'post_type'        => 'page',
+			'post_status'      => 'publish',
+			'post_parent'      => $parent->ID,
+			'posts_per_page'   => -1,
+			'no_found_rows'    => true,
+			'suppress_filters' => false,
+			'fields'           => 'ids',
+		)
+	);
+
+	foreach ( $children as $child_id ) {
+		$name = (string) get_post_field( 'post_name', $child_id );
+		if ( '' !== $name ) {
+			$published[ $name ] = true;
+		}
+	}
+
+	return $published;
+}
+
+/**
+ * Whether an area's landing page is published and therefore safe to link.
+ */
+function showtime_area_page_is_published( string $slug ): bool {
+	if ( '' === $slug ) {
+		return false;
+	}
+	return isset( showtime_published_area_slugs()[ $slug ] );
+}
+
+/**
+ * The canonical area URL when its page is live, or '' when it is not yet.
+ */
+function showtime_area_url( string $slug ): string {
+	return showtime_area_page_is_published( $slug )
+		? home_url( '/service-areas/' . $slug . '/' )
+		: '';
+}
+
+/**
  * The canonical service-area card set — one entry per managed project location.
  *
  * @return array<int,array{
@@ -52,77 +120,86 @@ function showtime_service_area_cards(): array {
 
 	$default_gradient = 'linear-gradient(135deg,#1F2F3A,#5C8A9E)';
 
-	// Areas registry, keyed by slug, for the locations that DO have a page.
-	$areas = array();
-	if ( class_exists( '\\Showtime\\Areas' ) ) {
-		foreach ( \Showtime\Areas::all() as $a ) {
-			$areas[ (string) ( $a['slug'] ?? '' ) ] = $a;
+	// Project registry — the source of each location's cover photograph and of
+	// the fallback destination used until its area page is live. Indexed by the
+	// project slug so an area can name its own.
+	$projects = array();
+	if ( function_exists( 'showtime_project_cards' ) ) {
+		foreach ( showtime_project_cards() as $card ) {
+			$projects[ (string) ( $card['slug'] ?? '' ) ] = $card;
 		}
 	}
 
-	// Project registry — the canonical location set, and the source of the
-	// cover photograph each location shows on the Projects archive.
-	$projects = function_exists( 'showtime_project_cards' ) ? showtime_project_cards() : array();
-
-	$with_page = array();
-	$without   = array();
-
-	foreach ( $projects as $card ) {
-		$name = trim( (string) ( $card['neighborhood'] ?? '' ) );
-		if ( '' === $name ) {
+	// Resolve an area slug to its project. New records name it outright; the
+	// original nine are matched through their project's area_url, which is how
+	// that relationship has always been recorded.
+	$project_for_area = array();
+	foreach ( $projects as $p_slug => $card ) {
+		$data     = function_exists( 'showtime_project_data' ) ? showtime_project_data( (string) $p_slug ) : null;
+		$area_url = trim( (string) ( $data['area_url'] ?? '' ) );
+		if ( '' === $area_url ) {
 			continue;
 		}
-
-		// A location has a published area page only when its project record
-		// carries an area_url AND the Areas registry actually holds that slug.
-		$data      = function_exists( 'showtime_project_data' ) ? showtime_project_data( (string) ( $card['slug'] ?? '' ) ) : null;
-		$area_url  = trim( (string) ( $data['area_url'] ?? '' ) );
-		$area_slug = '' !== $area_url ? trim( (string) $area_url, '/' ) : '';
-		$area_slug = '' !== $area_slug ? (string) substr( $area_slug, (int) strrpos( $area_slug, '/' ) + 1 ) : '';
-
-		if ( '' !== $area_slug && isset( $areas[ $area_slug ] ) ) {
-			$area = $areas[ $area_slug ];
-			$img  = function_exists( 'showtime_image' ) ? (string) showtime_image( 'area_' . $area_slug, 800 ) : '';
-
-			$with_page[ $area_slug ] = array(
-				'slug'          => $area_slug,
-				'name'          => (string) ( $area['name'] ?? $name ),
-				'url'           => home_url( '/service-areas/' . $area_slug . '/' ),
-				'image'         => $img,
-				'alt'           => sprintf( /* translators: %s: neighborhood */ __( 'Pool service in %s', 'showtime-pools' ), (string) ( $area['name'] ?? $name ) ),
-				'sub'           => (string) ( $area['tag'] ?? '' ),
-				'pool_count'    => (string) ( $area['pool_count'] ?? '' ),
-				'gradient'      => (string) ( $area['gradient'] ?? $default_gradient ),
-				'has_area_page' => true,
-			);
-			continue;
+		$a_slug = trim( $area_url, '/' );
+		$a_slug = (string) substr( $a_slug, (int) strrpos( $a_slug, '/' ) + 1 );
+		if ( '' !== $a_slug ) {
+			$project_for_area[ $a_slug ] = (string) $p_slug;
 		}
-
-		$without[] = array(
-			'slug'          => (string) ( $card['slug'] ?? '' ),
-			'name'          => $name,
-			'url'           => (string) ( $card['href'] ?? '' ),
-			'image'         => (string) ( $card['image'] ?? '' ),
-			'alt'           => sprintf( /* translators: %s: neighborhood */ __( 'Pool project in %s', 'showtime-pools' ), $name ),
-			'sub'           => SHOWTIME_AREA_CARD_PROJECT_SUB,
-			'pool_count'    => '',
-			'gradient'      => $default_gradient,
-			'has_area_page' => false,
-		);
 	}
 
-	// Existing cards first, in Areas-registry order, so the published nine keep
-	// the order they already had; the rest follow in project-registry order.
+	// Order comes from the Areas registry and NOTHING else, so publishing a page
+	// changes that card's destination without ever reshuffling the grid.
 	$ordered = array();
-	foreach ( array_keys( $areas ) as $slug ) {
-		if ( isset( $with_page[ $slug ] ) ) {
-			$ordered[] = $with_page[ $slug ];
+	$areas   = class_exists( '\\Showtime\\Areas' ) ? \Showtime\Areas::all() : array();
+
+	foreach ( $areas as $area ) {
+		$slug = (string) ( $area['slug'] ?? '' );
+		$name = (string) ( $area['name'] ?? '' );
+		if ( '' === $slug || '' === $name ) {
+			continue;
 		}
-	}
-	foreach ( $without as $card ) {
-		if ( '' !== $card['url'] ) {
-			$ordered[] = $card;
+
+		// `related_project` is declared only by the records added alongside the
+		// five new pages. The original nine resolve theirs through area_url, and
+		// that lookup is used ONLY for the fallback destination — their card
+		// imagery stays on the area_<slug> slot it has always used.
+		$declared_project = (string) ( $area['related_project'] ?? '' );
+		$p_slug           = '' !== $declared_project ? $declared_project : (string) ( $project_for_area[ $slug ] ?? '' );
+		$project          = $projects[ $p_slug ] ?? null;
+
+		// Live page → canonical area URL. Not yet → the project page, so the
+		// card always points at something that actually resolves.
+		$area_url  = showtime_area_url( $slug );
+		$is_live   = '' !== $area_url;
+		$url       = $is_live ? $area_url : (string) ( $project['href'] ?? '' );
+		if ( '' === $url ) {
+			continue;
 		}
+
+		// A record that declares a related project shows that project's cover —
+		// the same image the Projects archive uses — in both states. Every other
+		// area keeps resolving its own area_<slug> image slot, untouched.
+		if ( $project && '' !== $declared_project ) {
+			$image = (string) $project['image'];
+			$alt   = $is_live
+				? sprintf( /* translators: %s: neighborhood */ __( 'Pool service in %s', 'showtime-pools' ), $name )
+				: sprintf( /* translators: %s: neighborhood */ __( 'Pool project in %s', 'showtime-pools' ), $name );
+		} else {
+			$image = function_exists( 'showtime_image' ) ? (string) showtime_image( 'area_' . $slug, 800 ) : '';
+			$alt   = sprintf( /* translators: %s: neighborhood */ __( 'Pool service in %s', 'showtime-pools' ), $name );
+		}
+
+		$ordered[] = array(
+			'slug'          => $slug,
+			'name'          => $name,
+			'url'           => $url,
+			'image'         => $image,
+			'alt'           => $alt,
+			'sub'           => $is_live ? (string) ( $area['tag'] ?? '' ) : SHOWTIME_AREA_CARD_PROJECT_SUB,
+			'pool_count'    => $is_live ? (string) ( $area['pool_count'] ?? '' ) : '',
+			'gradient'      => (string) ( $area['gradient'] ?? $default_gradient ),
+			'has_area_page' => $is_live,
+		);
 	}
 
 	$cards = $ordered;

@@ -410,6 +410,23 @@ function showtime_og_image_data(): array {
 			if ( '' !== $area_slug && class_exists( '\\Showtime\\Areas' ) ) {
 				$area = \Showtime\Areas::get( $area_slug );
 				if ( $area ) {
+					// An area that pins a real hero photograph shares it here, so
+					// og:image is the same committed asset the page displays. Only
+					// areas WITHOUT a bundled area_<slug> file set this; without it
+					// the slot's last-resort stock fallback would become the social
+					// card. Areas that omit the key resolve exactly as before.
+					$pinned = (string) ( $area['hero_image'] ?? '' );
+					if ( '' !== $pinned && is_readable( SHOWTIME_CHILD_DIR . '/' . ltrim( $pinned, '/' ) ) ) {
+						[ $pin_url ]  = showtime_asset( $pinned );
+						$pin_size     = @getimagesize( SHOWTIME_CHILD_DIR . '/' . ltrim( $pinned, '/' ) ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- a corrupt file must degrade to "no dimensions", not warn.
+						return array(
+							'url'    => $pin_url,
+							'width'  => is_array( $pin_size ) ? (int) $pin_size[0] : 0,
+							'height' => is_array( $pin_size ) ? (int) $pin_size[1] : 0,
+							'alt'    => (string) ( $area['hero_alt'] ?? sprintf( /* translators: %s: neighborhood */ __( 'Pool service in %s, Los Angeles', 'showtime-pools' ), (string) ( $area['name'] ?? get_the_title( $id ) ) ) ),
+						);
+					}
+
 					$img = showtime_og_slot_image( 'area_' . $area_slug );
 					if ( '' !== $img['url'] ) {
 						// Mirrors the visible hero alt in page-area.php.

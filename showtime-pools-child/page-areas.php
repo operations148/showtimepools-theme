@@ -26,7 +26,10 @@ $outside_h2   = (string) get_post_meta( $pid, 'outside_h2',   true );
 $outside_body = (string) get_post_meta( $pid, 'outside_body', true );
 
 if ( '' === $hero_eyebrow ) { $hero_eyebrow = 'Where we work'; }
-if ( '' === $hero_lead )    { $hero_lead    = 'Pool service, pool cleaning, and pool repair across our West Valley and Westside routes. The same in-house tech every week: Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, Woodland Hills, West Hollywood, Bel Air, and Calabasas. Custom construction and remodel work runs LA County-wide.'; }
+// Default lead. Names the weekly-route neighborhoods as exactly that, then
+// covers the rest without implying they are on the same weekly routes — the
+// grid below now spans every location we have completed work in.
+if ( '' === $hero_lead )    { $hero_lead    = 'Pool service, pool cleaning, and pool repair across Los Angeles and the San Fernando Valley. Our weekly routes run with the same in-house tech every week in Sherman Oaks, Encino, Beverly Hills, Studio City, Tarzana, Woodland Hills, West Hollywood, Bel Air, and Calabasas. Cleaning, repairs, equipment work, remodels, and custom construction are available across the areas below and LA County-wide.'; }
 if ( '' === $outside_h2 )   { $outside_h2   = 'Outside the route?'; }
 if ( '' === $outside_body ) { $outside_body = 'New construction, full remodels, and inspections are available across LA County: Hancock Park, Pacific Palisades, Burbank, Glendale, Pasadena, Toluca Lake, Northridge, Granada Hills, and beyond. Weekly service is geographically restricted to keep the same-tech promise.'; }
 ?>
