@@ -11,7 +11,10 @@ defined( 'ABSPATH' ) || exit;
 
 get_header();
 
-$areas = class_exists( '\\Showtime\\Areas' ) ? \Showtime\Areas::all() : array();
+// The canonical 14-location card set (see inc/service-areas.php): the nine
+// neighborhoods with a published area page, then the locations that only have
+// a project page, each linking there rather than to an unpublished route.
+$area_cards = function_exists( 'showtime_service_area_cards' ) ? showtime_service_area_cards() : array();
 
 // ── Native WP fields (edit via WP Admin → Pages → Service Areas → Update) ──
 $pid = get_the_ID();
@@ -52,22 +55,18 @@ if ( '' === $outside_body ) { $outside_body = 'New construction, full remodels, 
 	<section class="int-section" data-reveal>
 		<div class="container">
 			<div class="areas-hub__grid">
-				<?php foreach ( $areas as $area ) :
-					$slug    = (string) $area['slug'];
-					$img_url = function_exists( 'showtime_image' ) ? showtime_image( 'area_' . $slug, 800 ) : '';
-				?>
-					<a class="area-card area-card--lg" href="<?php echo esc_url( home_url( '/service-areas/' . $slug . '/' ) ); ?>" style="--_area-grad: <?php echo esc_attr( $area['gradient'] ); ?>">
-						<?php if ( $img_url ) : ?>
-							<img class="area-card__img" src="<?php echo esc_url( $img_url ); ?>" alt="<?php echo esc_attr( sprintf( /* translators: %s: neighborhood */ __( 'Pool service in %s', 'showtime-pools' ), (string) $area['name'] ) ); ?>" loading="lazy" decoding="async">
+				<?php foreach ( $area_cards as $area_card ) : ?>
+					<a class="area-card area-card--lg" href="<?php echo esc_url( (string) $area_card['url'] ); ?>" style="--_area-grad: <?php echo esc_attr( (string) $area_card['gradient'] ); ?>">
+						<?php if ( '' !== (string) $area_card['image'] ) : ?>
+							<img class="area-card__img" src="<?php echo esc_url( (string) $area_card['image'] ); ?>" alt="<?php echo esc_attr( (string) $area_card['alt'] ); ?>" loading="lazy" decoding="async">
 						<?php endif; ?>
 						<div class="area-card__overlay" aria-hidden="true"></div>
 						<div class="area-card__content">
-							<?php $hub_count = (string) ( $area['pool_count'] ?? '' ); ?>
-							<?php if ( '' !== $hub_count ) : ?>
-								<span class="area-card__pill"><?php echo esc_html( $hub_count ); ?> <?php esc_html_e( 'pools', 'showtime-pools' ); ?></span>
+							<?php if ( '' !== (string) $area_card['pool_count'] ) : ?>
+								<span class="area-card__pill"><?php echo esc_html( (string) $area_card['pool_count'] ); ?> <?php esc_html_e( 'pools', 'showtime-pools' ); ?></span>
 							<?php endif; ?>
-							<h3 class="area-card__title"><?php echo esc_html( (string) $area['name'] ); ?></h3>
-							<p class="area-card__sub"><?php echo esc_html( (string) $area['tag'] ); ?></p>
+							<h3 class="area-card__title"><?php echo esc_html( (string) $area_card['name'] ); ?></h3>
+							<p class="area-card__sub"><?php echo esc_html( (string) $area_card['sub'] ); ?></p>
 						</div>
 					</a>
 				<?php endforeach; ?>

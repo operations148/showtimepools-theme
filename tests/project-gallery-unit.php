@@ -65,6 +65,20 @@ function git_head( string $repo_rel ): string {
 	return (string) shell_exec( $cmd );
 }
 
+/**
+ * Newline-normalize before comparing committed text with working-tree text.
+ *
+ * `git show` always emits the stored blob (LF), while the working copy carries
+ * whatever the checkout produced — and with core.autocrlf=true on Windows that
+ * is CRLF. Comparing them raw reports every record as drifted on a perfectly
+ * clean tree. Normalizing compares the CONTENT, which is what this guard is
+ * about; git itself normalizes the same way on commit, so a real content change
+ * still fails loudly.
+ */
+function norm_eol( string $s ): string {
+	return str_replace( array( "\r\n", "\r" ), "\n", $s );
+}
+
 $child   = get_stylesheet_directory();
 $cmp_dir = $child . '/assets/img/projects/comparisons';
 $css     = (string) file_get_contents( $child . '/assets/css/blog.css' );
@@ -136,9 +150,19 @@ $inc = $child . '/assets/img/projects/_incoming';
 $src_ok = is_readable( "$inc/west_hollywood_pump_replacement_before.png" )
 	&& is_readable( "$inc/west_hollywood_pump_replacement_after.png" );
 $tracked = trim( (string) shell_exec( 'git -C ' . escapeshellarg( dirname( __DIR__ ) ) . ' ls-files -- showtime-pools-child/assets/img/projects/_incoming 2>&1' ) );
-( $src_ok && '' === $tracked )
-	? ok( '4b. the original _incoming source files are still present and still untracked by git' )
-	: bad( '4b. sourcesPresent=' . var_export( $src_ok, true ) . ' trackedFiles=' . $tracked );
+
+// The "never tracked" half is the one that protects the repo, and it always
+// runs hard. The "still present" half depends on untracked working files that
+// a clean checkout legitimately does not carry, so their ABSENCE is a
+// documented skip rather than a failure.
+if ( '' !== $tracked ) {
+	bad( '4b. _incoming source files are tracked by git: ' . $tracked );
+} elseif ( $src_ok ) {
+	ok( '4b. the original _incoming source files are still present and still untracked by git' );
+} else {
+	ok( '4b. no _incoming source file is tracked by git' );
+	skip( '4b(presence). the _incoming originals are absent — they are intentionally untracked working files, so this checkout ships none. The "never tracked" guarantee above still ran.' );
+}
 
 echo "\n== RESOLVER WIRING ==\n";
 
@@ -170,8 +194,8 @@ is_array( $cmp )
 echo "\n== NOTHING ELSE IN THE REGISTRY MOVED ==\n";
 
 // 8 + 9.
-$reg_now  = (string) file_get_contents( SHOWTIME_CORE_DIR . '/includes/data/projects.php' );
-$reg_head = git_head( 'showtime-pools-core/includes/data/projects.php' );
+$reg_now  = norm_eol( (string) file_get_contents( SHOWTIME_CORE_DIR . '/includes/data/projects.php' ) );
+$reg_head = norm_eol( git_head( 'showtime-pools-core/includes/data/projects.php' ) );
 $block = static function ( string $src, string $slug ): string {
 	$i = strpos( $src, "'slug'               => '$slug'," );
 	if ( false === $i ) { $i = strpos( $src, "'slug'             => '$slug'," ); }
@@ -184,10 +208,13 @@ $block = static function ( string $src, string $slug ): string {
 // the CURRENT working tree. Every other record must be byte-identical to HEAD —
 // including Sherman Oaks / Encino / Studio City, whose galleries are already
 // committed and must not shift again.
-// Nothing is authorized to change right now: every gallery has shipped, so the
-// whole registry must be byte-identical to HEAD. Add a slug here only while its
-// gallery is actively being added, then move it to the shipped list once merged.
-$gallery_authorized = array();
+// Brentwood is the ONE record authorized to change in the current working tree:
+// this branch adds its six highlight photographs. It must differ from HEAD by
+// nothing but the added additional_gallery block — every identity field is
+// checked against that constraint below. Move it to the shipped list once merged.
+$gallery_authorized = array(
+	'brentwood-pool-project',
+);
 // Already shipped: these must match HEAD exactly, gallery block included. This
 // is stricter than the "authorized" path — no part of the block may move.
 $gallery_already_shipped = array(
@@ -241,7 +268,12 @@ foreach ( $other_slugs as $s ) {
 	}
 	if ( $a !== $b ) { $changed[] = $s; }
 }
-$untouched_count = count( $other_slugs ) - count( $gallery_authorized ) - count( $gallery_already_shipped );
+// Records actually compared in the strict "must be byte-identical" bucket.
+// Derived from the set really iterated, so it cannot go negative when a slug
+// appears in a list but not in $other_slugs.
+$untouched_count = count(
+	array_diff( $other_slugs, $gallery_authorized, $gallery_already_shipped )
+);
 ( $changed || $authorized_bad || $shipped_bad )
 	? bad( '9. registry drift — unchanged-set violations: ' . ( implode( ', ', $changed ) ?: 'none' )
 		. ' | authorized-record violations: ' . ( implode( ', ', $authorized_bad ) ?: 'none' )

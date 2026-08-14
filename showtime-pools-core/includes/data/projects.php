@@ -631,6 +631,15 @@ return array(
 		'seo_title'          => 'Pool Cleaning in Brentwood, CA',
 		'meta_description'   => 'Before and after photos of a naturalistic Brentwood pool cleaned from dark green water to clear water between its stacked-stone edges.',
 		'og_image'           => 'brentwood-pool-project-after.webp',
+		// Real photographs, resolved from assets/img/projects/galleries/<slug>/.
+		'additional_gallery' => array(
+			array( 'status' => 'ready', 'image' => 'brentwood-pool-project-highlight-01.webp', 'alt' => 'Brentwood pool project showing a pool with clear blue water and a floating vacuum hose, with a leaf net and pole resting on the brick deck beside a stacked-boulder rock feature.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'brentwood-pool-project-highlight-02.webp', 'alt' => 'Brentwood pool project showing four workers troweling a new interior finish across the floor and walls of a drained pool.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'brentwood-pool-project-highlight-03.webp', 'alt' => 'Brentwood pool project showing a poolside equipment set with a heater, filter tank and pump joined by dark plumbing between a timber fence and a brick wall.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'brentwood-pool-project-highlight-04.webp', 'alt' => 'Brentwood pool project showing a rectangular pool lit from within at dusk, with arcing water spouts along one edge, canopied daybeds on a raised deck and a covered patio alongside.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'brentwood-pool-project-highlight-05.webp', 'alt' => 'Brentwood pool project showing a freeform pool and attached raised spa with tiled surrounds and stone coping, bordered by a paver deck beside a two-story house.', 'caption' => '' ),
+			array( 'status' => 'ready', 'image' => 'brentwood-pool-project-highlight-06.webp', 'alt' => 'Brentwood pool project showing an equipment set of cream PVC plumbing, valves and a filter tank against a block wall, with a wall-mounted control enclosure to one side.', 'caption' => '' ),
+		),
 	),
 
 	// ── Legacy seed rows (NOT code-managed) ──────────────────────────────

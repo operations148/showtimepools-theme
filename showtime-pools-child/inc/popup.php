@@ -1,11 +1,18 @@
 <?php
 /**
- * Sitewide "Weekly Maintenance" lead popup wiring.
+ * Sitewide delayed "Get a Free Estimate" popup wiring.
  *
- * Renders the popup markup in wp_footer and enqueues its deferred JS, gated by
- * a CMS toggle (Showtime Pools → Site Content → Homepage) and excluded on the
- * active-conversion templates (booking/quote iframe + contact) where a second
- * lead form would only compete. The /book/ booking calendar is never touched.
+ * Replaces the former wp-admin-toggled "Weekly Maintenance" popup, which was
+ * driven by a CMS option and an exit-intent/30s-dwell trigger and embedded a
+ * GHL form <iframe> inside the modal. Nothing of that popup remains: its
+ * template part, its option reads and its stylesheet block are gone, so no old
+ * modal can render above or beneath this one.
+ *
+ * This popup is theme-controlled only — no option, no admin screen, no shortcode.
+ * It renders once in wp_footer, opens 15s after load, is dismissed for the rest
+ * of the browser session via sessionStorage, and never embeds the GHL calendar:
+ * the primary CTA is a same-tab link to the booking widget, so nothing from
+ * app.showtimepoolmechanics.com is requested until the visitor clicks.
  *
  * @package ShowtimePools
  */
@@ -13,47 +20,53 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * GHL popup form URL with popup UTM. Filterable so the form/UTM can change in
- * one place without editing the template part.
+ * The booking destination for the primary CTA.
+ *
+ * A same-tab navigation target, never an embed source. Filterable so the
+ * destination can move in one place without touching the template part.
  */
-function showtime_popup_form_url(): string {
-	// URL is a CMS field (Showtime → Settings → "GHL Popup Form URL"); falls back
-	// to the same GHL form used on /contact/ (SHOWTIME_CONTACT_FORM_URL) so the
-	// popup always has a form to show.
-	$base = trim( (string) get_option( 'showtime_popup_form_url', '' ) );
-	if ( '' === $base ) {
-		$base = defined( 'SHOWTIME_CONTACT_FORM_URL' ) ? SHOWTIME_CONTACT_FORM_URL : '';
-	}
-	if ( '' === $base ) {
-		return '';
-	}
-	$url  = add_query_arg(
-		array(
-			'utm_source'  => 'website',
-			'utm_medium'  => 'popup',
-			'utm_content' => 'weekly_maintenance',
-		),
-		$base
+function showtime_popup_booking_url(): string {
+	return (string) apply_filters(
+		'showtime/popup/booking_url',
+		'https://app.showtimepoolmechanics.com/widget/booking/KkBpnBMhT5QXn8YtTsDb'
 	);
-	return (string) apply_filters( 'showtime/popup/form_url', $url );
 }
 
 /**
- * Whether the popup should load on the current request. Off when the CMS toggle
- * is disabled, on the conversion templates, or in the admin/login context.
+ * The tel: destination for the secondary CTA.
+ */
+function showtime_popup_tel_url(): string {
+	return (string) apply_filters( 'showtime/popup/tel_url', 'tel:+13238252099' );
+}
+
+/**
+ * Whether the popup should load on the current request.
+ *
+ * Fails closed. Every non-page context — admin, login, AJAX, REST, cron,
+ * WP-CLI, XML-RPC, feeds, embeds and the XML sitemap — resolves to false, so
+ * the markup and its assets can only ever reach a public frontend page.
  */
 function showtime_popup_active(): bool {
-	if ( is_admin() ) {
+	if ( is_admin()
+		|| wp_doing_ajax()
+		|| wp_doing_cron()
+		|| ( defined( 'WP_CLI' ) && WP_CLI )
+		|| ( defined( 'REST_REQUEST' ) && REST_REQUEST )
+		|| ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST )
+		|| ( function_exists( 'is_login' ) && is_login() )
+		|| is_feed()
+		|| is_embed()
+		|| '' !== (string) get_query_var( 'sitemap', '' )
+		|| '' !== (string) get_query_var( 'sitemap-stylesheet', '' )
+	) {
 		return false;
 	}
-	// CMS toggle — default ON. Stored standalone so the theme reads it directly.
-	if ( '0' === (string) get_option( 'showtime_popup_enabled', '1' ) ) {
-		return false;
-	}
-	// Don't compete with the primary form on conversion pages.
+
+	// Don't compete with the primary form on the active-conversion templates.
 	if ( is_page_template( array( 'page-iframe.php', 'page-contact.php' ) ) ) {
 		return false;
 	}
+
 	return (bool) apply_filters( 'showtime/popup/active', true );
 }
 
@@ -63,8 +76,14 @@ add_action(
 		if ( ! showtime_popup_active() ) {
 			return;
 		}
-		[ $uri, $ver ] = showtime_asset( 'assets/js/popup.js' );
-		wp_enqueue_script( 'showtime-popup', $uri, array(), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );
+
+		// Dedicated sheet + deferred script, each enqueued exactly once. No
+		// inline style or listener is printed per template.
+		[ $css_uri, $css_ver ] = showtime_asset( 'assets/css/popup.css' );
+		wp_enqueue_style( 'showtime-popup', $css_uri, array( 'showtime-components' ), $css_ver );
+
+		[ $js_uri, $js_ver ] = showtime_asset( 'assets/js/popup.js' );
+		wp_enqueue_script( 'showtime-popup', $js_uri, array(), $js_ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );
 	}
 );
 
@@ -74,6 +93,6 @@ add_action(
 		if ( ! showtime_popup_active() ) {
 			return;
 		}
-		get_template_part( 'template-parts/global/popup-weekly' );
+		get_template_part( 'template-parts/global/popup-estimate' );
 	}
 );
