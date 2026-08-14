@@ -146,7 +146,7 @@ test('the GHL booking URL and telephone URL are exact, and open in the same tab'
 	});
 	assert.equal(cta.href, GHL_URL);
 	assert.equal(cta.target, null, 'primary CTA must stay in the same tab (no target attribute)');
-	assert.equal(cta.text, 'Fill Out the Estimate Form');
+	assert.equal(cta.text, 'Book your Service Appointment');
 
 	const call = await page.evaluate(() => {
 		const a = document.querySelector('.stp-estimate__call');

@@ -107,7 +107,7 @@ $pe_reassurance = array( 'No spam', 'No pressure', 'Fast response' );
 
 			<a class="stp-estimate__cta"
 				href="<?php echo esc_url( showtime_popup_booking_url() ); ?>"
-				data-estimate-cta>Fill Out the Estimate Form</a>
+				data-estimate-cta>Book your Service Appointment</a>
 
 			<p class="stp-estimate__or"><span>or</span></p>
 
