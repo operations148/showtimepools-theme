@@ -208,13 +208,11 @@ $block = static function ( string $src, string $slug ): string {
 // the CURRENT working tree. Every other record must be byte-identical to HEAD —
 // including Sherman Oaks / Encino / Studio City, whose galleries are already
 // committed and must not shift again.
-// Brentwood is the ONE record authorized to change in the current working tree:
-// this branch adds its six highlight photographs. It must differ from HEAD by
-// nothing but the added additional_gallery block — every identity field is
-// checked against that constraint below. Move it to the shipped list once merged.
-$gallery_authorized = array(
-	'brentwood-pool-project',
-);
+// Nothing is authorized to change right now: every gallery has shipped, so the
+// whole registry must be byte-identical to HEAD. Add a slug here only while its
+// gallery is actively being added, then move it to the shipped list once it is
+// committed (Brentwood made that move once its six highlights landed in HEAD).
+$gallery_authorized = array();
 // Already shipped: these must match HEAD exactly, gallery block included. This
 // is stricter than the "authorized" path — no part of the block may move.
 $gallery_already_shipped = array(
@@ -231,6 +229,7 @@ $gallery_already_shipped = array(
 	'calabasas-pool-project',
 	'west-hollywood-pool-project',
 	'bel-air-pool-project',
+	'brentwood-pool-project',
 );
 // Removing ONLY the added `additional_gallery` block must restore the HEAD text
 // exactly. That proves the authorized records gained a gallery and changed in no

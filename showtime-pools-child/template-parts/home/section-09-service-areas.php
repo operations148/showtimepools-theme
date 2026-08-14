@@ -61,9 +61,13 @@ $render_card = static function ( array $area, bool $duplicate = false ): void {
 				<span class="eyebrow"><?php esc_html_e( 'Where We Work', 'showtime-pools' ); ?></span>
 				<h2 class="balance">
 					<?php
+					// Count stays derived so the heading cannot go stale, but the
+					// wording no longer claims weekly-route coverage: five of the
+					// locations shown have a published project page, not a service
+					// route, and asserting "on the route" for them would be a claim.
 					printf(
 						/* translators: %s: number of service areas */
-						esc_html__( '%s neighborhoods on the route. Pick yours.', 'showtime-pools' ),
+						esc_html__( 'Explore %s Los Angeles Service Areas', 'showtime-pools' ),
 						esc_html( number_format_i18n( count( $areas ) ) )
 					);
 					?>
