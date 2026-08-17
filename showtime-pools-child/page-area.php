@@ -30,7 +30,6 @@ if ( ! $area ) {
 }
 
 $name        = (string) $area['name'];
-$pool_count  = (string) $area['pool_count'];
 $tag         = (string) $area['tag'];
 // SEO H1 / intro take precedence over the natural lead when the registry
 // provides them — keyword-led wording for organic search. Falls back to
@@ -82,28 +81,22 @@ $schema = array(
 <main id="primary" class="site-main interior-page">
 
 	<?php
-	// Hero photograph. An area may pin a real, already-committed theme asset via
-	// `hero_image` (+ its approved `hero_alt`); otherwise the area_<slug> image
-	// slot resolves as before. The pin exists because the slot's last-resort
-	// fallback is a random stock photo, which must never appear beneath an alt
-	// that names a location. Areas without the key are completely unaffected.
-	$area_hero_pin = (string) ( $area['hero_image'] ?? '' );
-	$area_hero_alt = (string) ( $area['hero_alt'] ?? '' );
-	$area_hero_img = '';
-	if ( '' !== $area_hero_pin && file_exists( SHOWTIME_CHILD_DIR . '/' . ltrim( $area_hero_pin, '/' ) ) ) {
-		[ $area_hero_img ] = showtime_asset( $area_hero_pin );
-	} elseif ( function_exists( 'showtime_image' ) ) {
-		$area_hero_img = showtime_image( 'area_' . $slug, 1600 );
-		$area_hero_pin = '';
-	}
-	if ( '' === $area_hero_alt ) {
+	// Hero photograph. Resolved through the SAME helper the Service Areas card
+	// uses, so this page always opens on the exact image its card advertised —
+	// one committed asset per location, declared once in the registry. A photo
+	// Steve uploads for this area in wp-admin still wins, and moves both.
+	[ $area_hero_img, $area_hero_alt ] = showtime_area_image(
+		$slug,
 		/* translators: %s: neighborhood */
-		$area_hero_alt = sprintf( __( 'Pool service in %s, Los Angeles', 'showtime-pools' ), $name );
-	}
+		sprintf( __( 'Pool service in %s, Los Angeles', 'showtime-pools' ), $name ),
+		1600
+	);
+	// srcset belongs to the slot resolver; a registry asset is served as-is.
+	$area_hero_from_registry = '' !== showtime_area_registry_image( $slug )[0];
 	?>
 	<section class="area-hero" data-reveal style="--_area-grad: <?php echo esc_attr( $gradient ); ?>">
 		<?php if ( $area_hero_img ) : ?>
-			<img class="area-hero__photo" src="<?php echo esc_url( $area_hero_img ); ?>" <?php echo '' === $area_hero_pin ? showtime_hero_srcset_attr( 'area_' . $slug ) : ''; ?> alt="<?php echo esc_attr( $area_hero_alt ); ?>" loading="eager" fetchpriority="high" decoding="async">
+			<img class="area-hero__photo" src="<?php echo esc_url( $area_hero_img ); ?>" <?php echo $area_hero_from_registry ? '' : showtime_hero_srcset_attr( 'area_' . $slug ); ?> alt="<?php echo esc_attr( $area_hero_alt ); ?>" loading="eager" fetchpriority="high" decoding="async">
 		<?php endif; ?>
 		<div class="area-hero__bg" aria-hidden="true">
 			<svg viewBox="0 0 800 400" preserveAspectRatio="none" fill="none">
@@ -123,7 +116,9 @@ $schema = array(
 				<span aria-current="page"><?php echo esc_html( $name ); ?></span>
 			</nav>
 			<div class="area-hero__inner">
-				<span class="area-hero__pill"><?php if ( '' !== $pool_count ) { echo esc_html( $pool_count ) . ' ' . esc_html__( 'pools', 'showtime-pools' ) . ' · '; } echo esc_html( $tag ); ?></span>
+				<?php if ( '' !== $tag ) : ?>
+					<span class="area-hero__pill"><?php echo esc_html( $tag ); ?></span>
+				<?php endif; ?>
 				<h1 class="area-hero__title balance">
 					<?php if ( '' !== $seo_h1 ) {
 						echo esc_html( $seo_h1 );

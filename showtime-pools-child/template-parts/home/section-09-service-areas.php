@@ -43,10 +43,6 @@ $render_card = static function ( array $area, bool $duplicate = false ): void {
 		<?php endif; ?>
 		<div class="area-card__overlay" aria-hidden="true"></div>
 		<div class="area-card__content">
-			<?php $card_count = (string) ( $area['pool_count'] ?? '' ); ?>
-			<?php if ( '' !== $card_count ) : ?>
-				<span class="area-card__pill"><?php echo esc_html( $card_count ); ?> <?php esc_html_e( 'pools', 'showtime-pools' ); ?></span>
-			<?php endif; ?>
 			<h3 class="area-card__title"><?php echo esc_html( (string) ( $area['name'] ?? '' ) ); ?></h3>
 			<p class="area-card__sub"><?php echo esc_html( (string) ( $area['sub'] ?? '' ) ); ?></p>
 		</div>

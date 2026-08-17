@@ -105,11 +105,73 @@ function showtime_area_url( string $slug ): string {
 }
 
 /**
+ * Whether an area's image slot has been overridden in wp-admin.
+ *
+ * Mirrors the first two priorities of showtime_image(): the native
+ * `showtime_img_{slot}` option (Showtime Pools → Site Images) and the ACF
+ * `img_{slot}` option field. Images are CONTENT — Steve edits them live — so an
+ * upload must always outrank the committed default declared in the registry.
+ */
+function showtime_area_image_has_override( string $slug ): bool {
+	$slot = 'area_' . str_replace( '-', '_', $slug );
+
+	if ( '' !== (string) get_option( 'showtime_img_' . $slot, '' ) ) {
+		return true;
+	}
+	if ( function_exists( 'get_field' ) && ! empty( get_field( 'img_' . $slot, 'option' ) ) ) {
+		return true;
+	}
+	return false;
+}
+
+/**
+ * The canonical committed photograph for an area, straight from the registry.
+ *
+ * ONE asset per location, used by the Service Areas card, the area page hero
+ * and og:image alike, so the three can never drift apart. Returns '' for an
+ * area that declares no image, and for an area whose slot Steve has overridden
+ * in wp-admin — in that case the caller falls through to showtime_image(), and
+ * the upload drives all three surfaces together.
+ *
+ * @return array{0:string,1:string} [ absolute URL, alt text ] or [ '', '' ].
+ */
+function showtime_area_registry_image( string $slug ): array {
+	if ( ! class_exists( '\\Showtime\\Areas' ) || showtime_area_image_has_override( $slug ) ) {
+		return array( '', '' );
+	}
+
+	$area = \Showtime\Areas::get( $slug );
+	$rel  = (string) ( $area['image'] ?? '' );
+	if ( '' === $rel || ! file_exists( SHOWTIME_CHILD_DIR . '/' . ltrim( $rel, '/' ) ) ) {
+		return array( '', '' );
+	}
+
+	[ $url ] = showtime_asset( $rel );
+	return array( $url, (string) ( $area['image_alt'] ?? '' ) );
+}
+
+/**
+ * The image + alt an area should render, registry first, slot resolver second.
+ *
+ * @return array{0:string,1:string} [ URL, alt ]
+ */
+function showtime_area_image( string $slug, string $fallback_alt = '', int $w = 1600 ): array {
+	[ $url, $alt ] = showtime_area_registry_image( $slug );
+	if ( '' !== $url ) {
+		return array( $url, '' !== $alt ? $alt : $fallback_alt );
+	}
+
+	// No registry entry, or an admin upload is in play: the slot chain decides.
+	$url = function_exists( 'showtime_image' ) ? (string) showtime_image( 'area_' . $slug, $w ) : '';
+	return array( $url, $fallback_alt );
+}
+
+/**
  * The canonical service-area card set — one entry per managed project location.
  *
  * @return array<int,array{
  *     slug:string, name:string, url:string, image:string, alt:string,
- *     sub:string, pool_count:string, gradient:string, has_area_page:bool
+ *     sub:string, gradient:string, has_area_page:bool
  * }>
  */
 function showtime_service_area_cards(): array {
@@ -176,18 +238,14 @@ function showtime_service_area_cards(): array {
 			continue;
 		}
 
-		// A record that declares a related project shows that project's cover —
-		// the same image the Projects archive uses — in both states. Every other
-		// area keeps resolving its own area_<slug> image slot, untouched.
-		if ( $project && '' !== $declared_project ) {
-			$image = (string) $project['image'];
-			$alt   = $is_live
-				? sprintf( /* translators: %s: neighborhood */ __( 'Pool service in %s', 'showtime-pools' ), $name )
-				: sprintf( /* translators: %s: neighborhood */ __( 'Pool project in %s', 'showtime-pools' ), $name );
-		} else {
-			$image = function_exists( 'showtime_image' ) ? (string) showtime_image( 'area_' . $slug, 800 ) : '';
-			$alt   = sprintf( /* translators: %s: neighborhood */ __( 'Pool service in %s', 'showtime-pools' ), $name );
-		}
+		// ONE photograph per location, from the registry. page-area.php resolves
+		// its hero through the same helper, so the card and the page it opens can
+		// never show different images.
+		[ $image, $alt ] = showtime_area_image(
+			$slug,
+			sprintf( /* translators: %s: neighborhood */ __( 'Pool service in %s', 'showtime-pools' ), $name ),
+			800
+		);
 
 		$ordered[] = array(
 			'slug'          => $slug,
@@ -196,7 +254,6 @@ function showtime_service_area_cards(): array {
 			'image'         => $image,
 			'alt'           => $alt,
 			'sub'           => $is_live ? (string) ( $area['tag'] ?? '' ) : SHOWTIME_AREA_CARD_PROJECT_SUB,
-			'pool_count'    => $is_live ? (string) ( $area['pool_count'] ?? '' ) : '',
 			'gradient'      => (string) ( $area['gradient'] ?? $default_gradient ),
 			'has_area_page' => $is_live,
 		);
