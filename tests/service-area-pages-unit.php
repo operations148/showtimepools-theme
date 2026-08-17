@@ -141,8 +141,9 @@ $claim_bad = array();
 foreach ( $NEW as $slug => $project ) {
 	$a = $by_slug[ $slug ] ?? array();
 
-	// No pool count.
-	if ( '' !== trim( (string) ( $a['pool_count'] ?? '' ) ) ) { $claim_bad[] = "$slug asserts a pool count"; }
+	// No pool count. The key is gone from the registry entirely, so assert its
+	// absence rather than merely that it is blank — this catches reintroduction.
+	if ( array_key_exists( 'pool_count', $a ) ) { $claim_bad[] = "$slug still carries a pool_count key"; }
 
 	// No route/schedule/response-time wording anywhere in its copy.
 	$copy = strtolower( implode( ' ', array(
@@ -199,26 +200,35 @@ empty( $cannibal )
 	: bad( '10. ' . implode( '; ', $cannibal ) );
 
 /* ── Imagery ──────────────────────────────────────────────────────────── */
+// The per-record `hero_image`/`hero_alt` pins these five originally carried were
+// superseded by `image`/`image_alt`, which now declares ONE canonical photograph
+// per location and drives the card, the hero and og:image together. Widened from
+// the five to all fourteen accordingly — strictly more coverage than before.
+// Ownership and colour treatment are asserted in service-area-images-unit.php.
 $img_bad = array();
-foreach ( $NEW as $slug => $project ) {
-	$a    = $by_slug[ $slug ] ?? array();
-	$hero = (string) ( $a['hero_image'] ?? '' );
-	if ( '' === $hero ) { $img_bad[] = "$slug pins no hero image"; continue; }
-	$path = $child . '/' . ltrim( $hero, '/' );
-	if ( 'image/webp' !== sap_image_mime( $path ) ) { $img_bad[] = "$slug hero is not a real WebP on disk"; }
-	// It must be that project's OWN asset, never another's.
-	if ( false === strpos( $hero, "galleries/$project/" ) ) { $img_bad[] = "$slug hero is not its own project's asset"; }
-	if ( '' === trim( (string) ( $a['hero_alt'] ?? '' ) ) ) { $img_bad[] = "$slug hero has no alt text"; }
+foreach ( $areas as $a ) {
+	$slug = (string) $a['slug'];
+	$rel  = (string) ( $a['image'] ?? '' );
+	if ( '' === $rel ) { $img_bad[] = "$slug declares no canonical image"; continue; }
+	if ( 'image/webp' !== sap_image_mime( $child . '/' . ltrim( $rel, '/' ) ) ) {
+		$img_bad[] = "$slug image is not a real WebP on disk";
+	}
+	if ( '' === trim( (string) ( $a['image_alt'] ?? '' ) ) ) { $img_bad[] = "$slug image has no alt text"; }
+	// A record naming a related project must use that project's own asset.
+	$project = (string) ( $a['related_project'] ?? '' );
+	if ( '' !== $project && false === strpos( $rel, $project ) ) {
+		$img_bad[] = "$slug image is not its own project's asset";
+	}
 }
 empty( $img_bad )
-	? ok( '11. every new record pins a real WebP hero from its OWN project gallery, with alt text' )
+	? ok( '11. all 14 records declare a real WebP canonical image with alt text, from their own location' )
 	: bad( '11. ' . implode( '; ', $img_bad ) );
 
-$hero_alts = array();
-foreach ( $NEW as $slug => $_ ) { $hero_alts[] = (string) ( $by_slug[ $slug ]['hero_alt'] ?? '' ); }
-count( array_unique( $hero_alts ) ) === 5
-	? ok( '12. all five hero alt texts are unique' )
-	: bad( '12. hero alt text is duplicated across the five' );
+$img_alts = array();
+foreach ( $areas as $a ) { $img_alts[] = (string) ( $a['image_alt'] ?? '' ); }
+count( array_unique( $img_alts ) ) === 14
+	? ok( '12. all 14 image alt texts are unique' )
+	: bad( '12. image alt text is duplicated across the 14' );
 
 /* ══════════════════════════════════════════════════════════════════════
  * PUBLICATION GATE
@@ -492,8 +502,13 @@ foreach ( $ORIGINAL_NINE as $slug ) {
 	if ( false === strpos( $body, (string) $a['seo_meta'] ) )           { $moved[] = "$slug meta description"; }
 	// They must NOT have gained a project-proof block.
 	if ( false !== strpos( $body, 'Work we have completed in' ) )       { $moved[] = "$slug gained a project-proof section"; }
-	// Their hero image slot is unchanged.
-	if ( false !== strpos( $body, 'galleries/' ) )                      { $moved[] = "$slug now pulls a gallery asset"; }
+	// Their hero must be the exact asset the registry declares for them. This
+	// replaces an earlier "no galleries/ path" proxy, which assumed the original
+	// nine could only ever use an area_<slug> file. West Hollywood legitimately
+	// uses a photograph from its own project gallery now that its remote stock
+	// placeholder is gone, so the asset path is asserted directly instead.
+	$want_img = basename( (string) ( $a['image'] ?? '' ) );
+	if ( '' === $want_img || false === strpos( $body, $want_img ) )     { $moved[] = "$slug hero is not its declared image"; }
 }
 empty( $moved )
 	? ok( '27. all nine original service-area pages render exactly as before — same H1, meta, imagery and no new sections' )

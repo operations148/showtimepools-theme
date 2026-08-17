@@ -65,9 +65,6 @@ if ( '' === $outside_body ) { $outside_body = 'New construction, full remodels, 
 						<?php endif; ?>
 						<div class="area-card__overlay" aria-hidden="true"></div>
 						<div class="area-card__content">
-							<?php if ( '' !== (string) $area_card['pool_count'] ) : ?>
-								<span class="area-card__pill"><?php echo esc_html( (string) $area_card['pool_count'] ); ?> <?php esc_html_e( 'pools', 'showtime-pools' ); ?></span>
-							<?php endif; ?>
 							<h3 class="area-card__title"><?php echo esc_html( (string) $area_card['name'] ); ?></h3>
 							<p class="area-card__sub"><?php echo esc_html( (string) $area_card['sub'] ); ?></p>
 						</div>

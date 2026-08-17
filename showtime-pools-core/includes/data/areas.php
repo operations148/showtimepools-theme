@@ -28,7 +28,8 @@ return array(
 		'seo_h1'      => 'Pool Service in Sherman Oaks, Los Angeles',
 		'seo_intro'   => 'Pool service near you in Sherman Oaks, Los Angeles. Showtime Pools is headquartered on Ventura Boulevard. Weekly pool cleaning service, pool repair near me calls, remodels, and equipment upgrades across ZIP codes 91403, 91423, and 91436, six days a week, with Sunday reserved for emergencies.',
 		'tag'         => 'Home base · 6 days a week',
-		'pool_count'  => '420+',
+		'image'       => 'assets/img/area_sherman-oaks.webp',
+		'image_alt'   => 'A Sherman Oaks backyard pool bordered by a wide concrete deck and clipped hedging, with a house beyond.',
 		'gradient'    => 'linear-gradient(135deg,#1F2F3A 0%,#5C8A9E 100%)',
 		'lat'         => 34.1511,
 		'lng'         => -118.4490,
@@ -58,7 +59,8 @@ return array(
 		'seo_h1'      => 'Pool Service in Encino, Los Angeles',
 		'seo_intro'   => 'Pool service near you in Encino, Los Angeles. Showtime Pools is the pool company Encino homeowners call for pool cleaning near me, pool repair, and custom pool construction across ZIP codes 91316 and 91436, five days a week.',
 		'tag'         => '5 days a week',
-		'pool_count'  => '310+',
+		'image'       => 'assets/img/area_encino.webp',
+		'image_alt'   => 'An Encino rectangular pool holding still water that mirrors the trees and houses along the far side of the deck.',
 		'gradient'    => 'linear-gradient(135deg,#314A58 0%,#88A4B6 100%)',
 		'lat'         => 34.1592,
 		'lng'         => -118.5012,
@@ -88,7 +90,8 @@ return array(
 		'seo_h1'      => 'Pool Service in Beverly Hills',
 		'seo_intro'   => 'Pool service near you in Beverly Hills, Los Angeles. Showtime Pools runs discreet weekly pool cleaning service and pool maintenance near me calls behind 90210, 90211, and 90212 gates: badged vehicles, scheduled named-tech crew.',
 		'tag'         => '3 days a week',
-		'pool_count'  => '180+',
+		'image'       => 'assets/img/area_beverly-hills.webp',
+		'image_alt'   => 'A Beverly Hills pool curving around a paved deck, screened by tall hedging and palms in front of a two-storey house.',
 		'gradient'    => 'linear-gradient(135deg,#0A0A0A 0%,#4D7589 100%)',
 		'lat'         => 34.0736,
 		'lng'         => -118.4004,
@@ -118,7 +121,8 @@ return array(
 		'seo_h1'      => 'Pool Service in Studio City',
 		'seo_intro'   => 'Pool service near you in Studio City, Los Angeles. Showtime Pools handles hillside pool repair near me calls, emergency pool service, and pier-supported deck work across ZIP 91604: structural, weekly, and same-day from Coldwater to Laurel Canyon.',
 		'tag'         => '5 days a week',
-		'pool_count'  => '270+',
+		'image'       => 'assets/img/area_studio-city.webp',
+		'image_alt'   => 'A Studio City pool set into flagstone paving, with loungers, potted succulents and palms against a timber fence.',
 		'gradient'    => 'linear-gradient(135deg,#3F6072 0%,#B0C5D2 100%)',
 		'lat'         => 34.1394,
 		'lng'         => -118.3870,
@@ -148,7 +152,8 @@ return array(
 		'seo_h1'      => 'Pool Service in Tarzana',
 		'seo_intro'   => 'Pool service near you in Tarzana, Los Angeles. Showtime Pools specializes in pool remodeling, pool resurfacing, pool cleaning near me, and pool maintenance near me on 1970s-1990s vintage pools across 91335, 91356, and 91357.',
 		'tag'         => '4 days a week',
-		'pool_count'  => '230+',
+		'image'       => 'assets/img/area_tarzana.webp',
+		'image_alt'   => 'A Tarzana pool in front of a white two-storey house, framed by palms, flowering borders and a lawn.',
 		'gradient'    => 'linear-gradient(135deg,#1F1F1F 0%,#6E94A9 100%)',
 		'lat'         => 34.1731,
 		'lng'         => -118.5526,
@@ -178,7 +183,8 @@ return array(
 		'seo_h1'      => 'Pool Service in Woodland Hills',
 		'seo_intro'   => 'Pool service near you in Woodland Hills, Los Angeles. One of the top pool companies near me for Woodland Hills homeowners; Showtime Pools handles pool maintenance near me calls, new pool construction, and heater/salt cell work across 91364 and 91367.',
 		'tag'         => '4 days a week',
-		'pool_count'  => '210+',
+		'image'       => 'assets/img/area_woodland-hills.webp',
+		'image_alt'   => 'A Woodland Hills pool edged with stone coping and desert planting, with palms and hillside ridgelines behind.',
 		'gradient'    => 'linear-gradient(135deg,#314A58 0%,#5C8A9E 100%)',
 		'lat'         => 34.1683,
 		'lng'         => -118.6059,
@@ -210,7 +216,8 @@ return array(
 		'tag'         => 'Now booking weekly routes',
 		// Intentionally empty until Steve confirms a real serviced-pool count;
 		// templates skip the count pill when this is blank.
-		'pool_count'  => '',
+		'image'       => 'assets/img/projects/galleries/west-hollywood-pool-project/west-hollywood-pool-project-highlight-05.webp',
+		'image_alt'   => 'A West Hollywood rectangular pool and raised spa beside a paved terrace and planting.',
 		'gradient'    => 'linear-gradient(135deg,#23303B 0%,#7FA8BD 100%)',
 		'lat'         => 34.0900,
 		'lng'         => -118.3617,
@@ -241,7 +248,8 @@ return array(
 		'tag'         => 'Estate service · now booking',
 		// Intentionally empty until Steve confirms a real serviced-pool count;
 		// templates skip the count pill when this is blank.
-		'pool_count'  => '',
+		'image'       => 'assets/img/projects/comparisons/bel-air-pool-project-after.webp',
+		'image_alt'   => 'A Bel Air lap pool running the length of a lawn, edged with pale coping and bordered by mature planting.',
 		'gradient'    => 'linear-gradient(135deg,#101820 0%,#6E8F77 100%)',
 		'lat'         => 34.0944,
 		'lng'         => -118.4590,
@@ -272,7 +280,8 @@ return array(
 		'tag'         => 'Established routes · now booking',
 		// Intentionally empty until Steve confirms a real serviced-pool count;
 		// templates skip the count pill when this is blank.
-		'pool_count'  => '',
+		'image'       => 'assets/img/area_calabasas.webp',
+		'image_alt'   => 'A Calabasas pool set on a stone terrace above the hillside, with the water lit at dusk and trees along the ridge.',
 		'gradient'    => 'linear-gradient(135deg,#1B2A22 0%,#6E8F77 100%)',
 		'lat'         => 34.1378,
 		'lng'         => -118.6602,
@@ -308,7 +317,7 @@ return array(
 	//     these cities.
 	//   - `common_jobs` describes the city's OWN completed project, exactly as
 	//     that record already states it. No other work is implied.
-	//   - `pool_count` is blank, `sample_streets` is omitted, and no `tag`,
+	//   - `sample_streets` is omitted, and no `tag`,
 	//     intro or heading claims a weekly route, a schedule, a response time,
 	//     a years-in-city figure, a landmark or a coverage area.
 	//   - `lat`/`lng` are the city's public centroid, used only for the
@@ -325,7 +334,8 @@ return array(
 		'seo_h1'      => 'Pool Service in Van Nuys',
 		'seo_intro'   => 'Showtime Pools works on pools in Van Nuys. Equipment replacement is the work we have documented here: a poolside vault refitted with a new cartridge filter and fresh PVC pipework. Cleaning, repairs, remodeling and construction are all available in the area, booked through the same office that has run Showtime Pools since 2003.',
 		'tag'         => 'Service available',
-		'pool_count'  => '',
+		'image'       => 'assets/img/projects/comparisons/van-nuys-pool-project-after.webp',
+		'image_alt'   => 'A Van Nuys pool equipment vault with a replacement cartridge filter and new white PVC pipework.',
 		'gradient'    => 'linear-gradient(135deg,#1F2F3A 0%,#5C8A9E 100%)',
 		'lat'         => 34.1867,
 		'lng'         => -118.4489,
@@ -347,13 +357,6 @@ return array(
 			'A replacement cartridge filter and new white PVC pipework fitted',
 			'Photographed before and after the work — see the full project below',
 		),
-		// Hero photograph: this city's OWN project highlight, already committed
-		// and already carrying this approved alt text on the project page. Set
-		// because the area_<slug> image slot has no bundled file for these five,
-		// and its stock fallback would put an unrelated photo under a locational
-		// alt. Areas without the key keep the slot resolver untouched.
-		'hero_image'  => 'assets/img/projects/galleries/van-nuys-pool-project/van-nuys-pool-project-highlight-04.webp',
-		'hero_alt'    => 'Van Nuys pool project showing a rectangular pool and attached spa with a vacuum hose in the water beside a metal fence.',
 		'related_project'  => 'van-nuys-pool-project',
 		'related_services' => array( 'equipment-installation-upgrades', 'pool-repairs-plumbing', 'weekly-pool-maintenance' ),
 	),
@@ -366,7 +369,8 @@ return array(
 		'seo_h1'      => 'Pool Service in North Hollywood',
 		'seo_intro'   => 'Showtime Pools works on pools in North Hollywood. Waterline tile cleaning is the work we have documented here: pale scale deposits lifted off a decorative blue tile band until the pattern read clearly again. Maintenance, repairs, equipment work and remodels are all available in the area.',
 		'tag'         => 'Service available',
-		'pool_count'  => '',
+		'image'       => 'assets/img/projects/comparisons/north-hollywood-pool-project-after.webp',
+		'image_alt'   => 'A North Hollywood pool waterline with its blue patterned tile band cleaned of scale.',
 		'gradient'    => 'linear-gradient(135deg,#23303B 0%,#7FA8BD 100%)',
 		'lat'         => 34.1870,
 		'lng'         => -118.3813,
@@ -388,13 +392,6 @@ return array(
 			'The existing tile retained throughout — nothing was replaced',
 			'Photographed before and after the work — see the full project below',
 		),
-		// Hero photograph: this city's OWN project highlight, already committed
-		// and already carrying this approved alt text on the project page. Set
-		// because the area_<slug> image slot has no bundled file for these five,
-		// and its stock fallback would put an unrelated photo under a locational
-		// alt. Areas without the key keep the slot resolver untouched.
-		'hero_image'  => 'assets/img/projects/galleries/north-hollywood-pool-project/north-hollywood-pool-project-highlight-01.webp',
-		'hero_alt'    => 'North Hollywood pool project showing water falling from a stone-faced raised spa into the pool below beside a hedged patio.',
 		'related_project'  => 'north-hollywood-pool-project',
 		'related_services' => array( 'pool-tile-cleaning', 'weekly-pool-maintenance', 'pool-repairs-plumbing' ),
 	),
@@ -407,7 +404,8 @@ return array(
 		'seo_h1'      => 'Pool Service in Toluca Lake',
 		'seo_intro'   => 'Showtime Pools works on pools in Toluca Lake. Water treatment is the work we have documented here: a pool and attached spa taken from pale, clouded water to a clear deep blue with every surface left exactly as it was. Maintenance, repairs, equipment work and remodels are all available in the area.',
 		'tag'         => 'Service available',
-		'pool_count'  => '',
+		'image'       => 'assets/img/projects/comparisons/toluca-lake-pool-project-after.webp',
+		'image_alt'   => 'A Toluca Lake pool and attached spa holding clear blue water, set in a paved backyard at dusk.',
 		'gradient'    => 'linear-gradient(135deg,#1B2A22 0%,#6E8F77 100%)',
 		'lat'         => 34.1506,
 		'lng'         => -118.3520,
@@ -429,13 +427,6 @@ return array(
 			'The same pool afterwards with the water reading deep blue',
 			'Photographed before and after the work — see the full project below',
 		),
-		// Hero photograph: this city's OWN project highlight, already committed
-		// and already carrying this approved alt text on the project page. Set
-		// because the area_<slug> image slot has no bundled file for these five,
-		// and its stock fallback would put an unrelated photo under a locational
-		// alt. Areas without the key keep the slot resolver untouched.
-		'hero_image'  => 'assets/img/projects/galleries/toluca-lake-pool-project/toluca-lake-pool-project-highlight-02.webp',
-		'hero_alt'    => 'Toluca Lake pool project showing a freeform pool with a rock waterfall feature surrounded by palms and flagstone paving.',
 		'related_project'  => 'toluca-lake-pool-project',
 		'related_services' => array( 'weekly-pool-maintenance', 'pool-repairs-plumbing', 'spa-installation-renovations' ),
 	),
@@ -448,7 +439,8 @@ return array(
 		'seo_h1'      => 'Pool Service in Burbank',
 		'seo_intro'   => 'Showtime Pools works on pools in Burbank. New construction is the work we have documented here: a backyard taken from excavation through to a finished, filled pool and attached spa with its surrounding deck. Remodeling, weekly maintenance, repairs and equipment work are all available in the area.',
 		'tag'         => 'Service available',
-		'pool_count'  => '',
+		'image'       => 'assets/img/projects/comparisons/burbank-pool-project-after.webp',
+		'image_alt'   => 'A completed Burbank pool and attached spa beside a finished concrete deck.',
 		'gradient'    => 'linear-gradient(135deg,#314A58 0%,#88A4B6 100%)',
 		'lat'         => 34.1808,
 		'lng'         => -118.3090,
@@ -470,13 +462,6 @@ return array(
 			'The finished pool filled, with its surrounding deck complete',
 			'Photographed from excavation through to completion — see the full project below',
 		),
-		// Hero photograph: this city's OWN project highlight, already committed
-		// and already carrying this approved alt text on the project page. Set
-		// because the area_<slug> image slot has no bundled file for these five,
-		// and its stock fallback would put an unrelated photo under a locational
-		// alt. Areas without the key keep the slot resolver untouched.
-		'hero_image'  => 'assets/img/projects/galleries/burbank-pool-project/burbank-pool-project-highlight-05.webp',
-		'hero_alt'    => 'Burbank pool project showing a filled pool with stone-faced columns and a raised spa during site work.',
 		'related_project'  => 'burbank-pool-project',
 		'related_services' => array( 'custom-pool-design-construction', 'spa-installation-renovations', 'pool-remodeling-resurfacing' ),
 	),
@@ -489,7 +474,8 @@ return array(
 		'seo_h1'      => 'Pool Service in Brentwood',
 		'seo_intro'   => 'Showtime Pools works on pools in Brentwood. Pool cleaning is the work we have documented here: a naturalistic, stone-edged pool taken from dark green water to clear. Weekly maintenance, repairs, equipment work and remodels are all available in the area.',
 		'tag'         => 'Service available',
-		'pool_count'  => '',
+		'image'       => 'assets/img/projects/comparisons/brentwood-pool-project-after.webp',
+		'image_alt'   => 'A Brentwood pool holding clear turquoise water between stacked-stone edges and dense planting.',
 		'gradient'    => 'linear-gradient(135deg,#101820 0%,#6E8F77 100%)',
 		'lat'         => 34.0520,
 		'lng'         => -118.4760,
@@ -511,13 +497,6 @@ return array(
 			'Clear turquoise water between the stacked-stone edges afterwards',
 			'Photographed before and after the work — see the full project below',
 		),
-		// Hero photograph: this city's OWN project highlight, already committed
-		// and already carrying this approved alt text on the project page. Set
-		// because the area_<slug> image slot has no bundled file for these five,
-		// and its stock fallback would put an unrelated photo under a locational
-		// alt. Areas without the key keep the slot resolver untouched.
-		'hero_image'  => 'assets/img/projects/galleries/brentwood-pool-project/brentwood-pool-project-highlight-01.webp',
-		'hero_alt'    => 'Brentwood pool project showing a pool with clear blue water and a floating vacuum hose, with a leaf net and pole resting on the brick deck beside a stacked-boulder rock feature.',
 		'related_project'  => 'brentwood-pool-project',
 		'related_services' => array( 'weekly-pool-maintenance', 'pool-repairs-plumbing', 'pool-inspections-diagnostics' ),
 	),

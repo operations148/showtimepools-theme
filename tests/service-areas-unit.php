@@ -273,8 +273,11 @@ foreach ( $cards as $c ) {
 	if ( 0 !== strpos( (string) $c['url'], $home . '/projects/' ) ) {
 		$fallback_bad[] = $c['name'] . ' does not fall back to its project page';
 	}
-	if ( '' !== (string) $c['pool_count'] ) {
-		$fallback_bad[] = $c['name'] . ' asserts a pool count it has no record for';
+	// Strengthened: pool counts were unverified, so the key was removed from the
+	// card contract outright rather than merely left blank. Its ABSENCE is now
+	// the assertion — a reintroduced key fails here.
+	if ( array_key_exists( 'pool_count', $c ) ) {
+		$fallback_bad[] = $c['name'] . ' still carries a pool_count key';
 	}
 	if ( ! preg_match( '/^[A-Za-z ]+$/', (string) $c['sub'] ) || preg_match( '/\d/', (string) $c['sub'] ) ) {
 		$fallback_bad[] = $c['name'] . ' sub-line is not neutral/non-numeric: "' . $c['sub'] . '"';
