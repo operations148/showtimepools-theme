@@ -1,6 +1,5 @@
 # Local environment artifacts
 .claude/
-.vscode/
 .idea/
 .zed/
 *.code-workspace
@@ -73,3 +72,4 @@ tools/image-picker.html
 branch_structure.json
 temp_auto_push.bat
 temp_interactive_push.bat
+.gitignore
