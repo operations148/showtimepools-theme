@@ -30,13 +30,6 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Sub-line used by a location that has no published service-area page. Neutral
- * and non-numeric on purpose: it describes where the card goes, and asserts no
- * schedule, frequency or volume.
- */
-const SHOWTIME_AREA_CARD_PROJECT_SUB = 'Recent project';
-
-/**
  * Slugs whose /service-areas/<slug>/ child page actually exists and is PUBLISHED.
  *
  * Theme code deploys before the WordPress page records are created, so a
@@ -171,8 +164,12 @@ function showtime_area_image( string $slug, string $fallback_alt = '', int $w = 
  *
  * @return array<int,array{
  *     slug:string, name:string, url:string, image:string, alt:string,
- *     sub:string, gradient:string, has_area_page:bool
+ *     gradient:string, has_area_page:bool
  * }>
+ *
+ * Cards carry no sub-line. The location name over its photograph is the whole
+ * card; the `sub`/`tag` pair that fed it asserted schedules and booking states
+ * we cannot back, so both were removed rather than reworded.
  */
 function showtime_service_area_cards(): array {
 	static $cards = null;
@@ -253,7 +250,6 @@ function showtime_service_area_cards(): array {
 			'url'           => $url,
 			'image'         => $image,
 			'alt'           => $alt,
-			'sub'           => $is_live ? (string) ( $area['tag'] ?? '' ) : SHOWTIME_AREA_CARD_PROJECT_SUB,
 			'gradient'      => (string) ( $area['gradient'] ?? $default_gradient ),
 			'has_area_page' => $is_live,
 		);

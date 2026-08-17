@@ -126,15 +126,28 @@ empty( $rel_bad )
 	? ok( '6. each new record names its correct related project' )
 	: bad( '6. ' . implode( '; ', $rel_bad ) );
 
-// The nine must NOT gain a related_project — that key is what changes their
-// card imagery, and their imagery must not move.
-$leaked = array();
+// All 14 now declare a related_project so every page gets a Local Project
+// section. When only five declared it, that key also selected the card image,
+// so this guard checked the nine had not gained it. Imagery is now driven solely
+// by the `image` key, so the guard asserts the thing it was actually protecting:
+// the nine must still resolve their OWN bundled area_<slug> photograph, not a
+// project cover. Direction inverted, protection unchanged.
+$moved_img = array();
 foreach ( $ORIGINAL_NINE as $slug ) {
-	if ( '' !== (string) ( $by_slug[ $slug ]['related_project'] ?? '' ) ) { $leaked[] = $slug; }
+	$rec = $by_slug[ $slug ] ?? array();
+	if ( '' === (string) ( $rec['related_project'] ?? '' ) ) { $moved_img[] = "$slug declares no related_project"; }
+	$img = (string) ( $rec['image'] ?? '' );
+	// West Hollywood and Bel Air had no bundled file (they were on remote stock
+	// before PR #6) and legitimately use their own project photograph.
+	if ( in_array( $slug, array( 'west-hollywood', 'bel-air' ), true ) ) {
+		if ( false === strpos( $img, (string) $rec['related_project'] ) ) { $moved_img[] = "$slug image is not its own project's asset"; }
+		continue;
+	}
+	if ( "assets/img/area_$slug.webp" !== $img ) { $moved_img[] = "$slug image moved to $img"; }
 }
-empty( $leaked )
-	? ok( '7. no original area gained a related_project, so none of their card imagery moved' )
-	: bad( '7. related_project leaked onto: ' . implode( ', ', $leaked ) );
+empty( $moved_img )
+	? ok( '7. all nine original areas declare a related_project, and their card imagery did not move' )
+	: bad( '7. ' . implode( '; ', $moved_img ) );
 
 /* ── No fabricated claims ─────────────────────────────────────────────── */
 $claim_bad = array();
@@ -146,8 +159,9 @@ foreach ( $NEW as $slug => $project ) {
 	if ( array_key_exists( 'pool_count', $a ) ) { $claim_bad[] = "$slug still carries a pool_count key"; }
 
 	// No route/schedule/response-time wording anywhere in its copy.
+	// `tag` (the hero pill) no longer exists — the pill was removed along with
+	// the field, so there is no longer any tag copy to scan.
 	$copy = strtolower( implode( ' ', array(
-		(string) ( $a['tag'] ?? '' ),
 		(string) ( $a['seo_intro'] ?? '' ),
 		(string) ( $a['seo_meta'] ?? '' ),
 		(string) ( $a['lead'] ?? '' ),
@@ -170,7 +184,10 @@ foreach ( $NEW as $slug => $project ) {
 	}
 
 	// No invented street list.
-	if ( ! empty( $a['sample_streets'] ) ) { $claim_bad[] = "$slug asserts serviced streets"; }
+	// The sample_streets field was removed from the registry entirely along with
+	// the "Recent streets we serviced" block, so assert the key is ABSENT rather
+	// than merely empty — that also catches reintroduction.
+	if ( array_key_exists( 'sample_streets', $a ) ) { $claim_bad[] = "$slug still carries a sample_streets key"; }
 }
 empty( $claim_bad )
 	? ok( '8. none of the five asserts a pool count, route schedule, response time, rating, guarantee, street list or city-bound "since 2003"' )
@@ -214,10 +231,15 @@ foreach ( $areas as $a ) {
 		$img_bad[] = "$slug image is not a real WebP on disk";
 	}
 	if ( '' === trim( (string) ( $a['image_alt'] ?? '' ) ) ) { $img_bad[] = "$slug image has no alt text"; }
-	// A record naming a related project must use that project's own asset.
+	// Ownership: the asset must be either this area's own bundled area_<slug>
+	// file or an asset from its own project. Every area names a related_project
+	// now (it drives the Local Project section), so requiring the image to come
+	// from that project would wrongly reject the bundled area files.
 	$project = (string) ( $a['related_project'] ?? '' );
-	if ( '' !== $project && false === strpos( $rel, $project ) ) {
-		$img_bad[] = "$slug image is not its own project's asset";
+	$own_area_file = false !== strpos( $rel, "area_$slug." );
+	$own_project   = '' !== $project && false !== strpos( $rel, $project );
+	if ( ! $own_area_file && ! $own_project ) {
+		$img_bad[] = "$slug image belongs to neither its own area file nor its own project";
 	}
 }
 empty( $img_bad )
@@ -500,8 +522,16 @@ foreach ( $ORIGINAL_NINE as $slug ) {
 	if ( 1 !== count( $h1m[1] ?? array() ) )                            { $moved[] = "$slug H1 count"; }
 	if ( trim( wp_strip_all_tags( $h1m[1][0] ?? '' ) ) !== (string) $a['seo_h1'] ) { $moved[] = "$slug H1 text"; }
 	if ( false === strpos( $body, (string) $a['seo_meta'] ) )           { $moved[] = "$slug meta description"; }
-	// They must NOT have gained a project-proof block.
-	if ( false !== strpos( $body, 'Work we have completed in' ) )       { $moved[] = "$slug gained a project-proof section"; }
+	// Every page now carries exactly one Local Project section — the shared block
+	// was extended from five areas to all fourteen. This previously asserted the
+	// nine had NOT gained it; it now asserts they have exactly one, pointing at
+	// their own mapped project. Same guard against duplication, opposite polarity.
+	$proof_n = preg_match_all( '/Work we have completed in ' . preg_quote( (string) $a['name'], '/' ) . '\./', $body );
+	if ( 1 !== $proof_n )                                               { $moved[] = "$slug has $proof_n Local Project sections"; }
+	$mapped = (string) ( $a['related_project'] ?? '' );
+	if ( '' === $mapped || false === strpos( $body, showtime_project_permalink( $mapped ) ) ) {
+		$moved[] = "$slug does not link its mapped project";
+	}
 	// Their hero must be the exact asset the registry declares for them. This
 	// replaces an earlier "no galleries/ path" proxy, which assumed the original
 	// nine could only ever use an area_<slug> file. West Hollywood legitimately
@@ -511,7 +541,7 @@ foreach ( $ORIGINAL_NINE as $slug ) {
 	if ( '' === $want_img || false === strpos( $body, $want_img ) )     { $moved[] = "$slug hero is not its declared image"; }
 }
 empty( $moved )
-	? ok( '27. all nine original service-area pages render exactly as before — same H1, meta, imagery and no new sections' )
+	? ok( '27. all nine original service-area pages keep their H1, meta and imagery, and each carries exactly one Local Project section linking its own mapped project' )
 	: bad( '27. ' . implode( '; ', $moved ) );
 
 /* ══════════════════════════════════════════════════════════════════════

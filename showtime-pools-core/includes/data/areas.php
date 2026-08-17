@@ -13,6 +13,17 @@
  * showtime_area_page_is_published(), so a link is only ever published once its
  * page is live. See showtime-pools-child/inc/service-areas.php.
  *
+ * Every area declares `related_project`: the ONE project whose record supplies
+ * the Local Project section's title, description, photograph and URL. That is a
+ * mapping only — the project registry stays the source of truth for the content
+ * itself, so nothing here can drift from what the project page states.
+ *
+ * Three display fields were removed rather than left unused, because each was
+ * the only consumer of the other and all three asserted things we cannot back:
+ *   - `tag`            the hero pill ("6 days a week", "Now booking")
+ *   - `pool_count`     unverified serviced-pool figures
+ *   - `sample_streets` the "Recent streets we serviced" chips
+ *
  * @package ShowtimePoolsCore
  */
 
@@ -27,7 +38,6 @@ return array(
 		'name'        => 'Sherman Oaks',
 		'seo_h1'      => 'Pool Service in Sherman Oaks, Los Angeles',
 		'seo_intro'   => 'Pool service near you in Sherman Oaks, Los Angeles. Showtime Pools is headquartered on Ventura Boulevard. Weekly pool cleaning service, pool repair near me calls, remodels, and equipment upgrades across ZIP codes 91403, 91423, and 91436, six days a week, with Sunday reserved for emergencies.',
-		'tag'         => 'Home base · 6 days a week',
 		'image'       => 'assets/img/area_sherman-oaks.webp',
 		'image_alt'   => 'A Sherman Oaks backyard pool bordered by a wide concrete deck and clipped hedging, with a house beyond.',
 		'gradient'    => 'linear-gradient(135deg,#1F2F3A 0%,#5C8A9E 100%)',
@@ -47,7 +57,7 @@ return array(
 			'Salt cell installs (older pools converting from chlorine tablets)',
 			'Heater replacements (pre-2008 Raypaks reaching end of life)',
 		),
-		'sample_streets' => array( 'Hayvenhurst Ave', 'Greenleaf St', 'Sunnyslope Ave', 'Magnolia Blvd', 'Riverside Dr' ),
+		'related_project'  => 'sherman-oaks-mid-century-remodel',
 		'related_services' => array( 'pool-remodeling-resurfacing', 'equipment-installation-upgrades', 'weekly-pool-maintenance' ),
 	),
 
@@ -58,7 +68,6 @@ return array(
 		'name'        => 'Encino',
 		'seo_h1'      => 'Pool Service in Encino, Los Angeles',
 		'seo_intro'   => 'Pool service near you in Encino, Los Angeles. Showtime Pools is the pool company Encino homeowners call for pool cleaning near me, pool repair, and custom pool construction across ZIP codes 91316 and 91436, five days a week.',
-		'tag'         => '5 days a week',
 		'image'       => 'assets/img/area_encino.webp',
 		'image_alt'   => 'An Encino rectangular pool holding still water that mirrors the trees and houses along the far side of the deck.',
 		'gradient'    => 'linear-gradient(135deg,#314A58 0%,#88A4B6 100%)',
@@ -78,7 +87,7 @@ return array(
 			'Automation retrofits on early-2000s equipment pads',
 			'PebbleTec finishes (Midnight Blue and Tropical Breeze are popular)',
 		),
-		'sample_streets' => array( 'Louise Ave', 'Petit Ave', 'White Oak Ave', 'Hayvenhurst Pl', 'Amestoy Ave' ),
+		'related_project'  => 'encino-estate-new-build',
 		'related_services' => array( 'custom-pool-design-construction', 'spa-installation-renovations', 'pool-remodeling-resurfacing' ),
 	),
 
@@ -89,7 +98,6 @@ return array(
 		'name'        => 'Beverly Hills',
 		'seo_h1'      => 'Pool Service in Beverly Hills',
 		'seo_intro'   => 'Pool service near you in Beverly Hills, Los Angeles. Showtime Pools runs discreet weekly pool cleaning service and pool maintenance near me calls behind 90210, 90211, and 90212 gates: badged vehicles, scheduled named-tech crew.',
-		'tag'         => '3 days a week',
 		'image'       => 'assets/img/area_beverly-hills.webp',
 		'image_alt'   => 'A Beverly Hills pool curving around a paved deck, screened by tall hedging and palms in front of a two-storey house.',
 		'gradient'    => 'linear-gradient(135deg,#0A0A0A 0%,#4D7589 100%)',
@@ -109,7 +117,7 @@ return array(
 			'Equipment pad consolidations (multiple pumps → single VS)',
 			'Smart-home integration (HomeKit, Alexa, Crestron)',
 		),
-		'sample_streets' => array( 'Roxbury Dr', 'Bedford Dr', 'Camden Dr', 'Beverly Glen Blvd', 'Sunset Blvd' ),
+		'related_project'  => 'beverly-hills-luxe-spa-renovation',
 		'related_services' => array( 'pool-remodeling-resurfacing', 'tile-coping-plaster-decking', 'smart-pool-automation' ),
 	),
 
@@ -120,7 +128,6 @@ return array(
 		'name'        => 'Studio City',
 		'seo_h1'      => 'Pool Service in Studio City',
 		'seo_intro'   => 'Pool service near you in Studio City, Los Angeles. Showtime Pools handles hillside pool repair near me calls, emergency pool service, and pier-supported deck work across ZIP 91604: structural, weekly, and same-day from Coldwater to Laurel Canyon.',
-		'tag'         => '5 days a week',
 		'image'       => 'assets/img/area_studio-city.webp',
 		'image_alt'   => 'A Studio City pool set into flagstone paving, with loungers, potted succulents and palms against a timber fence.',
 		'gradient'    => 'linear-gradient(135deg,#3F6072 0%,#B0C5D2 100%)',
@@ -140,7 +147,7 @@ return array(
 			'Equipment pad relocations (canyon-side to street-side)',
 			'Salt cells + automation in mid-century rebuilds',
 		),
-		'sample_streets' => array( 'Laurel Canyon Blvd', 'Coldwater Canyon Ave', 'Tujunga Ave', 'Klump Ave', 'Whitsett Ave' ),
+		'related_project'  => 'studio-city-modern-automation',
 		'related_services' => array( 'pool-repairs-plumbing', 'equipment-installation-upgrades', 'smart-pool-automation' ),
 	),
 
@@ -151,7 +158,6 @@ return array(
 		'name'        => 'Tarzana',
 		'seo_h1'      => 'Pool Service in Tarzana',
 		'seo_intro'   => 'Pool service near you in Tarzana, Los Angeles. Showtime Pools specializes in pool remodeling, pool resurfacing, pool cleaning near me, and pool maintenance near me on 1970s-1990s vintage pools across 91335, 91356, and 91357.',
-		'tag'         => '4 days a week',
 		'image'       => 'assets/img/area_tarzana.webp',
 		'image_alt'   => 'A Tarzana pool in front of a white two-storey house, framed by palms, flowering borders and a lawn.',
 		'gradient'    => 'linear-gradient(135deg,#1F1F1F 0%,#6E94A9 100%)',
@@ -171,7 +177,7 @@ return array(
 			'Variable-speed pump installs with LADWP rebate paperwork',
 			'Automation upgrades on legacy equipment',
 		),
-		'sample_streets' => array( 'Reseda Blvd', 'Tampa Ave', 'Wilbur Ave', 'Vanalden Ave', 'Lindley Ave' ),
+		'related_project'  => 'tarzana-resort-style-finish',
 		'related_services' => array( 'pool-remodeling-resurfacing', 'equipment-installation-upgrades', 'tile-coping-plaster-decking' ),
 	),
 
@@ -182,7 +188,6 @@ return array(
 		'name'        => 'Woodland Hills',
 		'seo_h1'      => 'Pool Service in Woodland Hills',
 		'seo_intro'   => 'Pool service near you in Woodland Hills, Los Angeles. One of the top pool companies near me for Woodland Hills homeowners; Showtime Pools handles pool maintenance near me calls, new pool construction, and heater/salt cell work across 91364 and 91367.',
-		'tag'         => '4 days a week',
 		'image'       => 'assets/img/area_woodland-hills.webp',
 		'image_alt'   => 'A Woodland Hills pool edged with stone coping and desert planting, with palms and hillside ridgelines behind.',
 		'gradient'    => 'linear-gradient(135deg,#314A58 0%,#5C8A9E 100%)',
@@ -202,7 +207,7 @@ return array(
 			'CYA management programs and stabilizer reductions',
 			'New gunite construction in newer hillside developments',
 		),
-		'sample_streets' => array( 'Ventura Blvd', 'Topanga Canyon Blvd', 'Mulholland Dr', 'Avenida Oriente', 'De Soto Ave' ),
+		'related_project'  => 'woodland-hills-tile-coping-refresh',
 		'related_services' => array( 'equipment-installation-upgrades', 'weekly-pool-maintenance', 'custom-pool-design-construction' ),
 	),
 
@@ -213,7 +218,6 @@ return array(
 		'name'        => 'West Hollywood',
 		'seo_h1'      => 'Pool Service in West Hollywood',
 		'seo_intro'   => 'Pool service in West Hollywood, from the Sunset Strip hills down to the Melrose flats. Showtime Pools handles weekly cleaning, leak detection, repairs, and remodels across 90046, 90048, and 90069, with the same named technician on every visit and a photo report before the truck leaves.',
-		'tag'         => 'Now booking weekly routes',
 		// Intentionally empty until Steve confirms a real serviced-pool count;
 		// templates skip the count pill when this is blank.
 		'image'       => 'assets/img/projects/galleries/west-hollywood-pool-project/west-hollywood-pool-project-highlight-05.webp',
@@ -235,6 +239,7 @@ return array(
 			'Heater and salt cell swaps on space-constrained equipment pads',
 			'Plaster-to-pebble refinishes on mid-century rectangles',
 		),
+		'related_project'  => 'west-hollywood-pool-project',
 		'related_services' => array( 'weekly-pool-maintenance', 'pool-leak-detection' ),
 	),
 
@@ -245,7 +250,6 @@ return array(
 		'name'        => 'Bel Air',
 		'seo_h1'      => 'Pool Service in Bel Air',
 		'seo_intro'   => 'Pool service in Bel Air for estate properties off Stone Canyon and Bellagio Road. Showtime Pools maintains, remodels, and re-equips large hillside pools across 90077: infinity edges, attached spas, and full automation, serviced by a badged, owner-supervised crew with gate protocols handled.',
-		'tag'         => 'Estate service · now booking',
 		// Intentionally empty until Steve confirms a real serviced-pool count;
 		// templates skip the count pill when this is blank.
 		'image'       => 'assets/img/projects/comparisons/bel-air-pool-project-after.webp',
@@ -267,6 +271,7 @@ return array(
 			'Vanishing-edge and catch-basin diagnostics',
 			'Multi-pump equipment room consolidations to variable-speed systems',
 		),
+		'related_project'  => 'bel-air-pool-project',
 		'related_services' => array( 'pool-remodeling-resurfacing', 'smart-pool-automation' ),
 	),
 
@@ -277,7 +282,6 @@ return array(
 		'name'        => 'Calabasas',
 		'seo_h1'      => 'Pool Service in Calabasas',
 		'seo_intro'   => 'Pool service in Calabasas for the gated, hillside, and estate properties off Mulholland and Las Virgenes. Showtime Pools runs established weekly routes through Calabasas from our Sherman Oaks office: premium maintenance, expert repairs, equipment upgrades, and full remodels on the larger, spa-integrated pools this community is known for, across 91301, 91302, and 91372.',
-		'tag'         => 'Established routes · now booking',
 		// Intentionally empty until Steve confirms a real serviced-pool count;
 		// templates skip the count pill when this is blank.
 		'image'       => 'assets/img/area_calabasas.webp',
@@ -299,6 +303,7 @@ return array(
 			'Full surface + finish remodels (plaster, pebble, tile, coping, decking)',
 			'Diagnostics and repairs on integrated spa, water-feature, and automation systems',
 		),
+		'related_project'  => 'calabasas-pool-project',
 		'related_services' => array( 'pool-remodeling-resurfacing', 'smart-pool-automation' ),
 	),
 
@@ -317,9 +322,8 @@ return array(
 	//     these cities.
 	//   - `common_jobs` describes the city's OWN completed project, exactly as
 	//     that record already states it. No other work is implied.
-	//   - `sample_streets` is omitted, and no `tag`,
-	//     intro or heading claims a weekly route, a schedule, a response time,
-	//     a years-in-city figure, a landmark or a coverage area.
+	//   - no intro or heading claims a weekly route, a schedule, a response
+	//     time, a years-in-city figure, a landmark or a coverage area.
 	//   - `lat`/`lng` are the city's public centroid, used only for the
 	//     areaServed Place in the shared Service schema. No per-city
 	//     LocalBusiness node or street address is created anywhere.
@@ -333,7 +337,6 @@ return array(
 		'name'        => 'Van Nuys',
 		'seo_h1'      => 'Pool Service in Van Nuys',
 		'seo_intro'   => 'Showtime Pools works on pools in Van Nuys. Equipment replacement is the work we have documented here: a poolside vault refitted with a new cartridge filter and fresh PVC pipework. Cleaning, repairs, remodeling and construction are all available in the area, booked through the same office that has run Showtime Pools since 2003.',
-		'tag'         => 'Service available',
 		'image'       => 'assets/img/projects/comparisons/van-nuys-pool-project-after.webp',
 		'image_alt'   => 'A Van Nuys pool equipment vault with a replacement cartridge filter and new white PVC pipework.',
 		'gradient'    => 'linear-gradient(135deg,#1F2F3A 0%,#5C8A9E 100%)',
@@ -368,7 +371,6 @@ return array(
 		'name'        => 'North Hollywood',
 		'seo_h1'      => 'Pool Service in North Hollywood',
 		'seo_intro'   => 'Showtime Pools works on pools in North Hollywood. Waterline tile cleaning is the work we have documented here: pale scale deposits lifted off a decorative blue tile band until the pattern read clearly again. Maintenance, repairs, equipment work and remodels are all available in the area.',
-		'tag'         => 'Service available',
 		'image'       => 'assets/img/projects/comparisons/north-hollywood-pool-project-after.webp',
 		'image_alt'   => 'A North Hollywood pool waterline with its blue patterned tile band cleaned of scale.',
 		'gradient'    => 'linear-gradient(135deg,#23303B 0%,#7FA8BD 100%)',
@@ -403,7 +405,6 @@ return array(
 		'name'        => 'Toluca Lake',
 		'seo_h1'      => 'Pool Service in Toluca Lake',
 		'seo_intro'   => 'Showtime Pools works on pools in Toluca Lake. Water treatment is the work we have documented here: a pool and attached spa taken from pale, clouded water to a clear deep blue with every surface left exactly as it was. Maintenance, repairs, equipment work and remodels are all available in the area.',
-		'tag'         => 'Service available',
 		'image'       => 'assets/img/projects/comparisons/toluca-lake-pool-project-after.webp',
 		'image_alt'   => 'A Toluca Lake pool and attached spa holding clear blue water, set in a paved backyard at dusk.',
 		'gradient'    => 'linear-gradient(135deg,#1B2A22 0%,#6E8F77 100%)',
@@ -438,7 +439,6 @@ return array(
 		'name'        => 'Burbank',
 		'seo_h1'      => 'Pool Service in Burbank',
 		'seo_intro'   => 'Showtime Pools works on pools in Burbank. New construction is the work we have documented here: a backyard taken from excavation through to a finished, filled pool and attached spa with its surrounding deck. Remodeling, weekly maintenance, repairs and equipment work are all available in the area.',
-		'tag'         => 'Service available',
 		'image'       => 'assets/img/projects/comparisons/burbank-pool-project-after.webp',
 		'image_alt'   => 'A completed Burbank pool and attached spa beside a finished concrete deck.',
 		'gradient'    => 'linear-gradient(135deg,#314A58 0%,#88A4B6 100%)',
@@ -473,7 +473,6 @@ return array(
 		'name'        => 'Brentwood',
 		'seo_h1'      => 'Pool Service in Brentwood',
 		'seo_intro'   => 'Showtime Pools works on pools in Brentwood. Pool cleaning is the work we have documented here: a naturalistic, stone-edged pool taken from dark green water to clear. Weekly maintenance, repairs, equipment work and remodels are all available in the area.',
-		'tag'         => 'Service available',
 		'image'       => 'assets/img/projects/comparisons/brentwood-pool-project-after.webp',
 		'image_alt'   => 'A Brentwood pool holding clear turquoise water between stacked-stone edges and dense planting.',
 		'gradient'    => 'linear-gradient(135deg,#101820 0%,#6E8F77 100%)',

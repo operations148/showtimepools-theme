@@ -279,8 +279,10 @@ foreach ( $cards as $c ) {
 	if ( array_key_exists( 'pool_count', $c ) ) {
 		$fallback_bad[] = $c['name'] . ' still carries a pool_count key';
 	}
-	if ( ! preg_match( '/^[A-Za-z ]+$/', (string) $c['sub'] ) || preg_match( '/\d/', (string) $c['sub'] ) ) {
-		$fallback_bad[] = $c['name'] . ' sub-line is not neutral/non-numeric: "' . $c['sub'] . '"';
+	// The sub-line itself is gone now, so "is it neutral?" became "is it absent?"
+	// — strictly stronger: no wording at all can assert a schedule or frequency.
+	if ( array_key_exists( 'sub', $c ) ) {
+		$fallback_bad[] = $c['name'] . ' still carries a sub key';
 	}
 }
 empty( $fallback_bad )
@@ -335,14 +337,17 @@ count( array_unique( $hub_hrefs ) ) === 14
 	? ok( '27. the 14 rendered card links are unique' )
 	: bad( '27. rendered card links are not unique (' . count( array_unique( $hub_hrefs ) ) . ' unique)' );
 
-// The card component itself is unchanged: same classes, same inner structure.
+// The card component is otherwise unchanged: same grid, same wrapper, same
+// overlay, same title. The .area-card__sub element was removed outright — the
+// card is now the location name over its photograph — so its ABSENCE is part of
+// the structural contract rather than its presence.
 $structure_ok = false !== strpos( $hub, 'areas-hub__grid' )
 	&& false !== strpos( $hub, 'area-card__overlay' )
 	&& false !== strpos( $hub, 'area-card__content' )
 	&& false !== strpos( $hub, 'area-card__title' )
-	&& false !== strpos( $hub, 'area-card__sub' );
+	&& false === strpos( $hub, 'area-card__sub' );
 $structure_ok
-	? ok( '28. the existing card component and grid wrapper are unchanged' )
+	? ok( '28. the existing card component and grid wrapper are unchanged, and carry no sub-line element' )
 	: bad( '28. the card component structure changed' );
 
 /* ══════════════════════════════════════════════════════════════════════

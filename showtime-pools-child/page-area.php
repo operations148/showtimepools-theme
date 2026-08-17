@@ -30,7 +30,6 @@ if ( ! $area ) {
 }
 
 $name        = (string) $area['name'];
-$tag         = (string) $area['tag'];
 // SEO H1 / intro take precedence over the natural lead when the registry
 // provides them — keyword-led wording for organic search. Falls back to
 // the original `lead` paragraph so older area entries still render.
@@ -54,7 +53,6 @@ if ( '' === $area_what_common ) { $area_what_common = (string) ( $area['what_com
 if ( '' === $area_what_do )     { $area_what_do     = (string) ( $area['what_do'] ?? '' ); }
 $chars       = (array)  ( $area['characteristics'] ?? array() );
 $jobs        = (array)  ( $area['common_jobs'] ?? array() );
-$streets     = (array)  ( $area['sample_streets'] ?? array() );
 $gradient    = (string) ( $area['gradient'] ?? 'linear-gradient(135deg,#1F2F3A,#5C8A9E)' );
 $lat         = (float)  ( $area['lat'] ?? 0 );
 $lng         = (float)  ( $area['lng'] ?? 0 );
@@ -98,15 +96,6 @@ $schema = array(
 		<?php if ( $area_hero_img ) : ?>
 			<img class="area-hero__photo" src="<?php echo esc_url( $area_hero_img ); ?>" <?php echo $area_hero_from_registry ? '' : showtime_hero_srcset_attr( 'area_' . $slug ); ?> alt="<?php echo esc_attr( $area_hero_alt ); ?>" loading="eager" fetchpriority="high" decoding="async">
 		<?php endif; ?>
-		<div class="area-hero__bg" aria-hidden="true">
-			<svg viewBox="0 0 800 400" preserveAspectRatio="none" fill="none">
-				<g stroke="rgba(255,255,255,0.35)" stroke-width="1.5" fill="none" stroke-linecap="round">
-					<path d="M0 250 Q150 220 300 250 T600 250 T900 250"/>
-					<path d="M0 290 Q150 260 300 290 T600 290 T900 290"/>
-					<path d="M0 330 Q150 300 300 330 T600 330 T900 330"/>
-				</g>
-			</svg>
-		</div>
 		<div class="container">
 			<nav class="breadcrumbs int-hero__crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'showtime-pools' ); ?>">
 				<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'showtime-pools' ); ?></a>
@@ -116,9 +105,6 @@ $schema = array(
 				<span aria-current="page"><?php echo esc_html( $name ); ?></span>
 			</nav>
 			<div class="area-hero__inner">
-				<?php if ( '' !== $tag ) : ?>
-					<span class="area-hero__pill"><?php echo esc_html( $tag ); ?></span>
-				<?php endif; ?>
 				<h1 class="area-hero__title balance">
 					<?php if ( '' !== $seo_h1 ) {
 						echo esc_html( $seo_h1 );
@@ -166,17 +152,6 @@ $schema = array(
 				</div>
 			</div>
 
-			<?php if ( ! empty( $streets ) ) : ?>
-				<aside class="area-detail__streets">
-					<span class="eyebrow"><?php esc_html_e( 'Recent streets we serviced', 'showtime-pools' ); ?></span>
-					<ul class="tag-list">
-						<?php foreach ( $streets as $s ) : ?>
-							<li><span class="tag"><?php echo esc_html( (string) $s ); ?></span></li>
-						<?php endforeach; ?>
-					</ul>
-				</aside>
-			<?php endif; ?>
-
 			<?php
 			// Registry-gated service cross-links. Only renders for areas
 			// whose registry entry lists related_services, so areas without
@@ -196,7 +171,7 @@ $schema = array(
 			}
 			?>
 			<?php if ( ! empty( $related_service_links ) ) : ?>
-				<aside class="area-detail__streets">
+				<aside class="area-detail__pills">
 					<span class="eyebrow"><?php printf( /* translators: %s: neighborhood */ esc_html__( 'Most-requested services in %s', 'showtime-pools' ), esc_html( $name ) ); ?></span>
 					<ul class="tag-list">
 						<?php foreach ( $related_service_links as $rsl ) : ?>
@@ -209,12 +184,17 @@ $schema = array(
 	</section>
 
 	<?php
-	// Registry-gated local project proof. Renders only for areas whose entry
-	// names a `related_project`, so areas without the key keep their existing
-	// markup byte-for-byte. The card reuses the SAME cover image and alt text
-	// the Projects archive already shows for that project — nothing new is
-	// asserted here, and the copy stays distinct from the project page's own
-	// title so the two never compete for the same query.
+	// Local Project section — ONE reusable block, rendered by this template for
+	// every area whose registry entry names a `related_project`. All 14 now do,
+	// so all 14 get exactly one section from this single code path; there is no
+	// per-location template and nothing is duplicated for any one area.
+	//
+	// The registry supplies the MAPPING only. Every piece of content — title,
+	// description, photograph, URL — is read from that project's own record, so
+	// this section can never state something the project page does not, and a
+	// project edit flows through automatically. The heading and supporting copy
+	// stay distinct from the project's own title so the two never compete for
+	// the same query.
 	$area_project_slug = (string) ( $area['related_project'] ?? '' );
 	$area_project      = ( '' !== $area_project_slug && function_exists( 'showtime_project_data' ) )
 		? showtime_project_data( $area_project_slug )

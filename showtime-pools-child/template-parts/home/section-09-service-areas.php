@@ -44,7 +44,6 @@ $render_card = static function ( array $area, bool $duplicate = false ): void {
 		<div class="area-card__overlay" aria-hidden="true"></div>
 		<div class="area-card__content">
 			<h3 class="area-card__title"><?php echo esc_html( (string) ( $area['name'] ?? '' ) ); ?></h3>
-			<p class="area-card__sub"><?php echo esc_html( (string) ( $area['sub'] ?? '' ) ); ?></p>
 		</div>
 	</a>
 	<?php

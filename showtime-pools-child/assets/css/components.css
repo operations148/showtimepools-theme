@@ -273,12 +273,11 @@
 	margin: 0 0 4px;
 	color: #fff;
 }
-.area-card__sub {
-	margin: 0;
-	color: rgba(255,255,255,0.85);
-	font-size: var(--fs-sm);
-	line-height: var(--lh-snug);
-}
+/* .area-card__sub is gone. Service-area cards show the location name over the
+   photograph and nothing else — the sub-line asserted schedules and booking
+   states we cannot back. Removed with its markup, not hidden. The title's own
+   4px bottom margin is now the card's last spacing, which is why no wrapper or
+   gap is left behind. */
 
 /* Phase J — sitewide noise overlay. Fixed-position behind content above
    the background, kills the "flat plastic" feel without measurable
