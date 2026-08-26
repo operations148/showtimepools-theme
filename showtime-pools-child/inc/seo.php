@@ -69,8 +69,15 @@ function showtime_post_author_schema( string $author_name ): array {
 
 /**
  * Resolve the current canonical URL.
+ *
+ * Returns '' on a 404. A canonical tag asserts "this is the correct version of
+ * this content" — nonsensical for a URL that resolves to nothing, and directly
+ * contradictory if paired with noindex. The wp_head printer below treats an
+ * empty string as "omit the tag entirely" rather than falling through to a
+ * catch-all that would otherwise self-canonicalize the broken URL.
  */
 function showtime_canonical_url(): string {
+	if ( is_404() ) { return ''; }
 	if ( is_singular() ) {
 		$url = (string) get_permalink();
 
@@ -147,6 +154,12 @@ function showtime_noindex_page_slugs(): array {
  * stays indexable. Always noindex,follow (links stay followable).
  */
 function showtime_seo_should_noindex(): bool {
+	// A 404 has no content to rank. noindex,follow — links stay followable,
+	// matching every other branch below, since a 404'd URL can still sit
+	// downstream of valid links elsewhere on the site.
+	if ( is_404() ) {
+		return (bool) apply_filters( 'showtime/seo/noindex', true );
+	}
 	if ( is_page_template( showtime_noindex_page_templates() ) ) {
 		return (bool) apply_filters( 'showtime/seo/noindex', true );
 	}
@@ -230,6 +243,82 @@ add_action(
 			$dest = add_query_arg( wp_parse_args( wp_unslash( $qs ) ), $dest );
 		}
 		wp_safe_redirect( $dest, 301 );
+		exit;
+	},
+	0
+);
+
+/**
+ * Reject out-of-range /blog/page/N/ requests as a genuine 404.
+ *
+ * page-blog.php builds its own WP_Query for the feed rather than relying on
+ * WordPress's main query, so WordPress never sees this as a real archive and
+ * never applies its normal out-of-range-pagination 404 behaviour to it. Left
+ * unguarded, /blog/page/2/ (or /page/99/) rendered the template's ordinary
+ * empty state — "Articles coming soon" — at HTTP 200 with a self-referencing,
+ * indexable canonical: an unbounded set of soft-404 pages for every N beyond
+ * the real page count.
+ *
+ * This has to run on template_redirect, not inside page-blog.php itself.
+ * WordPress already sent the 200 status header for the underlying Page (via
+ * WP::send_headers(), which fires before template_redirect) before any
+ * template file is even chosen — page-blog.php calls get_header() as its
+ * first line, which starts streaming <head> output immediately. By the time
+ * page-blog.php could compute its own max_num_pages, both the status header
+ * and part of the response body would already be sent, and a status_header()
+ * call at that point cannot take effect. template_redirect fires before
+ * template-loader.php decides which file to include, so it is the last point
+ * where overriding the status and swapping in the real 404 template is still
+ * possible — the same mechanism WordPress core itself uses for canonical
+ * redirects and old-slug handling.
+ *
+ * The query built here mirrors page-blog.php's own feed query exactly (same
+ * post_type, post_status, the same `showtime/blog/posts_per_page` filter, same
+ * ignore_sticky_posts) so max_num_pages can never disagree between the two —
+ * it is a second, throwaway, ids-only query used only to learn the page count
+ * before the real template runs.
+ */
+add_action(
+	'template_redirect',
+	function () {
+		if ( ! is_page_template( 'page-blog.php' ) ) {
+			return;
+		}
+
+		$paged = (int) get_query_var( 'paged' );
+		if ( ! $paged ) {
+			$paged = (int) get_query_var( 'page' );
+		}
+		$paged = max( 1, $paged );
+
+		// Page 1 is always valid, including the legitimate empty state (zero
+		// posts published yet) — only page 2 and beyond can be out of range.
+		if ( $paged <= 1 ) {
+			return;
+		}
+
+		$per_page = (int) apply_filters( 'showtime/blog/posts_per_page', 12 );
+		$probe    = new WP_Query(
+			array(
+				'post_type'           => 'post',
+				'post_status'         => 'publish',
+				'posts_per_page'      => $per_page,
+				'paged'               => $paged,
+				'ignore_sticky_posts' => true,
+				'no_found_rows'       => false,
+				'fields'              => 'ids',
+			)
+		);
+
+		if ( $paged <= (int) $probe->max_num_pages ) {
+			return;
+		}
+
+		global $wp_query;
+		$wp_query->set_404();
+		status_header( 404 );
+		nocache_headers();
+		include get_404_template();
 		exit;
 	},
 	0
@@ -645,8 +734,11 @@ add_action(
 		$og_img = showtime_og_image_data();
 		$image  = (string) $og_img['url'];
 
-		echo '<link rel="canonical" href="' . esc_url( $canonical ) . '">' . "
+		// '' means is_404() -- omit rather than assert a broken URL is canonical.
+		if ( '' !== $canonical ) {
+			echo '<link rel="canonical" href="' . esc_url( $canonical ) . '">' . "
 ";
+		}
 		echo '<meta name="description" content="' . esc_attr( $desc ) . '">' . "
 ";
 		// Robots is emitted once by WordPress core's wp_robots(); the theme
@@ -664,8 +756,11 @@ add_action(
 ";
 		echo '<meta property="og:description" content="' . esc_attr( $desc ) . '">' . "
 ";
-		echo '<meta property="og:url" content="' . esc_url( $canonical ) . '">' . "
+		// Same rule: no og:url on a 404.
+		if ( '' !== $canonical ) {
+			echo '<meta property="og:url" content="' . esc_url( $canonical ) . '">' . "
 ";
+		}
 		if ( '' !== $image ) {
 			echo '<meta property="og:image" content="' . esc_url( $image ) . '">' . "
 ";
