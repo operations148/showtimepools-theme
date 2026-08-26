@@ -58,12 +58,20 @@ while ( have_posts() ) :
 		'image'            => $hero_img,
 		'datePublished'    => get_the_date( 'c', $pid ),
 		'dateModified'     => get_the_modified_date( 'c', $pid ),
-		'author'           => array(
-			'@type' => 'Person',
-			'@id'   => home_url( '/the-founder/#person' ),
-			'name'  => $author_name,
-			'url'   => home_url( '/the-founder/' ),
-		),
+		// Author. The byline and the schema must agree about WHO wrote the post,
+		// and the schema must not describe a company as a Person.
+		//
+		// This previously emitted @type Person with @id /the-founder/#person
+		// while `name` resolved to the display name — which on live is
+		// "Showtime Pools". That said: a Person, identified as the founder
+		// entity, named after the company. Two contradictory claims in one node.
+		//
+		// Resolution follows the documented rule: company-authored content is
+		// attributed to the Organization that already exists in sitewide schema;
+		// a real person is attributed to the founder Person entity. The name is
+		// never invented — whichever entity the byline actually names is the one
+		// referenced, so this stays truthful whatever an editor sets in wp-admin.
+		'author'           => showtime_post_author_schema( $author_name ),
 		'publisher'        => array(
 			'@id' => home_url( '/#organization' ),
 		),

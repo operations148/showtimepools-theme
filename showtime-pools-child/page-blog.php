@@ -46,13 +46,32 @@ $categories = get_categories(
 	)
 );
 
-// Latest 9 posts.
+// Blog feed. One page of the archive, newest first.
+//
+// Page size is 12 (four rows of three in .blog-grid) and pagination is real,
+// server-rendered and crawlable. This block previously read
+// `'posts_per_page' => 9, 'no_found_rows' => true` with no `paged`, which had
+// three consequences: the 10th-to-12th posts were unreachable from anywhere on
+// the site, `max_num_pages` was always 0 so no pager could ever render, and
+// /blog/page/2/ answered 200 with the same nine cards under a /blog/ canonical.
+//
+// `paged` is read from both query vars on purpose: WordPress exposes the page
+// number as `paged` on a posts archive but as `page` when the request resolves
+// to a static Page using a custom template, which is what /blog/ is here.
+$blog_per_page = (int) apply_filters( 'showtime/blog/posts_per_page', 12 );
+$blog_paged    = max( 1, (int) ( get_query_var( 'paged' ) ?: get_query_var( 'page' ) ) );
+
 $q = new WP_Query(
 	array(
-		'post_type'      => 'post',
-		'posts_per_page' => 9,
-		'post_status'    => 'publish',
-		'no_found_rows'  => true,
+		'post_type'           => 'post',
+		'post_status'         => 'publish',
+		'posts_per_page'      => $blog_per_page,
+		'paged'               => $blog_paged,
+		// Sticky posts are hoisted out of date order onto page 1 by default,
+		// which would print the same card twice across two pages.
+		'ignore_sticky_posts' => true,
+		// found_rows IS needed here: max_num_pages drives the pager below.
+		'no_found_rows'       => false,
 	)
 );
 
@@ -174,6 +193,33 @@ $category_slot_map = array(
 								</article>
 							<?php endwhile; wp_reset_postdata(); ?>
 						</div>
+
+						<?php
+						// Crawlable, server-rendered pagination. Same flat
+						// <nav class="blog-pagination"> + paginate_links() shape
+						// archive.php already uses, so it inherits the existing
+						// .blog-pagination / .page-numbers styling untouched —
+						// every entry is a real <a href>, no JavaScript.
+						//
+						// 'base' is built from this page's permalink because
+						// /blog/ is a static Page: the default base would emit
+						// /page/N/ off the site root instead of off /blog/.
+						if ( (int) $q->max_num_pages > 1 ) : ?>
+							<nav class="blog-pagination" aria-label="<?php esc_attr_e( 'Articles pagination', 'showtime-pools' ); ?>">
+								<?php
+								echo paginate_links(
+									array(
+										'base'      => trailingslashit( get_permalink() ) . 'page/%#%/',
+										'format'    => '',
+										'current'   => $blog_paged,
+										'total'     => (int) $q->max_num_pages,
+										'prev_text' => '← ' . __( 'Previous', 'showtime-pools' ),
+										'next_text' => __( 'Next', 'showtime-pools' ) . ' →',
+									)
+								);
+								?>
+							</nav>
+						<?php endif; ?>
 					<?php else : ?>
 						<p class="blog-empty"><?php esc_html_e( 'Articles coming soon. The crew is writing.', 'showtime-pools' ); ?></p>
 					<?php endif; ?>
