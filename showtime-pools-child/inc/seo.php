@@ -27,10 +27,73 @@ defined( 'ABSPATH' ) || exit;
 remove_action( 'wp_head', 'rel_canonical' );
 
 /**
+ * Article author node for a post byline.
+ *
+ * Two truthful outcomes, chosen by whichever entity the byline actually names:
+ *
+ *   - The byline names the business  -> Organization, referencing the existing
+ *     /#organization node. Company-authored content is attributed to the
+ *     company; a business is not a Person and must not be typed as one.
+ *   - The byline names anyone else   -> Person, referencing the existing
+ *     /the-founder/#person node.
+ *
+ * Nothing is invented: the name is whatever the byline already carries, so an
+ * editor changing the display name in wp-admin moves the schema with it rather
+ * than leaving the two disagreeing.
+ *
+ * @param string $author_name Display name shown in the post byline.
+ * @return array<string,mixed> Schema.org author node.
+ */
+function showtime_post_author_schema( string $author_name ): array {
+	$brand = (string) apply_filters( 'showtime/business/name', 'Showtime Pools' );
+
+	$is_company = '' === trim( $author_name )
+		|| 0 === strcasecmp( trim( $author_name ), trim( $brand ) );
+
+	if ( $is_company ) {
+		return array(
+			'@type' => 'Organization',
+			'@id'   => home_url( '/#organization' ),
+			'name'  => '' !== trim( $author_name ) ? $author_name : $brand,
+			'url'   => home_url( '/' ),
+		);
+	}
+
+	return array(
+		'@type' => 'Person',
+		'@id'   => home_url( '/the-founder/#person' ),
+		'name'  => $author_name,
+		'url'   => home_url( '/the-founder/' ),
+	);
+}
+
+/**
  * Resolve the current canonical URL.
  */
 function showtime_canonical_url(): string {
-	if ( is_singular() ) { return get_permalink(); }
+	if ( is_singular() ) {
+		$url = (string) get_permalink();
+
+		// A paginated archive rendered by a static Page — /blog/page/2/ — is
+		// still is_singular(), so get_permalink() alone would hand every page
+		// beyond the first the canonical of page one and collapse them into a
+		// duplicate. Re-attach the page segment, but ONLY when the request URI
+		// genuinely ends in /page/N: a <!--nextpage--> multi-page post uses a
+		// different URL shape and must keep resolving to its own permalink.
+		$paged = (int) get_query_var( 'paged' );
+		if ( ! $paged ) {
+			$paged = (int) get_query_var( 'page' );
+		}
+		if ( $paged > 1 ) {
+			global $wp;
+			$request = isset( $wp->request ) ? (string) $wp->request : '';
+			if ( preg_match( '#/page/' . $paged . '/?$#', $request ) ) {
+				$url = trailingslashit( $url ) . 'page/' . $paged . '/';
+			}
+		}
+
+		return $url;
+	}
 	if ( is_home() || is_front_page() ) { return home_url( '/' ); }
 	if ( is_archive() ) {
 		global $wp;

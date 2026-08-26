@@ -1,0 +1,561 @@
+{
+ "audit_date": "2026-08-26",
+ "phase": "post-fix",
+ "site": "https://showtimepools.com",
+ "scoring": {
+  "method": "analyze_blog.py 5-category 100-point (unchanged from baseline)",
+  "baseline_report": "blog-audit-2026-08-26.md"
+ },
+ "important_scope_note": "Score movement reflects the ARTICLE CONTENT rewrite published to production on/after 2026-08-25, which this run measured on live. It does NOT reflect this branch's code changes: the blog-archive, pagination, canonical and author-schema fixes are committed but NOT deployed, so live /blog/ still renders 9 of 12 at the time of this audit.",
+ "totals": {
+  "published_posts": 12,
+  "average_before": 55.7,
+  "average_after": 61.9,
+  "average_delta": 6.3,
+  "bands_before": {
+   "excellent": 0,
+   "good": 1,
+   "needs_work": 7,
+   "poor": 4
+  },
+  "bands_after": {
+   "excellent": 0,
+   "good": 1,
+   "needs_work": 11,
+   "poor": 0
+  }
+ },
+ "discovery": {
+  "robots_declared_sitemap": "https://showtimepools.com/wp-sitemap.xml",
+  "xml_index": "https://showtimepools.com/wp-sitemap.xml",
+  "xml_children": [
+   "https://showtimepools.com/wp-sitemap-posts-post-1.xml",
+   "https://showtimepools.com/wp-sitemap-posts-page-1.xml",
+   "https://showtimepools.com/wp-sitemap-posts-project-1.xml"
+  ],
+  "sitemap_xml_status": "301 -> /wp-sitemap.xml (not a duplicate index)",
+  "blog_cards_live": 9,
+  "blog_cards_expected_after_deploy": 12,
+  "html_sitemap_posts": 12,
+  "xml_sitemap_posts": 12
+ },
+ "link_graph": {
+  "total_in_body_blog_to_blog_links": 22,
+  "posts_with_outbound": 11,
+  "posts_without_outbound": [
+   "why-pebble-finishes-replacing-plaster"
+  ],
+  "self_links": 0,
+  "broken_internal_article_links": 0
+ },
+ "posts": [
+  {
+   "slug": "pool-replaster-cost-and-timing-guide",
+   "url": "https://showtimepools.com/pool-replaster-cost-and-timing-guide/",
+   "score_before": 71,
+   "score_after": 70,
+   "delta": -1,
+   "rating_after": "Acceptable",
+   "categories_after": {
+    "content_quality": 19,
+    "seo_optimization": 20,
+    "eeat_signals": 9,
+    "technical_elements": 8,
+    "ai_citation_readiness": 14
+   },
+   "words_after": 2.3,
+   "http": "200",
+   "robots": "max-image-preview:large, index, follow, max-snippet:-1, max-video-preview:-1",
+   "canonical_self": true,
+   "canonical_count": 1,
+   "og_count": 1,
+   "schema_type": "BlogPosting",
+   "date_published": "2026-07-23T13:28:34+00:00",
+   "date_modified": "2026-08-25T22:38:03+00:00",
+   "sitemap_lastmod": "2026-08-25T22:38:03+00:00",
+   "author_schema_name": "Showtime Pools",
+   "in_blog_archive_live": true,
+   "in_html_sitemap": true,
+   "in_xml_sitemap": true,
+   "sibling_links_out": [
+    "pool-remodeling-los-angeles",
+    "why-pebble-finishes-replacing-plaster"
+   ],
+   "sibling_links_in": [
+    "pool-remodeling-los-angeles",
+    "pool-tile-and-coping-installation-los-angeles"
+   ],
+   "tables": 4,
+   "images": {
+    "count": 1,
+    "with_alt": 1,
+    "without_alt": 0
+   }
+  },
+  {
+   "slug": "pool-remodeling-los-angeles",
+   "url": "https://showtimepools.com/pool-remodeling-los-angeles/",
+   "score_before": 69,
+   "score_after": 69,
+   "delta": 0,
+   "rating_after": "Below Standard",
+   "categories_after": {
+    "content_quality": 20,
+    "seo_optimization": 21,
+    "eeat_signals": 11,
+    "technical_elements": 6,
+    "ai_citation_readiness": 11
+   },
+   "words_after": 1.9,
+   "http": "200",
+   "robots": "max-image-preview:large, index, follow, max-snippet:-1, max-video-preview:-1",
+   "canonical_self": true,
+   "canonical_count": 1,
+   "og_count": 1,
+   "schema_type": "BlogPosting",
+   "date_published": "2026-06-30T15:37:02+00:00",
+   "date_modified": "2026-08-25T21:03:56+00:00",
+   "sitemap_lastmod": "2026-08-25T21:03:56+00:00",
+   "author_schema_name": "Showtime Pools",
+   "in_blog_archive_live": true,
+   "in_html_sitemap": true,
+   "in_xml_sitemap": true,
+   "sibling_links_out": [
+    "why-pebble-finishes-replacing-plaster",
+    "pool-replaster-cost-and-timing-guide",
+    "pool-tile-and-coping-installation-los-angeles",
+    "complete-pool-maintenance-guide-los-angeles"
+   ],
+   "sibling_links_in": [
+    "2026-pool-design-trends-los-angeles",
+    "custom-pool-new-construction-process-showtime-pools",
+    "pool-tile-and-coping-installation-los-angeles",
+    "pool-replaster-cost-and-timing-guide"
+   ],
+   "tables": 2,
+   "images": {
+    "count": 1,
+    "with_alt": 0,
+    "without_alt": 1
+   }
+  },
+  {
+   "slug": "when-to-replace-your-pool-pump",
+   "url": "https://showtimepools.com/when-to-replace-your-pool-pump/",
+   "score_before": 49,
+   "score_after": 66,
+   "delta": 17,
+   "rating_after": "Below Standard",
+   "categories_after": {
+    "content_quality": 19,
+    "seo_optimization": 21,
+    "eeat_signals": 10,
+    "technical_elements": 5,
+    "ai_citation_readiness": 11
+   },
+   "words_after": 1.2,
+   "http": "200",
+   "robots": "max-image-preview:large, index, follow, max-snippet:-1, max-video-preview:-1",
+   "canonical_self": true,
+   "canonical_count": 1,
+   "og_count": 1,
+   "schema_type": "BlogPosting",
+   "date_published": "2026-05-20T15:17:07+00:00",
+   "date_modified": "2026-08-25T19:11:07+00:00",
+   "sitemap_lastmod": "2026-08-25T19:11:07+00:00",
+   "author_schema_name": "Showtime Pools",
+   "in_blog_archive_live": true,
+   "in_html_sitemap": true,
+   "in_xml_sitemap": true,
+   "sibling_links_out": [
+    "pool-pump-repair-services"
+   ],
+   "sibling_links_in": [
+    "pentair-vs-jandy-salt-systems",
+    "pool-pump-repair-services"
+   ],
+   "tables": 0,
+   "images": {
+    "count": 0,
+    "with_alt": 0,
+    "without_alt": 0
+   }
+  },
+  {
+   "slug": "why-pebble-finishes-replacing-plaster",
+   "url": "https://showtimepools.com/why-pebble-finishes-replacing-plaster/",
+   "score_before": 49,
+   "score_after": 66,
+   "delta": 17,
+   "rating_after": "Below Standard",
+   "categories_after": {
+    "content_quality": 19,
+    "seo_optimization": 20,
+    "eeat_signals": 10,
+    "technical_elements": 5,
+    "ai_citation_readiness": 12
+   },
+   "words_after": 0.8,
+   "http": "200",
+   "robots": "max-image-preview:large, index, follow, max-snippet:-1, max-video-preview:-1",
+   "canonical_self": true,
+   "canonical_count": 1,
+   "og_count": 1,
+   "schema_type": "BlogPosting",
+   "date_published": "2026-05-20T15:17:07+00:00",
+   "date_modified": "2026-08-25T18:47:35+00:00",
+   "sitemap_lastmod": "2026-08-25T18:47:35+00:00",
+   "author_schema_name": "Showtime Pools",
+   "in_blog_archive_live": false,
+   "in_html_sitemap": true,
+   "in_xml_sitemap": true,
+   "sibling_links_out": [],
+   "sibling_links_in": [
+    "2026-pool-design-trends-los-angeles",
+    "pool-remodeling-los-angeles",
+    "pool-replaster-cost-and-timing-guide"
+   ],
+   "tables": 0,
+   "images": {
+    "count": 0,
+    "with_alt": 0,
+    "without_alt": 0
+   }
+  },
+  {
+   "slug": "pentair-vs-jandy-salt-systems",
+   "url": "https://showtimepools.com/pentair-vs-jandy-salt-systems/",
+   "score_before": 51,
+   "score_after": 65,
+   "delta": 14,
+   "rating_after": "Below Standard",
+   "categories_after": {
+    "content_quality": 19,
+    "seo_optimization": 20,
+    "eeat_signals": 8,
+    "technical_elements": 7,
+    "ai_citation_readiness": 11
+   },
+   "words_after": 1,
+   "http": "200",
+   "robots": "max-image-preview:large, index, follow, max-snippet:-1, max-video-preview:-1",
+   "canonical_self": true,
+   "canonical_count": 1,
+   "og_count": 1,
+   "schema_type": "BlogPosting",
+   "date_published": "2026-05-20T15:17:07+00:00",
+   "date_modified": "2026-08-25T19:54:54+00:00",
+   "sitemap_lastmod": "2026-08-25T19:54:54+00:00",
+   "author_schema_name": "Showtime Pools",
+   "in_blog_archive_live": true,
+   "in_html_sitemap": true,
+   "in_xml_sitemap": true,
+   "sibling_links_out": [
+    "when-to-replace-your-pool-pump"
+   ],
+   "sibling_links_in": [],
+   "tables": 1,
+   "images": {
+    "count": 0,
+    "with_alt": 0,
+    "without_alt": 0
+   }
+  },
+  {
+   "slug": "weekly-pool-care-checklist-la-homeowners",
+   "url": "https://showtimepools.com/weekly-pool-care-checklist-la-homeowners/",
+   "score_before": 49,
+   "score_after": 64,
+   "delta": 15,
+   "rating_after": "Below Standard",
+   "categories_after": {
+    "content_quality": 15,
+    "seo_optimization": 19,
+    "eeat_signals": 13,
+    "technical_elements": 6,
+    "ai_citation_readiness": 11
+   },
+   "words_after": 1,
+   "http": "200",
+   "robots": "max-image-preview:large, index, follow, max-snippet:-1, max-video-preview:-1",
+   "canonical_self": true,
+   "canonical_count": 1,
+   "og_count": 1,
+   "schema_type": "BlogPosting",
+   "date_published": "2026-05-20T15:17:07+00:00",
+   "date_modified": "2026-08-25T19:20:22+00:00",
+   "sitemap_lastmod": "2026-08-25T19:20:22+00:00",
+   "author_schema_name": "Showtime Pools",
+   "in_blog_archive_live": false,
+   "in_html_sitemap": true,
+   "in_xml_sitemap": true,
+   "sibling_links_out": [
+    "spring-pool-opening-step-by-step",
+    "complete-pool-maintenance-guide-los-angeles"
+   ],
+   "sibling_links_in": [
+    "spring-pool-opening-step-by-step",
+    "pool-pump-repair-services"
+   ],
+   "tables": 1,
+   "images": {
+    "count": 0,
+    "with_alt": 0,
+    "without_alt": 0
+   }
+  },
+  {
+   "slug": "custom-pool-new-construction-process-showtime-pools",
+   "url": "https://showtimepools.com/custom-pool-new-construction-process-showtime-pools/",
+   "score_before": 60,
+   "score_after": 62,
+   "delta": 2,
+   "rating_after": "Below Standard",
+   "categories_after": {
+    "content_quality": 19,
+    "seo_optimization": 20,
+    "eeat_signals": 9,
+    "technical_elements": 4,
+    "ai_citation_readiness": 10
+   },
+   "words_after": 1.9,
+   "http": "200",
+   "robots": "max-image-preview:large, index, follow, max-snippet:-1, max-video-preview:-1",
+   "canonical_self": true,
+   "canonical_count": 1,
+   "og_count": 1,
+   "schema_type": "BlogPosting",
+   "date_published": "2026-06-24T16:33:34+00:00",
+   "date_modified": "2026-08-25T20:42:01+00:00",
+   "sitemap_lastmod": "2026-08-25T20:42:01+00:00",
+   "author_schema_name": "Showtime Pools",
+   "in_blog_archive_live": true,
+   "in_html_sitemap": true,
+   "in_xml_sitemap": true,
+   "sibling_links_out": [
+    "pool-remodeling-los-angeles",
+    "complete-pool-maintenance-guide-los-angeles"
+   ],
+   "sibling_links_in": [],
+   "tables": 3,
+   "images": {
+    "count": 1,
+    "with_alt": 0,
+    "without_alt": 1
+   }
+  },
+  {
+   "slug": "spring-pool-opening-step-by-step",
+   "url": "https://showtimepools.com/spring-pool-opening-step-by-step/",
+   "score_before": 51,
+   "score_after": 60,
+   "delta": 9,
+   "rating_after": "Below Standard",
+   "categories_after": {
+    "content_quality": 13,
+    "seo_optimization": 20,
+    "eeat_signals": 10,
+    "technical_elements": 7,
+    "ai_citation_readiness": 10
+   },
+   "words_after": 1.2,
+   "http": "200",
+   "robots": "max-image-preview:large, index, follow, max-snippet:-1, max-video-preview:-1",
+   "canonical_self": true,
+   "canonical_count": 1,
+   "og_count": 1,
+   "schema_type": "BlogPosting",
+   "date_published": "2026-05-20T15:17:07+00:00",
+   "date_modified": "2026-08-25T19:41:55+00:00",
+   "sitemap_lastmod": "2026-08-25T19:41:55+00:00",
+   "author_schema_name": "Showtime Pools",
+   "in_blog_archive_live": true,
+   "in_html_sitemap": true,
+   "in_xml_sitemap": true,
+   "sibling_links_out": [
+    "weekly-pool-care-checklist-la-homeowners",
+    "complete-pool-maintenance-guide-los-angeles"
+   ],
+   "sibling_links_in": [
+    "weekly-pool-care-checklist-la-homeowners",
+    "complete-pool-maintenance-guide-los-angeles"
+   ],
+   "tables": 1,
+   "images": {
+    "count": 0,
+    "with_alt": 0,
+    "without_alt": 0
+   }
+  },
+  {
+   "slug": "pool-pump-repair-services",
+   "url": "https://showtimepools.com/pool-pump-repair-services/",
+   "score_before": 54,
+   "score_after": 58,
+   "delta": 4,
+   "rating_after": "Rewrite",
+   "categories_after": {
+    "content_quality": 19,
+    "seo_optimization": 20,
+    "eeat_signals": 7,
+    "technical_elements": 3,
+    "ai_citation_readiness": 9
+   },
+   "words_after": 0.9,
+   "http": "200",
+   "robots": "max-image-preview:large, index, follow, max-snippet:-1, max-video-preview:-1",
+   "canonical_self": true,
+   "canonical_count": 1,
+   "og_count": 1,
+   "schema_type": "BlogPosting",
+   "date_published": "2026-07-08T20:11:13+00:00",
+   "date_modified": "2026-08-25T20:18:18+00:00",
+   "sitemap_lastmod": "2026-08-25T20:18:18+00:00",
+   "author_schema_name": "Showtime Pools",
+   "in_blog_archive_live": true,
+   "in_html_sitemap": true,
+   "in_xml_sitemap": true,
+   "sibling_links_out": [
+    "when-to-replace-your-pool-pump",
+    "weekly-pool-care-checklist-la-homeowners"
+   ],
+   "sibling_links_in": [
+    "when-to-replace-your-pool-pump"
+   ],
+   "tables": 2,
+   "images": {
+    "count": 1,
+    "with_alt": 0,
+    "without_alt": 1
+   }
+  },
+  {
+   "slug": "2026-pool-design-trends-los-angeles",
+   "url": "https://showtimepools.com/2026-pool-design-trends-los-angeles/",
+   "score_before": 46,
+   "score_after": 55,
+   "delta": 9,
+   "rating_after": "Rewrite",
+   "categories_after": {
+    "content_quality": 14,
+    "seo_optimization": 18,
+    "eeat_signals": 8,
+    "technical_elements": 5,
+    "ai_citation_readiness": 10
+   },
+   "words_after": 0.7,
+   "http": "200",
+   "robots": "max-image-preview:large, index, follow, max-snippet:-1, max-video-preview:-1",
+   "canonical_self": true,
+   "canonical_count": 1,
+   "og_count": 1,
+   "schema_type": "BlogPosting",
+   "date_published": "2026-05-20T15:17:07+00:00",
+   "date_modified": "2026-08-25T17:53:31+00:00",
+   "sitemap_lastmod": "2026-08-25T17:53:31+00:00",
+   "author_schema_name": "Showtime Pools",
+   "in_blog_archive_live": false,
+   "in_html_sitemap": true,
+   "in_xml_sitemap": true,
+   "sibling_links_out": [
+    "why-pebble-finishes-replacing-plaster",
+    "pool-remodeling-los-angeles"
+   ],
+   "sibling_links_in": [],
+   "tables": 0,
+   "images": {
+    "count": 0,
+    "with_alt": 0,
+    "without_alt": 0
+   }
+  },
+  {
+   "slug": "complete-pool-maintenance-guide-los-angeles",
+   "url": "https://showtimepools.com/complete-pool-maintenance-guide-los-angeles/",
+   "score_before": 58,
+   "score_after": 55,
+   "delta": -3,
+   "rating_after": "Rewrite",
+   "categories_after": {
+    "content_quality": 14,
+    "seo_optimization": 20,
+    "eeat_signals": 9,
+    "technical_elements": 4,
+    "ai_citation_readiness": 8
+   },
+   "words_after": 2.1,
+   "http": "200",
+   "robots": "max-image-preview:large, index, follow, max-snippet:-1, max-video-preview:-1",
+   "canonical_self": true,
+   "canonical_count": 1,
+   "og_count": 1,
+   "schema_type": "BlogPosting",
+   "date_published": "2026-07-06T17:03:39+00:00",
+   "date_modified": "2026-08-25T20:34:55+00:00",
+   "sitemap_lastmod": "2026-08-25T20:34:55+00:00",
+   "author_schema_name": "Showtime Pools",
+   "in_blog_archive_live": true,
+   "in_html_sitemap": true,
+   "in_xml_sitemap": true,
+   "sibling_links_out": [
+    "spring-pool-opening-step-by-step"
+   ],
+   "sibling_links_in": [
+    "weekly-pool-care-checklist-la-homeowners",
+    "spring-pool-opening-step-by-step",
+    "custom-pool-new-construction-process-showtime-pools",
+    "pool-remodeling-los-angeles",
+    "pool-tile-and-coping-installation-los-angeles"
+   ],
+   "tables": 2,
+   "images": {
+    "count": 1,
+    "with_alt": 0,
+    "without_alt": 1
+   }
+  },
+  {
+   "slug": "pool-tile-and-coping-installation-los-angeles",
+   "url": "https://showtimepools.com/pool-tile-and-coping-installation-los-angeles/",
+   "score_before": 61,
+   "score_after": 53,
+   "delta": -8,
+   "rating_after": "Rewrite",
+   "categories_after": {
+    "content_quality": 13,
+    "seo_optimization": 20,
+    "eeat_signals": 8,
+    "technical_elements": 4,
+    "ai_citation_readiness": 8
+   },
+   "words_after": 1,
+   "http": "200",
+   "robots": "max-image-preview:large, index, follow, max-snippet:-1, max-video-preview:-1",
+   "canonical_self": true,
+   "canonical_count": 1,
+   "og_count": 1,
+   "schema_type": "BlogPosting",
+   "date_published": "2026-07-03T18:05:20+00:00",
+   "date_modified": "2026-08-25T20:48:35+00:00",
+   "sitemap_lastmod": "2026-08-25T20:48:35+00:00",
+   "author_schema_name": "Showtime Pools",
+   "in_blog_archive_live": true,
+   "in_html_sitemap": true,
+   "in_xml_sitemap": true,
+   "sibling_links_out": [
+    "complete-pool-maintenance-guide-los-angeles",
+    "pool-remodeling-los-angeles",
+    "pool-replaster-cost-and-timing-guide"
+   ],
+   "sibling_links_in": [
+    "pool-remodeling-los-angeles"
+   ],
+   "tables": 2,
+   "images": {
+    "count": 1,
+    "with_alt": 0,
+    "without_alt": 1
+   }
+  }
+ ]
+}
