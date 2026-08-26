@@ -197,6 +197,14 @@ while ( have_posts() ) :
 							<?php the_content(); ?>
 						</div>
 
+
+						<?php
+						// Preferred-source callout: immediately after the article
+						// body, before the share row and the related-post section.
+						// Same shared partial the blog archive uses.
+						get_template_part( 'template-parts/global/preferred-source' );
+						?>
+
 						<div class="post-share">
 							<strong><?php esc_html_e( 'Share this article', 'showtime-pools' ); ?></strong>
 							<a href="https://twitter.com/intent/tweet?url=<?php echo esc_attr( rawurlencode( get_permalink() ) ); ?>&text=<?php echo esc_attr( rawurlencode( get_the_title() ) ); ?>" target="_blank" rel="noopener">Twitter / X</a>
