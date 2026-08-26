@@ -21,6 +21,27 @@ function showtime_asset( string $rel ): array {
 	return array( $uri, $ver );
 }
 
+/**
+ * Whether this request is a surface that carries the Google
+ * "Add to Preferred Sources" button.
+ *
+ * Exactly two: the /blog/ hub (page-blog.php, including its /blog/page/N/
+ * pagination) and an individual published post. Deliberately NOT the category
+ * or tag archives, and not project singles — blog.css is shared with those, but
+ * the button is not.
+ *
+ * ONE predicate answers for both the script and the markup: inc/enqueue.php
+ * gates the publisher.js enqueue on it, and the callout partial refuses to
+ * render anywhere it returns false. That makes the two impossible to
+ * desynchronise — there can be no button without its script, and no script
+ * without a button.
+ */
+function showtime_is_preferred_source_surface(): bool {
+	$is_surface = is_page_template( 'page-blog.php' ) || is_singular( 'post' );
+
+	return (bool) apply_filters( 'showtime/preferred_source/is_surface', $is_surface );
+}
+
 add_action(
 	'wp_enqueue_scripts',
 	function () {
@@ -186,6 +207,34 @@ add_action(
 		if ( is_singular( 'post' ) ) {
 			[ $uri, $ver ] = showtime_asset( 'assets/js/blog.js' );
 			wp_enqueue_script( 'showtime-blog', $uri, array(), $ver, array( 'in_footer' => true, 'strategy' => 'defer' ) );
+		}
+
+		// Google "Add to Preferred Sources" (publisher.js). Loaded ONLY on the
+		// two surfaces that render the button — the /blog/ hub and individual
+		// posts — never globally, and never on service, project, service-area,
+		// home, sitemap, shop or utility pages.
+		//
+		// WordPress dedupes by handle, so this registers exactly one <script>
+		// per response even though two templates can include the callout
+		// partial. Version is null: Google's endpoint is unversioned and a
+		// ?ver= query would only bust their cache.
+		//
+		// Async, in the head, matching the Cloudflare Turnstile pattern above:
+		// publisher.js hydrates the empty [google-add-preferred-source-btn]
+		// element itself, so it must not be deferred behind DOMContentLoaded.
+		//
+		// Not consent-gated, consistent with Turnstile: this is a functional
+		// widget the visitor chooses to act on, not an advertising or analytics
+		// pixel. Every tracking pixel on this site lives in GTM behind Consent
+		// Mode v2 (see inc/consent.php) and none is hard-coded here.
+		if ( showtime_is_preferred_source_surface() ) {
+			wp_enqueue_script(
+				'google-swg-publisher',
+				'https://news.google.com/swg/js/v1/publisher.js',
+				array(),
+				null,
+				array( 'in_footer' => false, 'strategy' => 'async' )
+			);
 		}
 
 		// Hero ↔ header geometry. Enqueued LAST of all stylesheets on purpose:

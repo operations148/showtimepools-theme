@@ -1165,3 +1165,88 @@
 .proj-notice a { color: var(--c-link); text-decoration: underline; }
 .proj-notice a:hover,
 .proj-notice a:focus-visible { color: var(--c-link-hover); }
+
+/* ===== Preferred-source callout ==========================================
+   Google's official "Add to Preferred Sources" button in a restrained light
+   card. Rendered on the /blog/ hub (between the feed heading and the card
+   grid) and on single posts (directly after the article body).
+
+   Deliberately quiet: same sand panel, border and radius the rest of the
+   light system uses, no dark band, no sticky/fixed positioning, no modal, no
+   entrance animation. It reads as a line of helpful copy with a control
+   beside it, not as an ad slot.
+
+   Layout-shift note: publisher.js injects Google's button asynchronously into
+   an initially EMPTY div, which would otherwise pop the callout taller the
+   moment it lands. .preferred-source__action reserves the row height up front
+   so the injected button fills space that was already allocated. Nothing about
+   Google's own button is restyled — only the box it arrives in. */
+.preferred-source {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--sp-4) var(--sp-6);
+	margin: var(--sp-8) 0;
+	padding: var(--sp-5) var(--sp-6);
+	background: var(--c-sand-50);
+	border: 1px solid var(--c-sand-300);
+	border-radius: var(--r-md);
+}
+
+.preferred-source__text { min-width: 0; }
+
+.preferred-source__title {
+	margin: 0 0 4px;
+	font-family: var(--ff-display);
+	font-size: var(--fs-lg);
+	font-weight: var(--fw-semibold);
+	line-height: var(--lh-snug);
+	letter-spacing: -0.01em;
+	color: var(--c-text);
+}
+
+.preferred-source__body {
+	margin: 0;
+	font-size: var(--fs-sm);
+	line-height: var(--lh-snug);
+	color: var(--c-text-muted);
+}
+
+.preferred-source__action {
+	display: flex;
+	align-items: center;
+	flex-shrink: 0;
+	/* Reserve the button row BEFORE publisher.js hydrates it — see note above.
+	   min-width matters as much as min-height: Google injects an <iframe> with
+	   no intrinsic width, which collapses to 0 as a flex item unless the box it
+	   lands in already has horizontal room. This sizes OUR container only —
+	   Google's button is never given a width, a transform or any other style. */
+	min-width: 260px;
+	min-height: 40px;
+}
+
+/* The no-JS fallback is a text link on purpose: it must never be mistaken for
+   Google's real control, so it gets no button chrome. */
+.preferred-source__fallback {
+	font-size: var(--fs-sm);
+	font-weight: var(--fw-medium);
+	color: var(--c-link);
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+.preferred-source__fallback:hover,
+.preferred-source__fallback:focus-visible { color: var(--c-link-hover, var(--c-link)); }
+
+@media (max-width: 640px) {
+	.preferred-source {
+		flex-direction: column;
+		align-items: flex-start;
+		padding: var(--sp-5);
+	}
+	.preferred-source__action { width: 100%; }
+}
+
+/* Let Google's injected frame use the room it was given, without dictating
+   its size: it may be narrower, but it may never overflow the card. */
+.preferred-source__action iframe { max-width: 100%; }

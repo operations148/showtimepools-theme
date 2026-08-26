@@ -156,6 +156,12 @@ $category_slot_map = array(
 						<h2 class="balance"><?php echo esc_html( $feed_h2 ); ?></h2>
 					</header>
 
+					<?php
+					// Preferred-source callout: below the feed heading, above the
+					// card grid. Shared partial — see template-parts/global/.
+					get_template_part( 'template-parts/global/preferred-source' );
+					?>
+
 					<?php if ( $q->have_posts() ) : ?>
 						<div class="blog-grid">
 							<?php $first = true; while ( $q->have_posts() ) : $q->the_post();
